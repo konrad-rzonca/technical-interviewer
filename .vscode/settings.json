@@ -1,0 +1,17 @@
+{
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": true,
+    "editor.wordWrap": "on",
+    "editor.wordWrapColumn": 120
+    
+}

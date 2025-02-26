@@ -1,0 +1,131 @@
+{
+  "category": "Core Concepts",
+  "questions": [
+    {
+      "id": "java-equals-vs-operator",
+      "category": "Java",
+      "subcategory": "Core Concepts",
+      "skillLevel": "beginner",
+      "shortTitle": "== vs .equals()",
+      "question": "What is the difference between '==' and '.equals()' in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Operator vs Method",
+              "description": "== is an operator, while .equals() is a method that belongs to the Object class."
+            },
+            {
+              "title": "Reference vs Value",
+              "description": "== compares object references (memory addresses), while .equals() compares the object values."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Default Behavior",
+              "description": "By default, .equals() in the Object class actually uses == for comparison unless overridden by a subclass."
+            },
+            {
+              "title": "Common Overrides",
+              "description": "String, Integer, and most wrapper classes override .equals() to compare actual values instead of references."
+            },
+            {
+              "title": "Primitive Types",
+              "description": "For primitive types like int, double, etc., == compares the actual values, not references."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Overriding Equals",
+              "description": "When overriding .equals(), you should always override hashCode() as well to maintain the contract that equal objects must have equal hash codes."
+            },
+            {
+              "title": "Null Handling",
+              "description": "Using == with null is safe (obj == null), but calling .equals() on a null object throws NullPointerException."
+            },
+            {
+              "title": "Performance",
+              "description": "== is generally faster as it's a simple memory address comparison, while .equals() may involve complex logic depending on the implementation."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-inheritance",
+        "java-final-keyword"
+      ]
+    },
+    {
+      "id": "java-final-keyword",
+      "category": "Java",
+      "subcategory": "Core Concepts",
+      "skillLevel": "beginner",
+      "shortTitle": "final Keyword",
+      "question": "Explain the different uses of the 'final' keyword in Java.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Final Variables",
+              "description": "When applied to a variable, 'final' makes it a constant that cannot be reassigned after initialization."
+            },
+            {
+              "title": "Final Methods",
+              "description": "When applied to a method, 'final' prevents the method from being overridden in subclasses."
+            },
+            {
+              "title": "Final Classes",
+              "description": "When applied to a class, 'final' prevents the class from being extended (subclassed)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Final Object References",
+              "description": "A final reference variable cannot be reassigned, but the object it points to can still be modified (if the object is mutable)."
+            },
+            {
+              "title": "Final Parameters",
+              "description": "Method parameters can be declared final to prevent them from being modified within the method body."
+            },
+            {
+              "title": "Blank Final Variables",
+              "description": "A final variable that is not initialized at the time of declaration is called a blank final variable. It must be initialized in all constructors."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Implications",
+              "description": "Final methods may be inlined by the JVM for performance optimization, as the compiler knows they won't be overridden."
+            },
+            {
+              "title": "Security Considerations",
+              "description": "Final classes like String are designed for security reasons - preventing malicious code from subclassing and potentially altering critical behavior."
+            },
+            {
+              "title": "Final in Concurrency",
+              "description": "Final fields have special semantics in Java's memory model that ensure proper publication of the field's value to other threads without synchronization."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-equals-vs-operator",
+        "java-static-keyword"
+      ]
+    }
+  ]
+}

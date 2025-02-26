@@ -1,0 +1,135 @@
+{
+  "category": "Concurrency",
+  "questions": [
+    {
+      "id": "java-synchronized-methods",
+      "category": "Java",
+      "subcategory": "Concurrency",
+      "skillLevel": "intermediate",
+      "shortTitle": "Synchronized Methods/Blocks",
+      "question": "Explain the difference between synchronized methods and synchronized blocks in Java.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "Both synchronized methods and blocks are used to prevent multiple threads from accessing shared resources simultaneously."
+            },
+            {
+              "title": "Synchronization Scope",
+              "description": "Synchronized methods lock the entire method, while synchronized blocks allow locking specific sections of code."
+            },
+            {
+              "title": "Thread Safety",
+              "description": "Both approaches help achieve thread safety by ensuring only one thread can access the protected code at a time."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Lock Object",
+              "description": "Synchronized methods use 'this' (the current object) as the lock for instance methods, or the Class object for static methods."
+            },
+            {
+              "title": "Custom Lock Objects",
+              "description": "Synchronized blocks can specify any object as the lock, allowing more flexible locking strategies."
+            },
+            {
+              "title": "Performance Impact",
+              "description": "Synchronized blocks can improve performance by minimizing the locked code section, reducing thread contention."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Granularity Control",
+              "description": "Synchronized blocks offer fine-grained control over what gets locked and for how long, helping prevent deadlocks."
+            },
+            {
+              "title": "Synchronization Strategy",
+              "description": "Using different lock objects in synchronized blocks allows for concurrent execution of different critical sections that don't interfere with each other."
+            },
+            {
+              "title": "Code Example",
+              "description": "```java\n// Synchronized method - locks entire method\npublic synchronized void synchronizedMethod() {\n    // Non-critical operations\n    System.out.println(\"Reading data\"); \n    \n    // Critical operations that need synchronization\n    balance = balance + amount;\n    System.out.println(\"Updated balance\");\n    \n    // More non-critical operations\n    System.out.println(\"Logging complete\");\n}\n\n// Synchronized block - locks only critical section\npublic void synchronizedBlockMethod() {\n    // Non-critical operations can run without synchronization\n    System.out.println(\"Reading data\");\n    \n    // Only critical section is synchronized\n    synchronized(this) {\n        balance = balance + amount;\n        System.out.println(\"Updated balance\");\n    }\n    \n    // More non-critical operations\n    System.out.println(\"Logging complete\");\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-equals-vs-operator",
+        "java-volatile-keyword"
+      ]
+    },
+    {
+      "id": "java-volatile-keyword",
+      "category": "Java",
+      "subcategory": "Concurrency",
+      "skillLevel": "advanced",
+      "shortTitle": "volatile Keyword",
+      "question": "What is the purpose of the volatile keyword in Java and when should it be used?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Main Purpose",
+              "description": "The volatile keyword ensures that a variable is always read from and written to main memory, not from thread-local caches."
+            },
+            {
+              "title": "Visibility Guarantee",
+              "description": "Volatile guarantees that changes made by one thread are visible to all other threads that access the variable."
+            },
+            {
+              "title": "No Atomicity",
+              "description": "Volatile does not guarantee atomicity for compound operations like i++ (read, increment, write)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Memory Barriers",
+              "description": "Volatile creates a memory barrier that prevents the JVM from reordering read/write operations around it, which is crucial for proper visibility."
+            },
+            {
+              "title": "Use Cases",
+              "description": "Volatile is useful for flag variables (like done/stop flags) in multi-threaded applications and for simple shared variables that don't require atomic compound operations."
+            },
+            {
+              "title": "Comparison with synchronized",
+              "description": "Volatile is lighter weight than synchronized as it doesn't involve acquiring/releasing locks, but provides fewer guarantees."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Happens-Before Relationship",
+              "description": "Volatile establishes a happens-before relationship, ensuring that all writes that happen before a volatile write in one thread are visible to reads after a volatile read in another thread."
+            },
+            {
+              "title": "Double-Checked Locking",
+              "description": "Volatile is crucial in the double-checked locking pattern for lazy initialization in a thread-safe manner. Without volatile, this pattern is broken due to instruction reordering."
+            },
+            {
+              "title": "Example Code",
+              "description": "```java\npublic class VolatileExample {\n    // Without volatile, other threads might never see done=true\n    private volatile boolean done = false;\n    \n    // Thread 1\n    public void shutdown() {\n        // This write is guaranteed to be visible to all threads\n        done = true;\n    }\n    \n    // Thread 2\n    public void runTask() {\n        // This thread will eventually see done=true\n        while (!done) {\n            // Do work until shutdown is called\n            process();\n        }\n    }\n    \n    private void process() {\n        // Task implementation\n    }\n    \n    // Example of double-checked locking with volatile\n    private static volatile VolatileExample instance;\n    \n    public static VolatileExample getInstance() {\n        if (instance == null) { // First check (not synchronized)\n            synchronized (VolatileExample.class) {\n                if (instance == null) { // Second check (synchronized)\n                    instance = new VolatileExample();\n                }\n            }\n        }\n        return instance;\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-synchronized-methods",
+        "java-final-keyword"
+      ]
+    }
+  ]
+}

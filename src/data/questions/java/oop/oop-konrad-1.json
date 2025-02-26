@@ -1,0 +1,135 @@
+{
+  "category": "Object-Oriented Programming",
+  "questions": [
+    {
+      "id": "java-inheritance",
+      "category": "Java",
+      "subcategory": "Object-Oriented Programming",
+      "skillLevel": "beginner",
+      "shortTitle": "Inheritance",
+      "question": "Explain the concept of inheritance in Java and provide an example.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "Inheritance is an OOP mechanism where a class acquires properties and behaviors (methods) from another class."
+            },
+            {
+              "title": "Syntax",
+              "description": "In Java, the 'extends' keyword is used to implement inheritance between classes."
+            },
+            {
+              "title": "IS-A Relationship",
+              "description": "Inheritance establishes an 'IS-A' relationship, where the child class is a specialized version of the parent class."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Types of Inheritance",
+              "description": "Java supports single, multilevel, and hierarchical inheritance for classes, but not multiple inheritance (one class cannot extend multiple classes)."
+            },
+            {
+              "title": "Method Overriding",
+              "description": "Child classes can override methods from the parent class to provide specific implementations while maintaining the same method signature."
+            },
+            {
+              "title": "super Keyword",
+              "description": "The 'super' keyword is used to access parent class methods and constructors from within a subclass."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Multiple Inheritance Workaround",
+              "description": "Java supports multiple inheritance through interfaces, where a class can implement multiple interfaces but extend only one class."
+            },
+            {
+              "title": "Constructor Chaining",
+              "description": "When a subclass is instantiated, constructors are executed from superclass to subclass. If no explicit super() call exists, an implicit call to super() is inserted by the compiler."
+            },
+            {
+              "title": "Example Code",
+              "description": "```java\nclass Animal {\n    protected String name;\n    \n    public Animal(String name) {\n        this.name = name;\n    }\n    \n    public void eat() {\n        System.out.println(name + \" is eating\");\n    }\n}\n\nclass Dog extends Animal {\n    private String breed;\n    \n    public Dog(String name, String breed) {\n        super(name);  // Call parent constructor\n        this.breed = breed;\n    }\n    \n    public void bark() {\n        System.out.println(name + \" is barking\");\n    }\n    \n    @Override\n    public void eat() {\n        System.out.println(name + \" the \" + breed + \" is eating dogfood\");\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-equals-vs-operator",
+        "java-polymorphism"
+      ]
+    },
+    {
+      "id": "java-polymorphism",
+      "category": "Java",
+      "subcategory": "Object-Oriented Programming",
+      "skillLevel": "intermediate",
+      "shortTitle": "Polymorphism",
+      "question": "What is polymorphism in Java? Explain the different types with examples.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "Polymorphism is the ability of an object to take on many forms. In Java, it allows objects to be treated as instances of their parent class rather than their actual class."
+            },
+            {
+              "title": "Runtime Polymorphism",
+              "description": "Also known as dynamic method dispatch, this occurs when a method is overridden and the JVM determines which method to call at runtime based on the object's actual type."
+            },
+            {
+              "title": "Compile-time Polymorphism",
+              "description": "Also known as static binding, this occurs with method overloading where multiple methods have the same name but different parameters."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Upcasting",
+              "description": "A form of implicit casting where a child class reference is cast to a parent class reference. This is the basis for runtime polymorphism."
+            },
+            {
+              "title": "Dynamic Binding",
+              "description": "The process of linking a method call to the correct method body at runtime rather than compile time."
+            },
+            {
+              "title": "Interface Polymorphism",
+              "description": "Objects from different classes can be treated as objects of a common interface if they all implement that interface."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Parametric Polymorphism",
+              "description": "Achieved through generics in Java, allowing a method or class to operate on objects of various types while providing compile-time type safety."
+            },
+            {
+              "title": "Double Dispatch",
+              "description": "A pattern to handle situations where the behavior depends on the runtime type of two or more objects, typically implemented using the visitor pattern in Java."
+            },
+            {
+              "title": "Example Code",
+              "description": "```java\n// Runtime Polymorphism Example\nclass Animal {\n    public void makeSound() {\n        System.out.println(\"Animal makes a sound\");\n    }\n}\n\nclass Dog extends Animal {\n    @Override\n    public void makeSound() {\n        System.out.println(\"Dog barks\");\n    }\n}\n\nclass Cat extends Animal {\n    @Override\n    public void makeSound() {\n        System.out.println(\"Cat meows\");\n    }\n}\n\n// Usage\npublic class Main {\n    public static void main(String[] args) {\n        Animal animal1 = new Dog();  // Upcasting\n        Animal animal2 = new Cat();  // Upcasting\n        \n        animal1.makeSound();  // Outputs: Dog barks\n        animal2.makeSound();  // Outputs: Cat meows\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-inheritance",
+        "java-static-keyword"
+      ]
+    }
+  ]
+}
