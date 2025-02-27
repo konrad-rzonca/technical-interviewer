@@ -1,7 +1,9 @@
 // src/App.js
 import React, { useState } from 'react';
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import InterviewPanel from './components/InterviewPanel';
+import HealthCheck from './components/HealthCheck';
 import './styles/main.css';
 
 // Create a minimal theme with subtle colors
@@ -21,6 +23,14 @@ const theme = createTheme({
     text: {
       primary: '#333333',
       secondary: '#757575',
+    },
+    success: {
+      main: '#66bb6a',
+      light: '#e8f5e9',
+    },
+    warning: {
+      main: '#ffca28',
+      light: '#fff8e1',
     }
   },
   typography: {
@@ -88,12 +98,20 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#fafafa' }}>
-        <InterviewPanel
-          interviewState={interviewState}
-          updateInterviewState={updateInterviewState}
-        />
-      </Box>
+      <Router>
+        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#fafafa' }}>
+          <Routes>
+            <Route path="/" element={
+              <InterviewPanel
+                interviewState={interviewState}
+                updateInterviewState={updateInterviewState}
+              />
+            } />
+            <Route path="/healtz" element={<HealthCheck />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Box>
+      </Router>
     </ThemeProvider>
   );
 }
