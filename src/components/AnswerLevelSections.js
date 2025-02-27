@@ -154,6 +154,7 @@ const AnswerLevelSections = ({ answerLevels }) => {
   };
 
   const handlePointMouseLeave = () => {
+    // Close tooltip immediately
     setAnchorEl(null);
   };
 
@@ -173,13 +174,13 @@ const AnswerLevelSections = ({ answerLevels }) => {
     }
   };
 
-  // Get level color based on index
+  // Get level color based on index - new color scheme without red
   const getLevelColor = (index) => {
     switch (index) {
-      case 0: return '#4caf50'; // green
-      case 1: return '#ff9800'; // orange
-      case 2: return '#f44336'; // red
-      default: return '#757575'; // gray
+      case 0: return '#66bb6a'; // green
+      case 1: return '#ffca28'; // amber/yellow
+      case 2: return '#fb8c00'; // deeper orange (no red)
+      default: return '#9e9e9e'; // gray
     }
   };
 
@@ -284,8 +285,8 @@ const AnswerLevelSections = ({ answerLevels }) => {
                       p: 1.5,
                       borderRadius: 1,
                       cursor: 'pointer',
-                      backgroundColor: isSelected ? `${getLevelColor(levelIndex)}15` : 'white',
-                      border: `1px solid ${isSelected ? getLevelColor(levelIndex) : '#e0e0e0'}`,
+                      backgroundColor: isSelected ? `${getLevelColor(levelIndex)}10` : 'white',
+                      border: `1px solid ${isSelected ? `${getLevelColor(levelIndex)}50` : '#e0e0e080'}`,
                       height: '100%',
                       display: 'flex',
                       alignItems: 'center',
@@ -321,7 +322,7 @@ const AnswerLevelSections = ({ answerLevels }) => {
       >
         {({ TransitionProps }) => (
           <ClickAwayListener onClickAway={handleTooltipClose}>
-            <Fade {...TransitionProps} timeout={200}>
+            <Fade {...TransitionProps} timeout={100}>
               <Paper elevation={3} sx={{ p: 2 }}>
                 {formatDescription(tooltipContent)}
               </Paper>

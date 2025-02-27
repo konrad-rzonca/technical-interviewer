@@ -1,0 +1,132 @@
+{
+  "category": "Core Java",
+  "subcategory": "Memory Management",
+  "questions": [
+    {
+      "id": "java-memory-management",
+      "skillLevel": "intermediate",
+      "shortTitle": "Java Memory Management",
+      "question": "Explain how memory management works in Java and the role of the Garbage Collector.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Automatic Memory Management",
+              "description": "Java handles memory allocation and deallocation automatically, unlike C/C++ where developers must manage memory manually."
+            },
+            {
+              "title": "Memory Regions",
+              "description": "Java divides memory into heap (for objects) and stack (for primitive variables and references)."
+            },
+            {
+              "title": "Garbage Collection",
+              "description": "The JVM's Garbage Collector automatically removes objects that are no longer reachable, freeing up memory."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "GC Process",
+              "description": "Garbage collection involves marking live objects, sweeping away unreferenced objects, and optionally compacting memory to reduce fragmentation."
+            },
+            {
+              "title": "GC Triggers",
+              "description": "Garbage collection can be triggered when the heap is getting full, when explicitly called (System.gc()), or during periods of low application activity."
+            },
+            {
+              "title": "Memory Generations",
+              "description": "Modern Java GC uses generational memory model: young generation (Eden, Survivor spaces) and old generation (Tenured). Objects that survive multiple collection cycles are promoted to older generations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "GC Algorithms",
+              "description": "JVM offers different GC algorithms: Serial, Parallel, CMS (Concurrent Mark Sweep), G1 (Garbage First), ZGC, and Shenandoah, each with different performance characteristics."
+            },
+            {
+              "title": "Memory Leaks",
+              "description": "Even with GC, memory leaks can occur when objects are still referenced but no longer needed (e.g., in static collections, ThreadLocals, or unclosed resources)."
+            },
+            {
+              "title": "Tuning Options",
+              "description": "GC can be tuned with various JVM flags: -Xms/-Xmx (heap size), -XX:NewRatio (young/old generation ratio), -XX:+UseG1GC (GC algorithm selection), etc."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-weak-references",
+        "java-jvm-architecture"
+      ]
+    },
+    {
+      "id": "java-pass-by-value",
+      "skillLevel": "intermediate",
+      "shortTitle": "Pass by Value",
+      "question": "Is Java pass-by-value or pass-by-reference? Explain with examples.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Java is Pass-by-Value",
+              "description": "Java is strictly pass-by-value. When passing primitives, a copy of the value is passed. When passing objects, a copy of the reference (memory address) is passed."
+            },
+            {
+              "title": "Primitive Behavior",
+              "description": "Changes to primitive parameters inside a method don't affect the original variables outside the method."
+            },
+            {
+              "title": "Object Behavior",
+              "description": "While you can't change which object a parameter refers to, you can change the object's state (modify its fields) which will be visible outside the method."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Common Confusion",
+              "description": "The confusion arises because with objects, modifying the object's state through the copied reference affects the original object, which seems like pass-by-reference behavior."
+            },
+            {
+              "title": "Reassignment Test",
+              "description": "The key test: if reassigning a parameter to a new object does not affect the original reference outside the method, it's pass-by-value (which Java is)."
+            },
+            {
+              "title": "Arrays and Collections",
+              "description": "With arrays and collections, you can modify the contents using the copied reference, but you can't make the original variable refer to a different array or collection."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Value vs Reference Semantics",
+              "description": "Java uses value semantics for passing arguments but reference semantics for accessing objects. This dual behavior often leads to misunderstanding."
+            },
+            {
+              "title": "Wrapper Classes",
+              "description": "Wrapper classes (Integer, Boolean, etc.) are immutable, so they effectively behave like primitives in terms of parameter passing - you cannot modify them."
+            },
+            {
+              "title": "Example Code",
+              "description": "```java\npublic class PassByValueDemo {\n\n    public static void main(String[] args) {\n        // Primitive example\n        int x = 10;\n        System.out.println(\"Before modifyPrimitive, x = \" + x);\n        modifyPrimitive(x);\n        System.out.println(\"After modifyPrimitive, x = \" + x); // Still 10\n        \n        // Object example - can modify object state\n        Person john = new Person(\"John\", 25);\n        System.out.println(\"Before modifyObject, person = \" + john);\n        modifyObject(john);\n        System.out.println(\"After modifyObject, person = \" + john); // Age changed to 26\n        \n        // Object example - cannot change the reference\n        System.out.println(\"Before reassignObject, person = \" + john);\n        reassignObject(john);\n        System.out.println(\"After reassignObject, person = \" + john); // Still John, age 26\n    }\n    \n    public static void modifyPrimitive(int value) {\n        value = 20; // This change is local to the method\n        System.out.println(\"Inside modifyPrimitive, value = \" + value);\n    }\n    \n    public static void modifyObject(Person person) {\n        person.setAge(26); // This modifies the actual object\n        System.out.println(\"Inside modifyObject, person = \" + person);\n    }\n    \n    public static void reassignObject(Person person) {\n        person = new Person(\"Jane\", 30); // This reassignment is local to the method\n        System.out.println(\"Inside reassignObject, person = \" + person);\n    }\n    \n    static class Person {\n        private String name;\n        private int age;\n        \n        public Person(String name, int age) {\n            this.name = name;\n            this.age = age;\n        }\n        \n        public void setAge(int age) {\n            this.age = age;\n        }\n        \n        @Override\n        public String toString() {\n            return name + \" (age \" + age + \")\";\n        }\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-memory-management",
+        "java-immutability"
+      ]
+    }
+  ]
+}

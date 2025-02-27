@@ -1,10 +1,9 @@
 {
-  "category": "Concurrency",
+  "category": "Concurrency and Multithreading",
+  "subcategory": "Concurrency and Multithreading",
   "questions": [
     {
       "id": "java-synchronized-methods",
-      "category": "Java",
-      "subcategory": "Concurrency",
       "skillLevel": "intermediate",
       "shortTitle": "Synchronized Methods/Blocks",
       "question": "Explain the difference between synchronized methods and synchronized blocks in Java.",
@@ -62,14 +61,12 @@
         }
       ],
       "relatedQuestions": [
-        "java-equals-vs-operator",
-        "java-volatile-keyword"
+        "java-volatile-keyword",
+        "java-thread-safety"
       ]
     },
     {
       "id": "java-volatile-keyword",
-      "category": "Java",
-      "subcategory": "Concurrency",
       "skillLevel": "advanced",
       "shortTitle": "volatile Keyword",
       "question": "What is the purpose of the volatile keyword in Java and when should it be used?",
@@ -128,7 +125,7 @@
       ],
       "relatedQuestions": [
         "java-synchronized-methods",
-        "java-final-keyword"
+        "java-atomicvariables"
       ]
     }
   ]

@@ -1,5 +1,5 @@
 // src/components/AnswerLevelHorizontal.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -15,16 +15,6 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [tooltipContent, setTooltipContent] = useState('');
   const [hoveredPoints, setHoveredPoints] = useState({});
-  const timeoutRef = useRef(null);
-
-  // Clear timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   // Handle bullet point click
   const handlePointClick = (categoryIndex, pointIndex) => {
@@ -37,12 +27,6 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
 
   // Handle bullet point hover start
   const handlePointMouseEnter = (event, description, categoryIndex, pointIndex) => {
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
     // Set the hovered state for this point
     const key = `${categoryIndex}-${pointIndex}`;
     setHoveredPoints(prev => ({
@@ -57,26 +41,20 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
 
   // Handle bullet point hover end
   const handlePointMouseLeave = (categoryIndex, pointIndex) => {
-    // Set a timeout to close the tooltip
-    timeoutRef.current = setTimeout(() => {
-      setAnchorEl(null);
+    // Immediately close the tooltip without delay
+    setAnchorEl(null);
 
-      // Reset the hovered state for this point
-      const key = `${categoryIndex}-${pointIndex}`;
-      setHoveredPoints(prev => {
-        const newState = { ...prev };
-        delete newState[key];
-        return newState;
-      });
-    }, 300); // Close after 300ms
+    // Reset the hovered state for this point
+    const key = `${categoryIndex}-${pointIndex}`;
+    setHoveredPoints(prev => {
+      const newState = { ...prev };
+      delete newState[key];
+      return newState;
+    });
   };
 
   // Close tooltip immediately
   const handleTooltipClose = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
     setAnchorEl(null);
     // Clear all hover states
     setHoveredPoints({});
@@ -84,13 +62,13 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
 
   const open = Boolean(anchorEl);
 
-  // Get level color
+  // Get level color - completely redesigned color scheme without red
   const getLevelColor = (index) => {
     switch (index) {
-      case 0: return '#4caf50'; // green for Basic
-      case 1: return '#ff9800'; // orange for Intermediate
-      case 2: return '#f44336'; // red for Advanced
-      default: return '#757575'; // gray default
+      case 0: return '#66bb6a'; // green for Basic
+      case 1: return '#ffca28'; // amber/yellow for Intermediate
+      case 2: return '#fb8c00'; // deeper orange for Advanced (no red)
+      default: return '#9e9e9e'; // gray default
     }
   };
 
@@ -166,9 +144,9 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
             sx={{
               flex: 1,
               p: 2,
-              border: `1px solid ${getLevelColor(categoryIndex)}40`,
+              border: `1px solid ${getLevelColor(categoryIndex)}20`, // More transparent border
               borderRadius: 2,
-              backgroundColor: `${getLevelColor(categoryIndex)}05`
+              backgroundColor: `${getLevelColor(categoryIndex)}03` // Extremely subtle background
             }}
           >
             <Typography
@@ -179,7 +157,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                 fontWeight: 500,
                 textAlign: 'center',
                 pb: 1,
-                borderBottom: `1px solid ${getLevelColor(categoryIndex)}20`
+                borderBottom: `1px solid ${getLevelColor(categoryIndex)}15` // More transparent border
               }}
             >
               {category.category}
@@ -202,30 +180,30 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                         borderRadius: 1,
                         cursor: 'pointer',
                         backgroundColor: isSelected
-                          ? `${getLevelColor(categoryIndex)}15`
-                          : (learningMode && isHovered ? `${getLevelColor(categoryIndex)}05` : 'white'),
+                          ? `${getLevelColor(categoryIndex)}08` // Very light selected background
+                          : (learningMode && !isHovered && !isSelected ? 'white' : `${getLevelColor(categoryIndex)}03`), // Extremely light default background
                         border: `1px solid ${isSelected
-                          ? getLevelColor(categoryIndex)
-                          : (learningMode && isHovered ? getLevelColor(categoryIndex) : '#e0e0e0')}`,
+                          ? `${getLevelColor(categoryIndex)}30` // Semi-transparent border for selected
+                          : (learningMode && !isHovered && !isSelected ? '#e0e0e060' : `${getLevelColor(categoryIndex)}15`)}`, // Very light borders
                         transition: 'all 0.2s',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                         minHeight: '2.5rem',
                         '&:hover': {
-                          backgroundColor: `${getLevelColor(categoryIndex)}10`,
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                          backgroundColor: `${getLevelColor(categoryIndex)}08`, // Light hover background
+                          boxShadow: '0 1px 2px rgba(0,0,0,0.03)' // Subtle shadow on hover
                         }
                       }}
                     >
-                      {/* Learning mode: show placeholder when not hovered */}
-                      {learningMode && !isHovered ? (
+                      {/* Learning mode: show placeholder only when not hovered AND not selected */}
+                      {learningMode && !isHovered && !isSelected ? (
                         <Box
                           sx={{
                             width: '70%',
                             height: '8px',
                             borderRadius: '4px',
-                            backgroundColor: '#e0e0e0'
+                            backgroundColor: '#e0e0e060' // More transparent placeholder
                           }}
                         />
                       ) : (
@@ -271,7 +249,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
       >
         {({ TransitionProps }) => (
           <ClickAwayListener onClickAway={handleTooltipClose}>
-            <Fade {...TransitionProps} timeout={150}>
+            <Fade {...TransitionProps} timeout={100}>
               <Paper
                 elevation={6}
                 sx={{

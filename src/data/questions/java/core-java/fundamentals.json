@@ -1,10 +1,9 @@
 {
-  "category": "Core Concepts",
+  "category": "Core Java",
+  "subcategory": "Fundamentals",
   "questions": [
     {
       "id": "java-equals-vs-operator",
-      "category": "Java",
-      "subcategory": "Core Concepts",
       "skillLevel": "beginner",
       "shortTitle": "== vs .equals()",
       "question": "What is the difference between '==' and '.equals()' in Java?",
@@ -58,14 +57,12 @@
         }
       ],
       "relatedQuestions": [
-        "java-inheritance",
-        "java-final-keyword"
+        "java-final-keyword",
+        "java-object-class"
       ]
     },
     {
       "id": "java-final-keyword",
-      "category": "Java",
-      "subcategory": "Core Concepts",
       "skillLevel": "beginner",
       "shortTitle": "final Keyword",
       "question": "Explain the different uses of the 'final' keyword in Java.",
@@ -124,8 +121,8 @@
       ],
       "relatedQuestions": [
         "java-equals-vs-operator",
-        "java-static-keyword"
+        "java-immutability"
       ]
     }
   ]
-}
+} 

@@ -1,110 +1,168 @@
 // src/components/InterviewPanel.js
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Paper,
-  Typography,
-  AppBar,
-  Toolbar,
-  Select,
-  MenuItem,
-  FormControl,
-  Divider,
-  TextField,
-  Rating,
-  IconButton,
-  Tooltip,
-  Menu,
-  ListItemText,
-  Checkbox,
-  ListItemIcon,
-  Button,
-  Switch,
-  FormControlLabel
-} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
-  languages,
-  getCategoriesForLanguage,
-  getFilteredQuestions,
-  getRelatedQuestions,
-  getQuestionsByLanguage,
+  AppBar,
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  Collapse,
+  Divider,
+  FormControlLabel,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Paper,
+  Rating,
+  Switch,
+  TextField,
+  Toolbar,
+  Tooltip,
+  Typography
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  categories,
   getCategoryForQuestion,
-  getFileNamesForCategory,
-  getQuestionsFromFile
+  getFilteredQuestions,
+  getQuestionsByCategory,
+  getQuestionSets,
+  getRelatedQuestions
 } from '../data/questionLoader';
 import AnswerLevelHorizontal from './AnswerLevelHorizontal';
 
 const InterviewPanel = ({ interviewState, updateInterviewState }) => {
-  const { selectedLanguage, currentQuestion, notesMap, gradesMap } = interviewState;
+  const { currentQuestion, notesMap, gradesMap } = interviewState;
 
   const [activeCategories, setActiveCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [expandedCategory, setExpandedCategory] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [relatedQuestionsList, setRelatedQuestionsList] = useState([]);
-  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
-  const [availableFiles, setAvailableFiles] = useState([]);
-  const [selectedFiles, setSelectedFiles] = useState({});
+  const [setMenuAnchor, setSetMenuAnchor] = useState(null);
+  const [availableSets, setAvailableSets] = useState([]);
+  const [selectedSets, setSelectedSets] = useState({});
   const [learningMode, setLearningMode] = useState(false);
+  const [selectedSubcategories, setSelectedSubcategories] = useState({});
+  const [subcategoryFilter, setSubcategoryFilter] = useState(null);
+  const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
+  const [hideAnsweredQuestions, setHideAnsweredQuestions] = useState(false);
 
-  // Load all available categories for the selected language
+  // Initialize active categories
   useEffect(() => {
-    const availableCategories = getCategoriesForLanguage(selectedLanguage);
-    setActiveCategories(availableCategories);
+    setActiveCategories(categories);
 
-    if (availableCategories.length > 0 && !selectedCategory) {
-      setSelectedCategory(availableCategories[0].id);
+    if (categories.length > 0 && !selectedCategory) {
+      setSelectedCategory(categories[0].id);
     }
-  }, [selectedLanguage]);
+  }, []);
 
-  // Load available files for the selected category
+  // Initialize subcategory selection
+  useEffect(() => {
+    const initialSelectedSubcategories = {};
+
+    categories.forEach(category => {
+      if (category.subcategories.length > 0) {
+        initialSelectedSubcategories[category.id] = {};
+        category.subcategories.forEach(subcategory => {
+          initialSelectedSubcategories[category.id][subcategory] = true;
+        });
+      }
+    });
+
+    setSelectedSubcategories(initialSelectedSubcategories);
+  }, []);
+
+  // Load available question sets for the selected category
   useEffect(() => {
     if (selectedCategory) {
-      const files = getFileNamesForCategory(selectedLanguage, selectedCategory);
-      setAvailableFiles(files);
+      const sets = getQuestionSets(selectedCategory);
+      setAvailableSets(sets);
 
-      // Initialize all files as selected by default
+      // Initialize all sets as selected by default
       const initialSelection = {};
-      files.forEach(file => {
-        initialSelection[file] = true;
+      sets.forEach(set => {
+        initialSelection[set.id] = true;
       });
-      setSelectedFiles(initialSelection);
+      setSelectedSets(initialSelection);
     }
-  }, [selectedLanguage, selectedCategory]);
+  }, [selectedCategory]);
 
-  // Load questions based on selected category and files
+  // Load questions based on selected category, subcategories, and sets
   useEffect(() => {
     if (selectedCategory) {
-      // Get the list of selected file IDs
-      const activeFiles = Object.entries(selectedFiles)
+      // Get the list of selected set IDs
+      const activeSets = Object.entries(selectedSets)
         .filter(([_, isSelected]) => isSelected)
-        .map(([fileName, _]) => fileName);
+        .map(([setId, _]) => setId);
 
-      // For simplicity in this demo, we'll load all questions for the category
-      // In a real app, you'd filter by selected files
-      const filteredQuestions = getFilteredQuestions(selectedLanguage, selectedCategory);
+      // Filter questions
+      let baseQuestions;
+
+      if (subcategoryFilter) {
+        // Filter by specific subcategory if selected
+        baseQuestions = getFilteredQuestions(selectedCategory, subcategoryFilter);
+      } else if (selectedSubcategories[selectedCategory]) {
+        // Filter by multiple selected subcategories
+        const activeSubcategories = Object.entries(selectedSubcategories[selectedCategory])
+          .filter(([_, isSelected]) => isSelected)
+          .map(([subcategory, _]) => subcategory);
+
+        if (activeSubcategories.length > 0) {
+          // Get questions from all active subcategories
+          baseQuestions = [];
+          activeSubcategories.forEach(subcategory => {
+            const subcategoryQuestions = getFilteredQuestions(selectedCategory, subcategory);
+            baseQuestions.push(...subcategoryQuestions);
+          });
+        } else {
+          baseQuestions = [];
+        }
+      } else {
+        // Get all questions for the category if no subcategory filtering
+        baseQuestions = getQuestionsByCategory(selectedCategory);
+      }
 
       // Use a brand new array to ensure React detects state change
-      setQuestions(Array.from(filteredQuestions));
+      setQuestions(Array.from(baseQuestions));
 
       // If we have questions but no current question selected, select the first one
-      if (filteredQuestions.length > 0 && !currentQuestion) {
-        updateInterviewState({ currentQuestion: filteredQuestions[0] });
+      if (baseQuestions.length > 0 && !currentQuestion) {
+        updateInterviewState({ currentQuestion: baseQuestions[0] });
       }
     } else {
-      // If no category is selected, load all questions for the language
-      const allQuestions = getQuestionsByLanguage(selectedLanguage);
-      setQuestions(Array.from(allQuestions));
-
-      if (allQuestions.length > 0 && !currentQuestion) {
-        updateInterviewState({ currentQuestion: allQuestions[0] });
-      }
+      // If no category is selected, clear questions
+      setQuestions([]);
     }
-  }, [selectedCategory, selectedLanguage, selectedFiles]);
+  }, [selectedCategory, selectedSets, selectedSubcategories, subcategoryFilter]);
+
+  // Apply additional filters (hide answered questions)
+  useEffect(() => {
+    if (hideAnsweredQuestions) {
+      const filtered = questions.filter(question => !gradesMap[question.id]);
+      setFilteredQuestions(filtered);
+
+      // If current question is filtered out, select first visible question
+      if (filtered.length > 0 && currentQuestion && gradesMap[currentQuestion.id]) {
+        updateInterviewState({ currentQuestion: filtered[0] });
+      }
+    } else {
+      setFilteredQuestions(questions);
+    }
+  }, [questions, hideAnsweredQuestions, gradesMap, currentQuestion]);
 
   // Load related questions when current question changes
   useEffect(() => {
@@ -116,27 +174,47 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     }
   }, [currentQuestion]);
 
-  // Handle language change (minimal UI)
-  const handleLanguageChange = (event) => {
-    updateInterviewState({
-      selectedLanguage: event.target.value,
-      currentQuestion: null
-    });
-    setSelectedCategory('');
-  };
-
   // Handle category selection
   const handleCategorySelect = (categoryId) => {
-    if (categoryId === selectedCategory) return; // Don't reload if category is already selected
+    if (categoryId === selectedCategory) {
+      // Toggle expansion if the category is already selected
+      setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
+      return;
+    }
 
     setSelectedCategory(categoryId);
+    const category = categories.find(c => c.id === categoryId);
+    setExpandedCategory(category && category.subcategories.length > 0 ? categoryId : null);
+    setSubcategoryFilter(null);
     updateInterviewState({ currentQuestion: null });
+  };
+
+  // Toggle a single subcategory selection
+  const handleSubcategorySelect = (subcategory) => {
+    // If we have an active filter, change to this subcategory
+    if (subcategoryFilter === subcategory) {
+      setSubcategoryFilter(null);
+    } else {
+      setSubcategoryFilter(subcategory);
+    }
+  };
+
+  // Toggle a subcategory's checked state
+  const handleSubcategoryToggle = (categoryId, subcategory) => {
+    setSelectedSubcategories(prev => ({
+      ...prev,
+      [categoryId]: {
+        ...prev[categoryId],
+        [subcategory]: !prev[categoryId][subcategory]
+      }
+    }));
+    setSubcategoryFilter(null); // Clear any active filter
   };
 
   // Handle question selection
   const handleQuestionSelect = (question) => {
     // Find the category for this question
-    const category = getCategoryForQuestion(question, selectedLanguage);
+    const category = getCategoryForQuestion(question);
 
     if (category && category.id !== selectedCategory) {
       // If question is from a different category, update category selection
@@ -148,19 +226,19 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
 
   // Navigate to next/previous question
   const navigateQuestion = (direction) => {
-    if (!currentQuestion || questions.length <= 1) return;
+    if (!currentQuestion || filteredQuestions.length <= 1) return;
 
-    const currentIndex = questions.findIndex(q => q.id === currentQuestion.id);
+    const currentIndex = filteredQuestions.findIndex(q => q.id === currentQuestion.id);
     if (currentIndex === -1) return;
 
     let newIndex;
     if (direction === 'next') {
-      newIndex = currentIndex + 1 >= questions.length ? 0 : currentIndex + 1;
+      newIndex = currentIndex + 1 >= filteredQuestions.length ? 0 : currentIndex + 1;
     } else {
-      newIndex = currentIndex - 1 < 0 ? questions.length - 1 : currentIndex - 1;
+      newIndex = currentIndex - 1 < 0 ? filteredQuestions.length - 1 : currentIndex - 1;
     }
 
-    updateInterviewState({ currentQuestion: questions[newIndex] });
+    updateInterviewState({ currentQuestion: filteredQuestions[newIndex] });
   };
 
   // Handle notes change
@@ -192,53 +270,108 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     setLearningMode(!learningMode);
   };
 
-  // Get skill level color
+  // Handle settings menu
+  const handleSettingsMenuOpen = (event) => {
+    setSettingsMenuAnchor(event.currentTarget);
+  };
+
+  const handleSettingsMenuClose = () => {
+    setSettingsMenuAnchor(null);
+  };
+
+  // Toggle hide answered questions
+  const handleToggleHideAnswered = () => {
+    setHideAnsweredQuestions(!hideAnsweredQuestions);
+    handleSettingsMenuClose();
+  };
+
+  // Get skill level color - completely redesigned color scheme
   const getSkillLevelColor = (level) => {
     switch (level) {
-      case 'beginner': return '#4caf50'; // green
-      case 'intermediate': return '#ff9800'; // orange
-      case 'advanced': return '#f44336'; // red
-      default: return '#757575'; // gray
+      case 'beginner': return '#66bb6a'; // green
+      case 'intermediate': return '#ffca28'; // amber/yellow
+      case 'advanced': return '#fb8c00'; // deeper orange (no red)
+      default: return '#9e9e9e'; // gray
     }
   };
 
-  // Handle file menu open/close
-  const handleFileMenuOpen = (event) => {
-    setFileMenuAnchor(event.currentTarget);
+  // Handle set menu open/close
+  const handleSetMenuOpen = (event) => {
+    setSetMenuAnchor(event.currentTarget);
   };
 
-  const handleFileMenuClose = () => {
-    setFileMenuAnchor(null);
+  const handleSetMenuClose = () => {
+    setSetMenuAnchor(null);
   };
 
-  // Handle file selection changes
-  const handleFileToggle = (fileName) => {
-    setSelectedFiles(prev => ({
+  // Handle set selection changes
+  const handleSetToggle = (setId) => {
+    setSelectedSets(prev => ({
       ...prev,
-      [fileName]: !prev[fileName]
+      [setId]: !prev[setId]
     }));
   };
 
-  // Handle select all files
-  const handleSelectAllFiles = () => {
+  // Handle select all sets
+  const handleSelectAllSets = () => {
     const newSelection = {};
-    availableFiles.forEach(file => {
-      newSelection[file] = true;
+    availableSets.forEach(set => {
+      newSelection[set.id] = true;
     });
-    setSelectedFiles(newSelection);
+    setSelectedSets(newSelection);
   };
 
-  // Handle deselect all files
-  const handleDeselectAllFiles = () => {
+  // Handle deselect all sets
+  const handleDeselectAllSets = () => {
     const newSelection = {};
-    availableFiles.forEach(file => {
-      newSelection[file] = false;
+    availableSets.forEach(set => {
+      newSelection[set.id] = false;
     });
-    setSelectedFiles(newSelection);
+    setSelectedSets(newSelection);
   };
 
-  // Count selected files
-  const selectedFileCount = Object.values(selectedFiles).filter(Boolean).length;
+  // Count selected sets
+  const selectedSetCount = Object.values(selectedSets).filter(Boolean).length;
+
+  // Select all subcategories for a category
+  const handleSelectAllSubcategories = (categoryId) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return;
+
+    const newSelection = {};
+    category.subcategories.forEach(subcategory => {
+      newSelection[subcategory] = true;
+    });
+
+    setSelectedSubcategories(prev => ({
+      ...prev,
+      [categoryId]: newSelection
+    }));
+
+    setSubcategoryFilter(null);
+  };
+
+  // Deselect all subcategories for a category
+  const handleDeselectAllSubcategories = (categoryId) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return;
+
+    const newSelection = {};
+    category.subcategories.forEach(subcategory => {
+      newSelection[subcategory] = false;
+    });
+
+    setSelectedSubcategories(prev => ({
+      ...prev,
+      [categoryId]: newSelection
+    }));
+
+    setSubcategoryFilter(null);
+  };
+
+  // Count answered questions
+  const answeredCount = Object.keys(gradesMap).length;
+  const totalQuestions = filteredQuestions.length;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh' }}>
@@ -274,29 +407,50 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
               />
             </Tooltip>
 
-            {/* Language selector */}
-            <FormControl
-              variant="standard"
-              size="small"
-              sx={{ minWidth: 100 }}
-              className="language-selector"
-            >
-              <Select
-                value={selectedLanguage}
-                onChange={handleLanguageChange}
-                displayEmpty
-                inputProps={{ 'aria-label': 'Select language' }}
+            {/* Settings Menu */}
+            <Tooltip title="Settings">
+              <IconButton
+                size="small"
+                onClick={handleSettingsMenuOpen}
+                color="primary"
+                sx={{ mr: 1 }}
               >
-                {languages.filter(l => l.enabled).map((language) => (
-                  <MenuItem key={language.id} value={language.id}>
-                    {language.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                <Badge
+                  badgeContent={hideAnsweredQuestions ? '1' : 0}
+                  color="primary"
+                  variant="dot"
+                >
+                  <SettingsIcon fontSize="small" />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
           </Box>
         </Toolbar>
       </AppBar>
+
+      {/* Settings Menu */}
+      <Menu
+        anchorEl={settingsMenuAnchor}
+        open={Boolean(settingsMenuAnchor)}
+        onClose={handleSettingsMenuClose}
+      >
+        <MenuItem
+          onClick={handleToggleHideAnswered}
+          sx={{
+            minWidth: 200,
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Typography variant="body2">Hide answered questions</Typography>
+          <Checkbox
+            checked={hideAnsweredQuestions}
+            size="small"
+            inputProps={{ 'aria-label': 'Hide answered questions' }}
+          />
+        </MenuItem>
+      </Menu>
 
       {/* Main Content - Three Column Layout */}
       <Box sx={{
@@ -305,13 +459,13 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         p: 2,
         height: 'calc(100vh - 64px)'
       }}>
-        {/* Left Sidebar - Categories (Fixed Width) */}
+        {/* Left Sidebar - Categories (Wider Width) */}
         <Paper
           elevation={0}
           sx={{
-            width: 250,
-            minWidth: 250,
-            maxWidth: 250,
+            width: 300,
+            minWidth: 300,
+            maxWidth: 300,
             mr: 2,
             p: 2,
             border: '1px solid #e0e0e0',
@@ -329,7 +483,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
                 onClick={() => handleCategorySelect(category.id)}
                 sx={{
                   p: 1.5,
-                  mb: 1,
+                  mb: 0.5,
                   borderRadius: 1,
                   cursor: 'pointer',
                   backgroundColor: selectedCategory === category.id ? 'rgba(33, 150, 243, 0.08)' : 'transparent',
@@ -342,52 +496,154 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
                   }
                 }}
               >
-                <Typography variant="body1">{category.name}</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="body1">{category.name}</Typography>
+                </Box>
 
-                {/* Files dropdown */}
-                <Tooltip title="Select Files">
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCategorySelect(category.id);
-                      handleFileMenuOpen(e);
-                    }}
-                  >
-                    <FolderOpenIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  {/* Sets dropdown */}
+                  <Tooltip title="Select Question Sets">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategorySelect(category.id);
+                        handleSetMenuOpen(e);
+                      }}
+                      sx={{ mr: 1 }}
+                    >
+                      <FolderOpenIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+
+                  {/* Expand/collapse if it has subcategories */}
+                  {category.subcategories.length > 0 && (
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedCategory(expandedCategory === category.id ? null : category.id);
+                      }}
+                    >
+                      {expandedCategory === category.id ?
+                        <ExpandLessIcon fontSize="small" /> :
+                        <ExpandMoreIcon fontSize="small" />
+                      }
+                    </IconButton>
+                  )}
+                </Box>
               </Box>
+
+              {/* Subcategories collapsible section */}
+              {category.subcategories.length > 0 && (
+                <Collapse
+                  in={expandedCategory === category.id}
+                  timeout={0} // Set timeout to 0 to disable animation
+                  unmountOnExit // Fully unmount when collapsed for better performance
+                >
+                  <List dense sx={{ ml: 2, mt: 0, mb: 1 }}>
+                    <ListItem
+                      dense
+                      sx={{ p: 0, mb: 0.5 }}
+                    >
+                      <Button
+                        size="small"
+                        onClick={() => handleSelectAllSubcategories(category.id)}
+                        sx={{ mr: 1, minWidth: 'auto', fontSize: '0.7rem' }}
+                      >
+                        All
+                      </Button>
+                      <Button
+                        size="small"
+                        onClick={() => handleDeselectAllSubcategories(category.id)}
+                        sx={{ minWidth: 'auto', fontSize: '0.7rem' }}
+                      >
+                        None
+                      </Button>
+                    </ListItem>
+
+                    {category.subcategories.map((subcategory) => (
+                      <ListItem
+                        key={subcategory}
+                        dense
+                        sx={{
+                          p: 0,
+                          mb: 0.5,
+                          bgcolor: subcategoryFilter === subcategory ? 'rgba(33, 150, 243, 0.08)' : 'transparent',
+                          borderRadius: 1
+                        }}
+                      >
+                        <Box sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          width: '100%',
+                          justifyContent: 'space-between',
+                          pr: 1 // Extra padding on the right
+                        }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              flex: 1,
+                              p: 0.5,
+                              cursor: 'pointer',
+                              '&:hover': {
+                                bgcolor: 'rgba(0, 0, 0, 0.04)',
+                                borderRadius: 1
+                              }
+                            }}
+                            onClick={() => handleSubcategorySelect(subcategory)}
+                          >
+                            <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
+                              {subcategory}
+                            </Typography>
+                          </Box>
+
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: 28 }}>
+                            <Checkbox
+                              size="small"
+                              checked={selectedSubcategories[category.id]?.[subcategory] || false}
+                              onChange={() => handleSubcategoryToggle(category.id, subcategory)}
+                              onClick={(e) => e.stopPropagation()}
+                              sx={{ p: 0.5 }}
+                            />
+                          </Box>
+                        </Box>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Collapse>
+              )}
             </Box>
           ))}
 
-          {/* Files Selection Menu */}
+          {/* Question Sets Selection Menu */}
           <Menu
-            anchorEl={fileMenuAnchor}
-            open={Boolean(fileMenuAnchor)}
-            onClose={handleFileMenuClose}
+            anchorEl={setMenuAnchor}
+            open={Boolean(setMenuAnchor)}
+            onClose={handleSetMenuClose}
             PaperProps={{
               style: {
                 maxHeight: 300,
-                width: 250,
+                width: 300,
               },
             }}
           >
             <Box sx={{ px: 2, py: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="subtitle2">
-                Files ({selectedFileCount}/{availableFiles.length})
+                Question Sets ({selectedSetCount}/{availableSets.length})
               </Typography>
               <Box>
                 <Button
                   size="small"
-                  onClick={handleSelectAllFiles}
+                  onClick={handleSelectAllSets}
                   sx={{ minWidth: 'auto', px: 1 }}
                 >
                   All
                 </Button>
                 <Button
                   size="small"
-                  onClick={handleDeselectAllFiles}
+                  onClick={handleDeselectAllSets}
                   sx={{ minWidth: 'auto', px: 1 }}
                 >
                   None
@@ -395,27 +651,27 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
               </Box>
             </Box>
             <Divider />
-            {availableFiles.map((file, index) => (
+            {availableSets.map((set) => (
               <MenuItem
-                key={index}
+                key={set.id}
                 dense
-                onClick={() => handleFileToggle(file)}
+                onClick={() => handleSetToggle(set.id)}
               >
                 <ListItemIcon>
                   <Checkbox
                     edge="start"
-                    checked={selectedFiles[file] || false}
+                    checked={selectedSets[set.id] || false}
                     tabIndex={-1}
                     disableRipple
                     size="small"
                   />
                 </ListItemIcon>
-                <ListItemText primary={file} />
+                <ListItemText primary={set.name} />
               </MenuItem>
             ))}
-            {availableFiles.length === 0 && (
+            {availableSets.length === 0 && (
               <MenuItem disabled>
-                <ListItemText primary="No files in this category" />
+                <ListItemText primary="No question sets in this category" />
               </MenuItem>
             )}
           </Menu>
@@ -433,70 +689,103 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           }}
         >
           {/* Questions navigation (horizontal) */}
-          {questions.length > 0 && (
+          {filteredQuestions.length > 0 && (
             <Box sx={{
               display: 'flex',
               flexWrap: 'wrap',
               mb: 3
             }}>
-              {questions.map((question) => (
-                <Tooltip
-                  key={question.id}
-                  title={
-                    <Typography sx={{ fontSize: '1rem', p: 1 }}>
-                      {question.question}
-                    </Typography>
-                  }
-                  placement="top"
-                  arrow
-                >
-                  <Box
-                    onClick={() => handleQuestionSelect(question)}
-                    sx={{
-                      p: 1.5,
-                      m: 0.5,
-                      borderRadius: 1,
-                      cursor: 'pointer',
-                      backgroundColor: currentQuestion && currentQuestion.id === question.id ? 'rgba(33, 150, 243, 0.08)' : 'white',
-                      border: currentQuestion && currentQuestion.id === question.id ? '1px solid rgba(33, 150, 243, 0.2)' : '1px solid #e0e0e0',
-                      minWidth: 180,
-                      maxWidth: 230,
-                      position: 'relative',
-                      paddingLeft: '24px',
-                      '&:hover': {
-                        backgroundColor: 'rgba(33, 150, 243, 0.04)',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-                      }
-                    }}
-                  >
-                    {/* Skill level indicator circle */}
-                    <Box
-                      sx={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: '50%',
-                        backgroundColor: getSkillLevelColor(question.skillLevel),
-                        position: 'absolute',
-                        left: 8,
-                        top: '50%',
-                        transform: 'translateY(-50%)'
-                      }}
-                    />
+              {filteredQuestions.map((question) => {
+                const isAnswered = gradesMap[question.id] !== undefined;
 
-                    <Typography
-                      variant="body2"
+                return (
+                  <Tooltip
+                    key={question.id}
+                    title={
+                      <Box>
+                        <Typography sx={{ fontSize: '1rem', p: 1 }}>
+                          {question.question}
+                        </Typography>
+                        {isAnswered && (
+                          <Typography sx={{ fontSize: '0.8rem', p: 0.5, color: '#66bb6a' }}>
+                            Answered with rating: {gradesMap[question.id]}
+                          </Typography>
+                        )}
+                      </Box>
+                    }
+                    placement="top"
+                    arrow
+                  >
+                    <Box
+                      onClick={() => handleQuestionSelect(question)}
                       sx={{
-                        fontWeight: currentQuestion && currentQuestion.id === question.id ? 500 : 400,
-                        textAlign: 'center',
-                        width: '100%'
+                        p: 1.5,
+                        m: 0.5,
+                        borderRadius: 1,
+                        cursor: 'pointer',
+                        backgroundColor: currentQuestion && currentQuestion.id === question.id
+                          ? 'rgba(33, 150, 243, 0.08)'
+                          : (isAnswered ? 'rgba(102, 187, 106, 0.05)' : 'white'),
+                        border: currentQuestion && currentQuestion.id === question.id
+                          ? '1px solid rgba(33, 150, 243, 0.2)'
+                          : (isAnswered ? '1px solid rgba(102, 187, 106, 0.2)' : '1px solid #e0e0e0'),
+                        minWidth: 180,
+                        maxWidth: 230,
+                        position: 'relative',
+                        paddingLeft: '24px',
+                        paddingRight: isAnswered ? '24px' : '8px',
+                        '&:hover': {
+                          backgroundColor: currentQuestion && currentQuestion.id === question.id
+                            ? 'rgba(33, 150, 243, 0.12)'
+                            : 'rgba(33, 150, 243, 0.04)',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                        }
                       }}
                     >
-                      {/* Use short title if available */}
-                      {question.shortTitle || question.question.split(' ').slice(0, 5).join(' ')}
-                    </Typography>
-                  </Box>
-                </Tooltip>
-              ))}
+                      {/* Skill level indicator circle */}
+                      <Box
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: '50%',
+                          backgroundColor: getSkillLevelColor(question.skillLevel),
+                          position: 'absolute',
+                          left: 8,
+                          top: '50%',
+                          transform: 'translateY(-50%)'
+                        }}
+                      />
+
+                      {/* Answered indicator */}
+                      {isAnswered && (
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            right: 6,
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            color: '#66bb6a'
+                          }}
+                        >
+                          <CheckCircleIcon fontSize="small" style={{ fontSize: '14px' }} />
+                        </Box>
+                      )}
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: currentQuestion && currentQuestion.id === question.id ? 500 : 400,
+                          textAlign: 'center',
+                          width: '100%'
+                        }}
+                      >
+                        {/* Use short title if available */}
+                        {question.shortTitle || question.question.split(' ').slice(0, 5).join(' ')}
+                      </Typography>
+                    </Box>
+                  </Tooltip>
+                );
+              })}
             </Box>
           )}
 
@@ -580,13 +869,13 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           )}
         </Paper>
 
-        {/* Right Sidebar - Related Questions (Fixed Width) */}
+        {/* Right Sidebar - Related Questions (Wider Width) */}
         <Paper
           elevation={0}
           sx={{
-            width: 300,
-            minWidth: 300,
-            maxWidth: 300,
+            width: 350,
+            minWidth: 350,
+            maxWidth: 350,
             ml: 2,
             p: 2,
             border: '1px solid #e0e0e0',
@@ -600,38 +889,88 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           </Typography>
 
           {relatedQuestionsList.length > 0 ? (
-            relatedQuestionsList.map((relatedQ) => (
-              <Tooltip
-                key={relatedQ.id}
-                title={
-                  <Typography sx={{ fontSize: '1rem', p: 1 }}>
-                    {relatedQ.question}
-                  </Typography>
-                }
-                placement="left"
-                arrow
-              >
-                <Box
-                  onClick={() => handleQuestionSelect(relatedQ)}
-                  sx={{
-                    p: 1.5,
-                    mb: 1,
-                    borderRadius: 1,
-                    cursor: 'pointer',
-                    position: 'relative',
-                    paddingLeft: '24px',
-                    '&:hover': {
-                      backgroundColor: 'rgba(33, 150, 243, 0.04)',
-                    },
-                    borderLeft: `3px solid ${getSkillLevelColor(relatedQ.skillLevel)}`
-                  }}
+            relatedQuestionsList.map((relatedQ) => {
+              // Determine if this question has been answered
+              const isAnswered = gradesMap[relatedQ.id] !== undefined;
+              // Get category info
+              const categoryObj = categories.find(c => c.id === relatedQ.categoryId) || {};
+              const categoryName = categoryObj.name || '';
+
+              return (
+                <Tooltip
+                  key={relatedQ.id}
+                  title={
+                    <Box>
+                      <Typography sx={{ fontSize: '1rem', p: 1 }}>
+                        {relatedQ.question}
+                      </Typography>
+                      {isAnswered && (
+                        <Typography sx={{ fontSize: '0.8rem', p: 0.5, color: '#66bb6a' }}>
+                          Answered with rating: {gradesMap[relatedQ.id]}
+                        </Typography>
+                      )}
+                    </Box>
+                  }
+                  placement="left"
+                  arrow
                 >
-                  <Typography variant="body2" sx={{ textAlign: 'left' }}>
-                    {relatedQ.shortTitle || relatedQ.question.split(' ').slice(0, 5).join(' ')}
-                  </Typography>
-                </Box>
-              </Tooltip>
-            ))
+                  <Box
+                    onClick={() => handleQuestionSelect(relatedQ)}
+                    sx={{
+                      p: 1.5,
+                      mb: 1,
+                      borderRadius: 1,
+                      cursor: 'pointer',
+                      position: 'relative',
+                      paddingLeft: '24px',
+                      '&:hover': {
+                        backgroundColor: 'rgba(33, 150, 243, 0.04)',
+                      },
+                      borderLeft: `3px solid ${getSkillLevelColor(relatedQ.skillLevel)}`,
+                      // Add subtle background if answered
+                      backgroundColor: isAnswered ? 'rgba(102, 187, 106, 0.05)' : 'transparent'
+                    }}
+                  >
+                    {/* Answered indicator - checkmark */}
+                    {isAnswered && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          right: 8,
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          color: '#66bb6a'
+                        }}
+                      >
+                        <CheckCircleIcon fontSize="small" style={{ fontSize: '14px' }} />
+                      </Box>
+                    )}
+
+                    <Typography variant="body2" sx={{ textAlign: 'left' }}>
+                      {relatedQ.shortTitle || relatedQ.question.split(' ').slice(0, 5).join(' ')}
+                    </Typography>
+
+                    {/* Category indicator */}
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: 'block',
+                        color: 'text.secondary',
+                        fontSize: '0.7rem',
+                        mt: 0.5,
+                        opacity: 0.7
+                      }}
+                    >
+                      {categoryName} • {relatedQ.subcategoryName}
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              );
+            })
           ) : (
             <Typography variant="body2" color="text.secondary">
               No related questions for this topic

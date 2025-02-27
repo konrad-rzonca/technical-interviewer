@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Tooltip,
   Paper,
   Popper,
   Fade,
@@ -89,6 +88,7 @@ const AnswerBullets = ({ answerLevels }) => {
     // On very small screens, we'll use click instead of hover
     if (window.innerWidth < 600) return;
 
+    // Immediately hide tooltip without delay
     setAnchorEl(null);
   };
 
@@ -152,7 +152,7 @@ const AnswerBullets = ({ answerLevels }) => {
       >
         {({ TransitionProps }) => (
           <ClickAwayListener onClickAway={handleTooltipClose}>
-            <Fade {...TransitionProps} timeout={200}>
+            <Fade {...TransitionProps} timeout={100}>
               <Paper elevation={3} sx={{ p: 2, mt: 0.5 }}>
                 <Typography variant="body2">{tooltipContent}</Typography>
               </Paper>
