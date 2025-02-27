@@ -72,6 +72,15 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
     }
   };
 
+  // Get border opacity with 10% increased intensity for yellow (Intermediate)
+  const getBorderOpacity = (index) => {
+    // Increase yellow (Intermediate) border intensity by 10%
+    if (index === 1) {
+      return '55'; // 50% → 55%
+    }
+    return '50'; // Keep others at 50%
+  };
+
   // Replace code blocks with properly formatted code
   const formatDescription = (description) => {
     if (!description) return '';
@@ -135,7 +144,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
       <Box sx={{
         display: 'flex',
         flexDirection: 'row',
-        gap: 3,
+        gap: 2,
         mb: 2
       }}>
         {answerInsights && answerInsights.map((category, categoryIndex) => (
@@ -143,21 +152,21 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
             key={categoryIndex}
             sx={{
               flex: 1,
-              p: 2,
-              border: `1px solid ${getLevelColor(categoryIndex)}20`, // More transparent border
+              p: 1.5,
+              border: `1px solid ${getLevelColor(categoryIndex)}${getBorderOpacity(categoryIndex)}`,
               borderRadius: 2,
-              backgroundColor: `${getLevelColor(categoryIndex)}03` // Extremely subtle background
+              backgroundColor: `${getLevelColor(categoryIndex)}05`
             }}
           >
             <Typography
               variant="subtitle1"
               sx={{
-                mb: 2,
+                mb: 1.5,
                 color: getLevelColor(categoryIndex),
                 fontWeight: 500,
                 textAlign: 'center',
-                pb: 1,
-                borderBottom: `1px solid ${getLevelColor(categoryIndex)}15` // More transparent border
+                pb: 1
+                // Removed borderBottom
               }}
             >
               {category.category}
@@ -180,19 +189,21 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                         borderRadius: 1,
                         cursor: 'pointer',
                         backgroundColor: isSelected
-                          ? `${getLevelColor(categoryIndex)}08` // Very light selected background
-                          : (learningMode && !isHovered && !isSelected ? 'white' : `${getLevelColor(categoryIndex)}03`), // Extremely light default background
+                          ? `${getLevelColor(categoryIndex)}15`
+                          : (learningMode && !isHovered && !isSelected ? 'white' : `${getLevelColor(categoryIndex)}05`),
                         border: `1px solid ${isSelected
-                          ? `${getLevelColor(categoryIndex)}30` // Semi-transparent border for selected
-                          : (learningMode && !isHovered && !isSelected ? '#e0e0e060' : `${getLevelColor(categoryIndex)}15`)}`, // Very light borders
+                          ? `${getLevelColor(categoryIndex)}${getBorderOpacity(categoryIndex)}`
+                          : (learningMode && !isHovered && !isSelected
+                            ? '#e0e0e080'
+                            : `${getLevelColor(categoryIndex)}${getBorderOpacity(categoryIndex)}`)}`,
                         transition: 'all 0.2s',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                         minHeight: '2.5rem',
                         '&:hover': {
-                          backgroundColor: `${getLevelColor(categoryIndex)}08`, // Light hover background
-                          boxShadow: '0 1px 2px rgba(0,0,0,0.03)' // Subtle shadow on hover
+                          backgroundColor: `${getLevelColor(categoryIndex)}15`,
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                         }
                       }}
                     >
@@ -203,7 +214,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                             width: '70%',
                             height: '8px',
                             borderRadius: '4px',
-                            backgroundColor: '#e0e0e060' // More transparent placeholder
+                            backgroundColor: '#e0e0e080'
                           }}
                         />
                       ) : (
@@ -237,13 +248,13 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
           {
             name: 'offset',
             options: {
-              offset: [0, 10], // Adds some spacing from the anchor element
+              offset: [0, 10],
             },
           },
         ]}
         sx={{
           zIndex: 1200,
-          maxWidth: '600px', // Wider tooltip
+          maxWidth: '600px',
           minWidth: '300px'
         }}
       >

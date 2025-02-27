@@ -51,28 +51,33 @@ const QuestionDetailsPanel = ({
     <Box sx={{ 
       display: 'flex',
       flexDirection: 'column',
-      height: '100%',
-      overflow: 'hidden'
+      height: 'auto',
+      overflow: 'visible'
     }}>
-      {/* Question Details Section - Now at the top */}
+      {/* Question Details Section */}
       <Box sx={{ 
-        mb: 4, 
-        overflow: 'auto',
-        flexBasis: '60%',
-        flexShrink: 0,
-        pr: 1
+        mb: 0.5,
+        overflow: 'visible',
+        flexShrink: 0
       }}>
-        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 500 }}>
+        <Typography variant="subtitle1" sx={{ mb: 0.5, fontWeight: 500 }}>
           Question Details
         </Typography>
         
-        {/* Question header with navigation and full question */}
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 3
-        }}>
+        {/* Question header with navigation and full question - with more subtle box */}
+        <Paper 
+          elevation={0}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 1.5,
+            p: 1.5,
+            border: '1px solid rgba(0, 0, 0, 0.04)', // Even more subtle border
+            borderRadius: 1.5,
+            backgroundColor: 'rgba(0, 0, 0, 0.005)' // Barely visible background
+          }}
+        >
           <IconButton
             size="small"
             onClick={() => onNavigateQuestion('prev')}
@@ -80,7 +85,17 @@ const QuestionDetailsPanel = ({
             <KeyboardArrowLeftIcon />
           </IconButton>
 
-          <Typography variant="h6" sx={{ textAlign: 'center', flexGrow: 1 }}>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              textAlign: 'center', 
+              flexGrow: 1, 
+              fontWeight: 500, 
+              fontSize: '1.3rem',
+              lineHeight: 1.4,
+              py: 0.5
+            }}
+          >
             {currentQuestion.question}
           </Typography>
 
@@ -90,7 +105,7 @@ const QuestionDetailsPanel = ({
           >
             <KeyboardArrowRightIcon />
           </IconButton>
-        </Box>
+        </Paper>
 
         {/* Answer insights horizontal layout */}
         <AnswerLevelHorizontal
@@ -99,20 +114,20 @@ const QuestionDetailsPanel = ({
         />
       </Box>
 
-      <Divider sx={{ mb: 3 }} />
+      <Divider />
 
-      {/* Candidate Evaluation - Now below question details */}
+      {/* Candidate Evaluation */}
       <Box sx={{ 
-        overflow: 'auto',
-        flexBasis: '40%',
+        overflow: 'visible',
         flexShrink: 0,
-        pr: 1
+        height: 'auto',
+        mt: 1
       }}>
-        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
+        <Typography variant="subtitle1" sx={{ mb: 0.5, fontWeight: 500 }}>
           Candidate Evaluation
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
           <Typography variant="body2" sx={{ mr: 2, color: 'text.secondary' }}>
             Rating:
           </Typography>
@@ -132,6 +147,7 @@ const QuestionDetailsPanel = ({
           fullWidth
           value={notesMap[currentQuestion.id] || ''}
           onChange={handleNotesChange}
+          sx={{ mb: 0.5 }}
         />
       </Box>
     </Box>

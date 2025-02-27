@@ -13,8 +13,14 @@ const RelatedQuestionsSidebar = ({
   relatedQuestionsList,
   gradesMap,
   onQuestionSelect,
-  getSkillLevelColor
+  getSkillLevelColor,
+  hideAnswered // New prop for hiding answered questions
 }) => {
+  // Filter related questions based on hideAnswered setting
+  const filteredRelatedQuestions = hideAnswered
+    ? relatedQuestionsList.filter(q => !gradesMap[q.id])
+    : relatedQuestionsList;
+
   return (
     <Paper
       elevation={0}
@@ -34,8 +40,8 @@ const RelatedQuestionsSidebar = ({
         Related Questions
       </Typography>
 
-      {relatedQuestionsList.length > 0 ? (
-        relatedQuestionsList.map((relatedQ) => {
+      {filteredRelatedQuestions.length > 0 ? (
+        filteredRelatedQuestions.map((relatedQ) => {
           // Determine if this question has been answered
           const isAnswered = gradesMap[relatedQ.id] !== undefined;
           // Get category info
@@ -124,6 +130,7 @@ const RelatedQuestionsSidebar = ({
       ) : (
         <Typography variant="body2" color="text.secondary">
           No related questions for this topic
+          {hideAnswered && relatedQuestionsList.length > 0 && " (answered questions are hidden)"}
         </Typography>
       )}
     </Paper>

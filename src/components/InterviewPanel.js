@@ -4,8 +4,7 @@ import {
   AppBar,
   Badge,
   Box,
-  Checkbox,
-  FormControlLabel,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -18,6 +17,8 @@ import {
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import {
   categories,
@@ -49,6 +50,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const [subcategoryFilter, setSubcategoryFilter] = useState(null);
   const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
   const [hideAnsweredQuestions, setHideAnsweredQuestions] = useState(false);
+  const [hideAnsweredInRelated, setHideAnsweredInRelated] = useState(false);
 
   // Initialize active categories
   useEffect(() => {
@@ -269,8 +271,21 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   };
 
   // Toggle learning mode
-  const handleLearningModeToggle = () => {
+  const handleLearningModeToggle = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
     setLearningMode(!learningMode);
+  };
+
+  // Toggle hide answered questions
+  const handleHideAnsweredToggle = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setHideAnsweredQuestions(!hideAnsweredQuestions);
+  };
+
+  // Toggle hide answered in related
+  const handleHideAnsweredInRelatedToggle = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setHideAnsweredInRelated(!hideAnsweredInRelated);
   };
 
   // Handle settings menu
@@ -282,13 +297,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     setSettingsMenuAnchor(null);
   };
 
-  // Toggle hide answered questions
-  const handleToggleHideAnswered = () => {
-    setHideAnsweredQuestions(!hideAnsweredQuestions);
-    handleSettingsMenuClose();
-  };
-
-  // Get skill level color - completely redesigned color scheme
+  // Get skill level color
   const getSkillLevelColor = (level) => {
     switch (level) {
       case 'beginner': return '#66bb6a'; // green
@@ -374,30 +383,6 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* Learning Mode Toggle */}
-            <Tooltip title="Learning Mode: Hide answer details until hover">
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={learningMode}
-                    onChange={handleLearningModeToggle}
-                    size="small"
-                    color="primary"
-                  />
-                }
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    {learningMode ?
-                      <VisibilityOffIcon fontSize="small" sx={{ mr: 0.5 }} /> :
-                      <VisibilityIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    }
-                    <Typography variant="body2">Learning Mode</Typography>
-                  </Box>
-                }
-                sx={{ mr: 2 }}
-              />
-            </Tooltip>
-
             {/* Settings Menu */}
             <Tooltip title="Settings">
               <IconButton
@@ -407,7 +392,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
                 sx={{ mr: 1 }}
               >
                 <Badge
-                  badgeContent={hideAnsweredQuestions ? '1' : 0}
+                  badgeContent={hideAnsweredQuestions || hideAnsweredInRelated || learningMode ? '1' : 0}
                   color="primary"
                   variant="dot"
                 >
@@ -419,25 +404,134 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         </Toolbar>
       </AppBar>
 
-      {/* Settings Menu */}
+      {/* Settings Menu with improved styling and behavior */}
       <Menu
         anchorEl={settingsMenuAnchor}
         open={Boolean(settingsMenuAnchor)}
         onClose={handleSettingsMenuClose}
+        PaperProps={{
+          elevation: 3,
+          style: {
+            minWidth: 280,
+            borderRadius: 8,
+            padding: '8px 0'
+          },
+        }}
+        MenuListProps={{
+          style: {
+            padding: 0
+          }
+        }}
       >
-        <MenuItem
-          onClick={handleToggleHideAnswered}
+        {/* Settings Menu Title */}
+        <Typography
+          variant="subtitle2"
           sx={{
-            minWidth: 200,
-            display: 'flex',
-            justifyContent: 'space-between'
+            p: 1.5,
+            pl: 2,
+            fontWeight: 500,
+            borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+            background: 'rgba(0, 0, 0, 0.02)'
           }}
         >
-          <Typography variant="body2">Hide answered questions</Typography>
-          <Checkbox
+          Display Settings
+        </Typography>
+
+        {/* Learning Mode Toggle */}
+        <MenuItem
+          sx={{
+            minWidth: 260,
+            display: 'flex',
+            justifyContent: 'space-between',
+            py: 1.2,
+            borderLeft: learningMode ? '3px solid #2196f3' : '3px solid transparent',
+            backgroundColor: learningMode ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
+          }}
+          onClick={(e) => e.stopPropagation()} // Prevent menu from closing
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {learningMode ?
+              <VisibilityOffIcon fontSize="small" sx={{ mr: 1.5, color: '#2196f3' }} /> :
+              <VisibilityIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
+            }
+            <Typography variant="body2">Learning Mode</Typography>
+          </Box>
+          <Switch
+            checked={learningMode}
+            size="small"
+            color="primary"
+            onClick={handleLearningModeToggle}
+          />
+        </MenuItem>
+
+        {/* Question Visibility Section */}
+        <Typography
+          variant="caption"
+          sx={{
+            display: 'block',
+            px: 2,
+            pt: 1.5,
+            pb: 0.5,
+            color: 'text.secondary',
+            fontWeight: 500
+          }}
+        >
+          QUESTION VISIBILITY
+        </Typography>
+
+        {/* Hide answered in Question Navigation - now using Switch */}
+        <MenuItem
+          sx={{
+            minWidth: 260,
+            display: 'flex',
+            justifyContent: 'space-between',
+            py: 1.2,
+            px: 2,
+            borderLeft: hideAnsweredQuestions ? '3px solid #2196f3' : '3px solid transparent',
+            backgroundColor: hideAnsweredQuestions ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
+          }}
+          onClick={(e) => e.stopPropagation()} // Prevent menu from closing
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {hideAnsweredQuestions ?
+              <VisibilityOffOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: hideAnsweredQuestions ? '#2196f3' : 'text.secondary' }} /> :
+              <VisibilityOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
+            }
+            <Typography variant="body2">Hide answered in Navigation</Typography>
+          </Box>
+          <Switch
             checked={hideAnsweredQuestions}
             size="small"
-            inputProps={{ 'aria-label': 'Hide answered questions' }}
+            color="primary"
+            onClick={handleHideAnsweredToggle}
+          />
+        </MenuItem>
+
+        {/* Hide answered in Related Questions - now using Switch */}
+        <MenuItem
+          sx={{
+            minWidth: 260,
+            display: 'flex',
+            justifyContent: 'space-between',
+            py: 1.2,
+            px: 2,
+            borderLeft: hideAnsweredInRelated ? '3px solid #2196f3' : '3px solid transparent',
+            backgroundColor: hideAnsweredInRelated ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
+          }}
+          onClick={(e) => e.stopPropagation()} // Prevent menu from closing
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {hideAnsweredInRelated ?
+              <VisibilityOffOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: hideAnsweredInRelated ? '#2196f3' : 'text.secondary' }} /> :
+              <VisibilityOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
+            }
+            <Typography variant="body2">Hide answered in Related Questions</Typography>
+          </Box>
+          <Switch
+            checked={hideAnsweredInRelated}
+            size="small"
+            color="primary"
+            onClick={handleHideAnsweredInRelatedToggle}
           />
         </MenuItem>
       </Menu>
@@ -509,6 +603,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           gradesMap={gradesMap}
           onQuestionSelect={handleQuestionSelect}
           getSkillLevelColor={getSkillLevelColor}
+          hideAnswered={hideAnsweredInRelated} // Pass the filter setting
         />
       </Box>
     </Box>
