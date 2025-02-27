@@ -9,19 +9,26 @@ This platform is designed to help recruiters conduct technical interviews effici
 ### Key Features
 
 - **Category Organization**: Questions are hierarchically organized by category and subcategory for easy navigation
+- **Skill Level Grouping**: Questions are visually grouped by Basic, Intermediate, and Advanced levels
 - **Question Sets**: Multiple sets of questions contributed by different developers
 - **Answer Insights**: Three levels of sophistication for each answer (Basic, Intermediate, Advanced)
 - **Interview Tools**: Note-taking and 1-5 rating system per question
 - **Learning Mode**: Option to hide answer details until hovered or clicked for self-assessment
 - **Related Questions**: Suggested follow-up questions with answered status and category info
+- **Health Monitoring**: `/healtz` endpoint for application health monitoring
 
 ## UI Organization
 
 The application follows a three-panel layout for optimal experience:
 
 - **Left Panel**: Categories and subcategories, with collapsible sections and question set selection
-- **Middle Panel**: Current question view with answer insights and candidate evaluation
+- **Middle Panel**: 
+  - Question details at the top with answer insights
+  - Candidate evaluation section below
+  - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
 - **Right Panel**: Related questions with answered status and category information
+
+Each section has independent scrolling for better usability with large question sets.
 
 ## Category Structure
 
@@ -91,7 +98,12 @@ interview-platform/
 │   ├── index.js
 │   ├── components/
 │   │   ├── InterviewPanel.js
+│   │   ├── CategorySidebar.js
+│   │   ├── QuestionDetailsPanel.js
+│   │   ├── QuestionNavigation.js
+│   │   ├── RelatedQuestionsSidebar.js
 │   │   ├── AnswerLevelHorizontal.js
+│   │   ├── HealthCheck.js
 │   │   └── [other components]
 │   ├── data/
 │   │   ├── questionLoader.js
@@ -154,23 +166,19 @@ Questions are stored in JSON files organized by category and subcategory. Each f
 - Multi-select filtering for subcategories
 - Question set selection via dropdown
 
-### Question Navigation
+### Question Details
 
-- Horizontal list of questions with skill level indicators
-- Current question highlighted
-- Previous/next navigation arrows
-
-### Answer Insights
-
-- Color-coded by level (green for basic, amber for intermediate, orange for advanced)
+- Full question text with navigation controls
+- Color-coded answer insights by level (green for basic, amber for intermediate, orange for advanced)
 - Click to select important points
 - Hover for detailed explanations
 
-### Related Questions
+### Question Navigation
 
-- One-click navigation to related topics
+- Questions organized by skill level (Basic, Intermediate, Advanced)
+- Color-coded category indicators
 - Visual indication of already answered questions
-- Category and subcategory information 
+- Star rating tooltips for answered questions
 
 ### Candidate Evaluation
 
@@ -178,19 +186,34 @@ Questions are stored in JSON files organized by category and subcategory. Each f
 - Notes section for detailed feedback
 - Persistent rating and notes across session
 
+### Related Questions
+
+- One-click navigation to related topics
+- Visual indication of already answered questions
+- Category and subcategory information
+
 ## Technical Details
 
 ### State Management
 
-- Question state is managed using React's useState and useEffect
+- Questions are managed using React's useState and useEffect
 - Category, subcategory, and set selections control question filtering
 - Selections, notes, and ratings persist during the session
 
-### Tooltips and Hover Interactions
+### Component Organization
 
-- Immediate tooltip display/hiding for better UX
-- Learning mode with selective visibility of answers
-- Subtle visual indicators with semi-transparent styling
+- The UI is divided into reusable components for maintainability:
+  - CategorySidebar: Manages category and subcategory selection
+  - QuestionDetailsPanel: Displays the current question and answer insights
+  - QuestionNavigation: Shows questions organized by skill level
+  - RelatedQuestionsSidebar: Shows related questions
+  - HealthCheck: Provides application health status at /healtz endpoint
+
+### Responsive Layout
+
+- Each section can scroll independently
+- Question navigation organized in skill level columns
+- Tooltips and hover interactions for better UX
 
 ## Installation and Setup
 
