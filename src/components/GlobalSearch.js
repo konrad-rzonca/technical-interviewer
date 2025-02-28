@@ -1,36 +1,34 @@
 // src/components/GlobalSearch.js - Refactored
-import React, { useState, useEffect, useRef } from 'react';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ClearIcon from '@mui/icons-material/Clear';
+import HighlightIcon from '@mui/icons-material/Highlight';
+import HistoryIcon from '@mui/icons-material/History';
+import SearchIcon from '@mui/icons-material/Search';
+import TagIcon from '@mui/icons-material/Tag';
+import TuneIcon from '@mui/icons-material/Tune';
 import {
+  Badge,
   Box,
-  TextField,
+  Button,
+  Chip,
+  ClickAwayListener,
+  Divider,
+  FormControl,
+  IconButton,
   InputAdornment,
-  Popover,
+  InputLabel,
   List,
   ListItem,
-  Typography,
-  Divider,
-  Chip,
-  IconButton,
-  Tooltip,
-  Paper,
-  ClickAwayListener,
-  FormControl,
-  InputLabel,
-  Select,
   MenuItem,
-  Button,
-  Badge
+  Paper,
+  Select,
+  TextField,
+  Tooltip,
+  Typography
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import TuneIcon from '@mui/icons-material/Tune';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import HistoryIcon from '@mui/icons-material/History';
-import TagIcon from '@mui/icons-material/Tag';
-import HighlightIcon from '@mui/icons-material/Highlight';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
+import React, { useEffect, useRef, useState } from 'react';
 import { getSkillLevelStyles } from '../utils/styleHooks';
+import { COLORS, SPACING, TYPOGRAPHY } from '../utils/theme';
 
 // This component provides a unified search across questions, categories, and content
 const GlobalSearch = ({
@@ -283,7 +281,7 @@ const GlobalSearch = ({
               top: '100%',
               left: 0,
               right: 0,
-              mt: SPACING.toUnits(SPACING.xs),
+              mt: SPACING.toUnits(SPACING.md),
               zIndex: 1301,
               p: SPACING.toUnits(SPACING.sm),
               borderRadius: SPACING.toUnits(SPACING.borderRadius)
@@ -342,7 +340,7 @@ const GlobalSearch = ({
               mb: SPACING.toUnits(SPACING.sm),
               display: 'flex',
               flexWrap: 'wrap',
-              gap: SPACING.toUnits(SPACING.xs)
+              gap: SPACING.toUnits(SPACING.sm)
             }}>
               {categories.map(category => (
                 <Chip
@@ -425,7 +423,7 @@ const GlobalSearch = ({
                       key={index}
                       button
                       onClick={() => setSearchTerm(term)}
-                      sx={{ py: SPACING.toUnits(SPACING.xs) }}
+                      sx={{ py: SPACING.toUnits(SPACING.sm) }}
                     >
                       <Typography
                         variant="body2"

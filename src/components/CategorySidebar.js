@@ -1,38 +1,37 @@
 // src/components/CategorySidebar.js
-import React, { useState, useMemo } from 'react';
+import CategoryIcon from '@mui/icons-material/Category';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FolderIcon from '@mui/icons-material/Folder';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import GridViewIcon from '@mui/icons-material/GridView';
 import {
+  Badge,
   Box,
-  Typography,
-  List,
-  ListItem,
   Button,
   Checkbox,
   Collapse,
-  IconButton,
-  Menu,
-  MenuItem,
   Divider,
+  IconButton,
+  List,
+  ListItem,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
   Paper,
   Tooltip,
-  Badge,
+  Typography,
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-import FolderIcon from '@mui/icons-material/Folder';
-import CategoryIcon from '@mui/icons-material/Category';
-import GridViewIcon from '@mui/icons-material/GridView';
+import React, { useMemo, useState } from 'react';
 
-import { COLORS, TYPOGRAPHY } from '../utils/theme';
 import {
   usePanelStyles,
-  useItemTextStyles,
   useTitleStyles
 } from '../utils/styleHooks';
+import { COLORS, TYPOGRAPHY } from '../utils/theme';
 
 // Utility function for category item styles (not a hook)
 const getCategoryItemStyles = (isSelected) => ({

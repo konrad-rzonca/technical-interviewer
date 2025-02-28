@@ -1,9 +1,9 @@
 // src/components/HealthCheck.js - Refactored
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, List, ListItem, ListItemText, Divider, Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
-import { useTitleStyles, usePanelStyles } from '../utils/styleHooks';
+import { Box, Chip, Divider, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { usePanelStyles, useTitleStyles } from '../utils/styleHooks';
+import { COLORS, SPACING, TYPOGRAPHY } from '../utils/theme';
 
 const HealthCheck = () => {
   const [health, setHealth] = useState({

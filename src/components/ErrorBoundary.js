@@ -1,7 +1,6 @@
 // src/components/ErrorBoundary.js - Refactored
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
+import { COLORS, SPACING, TYPOGRAPHY } from '../utils/theme';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

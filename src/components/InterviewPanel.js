@@ -1,35 +1,35 @@
 // src/components/InterviewPanel.js
-import React, { useEffect, useState, useRef } from 'react';
+import CategoryIcon from '@mui/icons-material/Category';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import LinkIcon from '@mui/icons-material/Link';
+import MenuIcon from '@mui/icons-material/Menu';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   AppBar,
   Badge,
+  BottomNavigation,
+  BottomNavigationAction,
   Box,
   Divider,
   Drawer,
   IconButton,
   Menu,
   MenuItem,
+  Paper,
   Switch,
   Toolbar,
   Tooltip,
   Typography,
-  Paper,
-  useTheme,
   useMediaQuery,
-  BottomNavigation,
-  BottomNavigationAction
+  useTheme
 } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import SettingsIcon from '@mui/icons-material/Settings';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import CategoryIcon from '@mui/icons-material/Category';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import LinkIcon from '@mui/icons-material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
+import React, { useEffect, useState } from 'react';
 
 import {
   categories,
@@ -40,13 +40,13 @@ import {
   getRelatedQuestions
 } from '../data/questionLoader';
 
+import { usePanelStyles } from '../utils/styleHooks';
+import { COLORS, LAYOUT } from '../utils/theme';
 import CategorySidebar from './CategorySidebar';
 import QuestionDetailsPanel from './QuestionDetailsPanel';
 import QuestionNavigation from './QuestionNavigation';
 import RelatedQuestionsSidebar from './RelatedQuestionsSidebar';
 import SidebarPanel from './SidebarPanel';
-import { usePanelStyles, globalStyles } from '../utils/styleHooks';
-import { LAYOUT, COLORS } from '../utils/theme';
 
 const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const { currentQuestion, notesMap, gradesMap } = interviewState;

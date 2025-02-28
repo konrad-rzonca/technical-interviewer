@@ -1,6 +1,6 @@
 // src/components/SidebarPanel.js - Refactored with optimized JSS
-import React from 'react';
 import { Box, Paper } from '@mui/material';
+import React from 'react';
 import { usePanelStyles } from '../utils/styleHooks';
 
 /**

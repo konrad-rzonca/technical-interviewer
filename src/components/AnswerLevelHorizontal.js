@@ -159,7 +159,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                 {category.category}
               </Typography>
 
-              <Grid container spacing={SPACING.toUnits(SPACING.xs)}>
+              <Grid container spacing={SPACING.toUnits(SPACING.sm)}>
                 {category.points && category.points.map((point, pointIndex) => {
                   const key = `${categoryIndex}-${pointIndex}`;
                   const isSelected = selectedPoints[key];
