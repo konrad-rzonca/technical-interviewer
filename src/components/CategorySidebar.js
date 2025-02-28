@@ -99,7 +99,7 @@ const CategorySidebar = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   // Get panel styles from hooks - called at top level
-  const panelStyles = usePanelStyles(isCollapsed);
+  const panelStyles = usePanelStyles(isCollapsed, false);
   const titleStyles = useTitleStyles();
 
   const handleSetMenuOpen = (event) => {

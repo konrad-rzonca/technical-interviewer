@@ -47,11 +47,11 @@ export function getIndicatorColor(level) {
  */
 
 // Panel styles hook - for sidebar panels and main content panels
-export function usePanelStyles(isCollapsed = false, options = {}) {
+export function usePanelStyles(isCollapsed = false, isMainPanel = false, options = {}) {
   return useMemo(() => ({
     width: '100%',
     height: '100%',
-    border: COMPONENT_STYLES.panel.border,
+    border: isMainPanel ? COMPONENT_STYLES.panel.border : 'none',
     borderRadius: COMPONENT_STYLES.panel.borderRadius,
     overflow: 'auto',
     transition: 'width 0.3s ease, min-width 0.3s ease',

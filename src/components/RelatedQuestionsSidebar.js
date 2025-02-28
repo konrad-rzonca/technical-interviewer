@@ -33,7 +33,7 @@ const RelatedQuestionsSidebar = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   // Get styles from hooks
-  const panelStyles = usePanelStyles(isCollapsed);
+  const panelStyles = usePanelStyles(isCollapsed, false);
   const titleStyles = useTitleStyles();
 
   // Filter related questions based on hideAnswered setting

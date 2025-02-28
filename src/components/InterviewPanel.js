@@ -81,7 +81,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   // Get panel styles from hooks
-  const mainPanelStyles = usePanelStyles(false, {
+  const mainPanelStyles = usePanelStyles(false, true, {
     flexGrow: 1,
     p: 3,
     overflow: 'hidden',

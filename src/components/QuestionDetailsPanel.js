@@ -26,7 +26,7 @@ const QuestionDetailsPanel = ({
 }) => {
   // Get styles from style hooks
   const titleStyles = useTitleStyles();
-  const contentBoxStyles = usePanelStyles(false, { overflow: 'visible', flexShrink: 0 });
+  const contentBoxStyles = usePanelStyles(false, false, { overflow: 'visible', flexShrink: 0 });
 
   if (!currentQuestion) {
     return (

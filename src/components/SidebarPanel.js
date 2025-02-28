@@ -26,7 +26,7 @@ const SidebarPanel = ({
   ...otherProps
 }) => {
   // Get panel styles using the custom hook
-  const panelStyles = usePanelStyles(isCollapsed);
+  const panelStyles = usePanelStyles(isCollapsed, true);
 
   // Additional styles for the Box container
   const boxStyles = {
