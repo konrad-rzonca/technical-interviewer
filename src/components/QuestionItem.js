@@ -2,8 +2,13 @@
 import React from 'react';
 import { Box, Typography, Tooltip, Rating } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { SKILL_LEVELS } from '../utils/constants';
-import { useQuestionItemStyles, useItemTextStyles } from '../utils/useStyles';
+import {
+  useQuestionItemStyles,
+  useItemTextStyles,
+  getSkillLevelStyles,
+  getIndicatorColor
+} from '../utils/styleHooks';
+import { COLORS, LAYOUT } from '../utils/theme';
 
 // Helper functions for question status
 const isQuestionAnswered = (questionId, gradesMap) => {
@@ -25,11 +30,14 @@ const QuestionItem = React.memo(({
   const isSelected = currentQuestion && currentQuestion.id === question.id;
   const isAnswered = isQuestionAnswered(question.id, gradesMap);
   const rating = getQuestionRating(question.id, gradesMap);
-  const levelColor = SKILL_LEVELS[question.skillLevel]?.color || '#9e9e9e';
 
-  // Use the hooks to generate styles
-  const itemStyles = useQuestionItemStyles(isSelected, isAnswered, levelColor);
+  // Get styles from style hooks
+  const itemStyles = useQuestionItemStyles(isSelected, isAnswered, question.skillLevel);
   const textStyles = useItemTextStyles(isSelected, isSmallScreen);
+
+  // Get skill level colors
+  const levelStyles = getSkillLevelStyles(question.skillLevel);
+  const indicatorColor = getIndicatorColor(question.skillLevel);
 
   return (
     <Tooltip
@@ -44,7 +52,7 @@ const QuestionItem = React.memo(({
                 value={rating}
                 readOnly
                 size="large"
-                sx={{ color: '#66bb6a' }}
+                sx={{ color: COLORS.success.main }}
               />
             </Box>
           )}
@@ -60,11 +68,10 @@ const QuestionItem = React.memo(({
         {/* Skill level indicator dot */}
         <Box
           sx={{
-            width: 14, // Larger indicator dot
-            height: 14, // Larger indicator dot
+            width: 14,
+            height: 14,
             borderRadius: '50%',
-            backgroundColor: question.skillLevel === 'intermediate' ?
-              '#ffe082' : levelColor, // Special color for intermediate
+            backgroundColor: indicatorColor,
             position: 'absolute',
             left: 10,
             top: '50%',
@@ -80,7 +87,7 @@ const QuestionItem = React.memo(({
               right: 8,
               top: '50%',
               transform: 'translateY(-50%)',
-              color: '#66bb6a'
+              color: COLORS.success.main
             }}
           >
             <CheckCircleIcon fontSize="small" style={{ fontSize: '18px' }} />

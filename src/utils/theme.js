@@ -1,153 +1,379 @@
 // src/utils/theme.js
 import { createTheme } from '@mui/material/styles';
 
-// Define a set of font sizes that will be used throughout the application
-export const FONT_SIZES = {
-  // Main typography sizes
-  h1: '2rem',     // 32px
-  h2: '1.75rem',  // 28px
-  h3: '1.5rem',   // 24px
-  h4: '1.35rem',  // 21.6px - Panel titles
-  h5: '1.3rem',   // 20.8px - Question title
-  body1: '1.15rem', // 18.4px - Main content, question titles, category names
-  body2: '1rem',    // 16px - Secondary text
-  caption: '0.95rem', // 15.2px - Small text, metadata
-  small: '0.85rem',   // 13.6px - Very small text
+/**
+ * DESIGN TOKENS
+ * All design tokens (colors, spacing, typography, etc.) are defined here.
+ * This allows for easily updating the entire design system in one place.
+ */
 
-  // Specific component sizes for reference
-  panelTitle: '1.35rem',  // Panel headers (Categories, Question Details, etc.)
-  questionTitle: '1.3rem', // Question titles in main panel
-  itemTitle: '1.15rem',    // Question titles in lists, category names, etc.
-  regularText: '1.15rem',  // Regular text in the application
-  metadataText: '0.95rem'  // Metadata, subcategory names, etc.
+// Color palette - all colors used throughout the app
+export const COLORS = {
+  // Primary colors
+  primary: {
+    main: '#2196f3',
+    light: '#e3f2fd',
+    dark: '#1976d2',
+    contrastText: '#ffffff',
+  },
+  secondary: {
+    main: '#757575',
+    light: '#f5f5f5',
+    dark: '#424242',
+    contrastText: '#ffffff',
+  },
+
+  // Semantic colors
+  success: {
+    main: '#66bb6a', // Green for Basic level and success states
+    light: '#e8f5e9',
+    dark: '#388e3c',
+    contrastText: '#ffffff',
+  },
+  warning: {
+    main: '#ffb300', // Amber for Intermediate level
+    light: '#fff8e1',
+    dark: '#ffa000',
+    contrastText: '#000000',
+  },
+  info: {
+    main: '#fb8c00', // Orange for Advanced level
+    light: '#fff3e0',
+    dark: '#f57c00',
+    contrastText: '#000000',
+  },
+  error: {
+    main: '#f44336',
+    light: '#ffebee',
+    dark: '#d32f2f',
+    contrastText: '#ffffff',
+  },
+
+  // Grays
+  grey: {
+    50: '#fafafa',
+    100: '#f5f5f5',
+    200: '#eeeeee',
+    300: '#e0e0e0',
+    400: '#bdbdbd',
+    500: '#9e9e9e',
+    600: '#757575',
+    700: '#616161',
+    800: '#424242',
+    900: '#212121',
+  },
+
+  // Background and text
+  background: {
+    default: '#ffffff',
+    paper: '#ffffff',
+    light: '#fafafa',
+  },
+  text: {
+    primary: '#333333',
+    secondary: '#757575',
+    disabled: '#9e9e9e',
+  },
+
+  // Other UI colors
+  divider: '#e0e0e0',
+  border: '#cccccc',
+  hover: 'rgba(0, 0, 0, 0.04)',
 };
 
-// Define a set of font weights
-export const FONT_WEIGHTS = {
-  light: 300,
-  regular: 400,
-  medium: 500,
-  semiBold: 600,
-  bold: 700
+// Skill level colors - these map to the semantic colors above
+export const SKILL_LEVEL_COLORS = {
+  beginner: {
+    main: COLORS.success.main,
+    light: COLORS.success.light,
+    text: COLORS.success.contrastText,
+    border: `${COLORS.success.main}50`, // 50% opacity
+    background: `${COLORS.success.main}10`, // 10% opacity
+    hoverBg: `${COLORS.success.main}15`, // 15% opacity
+    darkBorder: `${COLORS.success.main}60`, // 60% opacity
+  },
+  intermediate: {
+    main: COLORS.warning.main,
+    light: COLORS.warning.light,
+    text: COLORS.warning.contrastText,
+    border: `${COLORS.warning.main}60`, // 60% opacity - stronger for intermediate
+    background: `${COLORS.warning.main}10`, // 10% opacity
+    hoverBg: `${COLORS.warning.main}15`, // 15% opacity
+    darkBorder: `${COLORS.warning.main}70`, // 70% opacity
+  },
+  advanced: {
+    main: COLORS.info.main,
+    light: COLORS.info.light,
+    text: COLORS.info.contrastText,
+    border: `${COLORS.info.main}50`, // 50% opacity
+    background: `${COLORS.info.main}10`, // 10% opacity
+    hoverBg: `${COLORS.info.main}15`, // 15% opacity
+    darkBorder: `${COLORS.info.main}60`, // 60% opacity
+  },
 };
 
-// Define component-specific styles
+// Spacing system - defines all spacing values used in the app
+export const SPACING = {
+  // Base unit in pixels
+  unit: 8,
+
+  // Commonly used spacing values
+  xs: 4,  // Extra small: 4px
+  sm: 8,  // Small: 8px
+  md: 16, // Medium: 16px
+  lg: 24, // Large: 24px
+  xl: 32, // Extra large: 32px
+  xxl: 48, // Double extra large: 48px
+
+  // Spacing for specific components
+  panelPadding: 24,    // 3 units, corresponds to p: 3 in MUI
+  itemPadding: 16,     // 2 units, corresponds to p: 2 in MUI
+  sectionMargin: 24,   // Space between sections
+  itemMargin: 8,       // Space between items in a list
+  borderRadius: 8,     // Standard border radius
+  cardBorderRadius: 8, // Border radius for cards
+  buttonBorderRadius: 6, // Border radius for buttons
+
+  // Function to convert a spacing value to MUI theme spacing units
+  toUnits: (value) => value / 8,
+};
+
+// Font sizes and weights
+export const TYPOGRAPHY = {
+  // Font sizes
+  fontSize: {
+    h1: '2rem',      // 32px
+    h2: '1.75rem',   // 28px
+    h3: '1.5rem',    // 24px
+    h4: '1.35rem',   // 21.6px - Panel titles
+    h5: '1.3rem',    // 20.8px - Question title
+    h6: '1.25rem',   // 20px - Section titles
+    body1: '1.15rem', // 18.4px - Main content, questions, categories
+    body2: '1rem',    // 16px - Secondary text
+    caption: '0.95rem', // 15.2px - Metadata
+    button: '1.1rem',   // 17.6px - Button text
+    small: '0.85rem',   // 13.6px - Very small text
+  },
+
+  // Specific component sizes
+  panelTitle: '1.35rem',   // Panel headers
+  questionTitle: '1.3rem',  // Question titles in main panel
+  itemTitle: '1.15rem',     // Question titles in lists, category names, etc.
+  regularText: '1.15rem',   // Regular text in the application
+  metadataText: '0.95rem',  // Metadata, subcategory names, etc.
+
+  // Font weights
+  fontWeight: {
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semiBold: 600,
+    bold: 700,
+  },
+
+  // Font family
+  fontFamily: [
+    'Roboto',
+    '-apple-system',
+    'BlinkMacSystemFont',
+    '"Segoe UI"',
+    'sans-serif',
+  ].join(','),
+};
+
+// Layout dimensions
+export const LAYOUT = {
+  // Column widths
+  LEFT_SIDEBAR_WIDTH: 450,
+  RIGHT_SIDEBAR_WIDTH: 525,
+  COLLAPSED_SIDEBAR_WIDTH: 80,
+  COLUMN_THRESHOLD: 1800, // Screen width threshold for multi-column layout
+
+  // Heights
+  TOP_HEADER_HEIGHT: 64,
+  BOTTOM_NAV_HEIGHT: 64,
+  ITEM_HEIGHT: 44, // Height for list items, question items, etc.
+
+  // Media query breakpoints
+  breakpoints: {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+  },
+
+  // Standardize zIndex values
+  zIndex: {
+    drawer: 1200,
+    modal: 1300,
+    popup: 1400,
+    tooltip: 1500,
+  },
+};
+
+// Component-specific styles
 export const COMPONENT_STYLES = {
   // Panel styles
   panel: {
-    border: '1px solid #cccccc',
-    borderRadius: 2,
-    padding: 3, // 24px
-    paddingCollapsed: 1.5 // 12px
+    border: `1px solid ${COLORS.border}`,
+    borderRadius: SPACING.borderRadius,
+    padding: SPACING.panelPadding,
+    paddingCollapsed: SPACING.panelPadding / 2,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
   },
 
   // Title styles
-  panelTitle: {
-    marginBottom: 2, // 16px
-    fontWeight: FONT_WEIGHTS.medium,
-    fontSize: FONT_SIZES.panelTitle
+  title: {
+    fontSize: TYPOGRAPHY.fontSize.h4,
+    fontWeight: TYPOGRAPHY.fontWeight.medium,
+    marginBottom: SPACING.md,
   },
 
   // Question item styles
   questionItem: {
-    padding: 2, // 16px
-    paddingLeft: 3, // 24px for items with indicators
-    marginBottom: 1, // 8px
-    borderRadius: 1, // 8px
-    minHeight: '50px',
+    padding: SPACING.itemPadding,
+    paddingLeft: SPACING.itemPadding * 1.5, // For items with indicators
+    marginBottom: SPACING.itemMargin,
+    borderRadius: SPACING.borderRadius / 2,
+    minHeight: LAYOUT.ITEM_HEIGHT,
 
-    // Selected state
-    selectedBorder: (color) => `2px solid ${color}60`,
-    selectedBg: (color) => `${color}15`,
+    // Style variants
+    variants: {
+      // Selected state
+      selected: (color) => ({
+        border: `2px solid ${color}60`,
+        backgroundColor: `${color}15`,
+      }),
 
-    // Answered state
-    answeredBorder: '1px solid rgba(102, 187, 106, 0.25)',
-    answeredBg: 'rgba(102, 187, 106, 0.08)',
+      // Answered state
+      answered: {
+        border: `1px solid ${COLORS.success.main}25`,
+        backgroundColor: `${COLORS.success.main}08`,
+      },
 
-    // Normal state
-    normalBorder: '1px solid #e0e0e0',
-    normalBg: 'white',
+      // Normal state
+      normal: {
+        border: `1px solid ${COLORS.grey[300]}`,
+        backgroundColor: COLORS.background.paper,
+      },
 
-    // Hover state
-    hoverBg: (color) => `${color}15`,
-    hoverShadow: '0 2px 4px rgba(0,0,0,0.1)'
-  }
+      // Hover state
+      hover: (color) => ({
+        backgroundColor: `${color}15`,
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      }),
+    },
+  },
+
+  // Skill level sections
+  skillLevelSection: (level) => {
+    const colors = SKILL_LEVEL_COLORS[level] || SKILL_LEVEL_COLORS.beginner;
+
+    return {
+      padding: SPACING.itemPadding,
+      border: `1px solid ${colors.border}`,
+      borderRadius: SPACING.borderRadius,
+      backgroundColor: colors.background,
+      minHeight: SPACING.lg * 5, // 120px
+    };
+  },
+
+  // Answer level styling
+  answerLevel: (level) => {
+    // Map level index to skill level
+    const skillLevels = ['beginner', 'intermediate', 'advanced'];
+    const skillLevel = skillLevels[level] || 'beginner';
+    const colors = SKILL_LEVEL_COLORS[skillLevel];
+
+    return {
+      border: `1px solid ${colors.border}`,
+      backgroundColor: colors.background,
+      color: colors.main,
+    };
+  },
 };
 
-// Create a reusable theme with customizations for the application
+// Create and export the theme function
 export default function createAppTheme(options = {}) {
   return createTheme({
     palette: {
-      primary: {
-        main: '#2196f3',
-        light: '#e3f2fd',
-      },
-      secondary: {
-        main: '#757575',
-      },
-      background: {
-        default: '#ffffff',
-        paper: '#ffffff',
-      },
-      text: {
-        primary: '#333333',
-        secondary: '#757575',
-      },
-      success: {
-        main: '#66bb6a',
-        light: '#e8f5e9',
-      },
-      warning: {
-        main: '#ffb300', // Updated to more intense yellow
-        light: '#fff8e1',
-      },
+      primary: COLORS.primary,
+      secondary: COLORS.secondary,
+      success: COLORS.success,
+      warning: COLORS.warning,
+      info: COLORS.info,
+      error: COLORS.error,
+      grey: COLORS.grey,
+      background: COLORS.background,
+      text: COLORS.text,
       ...options.palette
     },
     typography: {
-      fontFamily: [
-        'Roboto',
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        'sans-serif',
-      ].join(','),
+      fontFamily: TYPOGRAPHY.fontFamily,
+      h1: {
+        fontSize: TYPOGRAPHY.fontSize.h1,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
+      },
+      h2: {
+        fontSize: TYPOGRAPHY.fontSize.h2,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
+      },
+      h3: {
+        fontSize: TYPOGRAPHY.fontSize.h3,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
+      },
+      h4: {
+        fontSize: TYPOGRAPHY.fontSize.h4,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
+      },
+      h5: {
+        fontSize: TYPOGRAPHY.fontSize.h5,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
+      },
       h6: {
-        fontSize: FONT_SIZES.h4,
-        fontWeight: FONT_WEIGHTS.medium,
+        fontSize: TYPOGRAPHY.fontSize.h6,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
       },
       subtitle1: {
-        fontSize: FONT_SIZES.h4,
-        fontWeight: FONT_WEIGHTS.medium,
+        fontSize: TYPOGRAPHY.fontSize.h4,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
       },
       subtitle2: {
-        fontSize: FONT_SIZES.h5,
-        fontWeight: FONT_WEIGHTS.medium,
+        fontSize: TYPOGRAPHY.fontSize.h5,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
       },
       body1: {
-        fontSize: FONT_SIZES.body1,
+        fontSize: TYPOGRAPHY.fontSize.body1,
       },
       body2: {
-        fontSize: FONT_SIZES.body1,
+        fontSize: TYPOGRAPHY.fontSize.body1,
       },
       caption: {
-        fontSize: FONT_SIZES.caption,
+        fontSize: TYPOGRAPHY.fontSize.caption,
+      },
+      button: {
+        fontSize: TYPOGRAPHY.fontSize.button,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
+        textTransform: 'none',
       },
       ...options.typography
     },
+    spacing: SPACING.unit,
     components: {
       MuiPaper: {
         styleOverrides: {
           root: {
-            boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-            borderRadius: 8, // Slightly larger radius
+            boxShadow: COMPONENT_STYLES.panel.boxShadow,
+            borderRadius: SPACING.borderRadius,
           },
         },
       },
       MuiChip: {
         styleOverrides: {
           root: {
-            height: 30, // Larger chip height
-            fontSize: FONT_SIZES.caption,
+            height: 30,
+            fontSize: TYPOGRAPHY.fontSize.caption,
           },
         },
       },
@@ -155,8 +381,8 @@ export default function createAppTheme(options = {}) {
         styleOverrides: {
           root: {
             textTransform: 'none',
-            borderRadius: 6, // Slightly larger button radius
-            fontSize: FONT_SIZES.caption,
+            borderRadius: SPACING.buttonBorderRadius,
+            fontSize: TYPOGRAPHY.fontSize.button,
           },
         },
       },
@@ -164,7 +390,7 @@ export default function createAppTheme(options = {}) {
         styleOverrides: {
           root: {
             '& .MuiInputBase-input': {
-              fontSize: FONT_SIZES.body1,
+              fontSize: TYPOGRAPHY.fontSize.body1,
             }
           }
         }

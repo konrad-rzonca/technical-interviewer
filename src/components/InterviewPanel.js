@@ -1,5 +1,5 @@
 // src/components/InterviewPanel.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   AppBar,
   Badge,
@@ -45,7 +45,8 @@ import QuestionDetailsPanel from './QuestionDetailsPanel';
 import QuestionNavigation from './QuestionNavigation';
 import RelatedQuestionsSidebar from './RelatedQuestionsSidebar';
 import SidebarPanel from './SidebarPanel';
-import { LAYOUT } from '../utils/constants';
+import { usePanelStyles, globalStyles } from '../utils/styleHooks';
+import { LAYOUT, COLORS } from '../utils/theme';
 
 const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const { currentQuestion, notesMap, gradesMap } = interviewState;
@@ -78,6 +79,20 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
 
   // Mobile drawer state
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  // Get panel styles from hooks
+  const mainPanelStyles = usePanelStyles(false, {
+    flexGrow: 1,
+    p: 3,
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    ml: !isMobile && leftSidebarCollapsed ? 10 : 0,
+    mr: !isMobile && rightSidebarCollapsed ? 10 : 0,
+    width: isMobile ? 'calc(100% - 24px)' : 'auto',
+    transition: 'margin 0.3s ease, width 0.3s ease',
+    display: isMobile ? (mobileView === 'question' ? 'flex' : 'none') : 'flex',
+  });
 
   // Responsive sidebar management
   useEffect(() => {
@@ -435,6 +450,25 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const answeredCount = Object.keys(gradesMap).length;
   const totalQuestions = filteredQuestions.length;
 
+  // Sidebar toggle button styles
+  const sidebarToggleButtonStyle = (position, isCollapsed, width) => ({
+    position: 'fixed',
+    [position]: isCollapsed ? width + 10 : LAYOUT.LEFT_SIDEBAR_WIDTH + 10,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    bgcolor: 'background.paper',
+    border: '1px solid',
+    borderColor: 'divider',
+    zIndex: theme.zIndex.drawer - 100,
+    transition: `${position} 0.3s ease`,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    width: 40,
+    height: 40,
+    '&:hover': {
+      bgcolor: 'primary.light',
+    }
+  });
+
   return (
     <Box sx={{
       display: 'flex',
@@ -523,14 +557,14 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
             display: 'flex',
             justifyContent: 'space-between',
             py: 1.5,
-            borderLeft: learningMode ? '3px solid #2196f3' : '3px solid transparent',
-            backgroundColor: learningMode ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
+            borderLeft: learningMode ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
+            backgroundColor: learningMode ? `${COLORS.primary.main}04` : 'transparent'
           }}
           onClick={(e) => e.stopPropagation()} // Prevent menu from closing
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {learningMode ?
-              <VisibilityOffIcon fontSize="medium" sx={{ mr: 1.5, color: '#2196f3' }} /> :
+              <VisibilityOffIcon fontSize="medium" sx={{ mr: 1.5, color: COLORS.primary.main }} /> :
               <VisibilityIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
             }
             <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Learning Mode</Typography>
@@ -567,14 +601,14 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
             justifyContent: 'space-between',
             py: 1.5,
             px: 2,
-            borderLeft: hideAnsweredQuestions ? '3px solid #2196f3' : '3px solid transparent',
-            backgroundColor: hideAnsweredQuestions ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
+            borderLeft: hideAnsweredQuestions ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
+            backgroundColor: hideAnsweredQuestions ? `${COLORS.primary.main}04` : 'transparent'
           }}
           onClick={(e) => e.stopPropagation()} // Prevent menu from closing
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {hideAnsweredQuestions ?
-              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredQuestions ? '#2196f3' : 'text.secondary' }} /> :
+              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredQuestions ? COLORS.primary.main : 'text.secondary' }} /> :
               <VisibilityOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
             }
             <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Hide answered in Navigation</Typography>
@@ -595,14 +629,14 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
             justifyContent: 'space-between',
             py: 1.5,
             px: 2,
-            borderLeft: hideAnsweredInRelated ? '3px solid #2196f3' : '3px solid transparent',
-            backgroundColor: hideAnsweredInRelated ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
+            borderLeft: hideAnsweredInRelated ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
+            backgroundColor: hideAnsweredInRelated ? `${COLORS.primary.main}04` : 'transparent'
           }}
           onClick={(e) => e.stopPropagation()} // Prevent menu from closing
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {hideAnsweredInRelated ?
-              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredInRelated ? '#2196f3' : 'text.secondary' }} /> :
+              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredInRelated ? COLORS.primary.main : 'text.secondary' }} /> :
               <VisibilityOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
             }
             <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Hide answered in Related Questions</Typography>
@@ -716,7 +750,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
               (mobileView === 'category' ? 'block' : 'none') :
               'block',
             position: isMobile ? 'fixed' : 'relative',
-            zIndex: isMobile ? 1200 : 'auto',
+            zIndex: isMobile ? theme.zIndex.drawer : 'auto',
             height: isMobile ? '100%' : 'auto',
             top: isMobile ? 0 : 'auto',
             left: 0,
@@ -750,46 +784,22 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           <>
             <IconButton
               onClick={toggleLeftSidebar}
-              sx={{
-                position: 'fixed',
-                left: leftSidebarCollapsed ? LAYOUT.COLLAPSED_SIDEBAR_WIDTH + 10 : LAYOUT.LEFT_SIDEBAR_WIDTH + 10,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                bgcolor: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-                zIndex: 1100,
-                transition: 'left 0.3s ease',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                width: 40, // Larger toggle button
-                height: 40, // Larger toggle button
-                '&:hover': {
-                  bgcolor: 'primary.light',
-                }
-              }}
+              sx={sidebarToggleButtonStyle(
+                'left',
+                leftSidebarCollapsed,
+                LAYOUT.COLLAPSED_SIDEBAR_WIDTH
+              )}
             >
               {leftSidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
             </IconButton>
 
             <IconButton
               onClick={toggleRightSidebar}
-              sx={{
-                position: 'fixed',
-                right: rightSidebarCollapsed ? LAYOUT.COLLAPSED_SIDEBAR_WIDTH + 10 : LAYOUT.RIGHT_SIDEBAR_WIDTH + 10,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                bgcolor: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-                zIndex: 1100,
-                transition: 'right 0.3s ease',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                width: 40, // Larger toggle button
-                height: 40, // Larger toggle button
-                '&:hover': {
-                  bgcolor: 'primary.light',
-                }
-              }}
+              sx={sidebarToggleButtonStyle(
+                'right',
+                rightSidebarCollapsed,
+                LAYOUT.COLLAPSED_SIDEBAR_WIDTH
+              )}
             >
               {rightSidebarCollapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
@@ -799,22 +809,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         {/* Main Content */}
         <Paper
           elevation={0}
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            border: '1px solid #cccccc',
-            borderRadius: 2,
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            ml: !isMobile && leftSidebarCollapsed ? 10 : 0,
-            mr: !isMobile && rightSidebarCollapsed ? 10 : 0,
-            width: isMobile ? 'calc(100% - 24px)' : 'auto',
-            transition: 'margin 0.3s ease, width 0.3s ease',
-            display: isMobile ?
-              (mobileView === 'question' ? 'flex' : 'none') :
-              'flex',
-          }}
+          sx={mainPanelStyles}
         >
           {/* Question Details Panel - placed at the top */}
           <QuestionDetailsPanel
@@ -848,7 +843,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
               (mobileView === 'related' ? 'block' : 'none') :
               'block',
             position: isMobile ? 'fixed' : 'relative',
-            zIndex: isMobile ? 1200 : 'auto',
+            zIndex: isMobile ? theme.zIndex.drawer : 'auto',
             height: isMobile ? '100%' : 'auto',
             top: isMobile ? 0 : 'auto',
             right: 0,
@@ -880,10 +875,10 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
             bottom: 0,
             left: 0,
             right: 0,
-            zIndex: 1300,
+            zIndex: theme.zIndex.appBar,
             borderTop: '1px solid',
             borderColor: 'divider',
-            height: 64 // Taller bottom nav
+            height: LAYOUT.BOTTOM_NAV_HEIGHT
           }}
         >
           <BottomNavigationAction

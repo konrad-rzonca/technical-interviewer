@@ -56,13 +56,83 @@ The application is optimized for smooth performance even with large question set
 
 ## Theme and Styling Architecture
 
-The application uses a sophisticated theming system:
+The application uses a sophisticated, consolidated styling system:
 
-- **Centralized Theme Configuration**: All styling constants defined in one location
-- **Reusable Style Hooks**: Custom React hooks that generate memoized styles
-- **Semantic Naming**: Meaningful names for style variables (e.g., panelTitle, itemTitle)
-- **Component-Specific Styles**: Organized styles for different component types
-- **Responsive Adjustments**: Style variations based on screen size
+- **Centralized Design Tokens**: All colors, spacing, typography, and layout dimensions are defined in one location
+- **Component-Specific Style Hooks**: Custom React hooks generate memoized styles for components
+- **Semantic Design Language**: Meaningful names for style variables (e.g., `success.main` instead of "green")
+- **Responsive Design Built-in**: Style variations based on screen size using theme breakpoints
+
+### Key Style Files
+
+- `src/utils/theme.js` - Contains all design tokens:
+  - Color palette with semantic naming
+  - Skill level color variations
+  - Spacing system with consistent units
+  - Typography definitions (sizes, weights, families)
+  - Layout dimensions for responsive design
+  - Component-specific style templates
+
+- `src/utils/styleHooks.js` - Collection of reusable style hooks:
+  - `usePanelStyles()` - For panels and containers
+  - `useQuestionItemStyles()` - For question items with state variations
+  - `useSkillLevelSectionStyles()` - For skill level containers
+  - `useItemTextStyles()` - For typography with responsive sizes
+  - Global style utilities (scrollbars, code blocks, etc.)
+
+### Using the Style System
+
+Components use the style system through hooks:
+
+```javascript
+// Example component using style hooks
+import { useQuestionItemStyles, useItemTextStyles } from '../utils/styleHooks';
+import { COLORS } from '../utils/theme';
+
+const MyComponent = ({ isSelected, isAnswered }) => {
+  // Get styles from hooks, passing component state
+  const itemStyles = useQuestionItemStyles(isSelected, isAnswered, 'intermediate');
+  const textStyles = useItemTextStyles(isSelected);
+  
+  return (
+    
+      Question Title
+    
+  );
+};
+```
+
+### Responsive Design
+
+The styling system includes responsive breakpoints and utilities:
+
+```javascript
+// Responsive design using theme breakpoints
+const responsiveStyles = {
+  padding: theme.spacing(2),
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1),
+  },
+};
+```
+
+### Color System
+
+Colors are organized semantically for consistency:
+
+- **Primary/Secondary**: App brand colors
+- **Success/Warning/Info**: Skill level indicators (Basic, Intermediate, Advanced)
+- **Semantic Variations**: Each color has main, light, dark, and text variants
+
+### Updating Styles
+
+To modify the appearance throughout the app:
+
+1. Update tokens in `theme.js` (for global changes)
+2. Modify style hooks in `styleHooks.js` (for component patterns)
+3. Apply hooks in components (for specific implementations)
+
+All styling is managed through these files, making theme updates simple and consistent.
 
 ## Category Structure
 

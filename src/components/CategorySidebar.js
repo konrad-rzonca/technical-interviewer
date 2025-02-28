@@ -1,5 +1,5 @@
 // src/components/CategorySidebar.js
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -25,8 +25,56 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import FolderIcon from '@mui/icons-material/Folder';
 import CategoryIcon from '@mui/icons-material/Category';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import GridViewIcon from '@mui/icons-material/GridView';
+
+import { COLORS, TYPOGRAPHY } from '../utils/theme';
+import {
+  usePanelStyles,
+  useItemTextStyles,
+  useTitleStyles
+} from '../utils/styleHooks';
+
+// Utility function for category item styles (not a hook)
+const getCategoryItemStyles = (isSelected) => ({
+  p: 1.5,
+  mb: 1,
+  borderRadius: 1,
+  cursor: 'pointer',
+  backgroundColor: isSelected ? `${COLORS.primary.main}08` : 'transparent',
+  border: isSelected ? `1px solid ${COLORS.primary.main}20` : '1px solid transparent',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  '&:hover': {
+    backgroundColor: `${COLORS.primary.main}04`,
+  }
+});
+
+// Utility function for subcategory item styles (not a hook)
+const getSubcategoryItemStyles = (isSelected) => ({
+  p: 0,
+  mb: 0.75,
+  bgcolor: isSelected ? `${COLORS.primary.main}08` : 'transparent',
+  borderRadius: 1,
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  justifyContent: 'space-between',
+  pr: 1
+});
+
+// Utility function for subcategory label styles (not a hook)
+const getSubcategoryLabelStyles = () => ({
+  display: 'flex',
+  alignItems: 'center',
+  flex: 1,
+  p: 0.75,
+  cursor: 'pointer',
+  '&:hover': {
+    bgcolor: 'rgba(0, 0, 0, 0.04)',
+    borderRadius: 1
+  }
+});
 
 const CategorySidebar = ({
   categories,
@@ -46,9 +94,13 @@ const CategorySidebar = ({
   onDeselectAllSets,
   isCollapsed
 }) => {
-  const [setMenuAnchor, setSetMenuAnchor] = React.useState(null);
+  const [setMenuAnchor, setSetMenuAnchor] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Get panel styles from hooks - called at top level
+  const panelStyles = usePanelStyles(isCollapsed);
+  const titleStyles = useTitleStyles();
 
   const handleSetMenuOpen = (event) => {
     setSetMenuAnchor(event.currentTarget);
@@ -67,27 +119,27 @@ const CategorySidebar = ({
     return Object.values(selectedSubcategories[categoryId]).filter(Boolean).length;
   };
 
+  // Menu content styles
+  const menuPaperStyles = useMemo(() => ({
+    maxHeight: 300,
+    width: 350,
+  }), []);
+
   return (
     <Paper
       elevation={0}
       sx={{
-        width: '100%',
-        height: '100%',
-        border: '1px solid #cccccc',
-        borderRadius: 2,
-        overflow: 'auto',
-        transition: 'width 0.3s ease, min-width 0.3s ease',
+        ...panelStyles,
         p: isCollapsed ? 1 : 3,
       }}
     >
       {!isCollapsed ? (
         // Full sidebar content
         <>
-          <Typography variant="subtitle1" sx={{
-            mb: 2,
-            fontWeight: 500,
-            fontSize: '1.35rem' // Standardized title size
-          }}>
+          <Typography
+            variant="subtitle1"
+            sx={titleStyles}
+          >
             Categories
           </Typography>
 
@@ -95,26 +147,15 @@ const CategorySidebar = ({
             <Box key={category.id}>
               <Box
                 onClick={() => onCategorySelect(category.id)}
-                sx={{
-                  p: 1.5,
-                  mb: 1,
-                  borderRadius: 1,
-                  cursor: 'pointer',
-                  backgroundColor: selectedCategory === category.id ? 'rgba(33, 150, 243, 0.08)' : 'transparent',
-                  border: selectedCategory === category.id ? '1px solid rgba(33, 150, 243, 0.2)' : '1px solid transparent',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  '&:hover': {
-                    backgroundColor: 'rgba(33, 150, 243, 0.04)',
-                  }
-                }}
+                sx={getCategoryItemStyles(selectedCategory === category.id)}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography variant="body1" sx={{
-                    fontSize: '1.15rem', // Standardized category name size
-                    fontWeight: selectedCategory === category.id ? 500 : 400
-                  }}>
+                  <Typography
+                    variant="body1"
+                    sx={selectedCategory === category.id
+                      ? { fontWeight: 500, fontSize: TYPOGRAPHY.fontSize.body1 }
+                      : { fontWeight: 400, fontSize: TYPOGRAPHY.fontSize.body1 }}
+                  >
                     {category.name}
                   </Typography>
                 </Box>
@@ -169,55 +210,38 @@ const CategorySidebar = ({
                       <Button
                         size="small"
                         onClick={() => onSelectAllSubcategories(category.id)}
-                        sx={{ mr: 1, minWidth: 'auto', fontSize: '0.95rem' }}
+                        sx={{ mr: 1, minWidth: 'auto', fontSize: TYPOGRAPHY.fontSize.caption }}
                       >
                         All
                       </Button>
                       <Button
                         size="small"
                         onClick={() => onDeselectAllSubcategories(category.id)}
-                        sx={{ minWidth: 'auto', fontSize: '0.95rem' }}
+                        sx={{ minWidth: 'auto', fontSize: TYPOGRAPHY.fontSize.caption }}
                       >
                         None
                       </Button>
                     </ListItem>
 
-                    {category.subcategories.map((subcategory) => (
-                      <ListItem
-                        key={subcategory}
-                        dense
-                        sx={{
-                          p: 0,
-                          mb: 0.75,
-                          bgcolor: subcategoryFilter === subcategory ? 'rgba(33, 150, 243, 0.08)' : 'transparent',
-                          borderRadius: 1
-                        }}
-                      >
-                        <Box sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          width: '100%',
-                          justifyContent: 'space-between',
-                          pr: 1 // Extra padding on the right
-                        }}>
+                    {category.subcategories.map((subcategory) => {
+                      const isSelected = subcategoryFilter === subcategory;
+
+                      return (
+                        <ListItem
+                          key={subcategory}
+                          dense
+                          sx={getSubcategoryItemStyles(isSelected)}
+                        >
                           <Box
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              flex: 1,
-                              p: 0.75,
-                              cursor: 'pointer',
-                              '&:hover': {
-                                bgcolor: 'rgba(0, 0, 0, 0.04)',
-                                borderRadius: 1
-                              }
-                            }}
+                            sx={getSubcategoryLabelStyles()}
                             onClick={() => onSubcategorySelect(subcategory)}
                           >
-                            <Typography variant="body2" sx={{
-                              fontSize: '1.15rem', // Standardized subcategory name size
-                              fontWeight: subcategoryFilter === subcategory ? 500 : 400
-                            }}>
+                            <Typography
+                              variant="body2"
+                              sx={isSelected
+                                ? { fontWeight: 500, fontSize: TYPOGRAPHY.fontSize.body1 }
+                                : { fontWeight: 400, fontSize: TYPOGRAPHY.fontSize.body1 }}
+                            >
                               {subcategory}
                             </Typography>
                           </Box>
@@ -231,9 +255,9 @@ const CategorySidebar = ({
                               sx={{ p: 0.5 }}
                             />
                           </Box>
-                        </Box>
-                      </ListItem>
-                    ))}
+                        </ListItem>
+                      );
+                    })}
                   </List>
                 </Collapse>
               )}
@@ -264,8 +288,8 @@ const CategorySidebar = ({
                   <IconButton
                     onClick={() => onCategorySelect(category.id)}
                     sx={{
-                      bgcolor: selectedCategory === category.id ? 'rgba(33, 150, 243, 0.08)' : 'transparent',
-                      border: selectedCategory === category.id ? '1px solid rgba(33, 150, 243, 0.2)' : '1px solid transparent',
+                      bgcolor: selectedCategory === category.id ? `${COLORS.primary.main}08` : 'transparent',
+                      border: selectedCategory === category.id ? `1px solid ${COLORS.primary.main}20` : '1px solid transparent',
                     }}
                     size="medium"
                   >
@@ -289,15 +313,10 @@ const CategorySidebar = ({
         anchorEl={setMenuAnchor}
         open={Boolean(setMenuAnchor)}
         onClose={handleSetMenuClose}
-        PaperProps={{
-          style: {
-            maxHeight: 300,
-            width: 350,
-          },
-        }}
+        slotProps={{ paper: { style: menuPaperStyles } }} // Fixed: Use slotProps instead of PaperProps
       >
         <Box sx={{ px: 2, py: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="subtitle2" sx={{ fontSize: '1.15rem' }}>
+          <Typography variant="subtitle2" sx={{ fontSize: TYPOGRAPHY.fontSize.body1 }}>
             Question Sets ({selectedSetCount}/{availableSets.length})
           </Typography>
           <Box>
@@ -307,7 +326,7 @@ const CategorySidebar = ({
                 onSelectAllSets();
                 handleSetMenuClose();
               }}
-              sx={{ minWidth: 'auto', px: 1, fontSize: '0.95rem' }}
+              sx={{ minWidth: 'auto', px: 1, fontSize: TYPOGRAPHY.fontSize.caption }}
             >
               All
             </Button>
@@ -317,7 +336,7 @@ const CategorySidebar = ({
                 onDeselectAllSets();
                 handleSetMenuClose();
               }}
-              sx={{ minWidth: 'auto', px: 1, fontSize: '0.95rem' }}
+              sx={{ minWidth: 'auto', px: 1, fontSize: TYPOGRAPHY.fontSize.caption }}
             >
               None
             </Button>
@@ -342,12 +361,12 @@ const CategorySidebar = ({
                 size="medium"
               />
             </ListItemIcon>
-            <ListItemText primary={<Typography sx={{ fontSize: '1.15rem' }}>{set.name}</Typography>} />
+            <ListItemText primary={<Typography sx={{ fontSize: TYPOGRAPHY.fontSize.body1 }}>{set.name}</Typography>} />
           </MenuItem>
         ))}
         {availableSets.length === 0 && (
           <MenuItem disabled>
-            <ListItemText primary={<Typography sx={{ fontSize: '1.15rem' }}>No question sets in this category</Typography>} />
+            <ListItemText primary={<Typography sx={{ fontSize: TYPOGRAPHY.fontSize.body1 }}>No question sets in this category</Typography>} />
           </MenuItem>
         )}
       </Menu>

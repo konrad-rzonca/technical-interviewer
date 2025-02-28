@@ -2,35 +2,12 @@
 import React from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import QuestionItem from './QuestionItem';
-import { SKILL_LEVELS } from '../utils/constants';
-
-// Section header styling
-const sectionHeaderStyle = (color) => ({
-  mb: 1.5,
-  color: color,
-  fontWeight: 500,
-  textAlign: 'center',
-  pb: 1,
-  fontSize: '1.3rem', // Larger font for section headers
-  borderBottom: `1px solid ${color}20`
-});
-
-// Skill level section styling
-const skillLevelSectionStyle = (level) => {
-  const color = SKILL_LEVELS[level]?.color || '#9e9e9e';
-  const borderOpacity = level === 'intermediate' ? '60' : '50';
-
-  return {
-    p: 1.5, // Larger padding
-    border: `1px solid ${color}${borderOpacity}`,
-    borderRadius: 2,
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: `${color}10`,
-    height: '100%',
-    minHeight: '120px', // Taller minimum height
-  };
-};
+import {
+  useSkillLevelSectionStyles,
+  useSectionHeaderStyles,
+  getSkillLevelStyles
+} from '../utils/styleHooks';
+import { globalStyles } from '../utils/styleHooks';
 
 const SkillLevelSection = ({
   level,
@@ -41,38 +18,43 @@ const SkillLevelSection = ({
   columnCount,
   isSmallScreen
 }) => {
-  const levelConfig = SKILL_LEVELS[level];
+  // Use style hooks for consistent styling
+  const sectionStyles = useSkillLevelSectionStyles(level);
+  const headerStyles = useSectionHeaderStyles(level);
+  const levelStyles = getSkillLevelStyles(level);
 
-  // Early return if no config found for this level
-  if (!levelConfig) return null;
+  // Get label for this level
+  const levelLabels = {
+    beginner: "Basic",
+    intermediate: "Intermediate",
+    advanced: "Advanced"
+  };
+  const levelLabel = levelLabels[level] || level;
 
   return (
     <Paper
       elevation={0}
-      sx={skillLevelSectionStyle(level)}
+      sx={sectionStyles}
     >
       <Typography
         variant="subtitle2"
-        sx={sectionHeaderStyle(levelConfig.color)}
+        sx={headerStyles}
       >
-        {levelConfig.label} ({questions.length})
+        {levelLabel} ({questions.length})
       </Typography>
 
       <Box sx={{
         overflowY: 'auto',
-        '&::-webkit-scrollbar': {
-          width: '8px', // Wider scrollbar
-        },
-        '&::-webkit-scrollbar-track': {
-          backgroundColor: 'transparent',
-        },
+        // Customized scrollbar styling from style hooks
+        ...globalStyles.scrollbar,
+        // Apply skill level colors to scrollbar thumb
         '&::-webkit-scrollbar-thumb': {
-          backgroundColor: `${levelConfig.color}60`,
+          backgroundColor: `${levelStyles.border}`,
           borderRadius: '4px',
         },
         flexGrow: 1,
-        p: 0.75, // More padding
-        minHeight: '180px', // Taller minimum height
+        padding: 0.75,
+        minHeight: '180px',
       }}>
         {/* Responsive grid based on container width */}
         <Grid container spacing={1} columns={columnCount}>
@@ -100,7 +82,7 @@ const SkillLevelSection = ({
               fontSize: '1.15rem'
             }}
           >
-            No {levelConfig.label.toLowerCase()} questions available
+            No {levelLabel.toLowerCase()} questions available
           </Typography>
         )}
       </Box>

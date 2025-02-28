@@ -8,7 +8,7 @@ import HealthCheck from './components/HealthCheck';
 import ErrorBoundary from './components/ErrorBoundary';
 import { categories, getAllQuestions } from './data/questionLoader';
 import createAppTheme from './utils/theme';
-import './styles/main.css';
+import './styles/main.css'; // Note: We'll gradually phase this out
 
 // Create the application theme
 const theme = createAppTheme();
@@ -54,7 +54,7 @@ function App() {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          bgcolor: '#fafafa',
+          bgcolor: theme.palette.background.light,
           overflow: 'auto',
           minHeight: { xs: '600px', sm: '700px', md: '800px' }
         }}>
@@ -68,7 +68,7 @@ function App() {
                   top: 12,
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  zIndex: 1200,
+                  zIndex: theme.zIndex.appBar,
                   width: '50%',
                   maxWidth: 600,
                   minWidth: 300

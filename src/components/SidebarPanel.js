@@ -1,7 +1,7 @@
 // src/components/SidebarPanel.js
 import React from 'react';
 import { Box, Paper } from '@mui/material';
-import { usePanelStyles } from '../utils/useStyles';
+import { usePanelStyles } from '../utils/styleHooks';
 
 /**
  * A reusable sidebar panel component that handles collapsed/expanded states
