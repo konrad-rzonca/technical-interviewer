@@ -1,24 +1,41 @@
+// src/components/QuestionItem.js
 import React from 'react';
 import { Box, Typography, Tooltip, Rating } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { SKILL_LEVELS } from '../utils/constants';
+import { useQuestionItemStyles, useItemTextStyles } from '../utils/useStyles';
+
+// Helper functions for question status
+const isQuestionAnswered = (questionId, gradesMap) => {
+  return gradesMap && gradesMap[questionId] !== undefined;
+};
+
+const getQuestionRating = (questionId, gradesMap) => {
+  return gradesMap?.[questionId] || 0;
+};
 
 // Memoized component to prevent unnecessary re-renders
 const QuestionItem = React.memo(({
   question,
-  isAnswered,
-  rating,
-  isSelected,
-  levelColor,
-  getBorderOpacity,
-  getDotColor,
-  onSelect,
-  isSmallScreen
+  currentQuestion,
+  gradesMap,
+  onQuestionSelect,
+  isSmallScreen = false
 }) => {
+  const isSelected = currentQuestion && currentQuestion.id === question.id;
+  const isAnswered = isQuestionAnswered(question.id, gradesMap);
+  const rating = getQuestionRating(question.id, gradesMap);
+  const levelColor = SKILL_LEVELS[question.skillLevel]?.color || '#9e9e9e';
+
+  // Use the hooks to generate styles
+  const itemStyles = useQuestionItemStyles(isSelected, isAnswered, levelColor);
+  const textStyles = useItemTextStyles(isSelected, isSmallScreen);
+
   return (
     <Tooltip
       title={
-        <Box sx={{ p: 1 }}>
-          <Typography sx={{ fontSize: '1rem', mb: 1 }}>
+        <Box sx={{ p: 1.5 }}>
+          <Typography sx={{ fontSize: '1.2rem', mb: 1.5 }}>
             {question.question}
           </Typography>
           {isAnswered && (
@@ -26,7 +43,7 @@ const QuestionItem = React.memo(({
               <Rating
                 value={rating}
                 readOnly
-                size="small"
+                size="large"
                 sx={{ color: '#66bb6a' }}
               />
             </Box>
@@ -37,41 +54,19 @@ const QuestionItem = React.memo(({
       arrow
     >
       <Box
-        onClick={() => onSelect(question)}
-        sx={{
-          p: 1,
-          borderRadius: 1,
-          cursor: 'pointer',
-          backgroundColor: isSelected
-            ? `${levelColor}15`
-            : (isAnswered ? 'rgba(102, 187, 106, 0.06)'
-              : 'white'),
-          border: isSelected
-            ? `1px solid ${levelColor}${getBorderOpacity(question.skillLevel)}`
-            : (isAnswered ? '1px solid rgba(102, 187, 106, 0.20)'
-              : '1px solid #e0e0e0'),
-          position: 'relative',
-          paddingLeft: '24px',
-          paddingRight: isAnswered ? '24px' : '8px',
-          '&:hover': {
-            backgroundColor: `${levelColor}10`,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-          },
-          minHeight: '36px',
-          mb: 0.5,
-          display: 'flex',
-          alignItems: 'center'
-        }}
+        onClick={() => onQuestionSelect(question)}
+        sx={itemStyles}
       >
         {/* Skill level indicator dot */}
         <Box
           sx={{
-            width: 12,
-            height: 12,
+            width: 14, // Larger indicator dot
+            height: 14, // Larger indicator dot
             borderRadius: '50%',
-            backgroundColor: getDotColor(question.skillLevel),
+            backgroundColor: question.skillLevel === 'intermediate' ?
+              '#ffe082' : levelColor, // Special color for intermediate
             position: 'absolute',
-            left: 8,
+            left: 10,
             top: '50%',
             transform: 'translateY(-50%)'
           }}
@@ -82,28 +77,19 @@ const QuestionItem = React.memo(({
           <Box
             sx={{
               position: 'absolute',
-              right: 6,
+              right: 8,
               top: '50%',
               transform: 'translateY(-50%)',
               color: '#66bb6a'
             }}
           >
-            <CheckCircleIcon fontSize="small" style={{ fontSize: '14px' }} />
+            <CheckCircleIcon fontSize="small" style={{ fontSize: '18px' }} />
           </Box>
         )}
 
         <Typography
           variant="body2"
-          sx={{
-            fontWeight: isSelected ? 500 : 400,
-            textAlign: 'left',
-            width: '100%',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            fontSize: isSmallScreen ? '0.8rem' : '0.875rem',
-            paddingRight: '2px'
-          }}
+          sx={textStyles}
         >
           {question.shortTitle || question.question.split(' ').slice(0, 5).join(' ')}
         </Typography>

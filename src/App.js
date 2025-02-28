@@ -1,85 +1,17 @@
 // src/App.js
-import React, { useState } from 'react';
-import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import InterviewPanel from './components/InterviewPanel';
+import GlobalSearch from './components/GlobalSearch';
 import HealthCheck from './components/HealthCheck';
 import ErrorBoundary from './components/ErrorBoundary';
+import { categories, getAllQuestions } from './data/questionLoader';
+import createAppTheme from './utils/theme';
 import './styles/main.css';
 
-// Create a minimal theme with subtle colors
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#2196f3',
-      light: '#e3f2fd',
-    },
-    secondary: {
-      main: '#757575',
-    },
-    background: {
-      default: '#ffffff',
-      paper: '#ffffff',
-    },
-    text: {
-      primary: '#333333',
-      secondary: '#757575',
-    },
-    success: {
-      main: '#66bb6a',
-      light: '#e8f5e9',
-    },
-    warning: {
-      main: '#ffb300', // Updated to more intense yellow
-      light: '#fff8e1',
-    }
-  },
-  typography: {
-    fontFamily: [
-      'Roboto',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'sans-serif',
-    ].join(','),
-    h6: {
-      fontSize: '1rem',
-      fontWeight: 500,
-    },
-    subtitle1: {
-      fontSize: '0.875rem',
-    },
-    body1: {
-      fontSize: '0.875rem',
-    }
-  },
-  components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-          borderRadius: 4,
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          height: 24,
-          fontSize: '0.75rem',
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          borderRadius: 4,
-        },
-      },
-    },
-  },
-});
+// Create the application theme
+const theme = createAppTheme();
 
 function App() {
   const [interviewState, setInterviewState] = useState({
@@ -88,6 +20,13 @@ function App() {
     notesMap: {}, // Map of questionId -> notes
     gradesMap: {}, // Map of questionId -> grade (1-5)
   });
+  const [allQuestions, setAllQuestions] = useState([]);
+
+  // Load all questions for search capability
+  useEffect(() => {
+    const questions = getAllQuestions();
+    setAllQuestions(questions);
+  }, []);
 
   const updateInterviewState = (updates) => {
     setInterviewState(prevState => ({
@@ -96,26 +35,65 @@ function App() {
     }));
   };
 
+  // Handle question selection from global search
+  const handleQuestionSelect = (question) => {
+    updateInterviewState({ currentQuestion: question });
+  };
+
+  // Handle category selection from global search
+  const handleCategorySelect = (categoryId) => {
+    // This will be passed to InterviewPanel
+    // We're not setting it here to avoid state duplication
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Box sx={{
           display: 'flex',
+          flexDirection: 'column',
           minHeight: '100vh',
           bgcolor: '#fafafa',
-          // Always enable scrolling for the main app container
           overflow: 'auto',
-          // Set a minimum height to ensure UI is usable on small screens
           minHeight: { xs: '600px', sm: '700px', md: '800px' }
         }}>
+          {/* Global Search - Only shown on main interview page */}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Box sx={{
+                  position: 'fixed',
+                  top: 12,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  zIndex: 1200,
+                  width: '50%',
+                  maxWidth: 600,
+                  minWidth: 300
+                }}>
+                  <GlobalSearch
+                    questions={allQuestions}
+                    categories={categories}
+                    onQuestionSelect={handleQuestionSelect}
+                    onCategorySelect={handleCategorySelect}
+                    gradesMap={interviewState.gradesMap}
+                  />
+                </Box>
+              }
+            />
+          </Routes>
+
           <Routes>
             <Route path="/" element={
               <ErrorBoundary>
-                <InterviewPanel
-                  interviewState={interviewState}
-                  updateInterviewState={updateInterviewState}
-                />
+                <Box sx={{ pt: 7 }}> {/* Add padding for the fixed search bar */}
+                  <InterviewPanel
+                    interviewState={interviewState}
+                    updateInterviewState={updateInterviewState}
+                  />
+                </Box>
               </ErrorBoundary>
             } />
             <Route path="/healtz" element={<HealthCheck />} />

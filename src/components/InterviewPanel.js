@@ -5,6 +5,7 @@ import {
   Badge,
   Box,
   Divider,
+  Drawer,
   IconButton,
   Menu,
   MenuItem,
@@ -12,13 +13,23 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  Paper
+  Paper,
+  useTheme,
+  useMediaQuery,
+  BottomNavigation,
+  BottomNavigationAction
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import CategoryIcon from '@mui/icons-material/Category';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import LinkIcon from '@mui/icons-material/Link';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import {
   categories,
@@ -33,10 +44,23 @@ import CategorySidebar from './CategorySidebar';
 import QuestionDetailsPanel from './QuestionDetailsPanel';
 import QuestionNavigation from './QuestionNavigation';
 import RelatedQuestionsSidebar from './RelatedQuestionsSidebar';
+import SidebarPanel from './SidebarPanel';
+import { LAYOUT } from '../utils/constants';
 
 const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const { currentQuestion, notesMap, gradesMap } = interviewState;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
+  // Sidebar collapse state
+  const [leftSidebarCollapsed, setLeftSidebarCollapsed] = useState(false);
+  const [rightSidebarCollapsed, setRightSidebarCollapsed] = useState(false);
+
+  // Mobile navigation view
+  const [mobileView, setMobileView] = useState('question'); // 'category', 'question', 'related'
+
+  // Original state
   const [activeCategories, setActiveCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -51,6 +75,28 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
   const [hideAnsweredQuestions, setHideAnsweredQuestions] = useState(false);
   const [hideAnsweredInRelated, setHideAnsweredInRelated] = useState(false);
+
+  // Mobile drawer state
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  // Responsive sidebar management
+  useEffect(() => {
+    if (isMobile) {
+      setLeftSidebarCollapsed(true);
+      setRightSidebarCollapsed(true);
+    } else if (isTablet) {
+      setRightSidebarCollapsed(true);
+      setLeftSidebarCollapsed(false);
+    } else {
+      // On wide screens, always expand sidebars
+      setLeftSidebarCollapsed(false);
+      setRightSidebarCollapsed(false);
+    }
+  }, [isMobile, isTablet]);
+
+  // Sidebar toggle handlers
+  const toggleLeftSidebar = () => setLeftSidebarCollapsed(!leftSidebarCollapsed);
+  const toggleRightSidebar = () => setRightSidebarCollapsed(!rightSidebarCollapsed);
 
   // Initialize active categories
   useEffect(() => {
@@ -175,6 +221,22 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     }
   }, [currentQuestion]);
 
+  // Handle mobile view changes
+  useEffect(() => {
+    if (isMobile) {
+      if (mobileView === 'category') {
+        setLeftSidebarCollapsed(false);
+        setRightSidebarCollapsed(true);
+      } else if (mobileView === 'related') {
+        setLeftSidebarCollapsed(true);
+        setRightSidebarCollapsed(false);
+      } else {
+        setLeftSidebarCollapsed(true);
+        setRightSidebarCollapsed(true);
+      }
+    }
+  }, [mobileView, isMobile]);
+
   // Handle category selection
   const handleCategorySelect = (categoryId, explicitExpandedState = null) => {
     if (categoryId === selectedCategory) {
@@ -196,6 +258,11 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
 
     setSubcategoryFilter(null);
     updateInterviewState({ currentQuestion: null });
+
+    // In mobile, switch to question view after selecting a category
+    if (isMobile) {
+      setMobileView('question');
+    }
   };
 
   // Toggle a single subcategory selection
@@ -231,6 +298,11 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     }
 
     updateInterviewState({ currentQuestion: question });
+
+    // In mobile, switch to question view after selecting a question
+    if (isMobile) {
+      setMobileView('question');
+    }
   };
 
   // Navigate to next/previous question
@@ -295,16 +367,6 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
 
   const handleSettingsMenuClose = () => {
     setSettingsMenuAnchor(null);
-  };
-
-  // Get skill level color
-  const getSkillLevelColor = (level) => {
-    switch (level) {
-      case 'beginner': return '#66bb6a'; // green
-      case 'intermediate': return '#ffb300'; // amber/yellow - changed from #ffca28 to more intense #ffb300
-      case 'advanced': return '#fb8c00'; // deeper orange (no red)
-      default: return '#9e9e9e'; // gray
-    }
   };
 
   // Handle set selection changes
@@ -381,9 +443,20 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
       height: '100%',
       minHeight: { xs: '600px', sm: '700px', md: '800px' }
     }}>
-      {/* Header (Minimal) */}
+      {/* Header (Modified for mobile) */}
       <AppBar position="static" elevation={0} color="transparent">
-        <Toolbar variant="dense" sx={{ minHeight: 48, justifyContent: 'space-between' }}>
+        <Toolbar variant="dense" sx={{ minHeight: 56, justifyContent: 'space-between' }}>
+          {isMobile && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setMobileDrawerOpen(true)}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+
           <Typography variant="h6" sx={{ fontWeight: 'normal' }}>
             Technical Interviewer
           </Typography>
@@ -418,7 +491,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         PaperProps={{
           elevation: 3,
           style: {
-            minWidth: 280,
+            minWidth: 320,
             borderRadius: 8,
             padding: '8px 0'
           },
@@ -446,10 +519,10 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         {/* Learning Mode Toggle */}
         <MenuItem
           sx={{
-            minWidth: 260,
+            minWidth: 320,
             display: 'flex',
             justifyContent: 'space-between',
-            py: 1.2,
+            py: 1.5,
             borderLeft: learningMode ? '3px solid #2196f3' : '3px solid transparent',
             backgroundColor: learningMode ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
           }}
@@ -457,14 +530,14 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {learningMode ?
-              <VisibilityOffIcon fontSize="small" sx={{ mr: 1.5, color: '#2196f3' }} /> :
-              <VisibilityIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
+              <VisibilityOffIcon fontSize="medium" sx={{ mr: 1.5, color: '#2196f3' }} /> :
+              <VisibilityIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
             }
-            <Typography variant="body2">Learning Mode</Typography>
+            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Learning Mode</Typography>
           </Box>
           <Switch
             checked={learningMode}
-            size="small"
+            size="medium"
             color="primary"
             onClick={handleLearningModeToggle}
           />
@@ -479,7 +552,8 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
             pt: 1.5,
             pb: 0.5,
             color: 'text.secondary',
-            fontWeight: 500
+            fontWeight: 500,
+            fontSize: '0.95rem'
           }}
         >
           QUESTION VISIBILITY
@@ -488,10 +562,10 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         {/* Hide answered in Question Navigation - now using Switch */}
         <MenuItem
           sx={{
-            minWidth: 260,
+            minWidth: 320,
             display: 'flex',
             justifyContent: 'space-between',
-            py: 1.2,
+            py: 1.5,
             px: 2,
             borderLeft: hideAnsweredQuestions ? '3px solid #2196f3' : '3px solid transparent',
             backgroundColor: hideAnsweredQuestions ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
@@ -500,14 +574,14 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {hideAnsweredQuestions ?
-              <VisibilityOffOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: hideAnsweredQuestions ? '#2196f3' : 'text.secondary' }} /> :
-              <VisibilityOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
+              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredQuestions ? '#2196f3' : 'text.secondary' }} /> :
+              <VisibilityOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
             }
-            <Typography variant="body2">Hide answered in Navigation</Typography>
+            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Hide answered in Navigation</Typography>
           </Box>
           <Switch
             checked={hideAnsweredQuestions}
-            size="small"
+            size="medium"
             color="primary"
             onClick={handleHideAnsweredToggle}
           />
@@ -516,10 +590,10 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         {/* Hide answered in Related Questions - now using Switch */}
         <MenuItem
           sx={{
-            minWidth: 260,
+            minWidth: 320,
             display: 'flex',
             justifyContent: 'space-between',
-            py: 1.2,
+            py: 1.5,
             px: 2,
             borderLeft: hideAnsweredInRelated ? '3px solid #2196f3' : '3px solid transparent',
             backgroundColor: hideAnsweredInRelated ? 'rgba(33, 150, 243, 0.04)' : 'transparent'
@@ -528,59 +602,199 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {hideAnsweredInRelated ?
-              <VisibilityOffOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: hideAnsweredInRelated ? '#2196f3' : 'text.secondary' }} /> :
-              <VisibilityOutlinedIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
+              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredInRelated ? '#2196f3' : 'text.secondary' }} /> :
+              <VisibilityOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
             }
-            <Typography variant="body2">Hide answered in Related Questions</Typography>
+            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Hide answered in Related Questions</Typography>
           </Box>
           <Switch
             checked={hideAnsweredInRelated}
-            size="small"
+            size="medium"
             color="primary"
             onClick={handleHideAnsweredInRelatedToggle}
           />
         </MenuItem>
       </Menu>
 
-      {/* Main Content - Three Column Layout */}
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <Drawer
+          anchor="left"
+          open={mobileDrawerOpen}
+          onClose={() => setMobileDrawerOpen(false)}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: '85%',
+              maxWidth: 450,
+              boxSizing: 'border-box',
+            },
+          }}
+        >
+          <Box sx={{ p: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>Technical Interviewer</Typography>
+            <Divider sx={{ mb: 2 }} />
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>Navigation</Typography>
+              <MenuItem
+                onClick={() => {
+                  setMobileView('category');
+                  setMobileDrawerOpen(false);
+                }}
+                sx={{ borderRadius: 1 }}
+              >
+                <CategoryIcon sx={{ mr: 2 }} />
+                <Typography>Categories</Typography>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setMobileView('question');
+                  setMobileDrawerOpen(false);
+                }}
+                sx={{ borderRadius: 1 }}
+              >
+                <QuestionAnswerIcon sx={{ mr: 2 }} />
+                <Typography>Current Question</Typography>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setMobileView('related');
+                  setMobileDrawerOpen(false);
+                }}
+                sx={{ borderRadius: 1 }}
+              >
+                <LinkIcon sx={{ mr: 2 }} />
+                <Typography>Related Questions</Typography>
+              </MenuItem>
+            </Box>
+            <Divider sx={{ mb: 2 }} />
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>Settings</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                <Typography variant="body2">Learning Mode</Typography>
+                <Switch
+                  checked={learningMode}
+                  size="medium"
+                  color="primary"
+                  onChange={handleLearningModeToggle}
+                />
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                <Typography variant="body2">Hide Answered Questions</Typography>
+                <Switch
+                  checked={hideAnsweredQuestions}
+                  size="medium"
+                  color="primary"
+                  onChange={handleHideAnsweredToggle}
+                />
+              </Box>
+            </Box>
+          </Box>
+        </Drawer>
+      )}
+
+      {/* Main Content - Adaptive Three Column Layout */}
       <Box sx={{
         flexGrow: 1,
         display: 'flex',
         p: 2,
-        // Change from fixed height to flexible with minimum height
-        height: 'auto',
         minHeight: 'calc(100vh - 64px)',
-        // Allow scrolling for smaller screens
         overflow: 'auto',
-        '@media (max-height: 900px)': {
-          minHeight: '600px',
-          height: 'auto',
-          overflow: 'auto'
-        },
-        // Add CSS containment to limit ResizeObserver scope
-        contain: 'layout style',
-        // Add maximum width constraint for very small screens
         maxWidth: '100vw',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        position: 'relative', // For positioning toggle buttons
+        pb: isMobile ? '56px' : 2, // Space for bottom navigation on mobile
       }}>
         {/* Left Sidebar - Categories */}
-        <CategorySidebar
-          categories={activeCategories}
-          selectedCategory={selectedCategory}
-          expandedCategory={expandedCategory}
-          selectedSubcategories={selectedSubcategories}
-          subcategoryFilter={subcategoryFilter}
-          availableSets={availableSets}
-          selectedSets={selectedSets}
-          onCategorySelect={handleCategorySelect}
-          onSubcategorySelect={handleSubcategorySelect}
-          onSubcategoryToggle={handleSubcategoryToggle}
-          onSelectAllSubcategories={handleSelectAllSubcategories}
-          onDeselectAllSubcategories={handleDeselectAllSubcategories}
-          onSetToggle={handleSetToggle}
-          onSelectAllSets={handleSelectAllSets}
-          onDeselectAllSets={handleDeselectAllSets}
-        />
+        <SidebarPanel
+          isCollapsed={leftSidebarCollapsed}
+          expandedWidth={LAYOUT.LEFT_SIDEBAR_WIDTH}
+          collapsedWidth={LAYOUT.COLLAPSED_SIDEBAR_WIDTH}
+          onToggle={toggleLeftSidebar}
+          position="left"
+          sx={{
+            display: isMobile ?
+              (mobileView === 'category' ? 'block' : 'none') :
+              'block',
+            position: isMobile ? 'fixed' : 'relative',
+            zIndex: isMobile ? 1200 : 'auto',
+            height: isMobile ? '100%' : 'auto',
+            top: isMobile ? 0 : 'auto',
+            left: 0,
+            bgcolor: 'background.paper',
+            overflowY: 'auto',
+            maxHeight: isMobile ? 'calc(100vh - 120px)' : 'calc(100vh - 100px)'
+          }}
+        >
+          <CategorySidebar
+            categories={activeCategories}
+            selectedCategory={selectedCategory}
+            expandedCategory={expandedCategory}
+            selectedSubcategories={selectedSubcategories}
+            subcategoryFilter={subcategoryFilter}
+            availableSets={availableSets}
+            selectedSets={selectedSets}
+            onCategorySelect={handleCategorySelect}
+            onSubcategorySelect={handleSubcategorySelect}
+            onSubcategoryToggle={handleSubcategoryToggle}
+            onSelectAllSubcategories={handleSelectAllSubcategories}
+            onDeselectAllSubcategories={handleDeselectAllSubcategories}
+            onSetToggle={handleSetToggle}
+            onSelectAllSets={handleSelectAllSets}
+            onDeselectAllSets={handleDeselectAllSets}
+            isCollapsed={leftSidebarCollapsed && !isMobile}
+          />
+        </SidebarPanel>
+
+        {/* Sidebar toggle buttons - always visible on desktop */}
+        {!isMobile && (
+          <>
+            <IconButton
+              onClick={toggleLeftSidebar}
+              sx={{
+                position: 'fixed',
+                left: leftSidebarCollapsed ? LAYOUT.COLLAPSED_SIDEBAR_WIDTH + 10 : LAYOUT.LEFT_SIDEBAR_WIDTH + 10,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                zIndex: 1100,
+                transition: 'left 0.3s ease',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                width: 40, // Larger toggle button
+                height: 40, // Larger toggle button
+                '&:hover': {
+                  bgcolor: 'primary.light',
+                }
+              }}
+            >
+              {leftSidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+
+            <IconButton
+              onClick={toggleRightSidebar}
+              sx={{
+                position: 'fixed',
+                right: rightSidebarCollapsed ? LAYOUT.COLLAPSED_SIDEBAR_WIDTH + 10 : LAYOUT.RIGHT_SIDEBAR_WIDTH + 10,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                zIndex: 1100,
+                transition: 'right 0.3s ease',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                width: 40, // Larger toggle button
+                height: 40, // Larger toggle button
+                '&:hover': {
+                  bgcolor: 'primary.light',
+                }
+              }}
+            >
+              {rightSidebarCollapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </>
+        )}
 
         {/* Main Content */}
         <Paper
@@ -588,11 +802,18 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           sx={{
             flexGrow: 1,
             p: 3,
-            border: '1px solid #cccccc', // Changed from #e0e0e0 to more intense #cccccc
+            border: '1px solid #cccccc',
             borderRadius: 2,
-            overflow: 'hidden', // Prevent entire content area from scrolling
+            overflow: 'hidden',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            ml: !isMobile && leftSidebarCollapsed ? 10 : 0,
+            mr: !isMobile && rightSidebarCollapsed ? 10 : 0,
+            width: isMobile ? 'calc(100% - 24px)' : 'auto',
+            transition: 'margin 0.3s ease, width 0.3s ease',
+            display: isMobile ?
+              (mobileView === 'question' ? 'flex' : 'none') :
+              'flex',
           }}
         >
           {/* Question Details Panel - placed at the top */}
@@ -612,19 +833,79 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
             currentQuestion={currentQuestion}
             gradesMap={gradesMap}
             onQuestionSelect={handleQuestionSelect}
-            getSkillLevelColor={getSkillLevelColor}
           />
         </Paper>
 
         {/* Right Sidebar - Related Questions */}
-        <RelatedQuestionsSidebar
-          relatedQuestionsList={relatedQuestionsList}
-          gradesMap={gradesMap}
-          onQuestionSelect={handleQuestionSelect}
-          getSkillLevelColor={getSkillLevelColor}
-          hideAnswered={hideAnsweredInRelated} // Pass the filter setting
-        />
+        <SidebarPanel
+          isCollapsed={rightSidebarCollapsed}
+          expandedWidth={LAYOUT.RIGHT_SIDEBAR_WIDTH}
+          collapsedWidth={LAYOUT.COLLAPSED_SIDEBAR_WIDTH}
+          onToggle={toggleRightSidebar}
+          position="right"
+          sx={{
+            display: isMobile ?
+              (mobileView === 'related' ? 'block' : 'none') :
+              'block',
+            position: isMobile ? 'fixed' : 'relative',
+            zIndex: isMobile ? 1200 : 'auto',
+            height: isMobile ? '100%' : 'auto',
+            top: isMobile ? 0 : 'auto',
+            right: 0,
+            bgcolor: 'background.paper',
+            overflowY: 'auto',
+            maxHeight: isMobile ? 'calc(100vh - 120px)' : 'calc(100vh - 100px)'
+          }}
+        >
+          <RelatedQuestionsSidebar
+            relatedQuestionsList={relatedQuestionsList}
+            gradesMap={gradesMap}
+            onQuestionSelect={handleQuestionSelect}
+            hideAnswered={hideAnsweredInRelated}
+            isCollapsed={rightSidebarCollapsed && !isMobile}
+          />
+        </SidebarPanel>
       </Box>
+
+      {/* Mobile Bottom Navigation */}
+      {isMobile && (
+        <BottomNavigation
+          value={mobileView}
+          onChange={(event, newValue) => {
+            setMobileView(newValue);
+          }}
+          showLabels
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1300,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            height: 64 // Taller bottom nav
+          }}
+        >
+          <BottomNavigationAction
+            label="Categories"
+            value="category"
+            icon={<CategoryIcon />}
+            sx={{ py: 1 }}
+          />
+          <BottomNavigationAction
+            label="Question"
+            value="question"
+            icon={<QuestionAnswerIcon />}
+            sx={{ py: 1 }}
+          />
+          <BottomNavigationAction
+            label="Related"
+            value="related"
+            icon={<LinkIcon />}
+            sx={{ py: 1 }}
+          />
+        </BottomNavigation>
+      )}
     </Box>
   );
 };

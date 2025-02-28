@@ -16,8 +16,9 @@ This platform is designed to help recruiters conduct technical interviews effici
 - **Learning Mode**: Option to hide answer details until hovered or clicked for self-assessment
 - **Related Questions**: Suggested follow-up questions with answered status and category info
 - **Health Monitoring**: `/healtz` endpoint for application health monitoring
-- **Content-Aware Layout**: Responsive design that adjusts based on actual content space, not fixed breakpoints
+- **Content-Aware Layout**: Responsive design that adjusts based on actual content space
 - **Performance Optimizations**: Component splitting and virtualization for improved performance with large question sets
+- **Centralized Theming**: Comprehensive theming system for consistent UI across components
 
 ## UI Organization
 
@@ -36,19 +37,32 @@ Each section has independent scrolling for better usability with large question 
 
 The application adapts to different screen sizes with:
 
-- **Content-Aware Layout**: Columns in the question navigation adjust based on available width, ensuring content is always readable
-- **Consistent Columns**: All skill level groups maintain the same column layout for visual coherence
-- **Dynamic UI Elements**: UI components adapt their size and layout based on screen dimensions
-- **Balanced Information Density**: Content remains readable regardless of screen size
+- **Wide Screen Optimizations**: Adapts column layouts for optimal readability on screens wider than 1800px
+- **Content-Aware Layout**: Columns in the question navigation adjust based on available width
+- **Consistent Component Sizing**: UI elements maintain proper proportions across different screen sizes
+- **Collapsible Sidebars**: Sidebars can be collapsed to provide more space for the main content
+- **Touch-Friendly Mobile UI**: Larger touch targets and simplified navigation for mobile devices
+- **Screen-Size Aware Typography**: Font sizes adjust intelligently based on screen size
 
 ## Performance Optimizations
 
 The application is optimized for smooth performance even with large question sets:
 
 - **Component Splitting**: UI broken down into focused, reusable components to minimize re-renders
-- **Memoization**: React.memo used extensively to prevent unnecessary refreshes
+- **Memoization**: React.memo and useMemo used extensively to prevent unnecessary refreshes
+- **Style Hooks**: Custom hooks that memoize styles to avoid recalculations
 - **Error Boundaries**: Graceful error handling that maintains app stability
 - **Virtualization Support**: Groundwork laid for windowing long lists, rendering only visible elements
+
+## Theme and Styling Architecture
+
+The application uses a sophisticated theming system:
+
+- **Centralized Theme Configuration**: All styling constants defined in one location
+- **Reusable Style Hooks**: Custom React hooks that generate memoized styles
+- **Semantic Naming**: Meaningful names for style variables (e.g., panelTitle, itemTitle)
+- **Component-Specific Styles**: Organized styles for different component types
+- **Responsive Adjustments**: Style variations based on screen size
 
 ## Category Structure
 
@@ -123,8 +137,15 @@ interview-platform/
 │   │   ├── QuestionNavigation.js
 │   │   ├── RelatedQuestionsSidebar.js
 │   │   ├── AnswerLevelHorizontal.js
+│   │   ├── QuestionItem.js
+│   │   ├── SkillLevelSection.js
+│   │   ├── SidebarPanel.js
 │   │   ├── HealthCheck.js
 │   │   └── [other components]
+│   ├── utils/
+│   │   ├── theme.js
+│   │   ├── useStyles.js 
+│   │   └── constants.js
 │   ├── data/
 │   │   ├── questionLoader.js
 │   │   └── questions/
@@ -222,18 +243,16 @@ Questions are stored in JSON files organized by category and subcategory. Each f
 
 ### Component Organization
 
-- The UI is divided into reusable components for maintainability:
-  - CategorySidebar: Manages category and subcategory selection
-  - QuestionDetailsPanel: Displays the current question and answer insights
-  - QuestionNavigation: Shows questions organized by skill level
-  - RelatedQuestionsSidebar: Shows related questions
-  - HealthCheck: Provides application health status at /healtz endpoint
+- The UI is divided into reusable components for maintainability
+- Styling follows a reusable hook pattern for consistency and performance
+- Theme configuration centralizes styling constants to ensure visual coherence
 
 ### Responsive Layout
 
 - Each section can scroll independently
 - Question navigation organized in skill level columns
 - Tooltips and hover interactions for better UX
+- Content-aware column layout based on actual container width
 
 ## Installation and Setup
 
