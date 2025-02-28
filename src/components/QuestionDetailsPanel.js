@@ -1,4 +1,4 @@
-// src/components/QuestionDetailsPanel.js
+// src/components/QuestionDetailsPanel.js - Refactored version
 import React from 'react';
 import {
   Box,
@@ -12,6 +12,8 @@ import {
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import AnswerLevelHorizontal from './AnswerLevelHorizontal';
+import { useTitleStyles, usePanelStyles } from '../utils/styleHooks';
+import { TYPOGRAPHY, SPACING, COLORS } from '../utils/theme';
 
 const QuestionDetailsPanel = ({
   currentQuestion,
@@ -22,6 +24,10 @@ const QuestionDetailsPanel = ({
   onGradeChange,
   onNavigateQuestion
 }) => {
+  // Get styles from style hooks
+  const titleStyles = useTitleStyles();
+  const contentBoxStyles = usePanelStyles(false, { overflow: 'visible', flexShrink: 0 });
+
   if (!currentQuestion) {
     return (
       <Box sx={{
@@ -30,7 +36,9 @@ const QuestionDetailsPanel = ({
         alignItems: 'center',
         height: 300
       }}>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ fontSize: '1.15rem' }}>
+        <Typography variant="subtitle1" color="text.secondary" sx={{
+          fontSize: TYPOGRAPHY.fontSize.regularText
+        }}>
           Select a question to begin
         </Typography>
       </Box>
@@ -55,31 +63,26 @@ const QuestionDetailsPanel = ({
       overflow: 'visible'
     }}>
       {/* Question Details Section */}
-      <Box sx={{
-        mb: 0.5,
-        overflow: 'visible',
-        flexShrink: 0
-      }}>
+      <Box sx={contentBoxStyles}>
         <Typography variant="subtitle1" sx={{
-          mb: 1,
-          fontWeight: 500,
-          fontSize: '1.35rem' // Standardized title size
+          ...titleStyles,
+          fontSize: TYPOGRAPHY.fontSize.panelTitle,
         }}>
           Question Details
         </Typography>
 
-        {/* Question header with navigation and full question - with more subtle box */}
+        {/* Question header with navigation and full question */}
         <Paper
           elevation={0}
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mb: 2,
-            p: 2,
-            border: '1px solid rgba(0, 0, 0, 0.04)', // Even more subtle border
-            borderRadius: 1.5,
-            backgroundColor: 'rgba(0, 0, 0, 0.005)' // Barely visible background
+            mb: SPACING.toUnits(SPACING.md),
+            p: SPACING.toUnits(SPACING.md),
+            border: '1px solid rgba(0, 0, 0, 0.04)',
+            borderRadius: SPACING.toUnits(SPACING.borderRadius),
+            backgroundColor: 'rgba(0, 0, 0, 0.005)'
           }}
         >
           <IconButton
@@ -94,10 +97,10 @@ const QuestionDetailsPanel = ({
             sx={{
               textAlign: 'center',
               flexGrow: 1,
-              fontWeight: 500,
-              fontSize: '1.3rem', // Standardized title size
+              fontWeight: TYPOGRAPHY.fontWeight.medium,
+              fontSize: TYPOGRAPHY.fontSize.questionTitle,
               lineHeight: 1.4,
-              py: 0.5
+              py: SPACING.toUnits(SPACING.xs)
             }}
           >
             {currentQuestion.question}
@@ -122,24 +125,25 @@ const QuestionDetailsPanel = ({
 
       {/* Candidate Evaluation */}
       <Box sx={{
-        overflow: 'visible',
-        flexShrink: 0,
-        height: 'auto',
-        mt: 2
+        ...contentBoxStyles,
+        mt: SPACING.toUnits(SPACING.md)
       }}>
         <Typography variant="subtitle1" sx={{
-          mb: 1,
-          fontWeight: 500,
-          fontSize: '1.35rem' // Standardized title size
+          ...titleStyles,
+          fontSize: TYPOGRAPHY.fontSize.panelTitle,
         }}>
           Candidate Evaluation
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mb: SPACING.toUnits(SPACING.md)
+        }}>
           <Typography variant="body2" sx={{
-            mr: 2,
+            mr: SPACING.toUnits(SPACING.md),
             color: 'text.secondary',
-            fontSize: '1.15rem' // Standardized text size
+            fontSize: TYPOGRAPHY.fontSize.regularText
           }}>
             Rating:
           </Typography>
@@ -159,10 +163,10 @@ const QuestionDetailsPanel = ({
           fullWidth
           value={notesMap[currentQuestion.id] || ''}
           onChange={handleNotesChange}
-          sx={{ mb: 1 }}
+          sx={{ mb: SPACING.toUnits(SPACING.sm) }}
           InputProps={{
             style: {
-              fontSize: '1.15rem' // Standardized text size
+              fontSize: TYPOGRAPHY.fontSize.regularText
             }
           }}
         />

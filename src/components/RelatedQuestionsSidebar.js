@@ -1,4 +1,4 @@
-// src/components/RelatedQuestionsSidebar.js
+// src/components/RelatedQuestionsSidebar.js - Refactored version
 import React from 'react';
 import {
   Box,
@@ -15,22 +15,26 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LinkIcon from '@mui/icons-material/Link';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import { SKILL_LEVELS } from '../utils/constants';
-
-// Helper function to get color from skill level
-const getColorForSkillLevel = (level) => {
-  return SKILL_LEVELS[level]?.color || '#9e9e9e'; // Gray default
-};
+import {
+  usePanelStyles,
+  useTitleStyles,
+  getSkillLevelStyles
+} from '../utils/styleHooks';
+import { TYPOGRAPHY, SPACING, COLORS } from '../utils/theme';
 
 const RelatedQuestionsSidebar = ({
   relatedQuestionsList,
   gradesMap,
   onQuestionSelect,
-  hideAnswered, // Prop for hiding answered questions
-  isCollapsed // New prop for collapsed state
+  hideAnswered,
+  isCollapsed
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Get styles from hooks
+  const panelStyles = usePanelStyles(isCollapsed);
+  const titleStyles = useTitleStyles();
 
   // Filter related questions based on hideAnswered setting
   const filteredRelatedQuestions = hideAnswered
@@ -55,22 +59,16 @@ const RelatedQuestionsSidebar = ({
     <Paper
       elevation={0}
       sx={{
-        width: '100%',
-        height: '100%',
-        border: '1px solid #cccccc',
-        borderRadius: 2,
-        overflow: 'auto',
-        transition: 'width 0.3s ease, min-width 0.3s ease',
-        p: isCollapsed ? 1 : 3,
+        ...panelStyles,
+        p: isCollapsed ? SPACING.toUnits(SPACING.sm) : SPACING.toUnits(SPACING.panelPadding),
       }}
     >
       {!isCollapsed ? (
         // Full sidebar content
         <>
           <Typography variant="subtitle1" sx={{
-            mb: 2,
-            fontWeight: 500,
-            fontSize: '1.35rem' // Standardized title size
+            ...titleStyles,
+            fontSize: TYPOGRAPHY.fontSize.panelTitle
           }}>
             Related Questions {filteredRelatedQuestions.length > 0 && `(${filteredRelatedQuestions.length})`}
           </Typography>
@@ -82,28 +80,28 @@ const RelatedQuestionsSidebar = ({
                 const isAnswered = gradesMap[relatedQ.id] !== undefined;
                 // Get category info
                 const categoryName = relatedQ.categoryName || '';
-                // Get the color based on skill level
-                const levelColor = getColorForSkillLevel(relatedQ.skillLevel);
+                // Get skill level styles
+                const levelStyles = getSkillLevelStyles(relatedQ.skillLevel);
 
                 return (
                   <ListItem
                     key={relatedQ.id}
                     disablePadding
-                    sx={{ mb: 1 }}
+                    sx={{ mb: SPACING.toUnits(SPACING.sm) }}
                   >
                     <Tooltip
                       title={
                         <Box>
-                          <Typography sx={{ fontSize: '1.15rem', p: 1 }}>
+                          <Typography sx={{ fontSize: TYPOGRAPHY.fontSize.regularText, p: SPACING.toUnits(SPACING.sm) }}>
                             {relatedQ.question}
                           </Typography>
                           {isAnswered && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: SPACING.toUnits(SPACING.sm) }}>
                               <Rating
                                 value={gradesMap[relatedQ.id]}
                                 readOnly
                                 size="medium"
-                                sx={{ color: '#66bb6a' }}
+                                sx={{ color: COLORS.success.main }}
                               />
                             </Box>
                           )}
@@ -115,32 +113,30 @@ const RelatedQuestionsSidebar = ({
                       <Box
                         onClick={() => onQuestionSelect(relatedQ)}
                         sx={{
-                          p: 2,
-                          borderRadius: 1,
+                          p: SPACING.toUnits(SPACING.md),
+                          borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
                           cursor: 'pointer',
                           position: 'relative',
-                          paddingLeft: '24px',
+                          paddingLeft: SPACING.toUnits(SPACING.md * 1.5),
                           width: '100%',
                           '&:hover': {
-                            backgroundColor: 'rgba(33, 150, 243, 0.04)',
+                            backgroundColor: `${COLORS.primary.main}04`,
                           },
-                          borderLeft: `3px solid ${levelColor}`,
-                          // Add subtle background if answered
-                          backgroundColor: isAnswered ? 'rgba(102, 187, 106, 0.05)' : 'transparent'
+                          borderLeft: `3px solid ${levelStyles.main}`,
+                          backgroundColor: isAnswered ? `${COLORS.success.main}05` : 'transparent'
                         }}
                       >
-                        {/* Answered indicator - checkmark */}
                         {isAnswered && (
                           <Box
                             sx={{
                               position: 'absolute',
-                              right: 8,
+                              right: SPACING.toUnits(SPACING.sm),
                               top: '50%',
                               transform: 'translateY(-50%)',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              color: '#66bb6a'
+                              color: COLORS.success.main
                             }}
                           >
                             <CheckCircleIcon sx={{ fontSize: '18px' }} />
@@ -149,21 +145,20 @@ const RelatedQuestionsSidebar = ({
 
                         <Typography variant="body2" sx={{
                           textAlign: 'left',
-                          fontSize: '1.15rem', // Standardized question title size
+                          fontSize: TYPOGRAPHY.fontSize.itemTitle,
                           lineHeight: 1.5,
-                          fontWeight: 400,
-                          mb: 0.5
+                          fontWeight: TYPOGRAPHY.fontWeight.regular,
+                          mb: SPACING.toUnits(SPACING.xs)
                         }}>
                           {relatedQ.shortTitle || relatedQ.question.split(' ').slice(0, 5).join(' ')}
                         </Typography>
 
-                        {/* Category indicator */}
                         <Typography
                           variant="caption"
                           sx={{
                             display: 'block',
                             color: 'text.secondary',
-                            fontSize: '0.95rem',
+                            fontSize: TYPOGRAPHY.fontSize.metadataText,
                             opacity: 0.8
                           }}
                         >
@@ -181,8 +176,8 @@ const RelatedQuestionsSidebar = ({
               color="text.secondary"
               sx={{
                 textAlign: 'center',
-                py: 2,
-                fontSize: '1.15rem' // Standardized message size
+                py: SPACING.toUnits(SPACING.md),
+                fontSize: TYPOGRAPHY.fontSize.regularText
               }}
             >
               No related questions for this topic
@@ -194,7 +189,7 @@ const RelatedQuestionsSidebar = ({
         // Collapsed sidebar with icons only
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Tooltip title="Related Questions" placement="left">
-            <Box sx={{ mb: 2, textAlign: 'center' }}>
+            <Box sx={{ mb: SPACING.toUnits(SPACING.md), textAlign: 'center' }}>
               <LinkIcon color="primary" sx={{ fontSize: '1.6rem' }} />
             </Box>
           </Tooltip>
@@ -203,7 +198,7 @@ const RelatedQuestionsSidebar = ({
             <Badge
               badgeContent={sortedQuestions.length}
               color="primary"
-              sx={{ mb: 2 }}
+              sx={{ mb: SPACING.toUnits(SPACING.md) }}
             >
               <QuestionAnswerIcon
                 color={sortedQuestions.length === 0 ? "disabled" : "action"}
