@@ -220,13 +220,7 @@ export const indicatorStyles = {
     color: 'white',
     fontSize: TYPOGRAPHY.fontSize.small,
     fontWeight: TYPOGRAPHY.fontWeight.medium,
-  },
-  dot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    display: 'inline-block',
-  },
+  }
 };
 
 // Body styles migrated from main.css

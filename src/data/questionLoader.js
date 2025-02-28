@@ -9,8 +9,8 @@ import concurrencyQuestions from './questions/java/concurrency-multithreading/co
 const questionSets = {
   'core-java': [
     {
-      id: 'konrad-basic-set-core',
-      name: 'Konrad Basic Set',
+      id: 'basic-set-core',
+      name: 'Basic Set',
       files: {
         'Fundamentals': fundamentalsQuestions,
         'Memory Management': memoryManagementQuestions
@@ -19,8 +19,8 @@ const questionSets = {
   ],
   'concurrency-multithreading': [
     {
-      id: 'konrad-basic-set-concurrency',
-      name: 'Konrad Basic Set',
+      id: 'basic-set-concurrency',
+      name: 'Basic Set',
       files: {
         'Concurrency and Multithreading': concurrencyQuestions
       }
@@ -29,35 +29,35 @@ const questionSets = {
   'software-design': [
     {
       id: 'design-patterns-basic-set',
-      name: 'Konrad Basic Set',
+      name: 'Basic Set',
       files: {}
     }
   ],
   'databases': [
     {
       id: 'databases-basic-set',
-      name: 'Konrad Basic Set',
+      name: 'Basic Set',
       files: {}
     }
   ],
   'frameworks': [
     {
       id: 'frameworks-basic-set',
-      name: 'Konrad Basic Set',
+      name: 'Basic Set',
       files: {}
     }
   ],
   'dsa': [
     {
       id: 'dsa-basic-set',
-      name: 'Konrad Basic Set',
+      name: 'Basic Set',
       files: {}
     }
   ],
   'engineering-practices': [
     {
       id: 'engineering-basic-set',
-      name: 'Konrad Basic Set',
+      name: 'Basic Set',
       files: {}
     }
   ]
@@ -91,12 +91,6 @@ const extractQuestionsFromFiles = () => {
 // All questions array
 const questions = extractQuestionsFromFiles();
 
-// Skill levels
-export const skillLevels = [
-  { id: 'beginner', name: 'Beginner' },
-  { id: 'intermediate', name: 'Intermediate' },
-  { id: 'advanced', name: 'Advanced' },
-];
 
 // Categories with subcategories
 export const categories = [
@@ -200,22 +194,4 @@ export const getCategoryById = (categoryId) => {
 export const getCategoryForQuestion = (question) => {
   if (!question) return null;
   return getCategoryById(question.categoryId);
-};
-
-// Get questions from a specific set for a subcategory
-export const getQuestionsFromSet = (categoryId, setId, subcategory) => {
-  const sets = questionSets[categoryId] || [];
-  const set = sets.find(s => s.id === setId);
-
-  if (!set || !set.files[subcategory] || !set.files[subcategory].questions) {
-    return [];
-  }
-
-  // Return questions with metadata
-  return set.files[subcategory].questions.map(question => ({
-    ...question,
-    categoryId,
-    subcategoryName: subcategory,
-    setId
-  }));
 };

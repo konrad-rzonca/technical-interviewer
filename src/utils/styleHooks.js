@@ -208,46 +208,5 @@ export function useAnswerLevelStyles(level, options = {}) {
   }), [level, styles, options]);
 }
 
-/**
- * Hook for responsive width
- * @param {React.MutableRefObject} containerRef - Ref to the container element
- * @returns {number} The current width of the container
- */
-export function useResponsiveWidth(containerRef) {
-  const [width, setWidth] = React.useState(0);
-  const { useEffect } = React;
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setWidth(containerRef.current.offsetWidth);
-      }
-    };
-
-    // Set initial width
-    updateWidth();
-
-    // Create ResizeObserver
-    const resizeObserver = new ResizeObserver(entries => {
-      window.requestAnimationFrame(() => {
-        updateWidth();
-      });
-    });
-
-    // Observe container
-    resizeObserver.observe(containerRef.current);
-
-    return () => {
-      if (containerRef.current) {
-        resizeObserver.unobserve(containerRef.current);
-      }
-    };
-  }, [containerRef]);
-
-  return width;
-}
-
 // Export globalStyles for direct use in components
 export { globalStyles };

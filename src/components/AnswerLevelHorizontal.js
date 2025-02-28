@@ -11,11 +11,11 @@ import {
 } from '@mui/material';
 import {
   useAnswerLevelStyles,
-  globalStyles
+  globalStyles, useItemTextStyles
 } from '../utils/styleHooks';
 import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
 
-const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
+const AnswerLevelHorizontal = ({ answerInsights, learningMode = false, isSmallScreen = false }) => {
   const [selectedPoints, setSelectedPoints] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const [tooltipContent, setTooltipContent] = useState('');
@@ -164,6 +164,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                   const key = `${categoryIndex}-${pointIndex}`;
                   const isSelected = selectedPoints[key];
                   const isHovered = isPointHovered(categoryIndex, pointIndex);
+                  const textStyles = useItemTextStyles(isSelected, isSmallScreen);
 
                   return (
                     <Grid item xs={12} key={pointIndex}>
@@ -205,16 +206,15 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                             }}
                           />
                         ) : (
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: isSelected ? TYPOGRAPHY.fontWeight.medium : TYPOGRAPHY.fontWeight.regular,
-                              fontSize: TYPOGRAPHY.fontSize.small,
-                              textAlign: 'center'
-                            }}
-                          >
-                            {point.title}
-                          </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                  ...textStyles,
+                                  color: COLORS.text.primary,
+                                }}
+                            >
+                              {point.title}
+                            </Typography>
                         )}
                       </Box>
                     </Grid>

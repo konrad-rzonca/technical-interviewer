@@ -85,7 +85,6 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     flexGrow: 1,
     p: 3,
     overflow: 'hidden',
-    display: 'flex',
     flexDirection: 'column',
     ml: !isMobile && leftSidebarCollapsed ? 10 : 0,
     mr: !isMobile && rightSidebarCollapsed ? 10 : 0,

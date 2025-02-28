@@ -32,7 +32,7 @@ export const COLORS = {
   },
   warning: {
     main: '#ffb300', // Amber for Intermediate level
-    light: '#fff8e1',
+    light: '#ffde74',
     dark: '#ffa000',
     contrastText: '#000000',
   },
@@ -233,18 +233,13 @@ export const COMPONENT_STYLES = {
   // Question item styles
   questionItem: {
     padding: SPACING.itemPadding,
-    paddingLeft: SPACING.itemPadding * 1.5, // For items with indicators
+    paddingLeft: SPACING.itemPadding * 2, // For items with indicators
     marginBottom: SPACING.itemMargin,
     borderRadius: SPACING.borderRadius / 2,
     minHeight: LAYOUT.ITEM_HEIGHT,
 
     // Style variants
     variants: {
-      // Selected state
-      selected: (color) => ({
-        border: `2px solid ${color}60`,
-        backgroundColor: `${color}15`,
-      }),
 
       // Answered state
       answered: {
@@ -258,25 +253,7 @@ export const COMPONENT_STYLES = {
         backgroundColor: COLORS.background.paper,
       },
 
-      // Hover state
-      hover: (color) => ({
-        backgroundColor: `${color}15`,
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      }),
     },
-  },
-
-  // Skill level sections
-  skillLevelSection: (level) => {
-    const colors = SKILL_LEVEL_COLORS[level] || SKILL_LEVEL_COLORS.beginner;
-
-    return {
-      padding: SPACING.itemPadding,
-      border: `1px solid ${colors.border}`,
-      borderRadius: SPACING.borderRadius,
-      backgroundColor: colors.background,
-      minHeight: SPACING.lg * 5, // 120px
-    };
   },
 
   // Answer level styling
