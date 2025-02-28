@@ -1,14 +1,18 @@
-// src/App.js - Refactored
-import React, { useState, useEffect } from 'react';
-import { Box, CssBaseline, ThemeProvider } from '@mui/material';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// src/App.js - Updated imports
+import React, {useEffect, useState} from 'react';
+import {Box, CssBaseline, ThemeProvider} from '@mui/material';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import InterviewPanel from './components/InterviewPanel';
 import GlobalSearch from './components/GlobalSearch';
 import HealthCheck from './components/HealthCheck';
 import ErrorBoundary from './components/ErrorBoundary';
-import { categories, getAllQuestions } from './data/questionLoader';
-import createAppTheme from './utils/theme';
-import { SPACING, LAYOUT, COLORS } from './utils/theme';
+import {categories, getAllQuestions} from './data/questionLoader';
+import createAppTheme, {COLORS, SPACING} from './utils/theme';
 
 // Create the application theme
 const theme = createAppTheme();
@@ -31,13 +35,13 @@ function App() {
   const updateInterviewState = (updates) => {
     setInterviewState(prevState => ({
       ...prevState,
-      ...updates
+      ...updates,
     }));
   };
 
   // Handle question selection from global search
   const handleQuestionSelect = (question) => {
-    updateInterviewState({ currentQuestion: question });
+    updateInterviewState({currentQuestion: question});
   };
 
   // Handle category selection from global search
@@ -47,65 +51,62 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-          bgcolor: COLORS.background.light,
-          overflow: 'auto',
-          minHeight: {
-            xs: SPACING.toUnits(SPACING.lg) * 10,
-            sm: SPACING.toUnits(SPACING.lg) * 12,
-            md: SPACING.toUnits(SPACING.lg) * 14
-          }
-        }}>
-          {/* Global Search - Only shown on main interview page */}
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Box sx={{
-                  position: 'fixed',
-                  top: SPACING.toUnits(SPACING.sm),
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  zIndex: theme.zIndex.appBar,
-                  width: '50%',
-                  maxWidth: 600,
-                  minWidth: 300
-                }}>
-                  <GlobalSearch
-                    questions={allQuestions}
-                    categories={categories}
-                    onQuestionSelect={handleQuestionSelect}
-                    onCategorySelect={handleCategorySelect}
-                    gradesMap={interviewState.gradesMap}
-                  />
-                </Box>
-              }
-            />
-          </Routes>
+      <ThemeProvider theme={theme}>
+        <CssBaseline/>
+        <Router>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            bgcolor: COLORS.background.light,
+            overflow: 'auto',
+          }}>
+            {/* Global Search - Only shown on main interview page */}
+            <Routes>
+              <Route
+                  path="/"
+                  element={
+                    <Box sx={{
+                      position: 'fixed',
+                      top: SPACING.toUnits(SPACING.sm),
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      zIndex: theme.zIndex.appBar,
+                      width: '50%',
+                      maxWidth: 600,
+                      minWidth: 300,
+                    }}>
+                      <GlobalSearch
+                          questions={allQuestions}
+                          categories={categories}
+                          onQuestionSelect={handleQuestionSelect}
+                          onCategorySelect={handleCategorySelect}
+                          gradesMap={interviewState.gradesMap}
+                      />
+                    </Box>
+                  }
+              />
+            </Routes>
 
-          <Routes>
-            <Route path="/" element={
-              <ErrorBoundary>
-                <Box sx={{ pt: SPACING.toUnits(SPACING.xl) }}> {/* Add padding for the fixed search bar */}
-                  <InterviewPanel
-                    interviewState={interviewState}
-                    updateInterviewState={updateInterviewState}
-                  />
-                </Box>
-              </ErrorBoundary>
-            } />
-            <Route path="/healtz" element={<HealthCheck />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Box>
-      </Router>
-    </ThemeProvider>
+            <Routes>
+              <Route path="/" element={
+                <ErrorBoundary>
+                  <Box sx={{
+                    pt: SPACING.toUnits(SPACING.xl),
+                  }}> {/* Add padding for the fixed search bar */}
+                    <InterviewPanel
+                        interviewState={interviewState}
+                        updateInterviewState={updateInterviewState}
+                    />
+                  </Box>
+                </ErrorBoundary>
+              }/>
+              <Route path="/healtz" element={<HealthCheck/>}/>
+              <Route path="*" element={<Navigate to="/" replace/>}/>
+            </Routes>
+          </Box>
+        </Router>
+      </ThemeProvider>
   );
 }
 

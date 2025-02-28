@@ -1,6 +1,6 @@
+// src/index.js - Updated with no CSS imports
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-// CSS import removed - using JSS only
+import {createRoot} from 'react-dom/client';
 import App from './App';
 
 // Suppress ResizeObserver error messages in the console
@@ -9,8 +9,8 @@ const suppressResizeObserverErrors = () => {
   window.console.error = (...args) => {
     // Don't log ResizeObserver loop errors
     if (args[0] && typeof args[0] === 'string' &&
-      args[0].includes('ResizeObserver loop') &&
-      args[0].includes('notifications')) {
+        args[0].includes('ResizeObserver loop') &&
+        args[0].includes('notifications')) {
       return;
     }
     originalError.apply(window.console, args);
@@ -22,7 +22,7 @@ suppressResizeObserverErrors();
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <React.StrictMode>
+      <App/>
+    </React.StrictMode>,
 );

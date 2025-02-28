@@ -1,35 +1,8 @@
-// src/components/InterviewPanel.js
-import CategoryIcon from '@mui/icons-material/Category';
+// src/components/InterviewPanel.js - Refactored with separated components
+import React, {useEffect, useState} from 'react';
+import {Box, IconButton, Paper, useMediaQuery, useTheme} from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import LinkIcon from '@mui/icons-material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import SettingsIcon from '@mui/icons-material/Settings';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import {
-  AppBar,
-  Badge,
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  Menu,
-  MenuItem,
-  Paper,
-  Switch,
-  Toolbar,
-  Tooltip,
-  Typography,
-  useMediaQuery,
-  useTheme
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
 
 import {
   categories,
@@ -37,19 +10,22 @@ import {
   getFilteredQuestions,
   getQuestionsByCategory,
   getQuestionSets,
-  getRelatedQuestions
+  getRelatedQuestions,
 } from '../data/questionLoader';
 
-import { usePanelStyles } from '../utils/styleHooks';
-import { COLORS, LAYOUT } from '../utils/theme';
+import {usePanelStyles} from '../utils/styles';
+import {LAYOUT} from '../utils/theme';
 import CategorySidebar from './CategorySidebar';
 import QuestionDetailsPanel from './QuestionDetailsPanel';
 import QuestionNavigation from './QuestionNavigation';
 import RelatedQuestionsSidebar from './RelatedQuestionsSidebar';
 import SidebarPanel from './SidebarPanel';
+import TopNavbar from './TopNavbar';
+import SettingsMenu from './SettingsMenu';
+import {MobileBottomNav, MobileDrawer} from './MobileNavigation';
 
-const InterviewPanel = ({ interviewState, updateInterviewState }) => {
-  const { currentQuestion, notesMap, gradesMap } = interviewState;
+const InterviewPanel = ({interviewState, updateInterviewState}) => {
+  const {currentQuestion, notesMap, gradesMap} = interviewState;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
@@ -58,10 +34,19 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const [leftSidebarCollapsed, setLeftSidebarCollapsed] = useState(false);
   const [rightSidebarCollapsed, setRightSidebarCollapsed] = useState(false);
 
-  // Mobile navigation view
+  // Mobile navigation state
   const [mobileView, setMobileView] = useState('question'); // 'category', 'question', 'related'
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  // Original state
+  // Settings state
+  const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
+  const [settings, setSettings] = useState({
+    learningMode: false,
+    hideAnsweredQuestions: false,
+    hideAnsweredInRelated: false,
+  });
+
+  // Original state for question management
   const [activeCategories, setActiveCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -70,15 +55,8 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const [relatedQuestionsList, setRelatedQuestionsList] = useState([]);
   const [availableSets, setAvailableSets] = useState([]);
   const [selectedSets, setSelectedSets] = useState({});
-  const [learningMode, setLearningMode] = useState(false);
   const [selectedSubcategories, setSelectedSubcategories] = useState({});
   const [subcategoryFilter, setSubcategoryFilter] = useState(null);
-  const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
-  const [hideAnsweredQuestions, setHideAnsweredQuestions] = useState(false);
-  const [hideAnsweredInRelated, setHideAnsweredInRelated] = useState(false);
-
-  // Mobile drawer state
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   // Get panel styles from hooks
   const mainPanelStyles = usePanelStyles(false, true, {
@@ -109,8 +87,10 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   }, [isMobile, isTablet]);
 
   // Sidebar toggle handlers
-  const toggleLeftSidebar = () => setLeftSidebarCollapsed(!leftSidebarCollapsed);
-  const toggleRightSidebar = () => setRightSidebarCollapsed(!rightSidebarCollapsed);
+  const toggleLeftSidebar = () => setLeftSidebarCollapsed(
+      !leftSidebarCollapsed);
+  const toggleRightSidebar = () => setRightSidebarCollapsed(
+      !rightSidebarCollapsed);
 
   // Initialize active categories
   useEffect(() => {
@@ -126,7 +106,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     const initialSelectedSubcategories = {};
 
     categories.forEach(category => {
-      if (category.subcategories.length > 0) {
+      if (category.subcategories?.length > 0) {
         initialSelectedSubcategories[category.id] = {};
         category.subcategories.forEach(subcategory => {
           initialSelectedSubcategories[category.id][subcategory] = true;
@@ -156,27 +136,30 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   useEffect(() => {
     if (selectedCategory) {
       // Get the list of selected set IDs
-      const activeSets = Object.entries(selectedSets)
-        .filter(([_, isSelected]) => isSelected)
-        .map(([setId, _]) => setId);
+      const activeSets = Object.entries(selectedSets).
+          filter(([_, isSelected]) => isSelected).
+          map(([setId, _]) => setId);
 
       // Filter questions
       let baseQuestions;
 
       if (subcategoryFilter) {
         // Filter by specific subcategory if selected
-        baseQuestions = getFilteredQuestions(selectedCategory, subcategoryFilter);
+        baseQuestions = getFilteredQuestions(selectedCategory,
+            subcategoryFilter);
       } else if (selectedSubcategories[selectedCategory]) {
         // Filter by multiple selected subcategories
-        const activeSubcategories = Object.entries(selectedSubcategories[selectedCategory])
-          .filter(([_, isSelected]) => isSelected)
-          .map(([subcategory, _]) => subcategory);
+        const activeSubcategories = Object.entries(
+            selectedSubcategories[selectedCategory]).
+            filter(([_, isSelected]) => isSelected).
+            map(([subcategory, _]) => subcategory);
 
         if (activeSubcategories.length > 0) {
           // Get questions from all active subcategories
           baseQuestions = [];
           activeSubcategories.forEach(subcategory => {
-            const subcategoryQuestions = getFilteredQuestions(selectedCategory, subcategory);
+            const subcategoryQuestions = getFilteredQuestions(selectedCategory,
+                subcategory);
             baseQuestions.push(...subcategoryQuestions);
           });
         } else {
@@ -192,28 +175,40 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
 
       // If we have questions but no current question selected, select the first one
       if (baseQuestions.length > 0 && !currentQuestion) {
-        updateInterviewState({ currentQuestion: baseQuestions[0] });
+        updateInterviewState({currentQuestion: baseQuestions[0]});
       }
     } else {
       // If no category is selected, clear questions
       setQuestions([]);
     }
-  }, [selectedCategory, selectedSets, selectedSubcategories, subcategoryFilter, currentQuestion, updateInterviewState]);
+  }, [
+    selectedCategory,
+    selectedSets,
+    selectedSubcategories,
+    subcategoryFilter,
+    currentQuestion,
+    updateInterviewState]);
 
-  // Apply additional filters (hide answered questions)
+  // Apply hide answered questions filter
   useEffect(() => {
-    if (hideAnsweredQuestions) {
+    if (settings.hideAnsweredQuestions) {
       const filtered = questions.filter(question => !gradesMap[question.id]);
       setFilteredQuestions(filtered);
 
       // If current question is filtered out, select first visible question
-      if (filtered.length > 0 && currentQuestion && gradesMap[currentQuestion.id]) {
-        updateInterviewState({ currentQuestion: filtered[0] });
+      if (filtered.length > 0 && currentQuestion &&
+          gradesMap[currentQuestion.id]) {
+        updateInterviewState({currentQuestion: filtered[0]});
       }
     } else {
       setFilteredQuestions(questions);
     }
-  }, [questions, hideAnsweredQuestions, gradesMap, currentQuestion, updateInterviewState]);
+  }, [
+    questions,
+    settings.hideAnsweredQuestions,
+    gradesMap,
+    currentQuestion,
+    updateInterviewState]);
 
   // Load related questions when current question changes
   useEffect(() => {
@@ -227,7 +222,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         const categoryObj = categories.find(c => c.id === q.categoryId) || {};
         return {
           ...q,
-          categoryName: categoryObj.name || ''
+          categoryName: categoryObj.name || '',
         };
       });
 
@@ -255,8 +250,9 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const handleCategorySelect = (categoryId, explicitExpandedState = null) => {
     if (categoryId === selectedCategory) {
       // Toggle expansion if the category is already selected
-      setExpandedCategory(explicitExpandedState !== null ? explicitExpandedState :
-        (expandedCategory === categoryId ? null : categoryId));
+      setExpandedCategory(
+          explicitExpandedState !== null ? explicitExpandedState :
+              (expandedCategory === categoryId ? null : categoryId));
       return;
     }
 
@@ -267,11 +263,12 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     if (explicitExpandedState !== null) {
       setExpandedCategory(explicitExpandedState);
     } else {
-      setExpandedCategory(category && category.subcategories.length > 0 ? categoryId : null);
+      setExpandedCategory(
+          category && category.subcategories.length > 0 ? categoryId : null);
     }
 
     setSubcategoryFilter(null);
-    updateInterviewState({ currentQuestion: null });
+    updateInterviewState({currentQuestion: null});
 
     // In mobile, switch to question view after selecting a category
     if (isMobile) {
@@ -295,8 +292,8 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
       ...prev,
       [categoryId]: {
         ...prev[categoryId],
-        [subcategory]: !prev[categoryId][subcategory]
-      }
+        [subcategory]: !prev[categoryId][subcategory],
+      },
     }));
     setSubcategoryFilter(null); // Clear any active filter
   };
@@ -311,7 +308,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
       setSelectedCategory(category.id);
     }
 
-    updateInterviewState({ currentQuestion: question });
+    updateInterviewState({currentQuestion: question});
 
     // In mobile, switch to question view after selecting a question
     if (isMobile) {
@@ -323,17 +320,22 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const handleNavigateQuestion = (direction) => {
     if (!currentQuestion || filteredQuestions.length <= 1) return;
 
-    const currentIndex = filteredQuestions.findIndex(q => q.id === currentQuestion.id);
+    const currentIndex = filteredQuestions.findIndex(
+        q => q.id === currentQuestion.id);
     if (currentIndex === -1) return;
 
     let newIndex;
     if (direction === 'next') {
-      newIndex = currentIndex + 1 >= filteredQuestions.length ? 0 : currentIndex + 1;
+      newIndex = currentIndex + 1 >= filteredQuestions.length
+          ? 0
+          : currentIndex + 1;
     } else {
-      newIndex = currentIndex - 1 < 0 ? filteredQuestions.length - 1 : currentIndex - 1;
+      newIndex = currentIndex - 1 < 0
+          ? filteredQuestions.length - 1
+          : currentIndex - 1;
     }
 
-    updateInterviewState({ currentQuestion: filteredQuestions[newIndex] });
+    updateInterviewState({currentQuestion: filteredQuestions[newIndex]});
   };
 
   // Handle notes change
@@ -341,8 +343,8 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     updateInterviewState({
       notesMap: {
         ...notesMap,
-        [questionId]: value
-      }
+        [questionId]: value,
+      },
     });
   };
 
@@ -351,30 +353,12 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     updateInterviewState({
       gradesMap: {
         ...gradesMap,
-        [questionId]: value
-      }
+        [questionId]: value,
+      },
     });
   };
 
-  // Toggle learning mode
-  const handleLearningModeToggle = (e) => {
-    e.stopPropagation(); // Prevent event bubbling
-    setLearningMode(!learningMode);
-  };
-
-  // Toggle hide answered questions
-  const handleHideAnsweredToggle = (e) => {
-    e.stopPropagation(); // Prevent event bubbling
-    setHideAnsweredQuestions(!hideAnsweredQuestions);
-  };
-
-  // Toggle hide answered in related
-  const handleHideAnsweredInRelatedToggle = (e) => {
-    e.stopPropagation(); // Prevent event bubbling
-    setHideAnsweredInRelated(!hideAnsweredInRelated);
-  };
-
-  // Handle settings menu
+  // Settings menu handlers
   const handleSettingsMenuOpen = (event) => {
     setSettingsMenuAnchor(event.currentTarget);
   };
@@ -383,11 +367,18 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     setSettingsMenuAnchor(null);
   };
 
+  const handleSettingChange = (setting) => {
+    setSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting],
+    }));
+  };
+
   // Handle set selection changes
   const handleSetToggle = (setId) => {
     setSelectedSets(prev => ({
       ...prev,
-      [setId]: !prev[setId]
+      [setId]: !prev[setId],
     }));
   };
 
@@ -421,7 +412,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
 
     setSelectedSubcategories(prev => ({
       ...prev,
-      [categoryId]: newSelection
+      [categoryId]: newSelection,
     }));
 
     setSubcategoryFilter(null);
@@ -439,15 +430,11 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
 
     setSelectedSubcategories(prev => ({
       ...prev,
-      [categoryId]: newSelection
+      [categoryId]: newSelection,
     }));
 
     setSubcategoryFilter(null);
   };
-
-  // Count answered questions
-  const answeredCount = Object.keys(gradesMap).length;
-  const totalQuestions = filteredQuestions.length;
 
   // Sidebar toggle button styles
   const sidebarToggleButtonStyle = (position, isCollapsed, width) => ({
@@ -465,442 +452,195 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
     height: 40,
     '&:hover': {
       bgcolor: 'primary.light',
-    }
+    },
   });
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-      minHeight: { xs: '600px', sm: '700px', md: '800px' }
-    }}>
-      {/* Header (Modified for mobile) */}
-      <AppBar position="static" elevation={0} color="transparent">
-        <Toolbar variant="dense" sx={{ minHeight: 56, justifyContent: 'space-between' }}>
-          {isMobile && (
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={() => setMobileDrawerOpen(true)}
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-          )}
-
-          <Typography variant="h6" sx={{ fontWeight: 'normal' }}>
-            Technical Interviewer
-          </Typography>
-
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* Settings Menu */}
-            <Tooltip title="Settings">
-              <IconButton
-                size="small"
-                onClick={handleSettingsMenuOpen}
-                color="primary"
-                sx={{ mr: 1 }}
-              >
-                <Badge
-                  badgeContent={hideAnsweredQuestions || hideAnsweredInRelated || learningMode ? '1' : 0}
-                  color="primary"
-                  variant="dot"
-                >
-                  <SettingsIcon fontSize="small" />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Settings Menu with improved styling and behavior */}
-      <Menu
-        anchorEl={settingsMenuAnchor}
-        open={Boolean(settingsMenuAnchor)}
-        onClose={handleSettingsMenuClose}
-        PaperProps={{
-          elevation: 3,
-          style: {
-            minWidth: 320,
-            borderRadius: 8,
-            padding: '8px 0'
-          },
-        }}
-        MenuListProps={{
-          style: {
-            padding: 0
-          }
-        }}
-      >
-        {/* Settings Menu Title */}
-        <Typography
-          variant="subtitle2"
-          sx={{
-            p: 1.5,
-            pl: 2,
-            fontWeight: 500,
-            borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-            background: 'rgba(0, 0, 0, 0.02)'
-          }}
-        >
-          Display Settings
-        </Typography>
-
-        {/* Learning Mode Toggle */}
-        <MenuItem
-          sx={{
-            minWidth: 320,
-            display: 'flex',
-            justifyContent: 'space-between',
-            py: 1.5,
-            borderLeft: learningMode ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
-            backgroundColor: learningMode ? `${COLORS.primary.main}04` : 'transparent'
-          }}
-          onClick={(e) => e.stopPropagation()} // Prevent menu from closing
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {learningMode ?
-              <VisibilityOffIcon fontSize="medium" sx={{ mr: 1.5, color: COLORS.primary.main }} /> :
-              <VisibilityIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
-            }
-            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Learning Mode</Typography>
-          </Box>
-          <Switch
-            checked={learningMode}
-            size="medium"
-            color="primary"
-            onClick={handleLearningModeToggle}
-          />
-        </MenuItem>
-
-        {/* Question Visibility Section */}
-        <Typography
-          variant="caption"
-          sx={{
-            display: 'block',
-            px: 2,
-            pt: 1.5,
-            pb: 0.5,
-            color: 'text.secondary',
-            fontWeight: 500,
-            fontSize: '0.95rem'
-          }}
-        >
-          QUESTION VISIBILITY
-        </Typography>
-
-        {/* Hide answered in Question Navigation - now using Switch */}
-        <MenuItem
-          sx={{
-            minWidth: 320,
-            display: 'flex',
-            justifyContent: 'space-between',
-            py: 1.5,
-            px: 2,
-            borderLeft: hideAnsweredQuestions ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
-            backgroundColor: hideAnsweredQuestions ? `${COLORS.primary.main}04` : 'transparent'
-          }}
-          onClick={(e) => e.stopPropagation()} // Prevent menu from closing
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {hideAnsweredQuestions ?
-              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredQuestions ? COLORS.primary.main : 'text.secondary' }} /> :
-              <VisibilityOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
-            }
-            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Hide answered in Navigation</Typography>
-          </Box>
-          <Switch
-            checked={hideAnsweredQuestions}
-            size="medium"
-            color="primary"
-            onClick={handleHideAnsweredToggle}
-          />
-        </MenuItem>
-
-        {/* Hide answered in Related Questions - now using Switch */}
-        <MenuItem
-          sx={{
-            minWidth: 320,
-            display: 'flex',
-            justifyContent: 'space-between',
-            py: 1.5,
-            px: 2,
-            borderLeft: hideAnsweredInRelated ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
-            backgroundColor: hideAnsweredInRelated ? `${COLORS.primary.main}04` : 'transparent'
-          }}
-          onClick={(e) => e.stopPropagation()} // Prevent menu from closing
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {hideAnsweredInRelated ?
-              <VisibilityOffOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: hideAnsweredInRelated ? COLORS.primary.main : 'text.secondary' }} /> :
-              <VisibilityOutlinedIcon fontSize="medium" sx={{ mr: 1.5, color: 'text.secondary' }} />
-            }
-            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>Hide answered in Related Questions</Typography>
-          </Box>
-          <Switch
-            checked={hideAnsweredInRelated}
-            size="medium"
-            color="primary"
-            onClick={handleHideAnsweredInRelatedToggle}
-          />
-        </MenuItem>
-      </Menu>
-
-      {/* Mobile Drawer */}
-      {isMobile && (
-        <Drawer
-          anchor="left"
-          open={mobileDrawerOpen}
-          onClose={() => setMobileDrawerOpen(false)}
-          sx={{
-            '& .MuiDrawer-paper': {
-              width: '85%',
-              maxWidth: 450,
-              boxSizing: 'border-box',
-            },
-          }}
-        >
-          <Box sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>Technical Interviewer</Typography>
-            <Divider sx={{ mb: 2 }} />
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Navigation</Typography>
-              <MenuItem
-                onClick={() => {
-                  setMobileView('category');
-                  setMobileDrawerOpen(false);
-                }}
-                sx={{ borderRadius: 1 }}
-              >
-                <CategoryIcon sx={{ mr: 2 }} />
-                <Typography>Categories</Typography>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setMobileView('question');
-                  setMobileDrawerOpen(false);
-                }}
-                sx={{ borderRadius: 1 }}
-              >
-                <QuestionAnswerIcon sx={{ mr: 2 }} />
-                <Typography>Current Question</Typography>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setMobileView('related');
-                  setMobileDrawerOpen(false);
-                }}
-                sx={{ borderRadius: 1 }}
-              >
-                <LinkIcon sx={{ mr: 2 }} />
-                <Typography>Related Questions</Typography>
-              </MenuItem>
-            </Box>
-            <Divider sx={{ mb: 2 }} />
-            <Box>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Settings</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="body2">Learning Mode</Typography>
-                <Switch
-                  checked={learningMode}
-                  size="medium"
-                  color="primary"
-                  onChange={handleLearningModeToggle}
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="body2">Hide Answered Questions</Typography>
-                <Switch
-                  checked={hideAnsweredQuestions}
-                  size="medium"
-                  color="primary"
-                  onChange={handleHideAnsweredToggle}
-                />
-              </Box>
-            </Box>
-          </Box>
-        </Drawer>
-      )}
-
-      {/* Main Content - Adaptive Three Column Layout */}
       <Box sx={{
-        flexGrow: 1,
         display: 'flex',
-        p: 2,
-        minHeight: 'calc(100vh - 64px)',
-        overflow: 'auto',
-        maxWidth: '100vw',
-        boxSizing: 'border-box',
-        position: 'relative', // For positioning toggle buttons
-        pb: isMobile ? '56px' : 2, // Space for bottom navigation on mobile
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        minHeight: {xs: '600px', sm: '700px', md: '800px'},
       }}>
-        {/* Left Sidebar - Categories */}
-        <SidebarPanel
-          isCollapsed={leftSidebarCollapsed}
-          expandedWidth={LAYOUT.LEFT_SIDEBAR_WIDTH}
-          collapsedWidth={LAYOUT.COLLAPSED_SIDEBAR_WIDTH}
-          onToggle={toggleLeftSidebar}
-          position="left"
-          sx={{
-            display: isMobile ?
-              (mobileView === 'category' ? 'block' : 'none') :
-              'block',
-            position: isMobile ? 'fixed' : 'relative',
-            zIndex: isMobile ? theme.zIndex.drawer : 'auto',
-            height: isMobile ? '100%' : 'auto',
-            top: isMobile ? 0 : 'auto',
-            left: 0,
-            bgcolor: 'background.paper',
-            overflowY: 'auto',
-            maxHeight: isMobile ? 'calc(100vh - 120px)' : 'calc(100vh - 100px)'
-          }}
-        >
-          <CategorySidebar
-            categories={activeCategories}
-            selectedCategory={selectedCategory}
-            expandedCategory={expandedCategory}
-            selectedSubcategories={selectedSubcategories}
-            subcategoryFilter={subcategoryFilter}
-            availableSets={availableSets}
-            selectedSets={selectedSets}
-            onCategorySelect={handleCategorySelect}
-            onSubcategorySelect={handleSubcategorySelect}
-            onSubcategoryToggle={handleSubcategoryToggle}
-            onSelectAllSubcategories={handleSelectAllSubcategories}
-            onDeselectAllSubcategories={handleDeselectAllSubcategories}
-            onSetToggle={handleSetToggle}
-            onSelectAllSets={handleSelectAllSets}
-            onDeselectAllSets={handleDeselectAllSets}
-            isCollapsed={leftSidebarCollapsed && !isMobile}
-          />
-        </SidebarPanel>
+        {/* Top Navigation - now using TopNavbar component */}
+        <TopNavbar
+            isMobile={isMobile}
+            onMobileDrawerOpen={() => setMobileDrawerOpen(true)}
+            onSettingsMenuOpen={handleSettingsMenuOpen}
+            settings={settings}
+        />
 
-        {/* Sidebar toggle buttons - always visible on desktop */}
-        {!isMobile && (
-          <>
-            <IconButton
-              onClick={toggleLeftSidebar}
-              sx={sidebarToggleButtonStyle(
-                'left',
-                leftSidebarCollapsed,
-                LAYOUT.COLLAPSED_SIDEBAR_WIDTH
-              )}
-            >
-              {leftSidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
+        {/* Settings Menu - now using SettingsMenu component */}
+        <SettingsMenu
+            anchorEl={settingsMenuAnchor}
+            open={Boolean(settingsMenuAnchor)}
+            onClose={handleSettingsMenuClose}
+            settings={settings}
+            onSettingChange={handleSettingChange}
+        />
 
-            <IconButton
-              onClick={toggleRightSidebar}
-              sx={sidebarToggleButtonStyle(
-                'right',
-                rightSidebarCollapsed,
-                LAYOUT.COLLAPSED_SIDEBAR_WIDTH
-              )}
-            >
-              {rightSidebarCollapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </>
+        {/* Mobile Drawer - now using MobileDrawer component */}
+        {isMobile && (
+            <MobileDrawer
+                open={mobileDrawerOpen}
+                onClose={() => setMobileDrawerOpen(false)}
+                onNavigationChange={setMobileView}
+                settings={settings}
+                onSettingChange={handleSettingChange}
+            />
         )}
 
-        {/* Main Content */}
-        <Paper
-          elevation={0}
-          sx={mainPanelStyles}
-        >
-          {/* Question Details Panel - placed at the top */}
-          <QuestionDetailsPanel
-            currentQuestion={currentQuestion}
-            notesMap={notesMap}
-            gradesMap={gradesMap}
-            learningMode={learningMode}
-            onNotesChange={handleNotesChange}
-            onGradeChange={handleGradeChange}
-            onNavigateQuestion={handleNavigateQuestion}
-          />
+        {/* Main Content - Adaptive Three Column Layout */}
+        <Box sx={{
+          flexGrow: 1,
+          display: 'flex',
+          p: 2,
+          minHeight: 'calc(100vh - 64px)',
+          overflow: 'auto',
+          maxWidth: '100vw',
+          boxSizing: 'border-box',
+          position: 'relative', // For positioning toggle buttons
+          pb: isMobile ? '56px' : 2, // Space for bottom navigation on mobile
+        }}>
+          {/* Left Sidebar - Categories */}
+          <SidebarPanel
+              isCollapsed={leftSidebarCollapsed}
+              expandedWidth={LAYOUT.LEFT_SIDEBAR_WIDTH}
+              collapsedWidth={LAYOUT.COLLAPSED_SIDEBAR_WIDTH}
+              onToggle={toggleLeftSidebar}
+              position="left"
+              sx={{
+                display: isMobile ?
+                    (mobileView === 'category' ? 'block' : 'none') :
+                    'block',
+                position: isMobile ? 'fixed' : 'relative',
+                zIndex: isMobile ? theme.zIndex.drawer : 'auto',
+                height: isMobile ? '100%' : 'auto',
+                top: isMobile ? 0 : 'auto',
+                left: 0,
+                bgcolor: 'background.paper',
+                overflowY: 'auto',
+                maxHeight: isMobile
+                    ? 'calc(100vh - 120px)'
+                    : 'calc(100vh - 100px)',
+              }}
+          >
+            <CategorySidebar
+                categories={activeCategories}
+                selectedCategory={selectedCategory}
+                expandedCategory={expandedCategory}
+                selectedSubcategories={selectedSubcategories}
+                subcategoryFilter={subcategoryFilter}
+                availableSets={availableSets}
+                selectedSets={selectedSets}
+                onCategorySelect={handleCategorySelect}
+                onSubcategorySelect={handleSubcategorySelect}
+                onSubcategoryToggle={handleSubcategoryToggle}
+                onSelectAllSubcategories={handleSelectAllSubcategories}
+                onDeselectAllSubcategories={handleDeselectAllSubcategories}
+                onSetToggle={handleSetToggle}
+                onSelectAllSets={handleSelectAllSets}
+                onDeselectAllSets={handleDeselectAllSets}
+                isCollapsed={leftSidebarCollapsed && !isMobile}
+            />
+          </SidebarPanel>
 
-          {/* Question Navigation below the question details */}
-          <QuestionNavigation
-            filteredQuestions={filteredQuestions}
-            currentQuestion={currentQuestion}
-            gradesMap={gradesMap}
-            onQuestionSelect={handleQuestionSelect}
-          />
-        </Paper>
+          {/* Sidebar toggle buttons - desktop only */}
+          {!isMobile && (
+              <>
+                <IconButton
+                    onClick={toggleLeftSidebar}
+                    sx={sidebarToggleButtonStyle(
+                        'left',
+                        leftSidebarCollapsed,
+                        LAYOUT.COLLAPSED_SIDEBAR_WIDTH,
+                    )}
+                >
+                  {leftSidebarCollapsed ? <ChevronRightIcon/> :
+                      <ChevronLeftIcon/>}
+                </IconButton>
 
-        {/* Right Sidebar - Related Questions */}
-        <SidebarPanel
-          isCollapsed={rightSidebarCollapsed}
-          expandedWidth={LAYOUT.RIGHT_SIDEBAR_WIDTH}
-          collapsedWidth={LAYOUT.COLLAPSED_SIDEBAR_WIDTH}
-          onToggle={toggleRightSidebar}
-          position="right"
-          sx={{
-            display: isMobile ?
-              (mobileView === 'related' ? 'block' : 'none') :
-              'block',
-            position: isMobile ? 'fixed' : 'relative',
-            zIndex: isMobile ? theme.zIndex.drawer : 'auto',
-            height: isMobile ? '100%' : 'auto',
-            top: isMobile ? 0 : 'auto',
-            right: 0,
-            bgcolor: 'background.paper',
-            overflowY: 'auto',
-            maxHeight: isMobile ? 'calc(100vh - 120px)' : 'calc(100vh - 100px)'
-          }}
-        >
-          <RelatedQuestionsSidebar
-            relatedQuestionsList={relatedQuestionsList}
-            gradesMap={gradesMap}
-            onQuestionSelect={handleQuestionSelect}
-            hideAnswered={hideAnsweredInRelated}
-            isCollapsed={rightSidebarCollapsed && !isMobile}
-          />
-        </SidebarPanel>
+                <IconButton
+                    onClick={toggleRightSidebar}
+                    sx={sidebarToggleButtonStyle(
+                        'right',
+                        rightSidebarCollapsed,
+                        LAYOUT.COLLAPSED_SIDEBAR_WIDTH,
+                    )}
+                >
+                  {rightSidebarCollapsed ? <ChevronLeftIcon/> :
+                      <ChevronRightIcon/>}
+                </IconButton>
+              </>
+          )}
+
+          {/* Main Content */}
+          <Paper
+              elevation={0}
+              sx={mainPanelStyles}
+          >
+            {/* Question Details Panel - placed at the top */}
+            <QuestionDetailsPanel
+                currentQuestion={currentQuestion}
+                notesMap={notesMap}
+                gradesMap={gradesMap}
+                learningMode={settings.learningMode}
+                onNotesChange={handleNotesChange}
+                onGradeChange={handleGradeChange}
+                onNavigateQuestion={handleNavigateQuestion}
+            />
+
+            {/* Question Navigation below the question details */}
+            <QuestionNavigation
+                filteredQuestions={filteredQuestions}
+                currentQuestion={currentQuestion}
+                gradesMap={gradesMap}
+                onQuestionSelect={handleQuestionSelect}
+            />
+          </Paper>
+
+          {/* Right Sidebar - Related Questions */}
+          <SidebarPanel
+              isCollapsed={rightSidebarCollapsed}
+              expandedWidth={LAYOUT.RIGHT_SIDEBAR_WIDTH}
+              collapsedWidth={LAYOUT.COLLAPSED_SIDEBAR_WIDTH}
+              onToggle={toggleRightSidebar}
+              position="right"
+              sx={{
+                display: isMobile ?
+                    (mobileView === 'related' ? 'block' : 'none') :
+                    'block',
+                position: isMobile ? 'fixed' : 'relative',
+                zIndex: isMobile ? theme.zIndex.drawer : 'auto',
+                height: isMobile ? '100%' : 'auto',
+                top: isMobile ? 0 : 'auto',
+                right: 0,
+                bgcolor: 'background.paper',
+                overflowY: 'auto',
+                maxHeight: isMobile
+                    ? 'calc(100vh - 120px)'
+                    : 'calc(100vh - 100px)',
+              }}
+          >
+            <RelatedQuestionsSidebar
+                relatedQuestionsList={relatedQuestionsList}
+                gradesMap={gradesMap}
+                onQuestionSelect={handleQuestionSelect}
+                hideAnswered={settings.hideAnsweredInRelated}
+                isCollapsed={rightSidebarCollapsed && !isMobile}
+            />
+          </SidebarPanel>
+        </Box>
+
+        {/* Mobile Bottom Navigation - now using MobileBottomNav component */}
+        {isMobile && (
+            <MobileBottomNav
+                currentView={mobileView}
+                onViewChange={setMobileView}
+            />
+        )}
       </Box>
-
-      {/* Mobile Bottom Navigation */}
-      {isMobile && (
-        <BottomNavigation
-          value={mobileView}
-          onChange={(event, newValue) => {
-            setMobileView(newValue);
-          }}
-          showLabels
-          sx={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: theme.zIndex.appBar,
-            borderTop: '1px solid',
-            borderColor: 'divider',
-            height: LAYOUT.BOTTOM_NAV_HEIGHT
-          }}
-        >
-          <BottomNavigationAction
-            label="Categories"
-            value="category"
-            icon={<CategoryIcon />}
-            sx={{ py: 1 }}
-          />
-          <BottomNavigationAction
-            label="Question"
-            value="question"
-            icon={<QuestionAnswerIcon />}
-            sx={{ py: 1 }}
-          />
-          <BottomNavigationAction
-            label="Related"
-            value="related"
-            icon={<LinkIcon />}
-            sx={{ py: 1 }}
-          />
-        </BottomNavigation>
-      )}
-    </Box>
   );
 };
 

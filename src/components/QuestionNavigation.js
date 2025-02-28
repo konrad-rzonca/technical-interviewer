@@ -1,23 +1,25 @@
-// src/components/QuestionNavigation.js - Refactored with consistent styling
-import React, { useState, useEffect, useRef } from 'react';
-import { Box, Typography, Grid, useTheme, useMediaQuery } from '@mui/material';
+// src/components/QuestionNavigation.js - Optimized with proper cleanup
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {Box, Grid, Typography, useMediaQuery, useTheme} from '@mui/material';
 import SkillLevelSection from './SkillLevelSection';
-import { useTitleStyles, usePanelStyles } from '../utils/styleHooks';
-import { LAYOUT, TYPOGRAPHY, SPACING } from '../utils/theme';
+import {usePanelStyles, useTitleStyles} from '../utils/styles';
+import {LAYOUT, SPACING, TYPOGRAPHY} from '../utils/theme';
 
 const QuestionNavigation = ({
   filteredQuestions,
   currentQuestion,
   gradesMap,
-  onQuestionSelect
+  onQuestionSelect,
 }) => {
   const theme = useTheme();
   const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   // Use the column threshold from theme
-  const isVeryWideScreen = useMediaQuery(`(min-width:${LAYOUT.COLUMN_THRESHOLD}px)`);
+  const isVeryWideScreen = useMediaQuery(
+      `(min-width:${LAYOUT.COLUMN_THRESHOLD}px)`);
 
   // Container ref to measure available width
   const containerRef = useRef(null);
+  const resizeObserverRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
   // Default to 1 column unless on very wide screens
   const [columnCount, setColumnCount] = useState(isVeryWideScreen ? 2 : 1);
@@ -31,46 +33,46 @@ const QuestionNavigation = ({
   const contentBoxStyles = usePanelStyles(false, false, {
     overflow: 'visible',
     flexGrow: 1,
-    mt: SPACING.toUnits(SPACING.md)
+    mt: SPACING.toUnits(SPACING.md),
   });
 
-  // ResizeObserver for content-aware layout
-  useEffect(() => {
-    if (!containerRef.current) return;
+  // Function to update width based on container size
+  const updateWidth = () => {
+    if (containerRef.current) {
+      const width = containerRef.current.offsetWidth;
+      setContainerWidth(width);
 
-    const updateWidth = () => {
-      if (containerRef.current) {
-        const width = containerRef.current.offsetWidth;
-        setContainerWidth(width);
-
-        // Base column count on actual container width
-        // Only use 2 columns when container is very wide
-        if (width >= LAYOUT.COLUMN_THRESHOLD) {
-          setColumnCount(2);
-        } else {
-          setColumnCount(1);
-        }
+      // Base column count on actual container width
+      // Only use 2 columns when container is very wide
+      if (width >= LAYOUT.COLUMN_THRESHOLD) {
+        setColumnCount(2);
+      } else {
+        setColumnCount(1);
       }
-    };
+    }
+  };
 
-    // Initial measurement
-    updateWidth();
+  // Set up ResizeObserver with proper cleanup
+  useEffect(() => {
+    updateWidth(); // Initial measurement
 
     // Create ResizeObserver
-    const resizeObserver = new ResizeObserver(entries => {
-      // Debounce resize events to avoid loops
+    resizeObserverRef.current = new ResizeObserver(entries => {
+      // Use requestAnimationFrame to throttle updates
       window.requestAnimationFrame(() => {
         updateWidth();
       });
     });
 
-    // Observe the container
-    resizeObserver.observe(containerRef.current);
+    // Start observing when the component mounts
+    if (containerRef.current) {
+      resizeObserverRef.current.observe(containerRef.current);
+    }
 
+    // Cleanup observer when component unmounts
     return () => {
-      // Clean up observer when component unmounts
-      if (containerRef.current) {
-        resizeObserver.unobserve(containerRef.current);
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
       }
     };
   }, []);
@@ -80,67 +82,76 @@ const QuestionNavigation = ({
     setColumnCount(isVeryWideScreen ? 2 : 1);
   }, [isVeryWideScreen]);
 
-  // Early return with hooks already called
+  // Group questions by skill level - memoized for performance
+  const skillLevelGroups = useMemo(() => {
+    if (!filteredQuestions || filteredQuestions.length === 0) {
+      return {beginner: [], intermediate: [], advanced: []};
+    }
+
+    const groups = {
+      beginner: [],
+      intermediate: [],
+      advanced: [],
+    };
+
+    // Fill the groups with questions
+    filteredQuestions.forEach(question => {
+      if (groups.hasOwnProperty(question.skillLevel)) {
+        groups[question.skillLevel].push(question);
+      } else {
+        // Default to intermediate if unknown skill level
+        groups.intermediate.push(question);
+      }
+    });
+
+    // Sort questions within each group alphabetically
+    Object.keys(groups).forEach(level => {
+      groups[level].sort((a, b) => {
+        const titleA = a.shortTitle || a.question;
+        const titleB = b.shortTitle || b.question;
+        return titleA.localeCompare(titleB);
+      });
+    });
+
+    return groups;
+  }, [filteredQuestions]);
+
+  // Early return with memoized empty object
   if (!filteredQuestions || filteredQuestions.length === 0) {
     return null;
   }
 
-  // Group questions by skill level
-  const skillLevelGroups = {
-    beginner: [],
-    intermediate: [],
-    advanced: []
-  };
-
-  // Fill the groups with questions
-  filteredQuestions.forEach(question => {
-    if (skillLevelGroups.hasOwnProperty(question.skillLevel)) {
-      skillLevelGroups[question.skillLevel].push(question);
-    } else {
-      // Default to intermediate if unknown skill level
-      skillLevelGroups.intermediate.push(question);
-    }
-  });
-
-  // Sort questions within each group alphabetically
-  Object.keys(skillLevelGroups).forEach(level => {
-    skillLevelGroups[level].sort((a, b) => {
-      const titleA = a.shortTitle || a.question;
-      const titleB = b.shortTitle || b.question;
-      return titleA.localeCompare(titleB);
-    });
-  });
-
   return (
-    <Box
-      ref={containerRef}
-      sx={contentBoxStyles}
-    >
-      <Typography
-        variant="subtitle1"
-        sx={titleStyles}
+      <Box
+          ref={containerRef}
+          sx={contentBoxStyles}
       >
-        Question Navigation
-      </Typography>
+        <Typography
+            variant="subtitle1"
+            sx={titleStyles}
+        >
+          Question Navigation
+        </Typography>
 
-      {/* Three-column layout for question skill levels */}
-      <Grid container spacing={SPACING.toUnits(SPACING.sm)} sx={{ mt: SPACING.toUnits(SPACING.sm) }}>
-        {Object.keys(skillLevelGroups).map((level) => (
-          <Grid item xs={12} md={4} key={level}>
-            <SkillLevelSection
-              level={level}
-              questions={skillLevelGroups[level]}
-              currentQuestion={currentQuestion}
-              gradesMap={gradesMap}
-              onQuestionSelect={onQuestionSelect}
-              columnCount={columnCount}
-              isSmallScreen={isExtraSmallScreen}
-            />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+        {/* Three-column layout for question skill levels */}
+        <Grid container spacing={SPACING.toUnits(SPACING.sm)}
+              sx={{mt: SPACING.toUnits(SPACING.sm)}}>
+          {Object.keys(skillLevelGroups).map((level) => (
+              <Grid item xs={12} md={4} key={level}>
+                <SkillLevelSection
+                    level={level}
+                    questions={skillLevelGroups[level]}
+                    currentQuestion={currentQuestion}
+                    gradesMap={gradesMap}
+                    onQuestionSelect={onQuestionSelect}
+                    columnCount={columnCount}
+                    isSmallScreen={isExtraSmallScreen}
+                />
+              </Grid>
+          ))}
+        </Grid>
+      </Box>
   );
 };
 
-export default QuestionNavigation;
+export default React.memo(QuestionNavigation);

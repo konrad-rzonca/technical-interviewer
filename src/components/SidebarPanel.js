@@ -1,11 +1,11 @@
-// src/components/SidebarPanel.js - Refactored with optimized JSS
-import { Box, Paper } from '@mui/material';
-import React from 'react';
-import { usePanelStyles } from '../utils/styleHooks';
+// src/components/SidebarPanel.js - Updated with unified styles
+import {Box, Paper} from '@mui/material';
+import React, {useMemo} from 'react';
+import {usePanelStyles} from '../utils/styles';
 
 /**
  * A reusable sidebar panel component that handles collapsed/expanded states
- * 
+ *
  * @param {Object} props
  * @param {React.ReactNode} props.children - The content to display inside the sidebar
  * @param {boolean} props.isCollapsed - Whether the sidebar is collapsed
@@ -28,29 +28,29 @@ const SidebarPanel = ({
   // Get panel styles using the optimized custom hook
   const panelStyles = usePanelStyles(isCollapsed, true);
 
-  // Additional styles for the Box container
-  const boxStyles = {
+  // Memoize box styles to prevent unnecessary recalculations
+  const boxStyles = useMemo(() => ({
     width: isCollapsed ? collapsedWidth : expandedWidth,
     minWidth: isCollapsed ? collapsedWidth : expandedWidth,
     transition: 'width 0.3s ease, min-width 0.3s ease',
-    ...(position === 'left' ? { mr: 2 } : { ml: 2 }),
-    ...sx
-  };
+    ...(position === 'left' ? {mr: 2} : {ml: 2}),
+    ...sx,
+  }), [isCollapsed, collapsedWidth, expandedWidth, position, sx]);
 
   return (
-    <Box sx={boxStyles} {...otherProps}>
-      <Paper
-        elevation={0}
-        sx={{
-          ...panelStyles,
-          height: '100%',
-          width: '100%'
-        }}
-      >
-        {children}
-      </Paper>
-    </Box>
+      <Box sx={boxStyles} {...otherProps}>
+        <Paper
+            elevation={0}
+            sx={{
+              ...panelStyles,
+              height: '100%',
+              width: '100%',
+            }}
+        >
+          {children}
+        </Paper>
+      </Box>
   );
 };
 
-export default SidebarPanel;
+export default React.memo(SidebarPanel);
