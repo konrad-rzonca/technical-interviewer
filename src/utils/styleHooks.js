@@ -1,7 +1,10 @@
-// src/utils/styleHooks.js - Optimized
+// src/utils/styleHooks.js - Optimized for CSS to JSS migration
 import { useMemo } from 'react';
 import { COLORS, TYPOGRAPHY, SPACING, COMPONENT_STYLES, SKILL_LEVEL_COLORS } from './theme';
 import globalStyles from './globalStyles';
+
+// Helper function to apply opacity to a color
+export const withOpacity = (color, opacity) => `${color}${opacity}`;
 
 /**
  * STYLE HOOK UTILITIES
@@ -81,37 +84,39 @@ export function useTitleStyles(options = {}) {
  * @returns {Object} Styles for the question item
  */
 export function useQuestionItemStyles(isSelected, isAnswered, skillLevel, options = {}) {
-  // Get the color for this skill level
-  const levelColors = getSkillLevelStyles(skillLevel);
-  const levelColor = levelColors.main;
+  return useMemo(() => {
+    // Move calculation inside useMemo for better performance
+    const levelColors = getSkillLevelStyles(skillLevel);
+    const levelColor = levelColors.main;
 
-  return useMemo(() => ({
-    padding: SPACING.toUnits(COMPONENT_STYLES.questionItem.padding),
-    borderRadius: SPACING.toUnits(COMPONENT_STYLES.questionItem.borderRadius),
-    cursor: 'pointer',
-    backgroundColor: isSelected
-      ? `${levelColor}15` // Selected background
-      : (isAnswered
-        ? COMPONENT_STYLES.questionItem.variants.answered.backgroundColor
-        : COMPONENT_STYLES.questionItem.variants.normal.backgroundColor),
-    border: isSelected
-      ? `2px solid ${levelColor}60` // Selected border
-      : (isAnswered
-        ? COMPONENT_STYLES.questionItem.variants.answered.border
-        : COMPONENT_STYLES.questionItem.variants.normal.border),
-    position: 'relative',
-    paddingLeft: SPACING.toUnits(COMPONENT_STYLES.questionItem.paddingLeft),
-    paddingRight: isAnswered ? SPACING.toUnits(COMPONENT_STYLES.questionItem.paddingLeft) : SPACING.toUnits(COMPONENT_STYLES.questionItem.padding),
-    '&:hover': {
-      backgroundColor: `${levelColor}15`,
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    },
-    minHeight: COMPONENT_STYLES.questionItem.minHeight,
-    marginBottom: SPACING.toUnits(COMPONENT_STYLES.questionItem.marginBottom),
-    display: 'flex',
-    alignItems: 'center',
-    ...options
-  }), [isSelected, isAnswered, levelColor, options]);
+    return {
+      padding: SPACING.toUnits(COMPONENT_STYLES.questionItem.padding),
+      borderRadius: SPACING.toUnits(COMPONENT_STYLES.questionItem.borderRadius),
+      cursor: 'pointer',
+      backgroundColor: isSelected
+        ? withOpacity(levelColor, '15') // Selected background
+        : (isAnswered
+          ? COMPONENT_STYLES.questionItem.variants.answered.backgroundColor
+          : COMPONENT_STYLES.questionItem.variants.normal.backgroundColor),
+      border: isSelected
+        ? `2px solid ${withOpacity(levelColor, '60')}` // Selected border
+        : (isAnswered
+          ? COMPONENT_STYLES.questionItem.variants.answered.border
+          : COMPONENT_STYLES.questionItem.variants.normal.border),
+      position: 'relative',
+      paddingLeft: SPACING.toUnits(COMPONENT_STYLES.questionItem.paddingLeft),
+      paddingRight: isAnswered ? SPACING.toUnits(COMPONENT_STYLES.questionItem.paddingLeft) : SPACING.toUnits(COMPONENT_STYLES.questionItem.padding),
+      '&:hover': {
+        backgroundColor: withOpacity(levelColor, '15'),
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      },
+      minHeight: COMPONENT_STYLES.questionItem.minHeight,
+      marginBottom: SPACING.toUnits(COMPONENT_STYLES.questionItem.marginBottom),
+      display: 'flex',
+      alignItems: 'center',
+      ...options
+    };
+  }, [isSelected, isAnswered, skillLevel, options]); // Include skillLevel instead of levelColor
 }
 
 /**
@@ -178,7 +183,7 @@ export function useSectionHeaderStyles(level, options = {}) {
     textAlign: 'center',
     paddingBottom: SPACING.toUnits(SPACING.sm),
     fontSize: TYPOGRAPHY.fontSize.h5,
-    borderBottom: `1px solid ${levelColors.main}20`,
+    borderBottom: `1px solid ${withOpacity(levelColors.main, '20')}`,
     ...options
   }), [level, levelColors, options]);
 }

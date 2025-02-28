@@ -1,4 +1,4 @@
-// src/components/QuestionItem.js - Refactored
+// src/components/QuestionItem.js - Refactored with optimized JSS
 import React from 'react';
 import { Box, Typography, Tooltip, Rating } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -6,7 +6,8 @@ import {
   useQuestionItemStyles,
   useItemTextStyles,
   getSkillLevelStyles,
-  getIndicatorColor
+  getIndicatorColor,
+  withOpacity
 } from '../utils/styleHooks';
 import { COLORS, TYPOGRAPHY, SPACING } from '../utils/theme';
 
@@ -19,7 +20,7 @@ const getQuestionRating = (questionId, gradesMap) => {
   return gradesMap?.[questionId] || 0;
 };
 
-// Memoized component to prevent unnecessary re-renders
+// Memoized component to prevent unnecessary re-renders - optimized for JSS
 const QuestionItem = React.memo(({
   question,
   currentQuestion,
@@ -31,7 +32,7 @@ const QuestionItem = React.memo(({
   const isAnswered = isQuestionAnswered(question.id, gradesMap);
   const rating = getQuestionRating(question.id, gradesMap);
 
-  // Get styles from style hooks
+  // Get styles from optimized style hooks
   const itemStyles = useQuestionItemStyles(isSelected, isAnswered, question.skillLevel);
   const textStyles = useItemTextStyles(isSelected, isSmallScreen);
 
@@ -73,7 +74,7 @@ const QuestionItem = React.memo(({
             borderRadius: '50%',
             backgroundColor: indicatorColor,
             position: 'absolute',
-            left: SPACING.toUnits(SPACING.sm),
+            left: SPACING.toUnits(SPACING.lg),
             top: '50%',
             transform: 'translateY(-50%)'
           }}

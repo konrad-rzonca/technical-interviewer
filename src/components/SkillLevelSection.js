@@ -1,4 +1,4 @@
-// src/components/SkillLevelSection.js - Refactored
+// src/components/SkillLevelSection.js - Refactored with optimized JSS
 import React from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import QuestionItem from './QuestionItem';
@@ -6,7 +6,8 @@ import {
   useSkillLevelSectionStyles,
   useSectionHeaderStyles,
   getSkillLevelStyles,
-  globalStyles
+  globalStyles,
+  withOpacity
 } from '../utils/styleHooks';
 import { SPACING, TYPOGRAPHY } from '../utils/theme';
 
@@ -46,7 +47,7 @@ const SkillLevelSection = ({
 
       <Box sx={{
         overflowY: 'auto',
-        // Customized scrollbar styling from style hooks
+        // Customized scrollbar styling from style hooks - pure JSS approach
         ...globalStyles.scrollbar,
         // Apply skill level colors to scrollbar thumb
         '&::-webkit-scrollbar-thumb': {

@@ -9,7 +9,7 @@ import { COLORS, TYPOGRAPHY, SPACING } from './theme';
  * in loops, conditionals, and nested components.
  */
 
-// Scrollbar styling
+// Scrollbar styling - migrated from CSS to JSS
 export const scrollbarStyles = {
   '&::-webkit-scrollbar': {
     width: '8px',
@@ -38,7 +38,7 @@ export const codeStyles = {
   fontSize: '85%',
 };
 
-// Pre block for code examples
+// Pre block for code examples - enhanced with styles from main.css
 export const preStyles = {
   backgroundColor: 'rgba(0, 0, 0, 0.05)',
   padding: SPACING.toUnits(SPACING.md),
@@ -57,6 +57,8 @@ export const panelStyles = {
   borderRadius: SPACING.toUnits(SPACING.borderRadius),
   backgroundColor: COLORS.background.paper,
   boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+  height: '100%',
+  overflow: 'auto',
 };
 
 // Card styling - for interactive elements
@@ -227,6 +229,69 @@ export const indicatorStyles = {
   },
 };
 
+// Body styles migrated from main.css
+export const bodyStyles = {
+  margin: 0,
+  padding: 0,
+  fontFamily: TYPOGRAPHY.fontFamily,
+  WebkitFontSmoothing: 'antialiased',
+  MozOsxFontSmoothing: 'grayscale',
+  backgroundColor: COLORS.background.light,
+  overflow: 'auto',
+  height: '100vh',
+  width: '100vw',
+};
+
+// Root styles migrated from main.css
+export const rootStyles = {
+  height: '100%',
+  width: '100%',
+  overflow: 'auto',
+};
+
+// Main container styles migrated from main.css
+export const mainContainerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  height: '100%',
+  minHeight: {
+    xs: '600px',
+    sm: '700px',
+    md: '800px'
+  },
+  backgroundColor: COLORS.background.light,
+};
+
+// Three column layout styles migrated from main.css
+export const threeColumnLayoutStyles = {
+  display: 'flex',
+  height: 'calc(100vh - 48px)',
+  overflow: 'auto',
+};
+
+// Panel container styles migrated from main.css
+export const panelContainerStyles = {
+  height: '100%',
+  minHeight: '600px',
+  overflow: 'auto',
+};
+
+// Media queries migrated from main.css
+export const mediaQueries = {
+  smallHeight: {
+    '@media (max-height: 900px)': {
+      'body, html, #root': {
+        overflow: 'auto',
+      },
+      '.panel-container': {
+        height: 'auto',
+        minHeight: '600px',
+      },
+    },
+  },
+};
+
 // Consolidated export of all global styles
 const globalStyles = {
   scrollbar: scrollbarStyles,
@@ -241,6 +306,12 @@ const globalStyles = {
   list: listStyles,
   tooltip: tooltipStyles,
   indicator: indicatorStyles,
+  body: bodyStyles,
+  root: rootStyles,
+  mainContainer: mainContainerStyles,
+  threeColumnLayout: threeColumnLayoutStyles,
+  panelContainer: panelContainerStyles,
+  media: mediaQueries,
 };
 
 export default globalStyles;

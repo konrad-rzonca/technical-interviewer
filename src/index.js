@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import './styles/main.css';
+// CSS import removed - using JSS only
 import App from './App';
 
 // Suppress ResizeObserver error messages in the console

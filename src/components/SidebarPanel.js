@@ -1,4 +1,4 @@
-// src/components/SidebarPanel.js
+// src/components/SidebarPanel.js - Refactored with optimized JSS
 import React from 'react';
 import { Box, Paper } from '@mui/material';
 import { usePanelStyles } from '../utils/styleHooks';
@@ -25,7 +25,7 @@ const SidebarPanel = ({
   onToggle,
   ...otherProps
 }) => {
-  // Get panel styles using the custom hook
+  // Get panel styles using the optimized custom hook
   const panelStyles = usePanelStyles(isCollapsed, true);
 
   // Additional styles for the Box container
