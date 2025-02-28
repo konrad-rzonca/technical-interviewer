@@ -66,7 +66,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
   const getLevelColor = (index) => {
     switch (index) {
       case 0: return '#66bb6a'; // green for Basic
-      case 1: return '#ffca28'; // amber/yellow for Intermediate
+      case 1: return '#ffb300'; // amber/yellow for Intermediate - changed from #ffca28 to more intense #ffb300
       case 2: return '#fb8c00'; // deeper orange for Advanced (no red)
       default: return '#9e9e9e'; // gray default
     }

@@ -301,7 +301,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const getSkillLevelColor = (level) => {
     switch (level) {
       case 'beginner': return '#66bb6a'; // green
-      case 'intermediate': return '#ffca28'; // amber/yellow
+      case 'intermediate': return '#ffb300'; // amber/yellow - changed from #ffca28 to more intense #ffb300
       case 'advanced': return '#fb8c00'; // deeper orange (no red)
       default: return '#9e9e9e'; // gray
     }
@@ -374,12 +374,18 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
   const totalQuestions = filteredQuestions.length;
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh' }}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+      minHeight: { xs: '600px', sm: '700px', md: '800px' }
+    }}>
       {/* Header (Minimal) */}
       <AppBar position="static" elevation={0} color="transparent">
         <Toolbar variant="dense" sx={{ minHeight: 48, justifyContent: 'space-between' }}>
           <Typography variant="h6" sx={{ fontWeight: 'normal' }}>
-            Technical Interview
+            Technical Interviewer
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -541,8 +547,21 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
         flexGrow: 1,
         display: 'flex',
         p: 2,
-        height: 'calc(100vh - 64px)',
-        overflow: 'hidden' // Prevent outer container from scrolling
+        // Change from fixed height to flexible with minimum height
+        height: 'auto',
+        minHeight: 'calc(100vh - 64px)',
+        // Allow scrolling for smaller screens
+        overflow: 'auto',
+        '@media (max-height: 900px)': {
+          minHeight: '600px',
+          height: 'auto',
+          overflow: 'auto'
+        },
+        // Add CSS containment to limit ResizeObserver scope
+        contain: 'layout style',
+        // Add maximum width constraint for very small screens
+        maxWidth: '100vw',
+        boxSizing: 'border-box'
       }}>
         {/* Left Sidebar - Categories */}
         <CategorySidebar
@@ -569,7 +588,7 @@ const InterviewPanel = ({ interviewState, updateInterviewState }) => {
           sx={{
             flexGrow: 1,
             p: 3,
-            border: '1px solid #e0e0e0',
+            border: '1px solid #cccccc', // Changed from #e0e0e0 to more intense #cccccc
             borderRadius: 2,
             overflow: 'hidden', // Prevent entire content area from scrolling
             display: 'flex',

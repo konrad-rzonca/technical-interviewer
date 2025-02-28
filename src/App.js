@@ -4,6 +4,7 @@ import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import InterviewPanel from './components/InterviewPanel';
 import HealthCheck from './components/HealthCheck';
+import ErrorBoundary from './components/ErrorBoundary';
 import './styles/main.css';
 
 // Create a minimal theme with subtle colors
@@ -29,7 +30,7 @@ const theme = createTheme({
       light: '#e8f5e9',
     },
     warning: {
-      main: '#ffca28',
+      main: '#ffb300', // Updated to more intense yellow
       light: '#fff8e1',
     }
   },
@@ -99,13 +100,23 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#fafafa' }}>
+        <Box sx={{
+          display: 'flex',
+          minHeight: '100vh',
+          bgcolor: '#fafafa',
+          // Always enable scrolling for the main app container
+          overflow: 'auto',
+          // Set a minimum height to ensure UI is usable on small screens
+          minHeight: { xs: '600px', sm: '700px', md: '800px' }
+        }}>
           <Routes>
             <Route path="/" element={
-              <InterviewPanel
-                interviewState={interviewState}
-                updateInterviewState={updateInterviewState}
-              />
+              <ErrorBoundary>
+                <InterviewPanel
+                  interviewState={interviewState}
+                  updateInterviewState={updateInterviewState}
+                />
+              </ErrorBoundary>
             } />
             <Route path="/healtz" element={<HealthCheck />} />
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,5 +1,5 @@
-// src/components/QuestionNavigation.js
-import React from 'react';
+// src/components/QuestionNavigation.js - with improved column splitting
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -8,8 +8,8 @@ import {
   Grid,
   Paper,
   Rating,
-  useMediaQuery,
-  useTheme
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -21,9 +21,70 @@ const QuestionNavigation = ({
   getSkillLevelColor
 }) => {
   const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.up('md'));
+  const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // Container ref to measure available width
+  const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+  // Default to 2 columns for better UX
+  const [columnCount, setColumnCount] = useState(2);
+
+  // IMPORTANT: Move utility functions outside of render to prevent hooks issues
+  const getBorderOpacity = (level) => {
+    if (level === 'intermediate') {
+      return '55'; // 50% → 55%
+    }
+    return '50'; // Keep others at 50%
+  };
+
+  const getDotColor = (level) => {
+    if (level === 'intermediate') {
+      return '#ffe082'; // Less intense yellow for intermediate dots
+    }
+    return getSkillLevelColor(level);
+  };
+
+  // ResizeObserver for content-aware layout
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const updateWidth = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth;
+        setContainerWidth(width);
+
+
+        if (width >= 1200) {  // Minimum to look well on smaller screens
+          setColumnCount(2);
+        } else {
+          setColumnCount(1);
+        }
+      }
+    };
+
+    // Initial measurement
+    updateWidth();
+
+    // Create ResizeObserver
+    const resizeObserver = new ResizeObserver(entries => {
+      // Debounce resize events to avoid loops
+      window.requestAnimationFrame(() => {
+        updateWidth();
+      });
+    });
+
+    // Observe the container
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      // Clean up observer when component unmounts
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  // Early return with hooks already called
   if (!filteredQuestions || filteredQuestions.length === 0) {
     return null;
   }
@@ -57,46 +118,21 @@ const QuestionNavigation = ({
   // Define labels and colors for each skill level
   const skillLevelConfig = {
     beginner: { label: "Basic", color: '#66bb6a' },
-    intermediate: { label: "Intermediate", color: '#ffca28' },
+    intermediate: { label: "Intermediate", color: '#ffb300' },
     advanced: { label: "Advanced", color: '#fb8c00' }
   };
 
-  // Determine grid columns based on screen size and question count
-  // This will divide questions into multiple columns if there's enough space
-  const getGridColumns = (level) => {
-    const questionCount = skillLevelGroups[level].length;
-
-    if (questionCount <= 3) return 1; // Always single column for 3 or fewer questions
-
-    if (isLargeScreen) {
-      // On very large screens
-      if (questionCount > 15) return 3; // 3 columns for many questions
-      if (questionCount > 6) return 2; // 2 columns for medium number
-      return 1; // 1 column for few questions
-    } else if (isMediumScreen) {
-      return questionCount > 8 ? 2 : 1; // 2 columns if more than 8 questions on medium screens
-    }
-
-    return 1; // Default to 1 column on small screens
-  };
-
-  // Get border opacity with 10% increased intensity for yellow (Intermediate)
-  const getBorderOpacity = (level) => {
-    // Increase yellow (Intermediate) border intensity by 10%
-    if (level === 'intermediate') {
-      return '55'; // 50% → 55%
-    }
-    return '50'; // Keep others at 50%
-  };
-
   return (
-    <Box sx={{
-      mt: 0.5,
-      flexGrow: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'auto'
-    }}>
+    <Box
+      ref={containerRef}
+      sx={{
+        mt: 0.5,
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'auto'
+      }}
+    >
       <Divider />
 
       <Typography variant="subtitle1" sx={{ mt: 1, mb: 0.5, fontWeight: 500 }}>
@@ -116,7 +152,8 @@ const QuestionNavigation = ({
                 display: 'flex',
                 flexDirection: 'column',
                 backgroundColor: `${skillLevelConfig[level].color}05`,
-                height: 'auto'
+                height: '100%',
+                minHeight: '100px',
               }}
             >
               <Typography
@@ -127,13 +164,11 @@ const QuestionNavigation = ({
                   fontWeight: 500,
                   textAlign: 'center',
                   pb: 0.5
-                  // Removed borderBottom
                 }}
               >
                 {skillLevelConfig[level].label} ({skillLevelGroups[level].length})
               </Typography>
 
-              {/* Scrollable container with adaptive multi-column grid */}
               <Box sx={{
                 overflowY: 'auto',
                 '&::-webkit-scrollbar': {
@@ -147,10 +182,11 @@ const QuestionNavigation = ({
                   borderRadius: '3px',
                 },
                 flexGrow: 1,
-                p: 0.5 // Add small padding around the grid
+                p: 0.5,
+                minHeight: '150px',
               }}>
-                {/* Nested grid for multiple columns */}
-                <Grid container spacing={0.5} columns={getGridColumns(level)}>
+                {/* FORCED 2 COLUMNS FOR ALL CATEGORIES */}
+                <Grid container spacing={0.5} columns={columnCount}>
                   {skillLevelGroups[level].map((question) => {
                     const isAnswered = gradesMap[question.id] !== undefined;
                     const rating = gradesMap[question.id] || 0;
@@ -199,8 +235,8 @@ const QuestionNavigation = ({
                                 backgroundColor: `${skillLevelConfig[level].color}10`,
                                 boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                               },
-                              minHeight: '36px', // Ensure minimum height for small content
-                              mb: 0.5, // Small margin between items
+                              minHeight: '36px',
+                              mb: 0.5,
                               display: 'flex',
                               alignItems: 'center'
                             }}
@@ -211,7 +247,7 @@ const QuestionNavigation = ({
                                 width: 12,
                                 height: 12,
                                 borderRadius: '50%',
-                                backgroundColor: getSkillLevelColor(question.skillLevel),
+                                backgroundColor: getDotColor(question.skillLevel),
                                 position: 'absolute',
                                 left: 8,
                                 top: '50%',
@@ -242,10 +278,11 @@ const QuestionNavigation = ({
                                 width: '100%',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap' // Prevent wrapping in multi-column layout
+                                whiteSpace: 'nowrap',
+                                fontSize: isExtraSmallScreen ? '0.8rem' : '0.875rem',
+                                paddingRight: '2px'
                               }}
                             >
-                              {/* Use short title if available */}
                               {question.shortTitle || question.question.split(' ').slice(0, 5).join(' ')}
                             </Typography>
                           </Box>

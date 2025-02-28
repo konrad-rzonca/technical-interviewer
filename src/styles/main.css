@@ -7,7 +7,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #fafafa;
-  overflow: hidden;
+  /* Changed from hidden to auto to allow scrolling */
+  overflow: auto;
   height: 100vh;
   width: 100vw;
 }
@@ -16,7 +17,8 @@ html,
 #root {
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  /* Changed from hidden to auto to allow scrolling */
+  overflow: auto;
 }
 
 code {
@@ -72,7 +74,8 @@ pre {
 .three-column-layout {
   display: flex;
   height: calc(100vh - 48px);
-  overflow: hidden;
+  /* Changed from hidden to auto to allow scrolling */
+  overflow: auto;
 }
 
 .sidebar {
@@ -193,7 +196,7 @@ pre {
 }
 
 .level-intermediate {
-  color: #ff9800;
+  color: #ffb300; /* Updated to more intense yellow */
 }
 
 .level-advanced {
@@ -212,11 +215,24 @@ pre {
 
 /* Make panels fill available height */
 .panel-container {
-  height: calc(100vh - 64px);
-  overflow: hidden;
+  height: 100%;
+  min-height: 600px; /* Ensure minimum height for small screens */
+  overflow: auto; /* Allow scrolling within panels */
 }
 
 .panel {
   height: 100%;
   overflow: auto;
+}
+
+/* Media query for height-constrained screens */
+@media (max-height: 900px) {
+  body, html, #root {
+    overflow: auto;
+  }
+  
+  .panel-container {
+    height: auto;
+    min-height: 600px;
+  }
 }

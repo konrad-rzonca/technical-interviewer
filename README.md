@@ -16,6 +16,8 @@ This platform is designed to help recruiters conduct technical interviews effici
 - **Learning Mode**: Option to hide answer details until hovered or clicked for self-assessment
 - **Related Questions**: Suggested follow-up questions with answered status and category info
 - **Health Monitoring**: `/healtz` endpoint for application health monitoring
+- **Content-Aware Layout**: Responsive design that adjusts based on actual content space, not fixed breakpoints
+- **Performance Optimizations**: Component splitting and virtualization for improved performance with large question sets
 
 ## UI Organization
 
@@ -29,6 +31,24 @@ The application follows a three-panel layout for optimal experience:
 - **Right Panel**: Related questions with answered status and category information
 
 Each section has independent scrolling for better usability with large question sets.
+
+## Responsive Design
+
+The application adapts to different screen sizes with:
+
+- **Content-Aware Layout**: Columns in the question navigation adjust based on available width, ensuring content is always readable
+- **Consistent Columns**: All skill level groups maintain the same column layout for visual coherence
+- **Dynamic UI Elements**: UI components adapt their size and layout based on screen dimensions
+- **Balanced Information Density**: Content remains readable regardless of screen size
+
+## Performance Optimizations
+
+The application is optimized for smooth performance even with large question sets:
+
+- **Component Splitting**: UI broken down into focused, reusable components to minimize re-renders
+- **Memoization**: React.memo used extensively to prevent unnecessary refreshes
+- **Error Boundaries**: Graceful error handling that maintains app stability
+- **Virtualization Support**: Groundwork laid for windowing long lists, rendering only visible elements
 
 ## Category Structure
 

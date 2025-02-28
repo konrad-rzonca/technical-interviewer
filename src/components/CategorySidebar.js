@@ -60,7 +60,7 @@ const CategorySidebar = ({
         maxWidth: 300,
         mr: 2,
         p: 2,
-        border: '1px solid #e0e0e0',
+        border: '1px solid #cccccc', // Changed from #e0e0e0 to more intense #cccccc
         borderRadius: 2,
         overflow: 'auto'
       }}

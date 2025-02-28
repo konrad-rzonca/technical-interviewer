@@ -178,7 +178,7 @@ const AnswerLevelSections = ({ answerLevels }) => {
   const getLevelColor = (index) => {
     switch (index) {
       case 0: return '#66bb6a'; // green
-      case 1: return '#ffca28'; // amber/yellow
+      case 1: return '#ffb300'; // amber/yellow - changed from #ffca28 to more intense #ffb300
       case 2: return '#fb8c00'; // deeper orange (no red)
       default: return '#9e9e9e'; // gray
     }
