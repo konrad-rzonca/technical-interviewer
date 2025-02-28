@@ -1,15 +1,7 @@
-// src/utils/styleHooks.js
-// A consolidated file with all style hooks and utilities
+// src/utils/styleHooks.js - Optimized
 import { useMemo } from 'react';
-import { useTheme } from '@mui/material/styles';
-import {
-  COLORS,
-  TYPOGRAPHY,
-  SPACING,
-  LAYOUT,
-  COMPONENT_STYLES,
-  SKILL_LEVEL_COLORS
-} from './theme';
+import { COLORS, TYPOGRAPHY, SPACING, COMPONENT_STYLES, SKILL_LEVEL_COLORS } from './theme';
+import globalStyles from './globalStyles';
 
 /**
  * STYLE HOOK UTILITIES
@@ -18,20 +10,20 @@ import {
  * They ensure consistency across the application.
  */
 
-// Get skill level color information
+/**
+ * Get styling information for a specific skill level
+ * @param {string} level - The skill level ('beginner', 'intermediate', 'advanced')
+ * @returns {Object} Style information for the level
+ */
 export function getSkillLevelStyles(level) {
   return SKILL_LEVEL_COLORS[level] || SKILL_LEVEL_COLORS.beginner;
 }
 
-// Get border opacity for level (used for consistency)
-export function getBorderOpacity(level) {
-  if (level === 'intermediate') {
-    return '60'; // Intermediate has higher contrast
-  }
-  return '50'; // Default opacity
-}
-
-// Get indicator dot color for skill level
+/**
+ * Get the indicator color for a skill level
+ * @param {string} level - The skill level
+ * @returns {string} Color value for the indicator
+ */
 export function getIndicatorColor(level) {
   if (level === 'intermediate') {
     return SKILL_LEVEL_COLORS.intermediate.light; // Softer yellow for dots
@@ -46,33 +38,48 @@ export function getIndicatorColor(level) {
  * Each hook follows a consistent naming pattern: use[Component]Styles
  */
 
-// Panel styles hook - for sidebar panels and main content panels
+/**
+ * Hook for panel styling
+ * @param {boolean} isCollapsed - Whether the panel is collapsed
+ * @param {boolean} isMainPanel - Whether the panel is a main content panel
+ * @param {Object} options - Additional style overrides
+ * @returns {Object} Styles for the panel
+ */
 export function usePanelStyles(isCollapsed = false, isMainPanel = false, options = {}) {
   return useMemo(() => ({
+    ...globalStyles.panel,
     width: '100%',
     height: '100%',
     border: isMainPanel ? COMPONENT_STYLES.panel.border : 'none',
-    borderRadius: COMPONENT_STYLES.panel.borderRadius,
-    overflow: 'auto',
     transition: 'width 0.3s ease, min-width 0.3s ease',
     padding: isCollapsed
       ? SPACING.toUnits(COMPONENT_STYLES.panel.paddingCollapsed)
       : SPACING.toUnits(COMPONENT_STYLES.panel.padding),
     ...options
-  }), [isCollapsed, options]);
+  }), [isCollapsed, isMainPanel, options]);
 }
 
-// Title styles hook - for section headings and panel titles
+/**
+ * Hook for title styling
+ * @param {Object} options - Additional style overrides
+ * @returns {Object} Styles for the title
+ */
 export function useTitleStyles(options = {}) {
   return useMemo(() => ({
-    fontSize: TYPOGRAPHY.fontSize.h4,
-    fontWeight: TYPOGRAPHY.fontWeight.medium,
+    ...globalStyles.typography.heading4,
     marginBottom: SPACING.toUnits(SPACING.md),
     ...options
   }), [options]);
 }
 
-// Question item styles hook - for question items in lists
+/**
+ * Hook for question item styling
+ * @param {boolean} isSelected - Whether the item is selected
+ * @param {boolean} isAnswered - Whether the question has been answered
+ * @param {string} skillLevel - The skill level of the question
+ * @param {Object} options - Additional style overrides
+ * @returns {Object} Styles for the question item
+ */
 export function useQuestionItemStyles(isSelected, isAnswered, skillLevel, options = {}) {
   // Get the color for this skill level
   const levelColors = getSkillLevelStyles(skillLevel);
@@ -107,7 +114,13 @@ export function useQuestionItemStyles(isSelected, isAnswered, skillLevel, option
   }), [isSelected, isAnswered, levelColor, options]);
 }
 
-// Text styles hook - for question text, category names, etc.
+/**
+ * Hook for text styling in items
+ * @param {boolean} isSelected - Whether the item is selected
+ * @param {boolean} isSmallScreen - Whether the screen is small
+ * @param {Object} options - Additional style overrides
+ * @returns {Object} Styles for the text
+ */
 export function useItemTextStyles(isSelected, isSmallScreen = false, options = {}) {
   return useMemo(() => ({
     fontWeight: isSelected
@@ -127,7 +140,12 @@ export function useItemTextStyles(isSelected, isSmallScreen = false, options = {
   }), [isSelected, isSmallScreen, options]);
 }
 
-// Skill level section styles hook - for sections in question navigation
+/**
+ * Hook for skill level section styling
+ * @param {string} level - The skill level
+ * @param {Object} options - Additional style overrides
+ * @returns {Object} Styles for the skill level section
+ */
 export function useSkillLevelSectionStyles(level, options = {}) {
   const levelColors = getSkillLevelStyles(level);
 
@@ -144,7 +162,12 @@ export function useSkillLevelSectionStyles(level, options = {}) {
   }), [level, levelColors, options]);
 }
 
-// Section header styles hook - for skill level section headers
+/**
+ * Hook for section header styling
+ * @param {string} level - The skill level
+ * @param {Object} options - Additional style overrides
+ * @returns {Object} Styles for the section header
+ */
 export function useSectionHeaderStyles(level, options = {}) {
   const levelColors = getSkillLevelStyles(level);
 
@@ -160,7 +183,12 @@ export function useSectionHeaderStyles(level, options = {}) {
   }), [level, levelColors, options]);
 }
 
-// Answer level styles hook - for answer insights sections
+/**
+ * Hook for answer level styling
+ * @param {string} level - The skill level
+ * @param {Object} options - Additional style overrides
+ * @returns {Object} Styles for the answer level
+ */
 export function useAnswerLevelStyles(level, options = {}) {
   const index = ['beginner', 'intermediate', 'advanced'].indexOf(level);
   const styles = COMPONENT_STYLES.answerLevel(index);
@@ -175,12 +203,16 @@ export function useAnswerLevelStyles(level, options = {}) {
   }), [level, styles, options]);
 }
 
-// Responsive width hook - helps components respond to container width
+/**
+ * Hook for responsive width
+ * @param {React.MutableRefObject} containerRef - Ref to the container element
+ * @returns {number} The current width of the container
+ */
 export function useResponsiveWidth(containerRef) {
-  const theme = useTheme();
   const [width, setWidth] = React.useState(0);
+  const { useEffect } = React;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!containerRef.current) return;
 
     const updateWidth = () => {
@@ -212,40 +244,5 @@ export function useResponsiveWidth(containerRef) {
   return width;
 }
 
-// CSS-in-JS styles for implementing functionality from main.css
-export const globalStyles = {
-  // Scrollbar styling
-  scrollbar: {
-    '&::-webkit-scrollbar': {
-      width: '8px',
-      height: '8px',
-    },
-    '&::-webkit-scrollbar-track': {
-      background: 'transparent',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      background: COLORS.grey[300],
-      borderRadius: '4px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      background: COLORS.grey[400],
-    },
-  },
-
-  // Code block styling
-  code: {
-    fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace',
-    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-    padding: '0.2em 0.4em',
-    borderRadius: '3px',
-    fontSize: '85%',
-  },
-
-  pre: {
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-    padding: '1em',
-    borderRadius: '5px',
-    overflowX: 'auto',
-    margin: '0.5em 0',
-  },
-};
+// Export globalStyles for direct use in components
+export { globalStyles };

@@ -1,13 +1,14 @@
-// src/components/SkillLevelSection.js
+// src/components/SkillLevelSection.js - Refactored
 import React from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import QuestionItem from './QuestionItem';
 import {
   useSkillLevelSectionStyles,
   useSectionHeaderStyles,
-  getSkillLevelStyles
+  getSkillLevelStyles,
+  globalStyles
 } from '../utils/styleHooks';
-import { globalStyles } from '../utils/styleHooks';
+import { SPACING, TYPOGRAPHY } from '../utils/theme';
 
 const SkillLevelSection = ({
   level,
@@ -49,15 +50,15 @@ const SkillLevelSection = ({
         ...globalStyles.scrollbar,
         // Apply skill level colors to scrollbar thumb
         '&::-webkit-scrollbar-thumb': {
-          backgroundColor: `${levelStyles.border}`,
-          borderRadius: '4px',
+          backgroundColor: levelStyles.border,
+          borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
         },
         flexGrow: 1,
-        padding: 0.75,
-        minHeight: '180px',
+        padding: SPACING.toUnits(SPACING.xs),
+        minHeight: SPACING.toUnits(SPACING.xl) * 5,
       }}>
         {/* Responsive grid based on container width */}
-        <Grid container spacing={1} columns={columnCount}>
+        <Grid container spacing={SPACING.toUnits(SPACING.xs)} columns={columnCount}>
           {questions.map((question) => (
             <Grid item xs={1} key={question.id}>
               <QuestionItem
@@ -77,9 +78,9 @@ const SkillLevelSection = ({
             variant="body2"
             sx={{
               color: 'text.secondary',
-              py: 2,
+              py: SPACING.toUnits(SPACING.sm),
               textAlign: 'center',
-              fontSize: '1.15rem'
+              fontSize: TYPOGRAPHY.fontSize.regularText
             }}
           >
             No {levelLabel.toLowerCase()} questions available

@@ -1,8 +1,9 @@
-// src/components/QuestionNavigation.js
+// src/components/QuestionNavigation.js - Refactored
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography, Divider, Grid, useTheme, useMediaQuery } from '@mui/material';
-import { LAYOUT, SKILL_LEVELS } from '../utils/constants';
 import SkillLevelSection from './SkillLevelSection';
+import { useTitleStyles } from '../utils/styleHooks';
+import { LAYOUT, TYPOGRAPHY, SPACING } from '../utils/theme';
 
 const QuestionNavigation = ({
   filteredQuestions,
@@ -12,7 +13,7 @@ const QuestionNavigation = ({
 }) => {
   const theme = useTheme();
   const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  // Use the column threshold from constants
+  // Use the column threshold from theme
   const isVeryWideScreen = useMediaQuery(`(min-width:${LAYOUT.COLUMN_THRESHOLD}px)`);
 
   // Container ref to measure available width
@@ -20,6 +21,13 @@ const QuestionNavigation = ({
   const [containerWidth, setContainerWidth] = useState(0);
   // Default to 1 column unless on very wide screens
   const [columnCount, setColumnCount] = useState(isVeryWideScreen ? 2 : 1);
+
+  // Get title styles from hooks
+  const titleStyles = useTitleStyles({
+    mt: SPACING.toUnits(SPACING.sm),
+    mb: SPACING.toUnits(SPACING.md),
+    fontSize: TYPOGRAPHY.fontSize.h5
+  });
 
   // ResizeObserver for content-aware layout
   useEffect(() => {
@@ -102,7 +110,7 @@ const QuestionNavigation = ({
     <Box
       ref={containerRef}
       sx={{
-        mt: 0.5,
+        mt: SPACING.toUnits(SPACING.xs),
         flexGrow: 1,
         display: 'flex',
         flexDirection: 'column',
@@ -113,18 +121,13 @@ const QuestionNavigation = ({
 
       <Typography
         variant="subtitle1"
-        sx={{
-          mt: 2,
-          mb: 1.5,
-          fontWeight: 500,
-          fontSize: '1.35rem'
-        }}
+        sx={titleStyles}
       >
         Question Navigation
       </Typography>
 
       {/* Three-column layout for question skill levels */}
-      <Grid container spacing={2} sx={{ mt: 0.5 }}>
+      <Grid container spacing={SPACING.toUnits(SPACING.sm)} sx={{ mt: SPACING.toUnits(SPACING.xs) }}>
         {Object.keys(skillLevelGroups).map((level) => (
           <Grid item xs={12} md={4} key={level}>
             <SkillLevelSection

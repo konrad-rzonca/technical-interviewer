@@ -1,4 +1,4 @@
-// src/components/AnswerLevels.js
+// src/components/AnswerLevels.js - Refactored
 import React, { useState } from 'react';
 import {
   Accordion,
@@ -9,6 +9,8 @@ import {
   Chip
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { getSkillLevelStyles, globalStyles } from '../utils/styleHooks';
+import { SPACING, TYPOGRAPHY } from '../utils/theme';
 
 const AnswerLevels = ({ answerLevels }) => {
   const [expanded, setExpanded] = useState([]);
@@ -23,23 +25,35 @@ const AnswerLevels = ({ answerLevels }) => {
     });
   };
 
-  // Define difficulty level colors
-  const getLevelColor = (level) => {
-    switch (level) {
-      case 1:
-        return { color: '#4caf50', text: 'Basic' }; // Green
-      case 2:
-        return { color: '#ff9800', text: 'Intermediate' }; // Orange
-      case 3:
-        return { color: '#f44336', text: 'Advanced' }; // Red
-      default:
-        return { color: '#9e9e9e', text: 'Unknown' }; // Grey
-    }
+  // Get theme-based styles for each difficulty level
+  const getLevelStyles = (level) => {
+    // Map the level number to our standardized level names
+    const levelMap = {
+      1: 'beginner',     // Basic
+      2: 'intermediate', // Intermediate
+      3: 'advanced'      // Advanced
+    };
+
+    const levelKey = levelMap[level] || 'beginner';
+    const styles = getSkillLevelStyles(levelKey);
+
+    // Map the level to a text label
+    const textMap = {
+      1: 'Basic',
+      2: 'Intermediate',
+      3: 'Advanced'
+    };
+
+    return { ...styles, text: textMap[level] || 'Unknown' };
   };
 
   if (!answerLevels || answerLevels.length === 0) {
     return (
-      <Typography variant="body2" color="text.secondary">
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+      >
         No answer levels available for this question.
       </Typography>
     );
@@ -47,22 +61,32 @@ const AnswerLevels = ({ answerLevels }) => {
 
   return (
     <Box>
-      <Typography variant="subtitle2" gutterBottom>
+      <Typography
+        variant="subtitle2"
+        gutterBottom
+        sx={{
+          fontSize: TYPOGRAPHY.fontSize.regularText,
+          mb: SPACING.toUnits(SPACING.sm)
+        }}
+      >
         Click to reveal different levels of answer detail:
       </Typography>
-      
+
       {answerLevels
         .sort((a, b) => a.level - b.level)
         .map((answerLevel) => {
-          const levelInfo = getLevelColor(answerLevel.level);
+          const levelStyles = getLevelStyles(answerLevel.level);
+
           return (
             <Accordion
               key={answerLevel.level}
               expanded={expanded.includes(answerLevel.level)}
               onChange={() => handleToggle(answerLevel.level)}
-              sx={{ 
-                mb: 1,
-                border: `1px solid ${levelInfo.color}`,
+              sx={{
+                mb: SPACING.toUnits(SPACING.sm),
+                border: `1px solid ${levelStyles.main}`,
+                borderRadius: `${SPACING.toUnits(SPACING.borderRadius / 2)}px !important`,
+                overflow: 'hidden',
                 '&:before': {
                   display: 'none',
                 }
@@ -72,36 +96,45 @@ const AnswerLevels = ({ answerLevels }) => {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`answer-level-${answerLevel.level}-content`}
                 id={`answer-level-${answerLevel.level}-header`}
-                sx={{ 
-                  bgcolor: `${levelInfo.color}20`, // 20% opacity
+                sx={{
+                  bgcolor: `${levelStyles.main}15`, // 15% opacity
+                  '&:hover': {
+                    bgcolor: `${levelStyles.main}20`, // 20% opacity on hover
+                  }
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Chip 
+                  <Chip
                     label={`Level ${answerLevel.level}`}
                     size="small"
-                    sx={{ 
-                      bgcolor: levelInfo.color,
+                    sx={{
+                      bgcolor: levelStyles.main,
                       color: 'white',
-                      mr: 1,
+                      mr: SPACING.toUnits(SPACING.sm),
+                      fontSize: TYPOGRAPHY.fontSize.caption
                     }}
                   />
-                  <Typography variant="subtitle1">
-                    {levelInfo.text} Answer
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontSize: TYPOGRAPHY.fontSize.regularText,
+                      fontWeight: TYPOGRAPHY.fontWeight.medium
+                    }}
+                  >
+                    {levelStyles.text} Answer
                   </Typography>
                 </Box>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography 
-                  variant="body1" 
+                <Typography
+                  variant="body1"
                   component="div"
-                  sx={{ 
+                  sx={{
                     whiteSpace: 'pre-wrap',
+                    fontSize: TYPOGRAPHY.fontSize.regularText,
+                    lineHeight: 1.6,
                     '& code': {
-                      fontFamily: 'monospace',
-                      bgcolor: 'rgba(0, 0, 0, 0.05)',
-                      p: 0.5,
-                      borderRadius: 1,
+                      ...globalStyles.code
                     },
                   }}
                 >

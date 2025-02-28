@@ -1,4 +1,4 @@
-// src/components/GradeSelector.js
+// src/components/GradeSelector.js - Refactored
 import React from 'react';
 import {
   Box,
@@ -7,6 +7,7 @@ import {
   Tooltip
 } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
+import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
 
 const labels = {
   1: 'Poor',
@@ -30,8 +31,17 @@ const GradeSelector = ({ questionId, currentGrade, onGradeChange }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 1 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      mt: SPACING.toUnits(SPACING.sm)
+    }}>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        mb: SPACING.toUnits(SPACING.sm)
+      }}>
         <Rating
           name={`grade-${questionId}`}
           value={currentGrade}
@@ -41,35 +51,68 @@ const GradeSelector = ({ questionId, currentGrade, onGradeChange }) => {
           emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
           size="large"
         />
-        <Box sx={{ ml: 2 }}>
+        <Box sx={{ ml: SPACING.toUnits(SPACING.sm) }}>
           {currentGrade !== 0 ? (
             <Tooltip title={descriptions[currentGrade]} arrow placement="right">
-              <Typography variant="body2" color="text.primary">
+              <Typography
+                variant="body2"
+                color="text.primary"
+                sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+              >
                 {labels[currentGrade]}
               </Typography>
             </Tooltip>
           ) : (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+            >
               Not rated
             </Typography>
           )}
         </Box>
       </Box>
-      
+
       {/* Rating guide */}
-      <Box sx={{ mt: 2, p: 1.5, bgcolor: 'background.paper', borderRadius: 1, width: '100%' }}>
-        <Typography variant="caption" component="div" sx={{ fontWeight: 'bold' }}>
+      <Box sx={{
+        mt: SPACING.toUnits(SPACING.sm),
+        p: SPACING.toUnits(SPACING.md),
+        bgcolor: 'background.paper',
+        borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
+        width: '100%'
+      }}>
+        <Typography
+          variant="caption"
+          component="div"
+          sx={{
+            fontWeight: TYPOGRAPHY.fontWeight.medium,
+            fontSize: TYPOGRAPHY.fontSize.caption
+          }}
+        >
           Rating Guide:
         </Typography>
         {Object.entries(labels).map(([value, label]) => (
-          <Box key={value} sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+          <Box
+            key={value}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mt: SPACING.toUnits(SPACING.xs)
+            }}
+          >
             <Rating
               value={parseInt(value)}
               readOnly
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: SPACING.toUnits(SPACING.sm) }}
             />
-            <Typography variant="caption">{label}</Typography>
+            <Typography
+              variant="caption"
+              sx={{ fontSize: TYPOGRAPHY.fontSize.caption }}
+            >
+              {label}
+            </Typography>
           </Box>
         ))}
       </Box>

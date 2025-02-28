@@ -1,4 +1,4 @@
-// src/components/AnswerBullets.js
+// src/components/AnswerBullets.js - Refactored
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -8,6 +8,7 @@ import {
   Fade,
   ClickAwayListener
 } from '@mui/material';
+import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
 
 // Function to extract bullet points from answer content
 const extractBulletPoints = (content) => {
@@ -112,11 +113,26 @@ const AnswerBullets = ({ answerLevels }) => {
 
   return (
     <Box>
-      <Typography variant="body2" sx={{ mb: 1, fontWeight: 500, color: 'text.secondary' }}>
+      <Typography
+        variant="body2"
+        sx={{
+          mb: SPACING.toUnits(SPACING.sm),
+          fontWeight: TYPOGRAPHY.fontWeight.medium,
+          color: 'text.secondary',
+          fontSize: TYPOGRAPHY.fontSize.regularText
+        }}
+      >
         Answer Key Points
       </Typography>
 
-      <Box className="answer-bullets">
+      <Box
+        className="answer-bullets"
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: SPACING.toUnits(SPACING.xs)
+        }}
+      >
         {allBulletPoints.map((point, index) => (
           <Box
             key={index}
@@ -126,15 +142,15 @@ const AnswerBullets = ({ answerLevels }) => {
             onMouseLeave={handleBulletLeave}
             onTouchStart={(e) => handleMobileBulletClick(e, point)}
             sx={{
-              fontSize: '0.85rem',
-              padding: '4px 8px',
-              borderRadius: '4px',
-              backgroundColor: selectedBullets.includes(index) ? 'rgba(33, 150, 243, 0.08)' : '#f5f5f5',
-              border: selectedBullets.includes(index) ? '1px solid rgba(33, 150, 243, 0.2)' : '1px solid transparent',
+              fontSize: TYPOGRAPHY.fontSize.small,
+              padding: `${SPACING.toUnits(SPACING.xs)} ${SPACING.toUnits(SPACING.sm)}`,
+              borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
+              backgroundColor: selectedBullets.includes(index) ? `${COLORS.primary.main}08` : COLORS.grey[100],
+              border: selectedBullets.includes(index) ? `1px solid ${COLORS.primary.main}20` : '1px solid transparent',
               cursor: 'pointer',
               transition: 'all 0.2s',
               '&:hover': {
-                backgroundColor: 'rgba(33, 150, 243, 0.08)',
+                backgroundColor: `${COLORS.primary.main}08`,
               }
             }}
           >
@@ -153,8 +169,13 @@ const AnswerBullets = ({ answerLevels }) => {
         {({ TransitionProps }) => (
           <ClickAwayListener onClickAway={handleTooltipClose}>
             <Fade {...TransitionProps} timeout={100}>
-              <Paper elevation={3} sx={{ p: 2, mt: 0.5 }}>
-                <Typography variant="body2">{tooltipContent}</Typography>
+              <Paper elevation={3} sx={{ p: SPACING.toUnits(SPACING.sm), mt: SPACING.toUnits(SPACING.xs) }}>
+                <Typography
+                  variant="body2"
+                  sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+                >
+                  {tooltipContent}
+                </Typography>
               </Paper>
             </Fade>
           </ClickAwayListener>

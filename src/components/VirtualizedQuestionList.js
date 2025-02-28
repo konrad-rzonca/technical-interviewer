@@ -1,8 +1,11 @@
+// src/components/VirtualizedQuestionList.js - Refactored
 import React, { useRef, useState, useEffect } from 'react';
 import { FixedSizeList as List, areEqual } from 'react-window';
-import { Box, Typography, Grid, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import QuestionItem from './QuestionItem';
+import { getSkillLevelStyles } from '../utils/styleHooks';
+import { SPACING, TYPOGRAPHY, LAYOUT } from '../utils/theme';
 
 // Memoized row component for virtualized list
 const QuestionRow = React.memo(({ data, index, style }) => {
@@ -11,28 +14,18 @@ const QuestionRow = React.memo(({ data, index, style }) => {
     currentQuestion,
     gradesMap,
     onQuestionSelect,
-    levelColor,
-    getBorderOpacity,
-    getDotColor,
     isSmallScreen
   } = data;
 
   const question = questions[index];
-  const isAnswered = gradesMap[question.id] !== undefined;
-  const rating = gradesMap[question.id] || 0;
-  const isSelected = currentQuestion && currentQuestion.id === question.id;
 
   return (
     <div style={style}>
       <QuestionItem
         question={question}
-        isAnswered={isAnswered}
-        rating={rating}
-        isSelected={isSelected}
-        levelColor={levelColor}
-        getBorderOpacity={getBorderOpacity}
-        getDotColor={getDotColor}
-        onSelect={onQuestionSelect}
+        currentQuestion={currentQuestion}
+        gradesMap={gradesMap}
+        onQuestionSelect={onQuestionSelect}
         isSmallScreen={isSmallScreen}
       />
     </div>
@@ -44,10 +37,7 @@ const VirtualizedQuestionList = ({
   currentQuestion,
   gradesMap,
   onQuestionSelect,
-  levelColor,
   level,
-  getBorderOpacity,
-  getDotColor,
   isSmallScreen
 }) => {
   const theme = useTheme();
@@ -56,8 +46,11 @@ const VirtualizedQuestionList = ({
   // State to track if list is empty
   const isEmpty = questions.length === 0;
 
+  // Get style information for this level
+  const levelStyles = getSkillLevelStyles(level);
+
   // Virtualization constants
-  const ITEM_HEIGHT = 44; // Height of each question item (36px + margins)
+  const ITEM_HEIGHT = LAYOUT.ITEM_HEIGHT; // Height of each question item 
 
   // Find the index of the current question
   const currentIndex = currentQuestion
@@ -80,7 +73,15 @@ const VirtualizedQuestionList = ({
 
   if (isEmpty) {
     return (
-      <Typography variant="body2" sx={{ color: 'text.secondary', py: 1, textAlign: 'center' }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+          py: SPACING.toUnits(SPACING.sm),
+          textAlign: 'center',
+          fontSize: TYPOGRAPHY.fontSize.regularText
+        }}
+      >
         No {levelLabels[level]?.toLowerCase() || 'matching'} questions available
       </Typography>
     );
@@ -89,8 +90,8 @@ const VirtualizedQuestionList = ({
   return (
     <Box sx={{
       height: '100%',
-      minHeight: '150px',
-      maxHeight: '400px',
+      minHeight: `${SPACING.toUnits(SPACING.lg) * 8}px`,
+      maxHeight: `${SPACING.toUnits(SPACING.xl) * 10}px`,
       flex: 1
     }}>
       <AutoSizer>
@@ -106,9 +107,6 @@ const VirtualizedQuestionList = ({
               currentQuestion,
               gradesMap,
               onQuestionSelect,
-              levelColor,
-              getBorderOpacity,
-              getDotColor,
               isSmallScreen
             }}
             overscanCount={5} // Render some extra items above and below for smoother scrolling

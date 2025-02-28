@@ -1,4 +1,4 @@
-// src/components/QuestionItem.js
+// src/components/QuestionItem.js - Refactored
 import React from 'react';
 import { Box, Typography, Tooltip, Rating } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -8,7 +8,7 @@ import {
   getSkillLevelStyles,
   getIndicatorColor
 } from '../utils/styleHooks';
-import { COLORS, LAYOUT } from '../utils/theme';
+import { COLORS, TYPOGRAPHY, SPACING } from '../utils/theme';
 
 // Helper functions for question status
 const isQuestionAnswered = (questionId, gradesMap) => {
@@ -42,8 +42,8 @@ const QuestionItem = React.memo(({
   return (
     <Tooltip
       title={
-        <Box sx={{ p: 1.5 }}>
-          <Typography sx={{ fontSize: '1.2rem', mb: 1.5 }}>
+        <Box sx={{ p: SPACING.toUnits(SPACING.md) }}>
+          <Typography sx={{ fontSize: TYPOGRAPHY.fontSize.h6, mb: SPACING.toUnits(SPACING.md) }}>
             {question.question}
           </Typography>
           {isAnswered && (
@@ -73,7 +73,7 @@ const QuestionItem = React.memo(({
             borderRadius: '50%',
             backgroundColor: indicatorColor,
             position: 'absolute',
-            left: 10,
+            left: SPACING.toUnits(SPACING.sm),
             top: '50%',
             transform: 'translateY(-50%)'
           }}
@@ -84,7 +84,7 @@ const QuestionItem = React.memo(({
           <Box
             sx={{
               position: 'absolute',
-              right: 8,
+              right: SPACING.toUnits(SPACING.sm),
               top: '50%',
               transform: 'translateY(-50%)',
               color: COLORS.success.main
@@ -98,7 +98,7 @@ const QuestionItem = React.memo(({
           variant="body2"
           sx={textStyles}
         >
-          {question.shortTitle || question.question.split(' ').slice(0, 5).join(' ')}
+          {question.shortTitle || question.question.split(' ').slice(0, 5).join(' ') + '...'}
         </Typography>
       </Box>
     </Tooltip>

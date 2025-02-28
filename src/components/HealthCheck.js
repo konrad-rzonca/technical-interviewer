@@ -1,7 +1,9 @@
-// src/components/HealthCheck.js
+// src/components/HealthCheck.js - Refactored
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, List, ListItem, ListItemText, Divider, Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
+import { useTitleStyles, usePanelStyles } from '../utils/styleHooks';
 
 const HealthCheck = () => {
   const [health, setHealth] = useState({
@@ -15,6 +17,12 @@ const HealthCheck = () => {
       storage: 'healthy'
     }
   });
+
+  // Title styles using the hook
+  const titleStyles = useTitleStyles({ fontSize: TYPOGRAPHY.fontSize.h5 });
+
+  // Panel styles for the health check container
+  const panelStyles = usePanelStyles(false, true);
 
   // Simulate checking component health
   useEffect(() => {
@@ -47,51 +55,100 @@ const HealthCheck = () => {
     }
   }, []);
 
+  // Get appropriate color based on health status
+  const getStatusColor = (status) => {
+    return status === 'healthy' ? COLORS.success.main : COLORS.warning.main;
+  };
+
   return (
-    <Box sx={{ p: 4, maxWidth: 600, mx: 'auto' }}>
-      <Paper elevation={0} sx={{ p: 3, border: '1px solid #e0e0e0', borderRadius: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+    <Box sx={{
+      p: SPACING.toUnits(SPACING.xl),
+      maxWidth: 600,
+      mx: 'auto'
+    }}>
+      <Paper elevation={0} sx={{
+        ...panelStyles,
+        p: SPACING.toUnits(SPACING.lg),
+        border: `1px solid ${COLORS.grey[200]}`,
+        borderRadius: SPACING.toUnits(SPACING.borderRadius)
+      }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mb: SPACING.toUnits(SPACING.sm)
+        }}>
           <CheckCircleIcon
-            color={health.status === 'healthy' ? 'success' : 'warning'}
-            sx={{ mr: 2 }}
+            sx={{
+              mr: SPACING.toUnits(SPACING.sm),
+              color: getStatusColor(health.status)
+            }}
           />
-          <Typography variant="h5">
+          <Typography variant="h5" sx={titleStyles}>
             Application Health Status
           </Typography>
         </Box>
 
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: SPACING.toUnits(SPACING.lg) }}>
           <Chip
             label={health.status.toUpperCase()}
             color={health.status === 'healthy' ? 'success' : 'warning'}
-            sx={{ fontWeight: 'bold' }}
+            sx={{
+              fontWeight: TYPOGRAPHY.fontWeight.medium,
+              fontSize: TYPOGRAPHY.fontSize.caption
+            }}
           />
         </Box>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: SPACING.toUnits(SPACING.sm) }} />
 
         <List dense>
           <ListItem>
             <ListItemText
-              primary="Version"
-              secondary={health.version}
+              primary={
+                <Typography sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}>Version</Typography>
+              }
+              secondary={
+                <Typography sx={{
+                  fontSize: TYPOGRAPHY.fontSize.caption,
+                  color: COLORS.text.secondary
+                }}>{health.version}</Typography>
+              }
             />
           </ListItem>
           <ListItem>
             <ListItemText
-              primary="Timestamp"
-              secondary={health.timestamp}
+              primary={
+                <Typography sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}>Timestamp</Typography>
+              }
+              secondary={
+                <Typography sx={{
+                  fontSize: TYPOGRAPHY.fontSize.caption,
+                  color: COLORS.text.secondary
+                }}>{health.timestamp}</Typography>
+              }
             />
           </ListItem>
           <ListItem>
             <ListItemText
-              primary="Uptime"
-              secondary={`${health.uptime} seconds`}
+              primary={
+                <Typography sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}>Uptime</Typography>
+              }
+              secondary={
+                <Typography sx={{
+                  fontSize: TYPOGRAPHY.fontSize.caption,
+                  color: COLORS.text.secondary
+                }}>{`${health.uptime} seconds`}</Typography>
+              }
             />
           </ListItem>
         </List>
 
-        <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>
+        <Typography variant="subtitle1" sx={{
+          mt: SPACING.toUnits(SPACING.sm),
+          mb: SPACING.toUnits(SPACING.xs),
+          fontSize: TYPOGRAPHY.fontSize.h6,
+          fontWeight: TYPOGRAPHY.fontWeight.medium
+        }}>
           Component Status
         </Typography>
 
@@ -99,13 +156,23 @@ const HealthCheck = () => {
           {Object.entries(health.components).map(([component, status]) => (
             <ListItem key={component}>
               <ListItemText
-                primary={component.charAt(0).toUpperCase() + component.slice(1)}
-                secondary={status.toUpperCase()}
+                primary={
+                  <Typography sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}>
+                    {component.charAt(0).toUpperCase() + component.slice(1)}
+                  </Typography>
+                }
+                secondary={
+                  <Typography sx={{
+                    fontSize: TYPOGRAPHY.fontSize.caption,
+                    color: COLORS.text.secondary
+                  }}>{status.toUpperCase()}</Typography>
+                }
               />
               <Chip
                 size="small"
                 label={status}
                 color={status === 'healthy' ? 'success' : 'warning'}
+                sx={{ fontSize: TYPOGRAPHY.fontSize.small }}
               />
             </ListItem>
           ))}

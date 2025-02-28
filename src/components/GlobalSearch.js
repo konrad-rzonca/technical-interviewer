@@ -1,4 +1,4 @@
-// src/components/GlobalSearch.js
+// src/components/GlobalSearch.js - Refactored
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
@@ -24,13 +24,13 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import TuneIcon from '@mui/icons-material/Tune';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HistoryIcon from '@mui/icons-material/History';
 import TagIcon from '@mui/icons-material/Tag';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HighlightIcon from '@mui/icons-material/Highlight';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
+import { getSkillLevelStyles } from '../utils/styleHooks';
 
 // This component provides a unified search across questions, categories, and content
 const GlobalSearch = ({
@@ -200,6 +200,12 @@ const GlobalSearch = ({
     (filters.answered !== 'all' ? 1 : 0) +
     filters.categories.length;
 
+  // Get skill level color based on level name
+  const getSkillLevelColor = (level) => {
+    const styles = getSkillLevelStyles(level);
+    return styles.main;
+  };
+
   // Highlight matching text in search results
   const highlightMatch = (text, term) => {
     if (!term || !text) return text;
@@ -207,7 +213,7 @@ const GlobalSearch = ({
     const parts = text.split(new RegExp(`(${term})`, 'gi'));
     return parts.map((part, i) =>
       part.toLowerCase() === term.toLowerCase()
-        ? <span key={i} style={{ backgroundColor: 'rgba(255, 213, 79, 0.5)', fontWeight: 'bold' }}>{part}</span>
+        ? <span key={i} style={{ backgroundColor: `${COLORS.warning.light}`, fontWeight: 'bold' }}>{part}</span>
         : part
     );
   };
@@ -250,7 +256,7 @@ const GlobalSearch = ({
               </InputAdornment>
             ),
             sx: {
-              borderRadius: 2,
+              borderRadius: SPACING.toUnits(SPACING.borderRadius),
               background: 'white',
               '&:hover': {
                 bgcolor: 'white',
@@ -260,7 +266,10 @@ const GlobalSearch = ({
           sx={{
             backgroundColor: 'white',
             '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
+              borderRadius: SPACING.toUnits(SPACING.borderRadius),
+            },
+            '& .MuiInputBase-input': {
+              fontSize: TYPOGRAPHY.fontSize.regularText
             }
           }}
         />
@@ -274,24 +283,29 @@ const GlobalSearch = ({
               top: '100%',
               left: 0,
               right: 0,
-              mt: 0.5,
+              mt: SPACING.toUnits(SPACING.xs),
               zIndex: 1301,
-              p: 2,
-              borderRadius: 2
+              p: SPACING.toUnits(SPACING.sm),
+              borderRadius: SPACING.toUnits(SPACING.borderRadius)
             }}
           >
-            <Typography variant="subtitle2" gutterBottom>
+            <Typography
+              variant="subtitle2"
+              gutterBottom
+              sx={{ fontSize: TYPOGRAPHY.fontSize.regularText, fontWeight: TYPOGRAPHY.fontWeight.medium }}
+            >
               Advanced Filters
             </Typography>
 
             {/* Skill Level Filter */}
-            <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+            <FormControl fullWidth size="small" sx={{ mb: SPACING.toUnits(SPACING.sm) }}>
               <InputLabel id="skill-level-filter-label">Skill Level</InputLabel>
               <Select
                 labelId="skill-level-filter-label"
                 value={filters.skillLevel}
                 label="Skill Level"
                 onChange={(e) => handleFilterChange('skillLevel', e.target.value)}
+                sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
               >
                 <MenuItem value="all">All Levels</MenuItem>
                 <MenuItem value="beginner">Beginner</MenuItem>
@@ -301,13 +315,14 @@ const GlobalSearch = ({
             </FormControl>
 
             {/* Answered Status Filter */}
-            <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+            <FormControl fullWidth size="small" sx={{ mb: SPACING.toUnits(SPACING.sm) }}>
               <InputLabel id="answered-filter-label">Answered Status</InputLabel>
               <Select
                 labelId="answered-filter-label"
                 value={filters.answered}
                 label="Answered Status"
                 onChange={(e) => handleFilterChange('answered', e.target.value)}
+                sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
               >
                 <MenuItem value="all">All Questions</MenuItem>
                 <MenuItem value="answered">Answered Only</MenuItem>
@@ -316,10 +331,19 @@ const GlobalSearch = ({
             </FormControl>
 
             {/* Category Filter */}
-            <Typography variant="body2" gutterBottom>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+            >
               Categories
             </Typography>
-            <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+            <Box sx={{
+              mb: SPACING.toUnits(SPACING.sm),
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: SPACING.toUnits(SPACING.xs)
+            }}>
               {categories.map(category => (
                 <Chip
                   key={category.id}
@@ -328,16 +352,22 @@ const GlobalSearch = ({
                   onClick={() => handleToggleCategory(category.id)}
                   color={filters.categories.includes(category.id) ? "primary" : "default"}
                   variant={filters.categories.includes(category.id) ? "filled" : "outlined"}
+                  sx={{ fontSize: TYPOGRAPHY.fontSize.caption }}
                 />
               ))}
             </Box>
 
             {/* Action buttons */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mt: SPACING.toUnits(SPACING.sm)
+            }}>
               <Button
                 variant="outlined"
                 size="small"
                 onClick={handleResetFilters}
+                sx={{ fontSize: TYPOGRAPHY.fontSize.button }}
               >
                 Reset
               </Button>
@@ -345,6 +375,7 @@ const GlobalSearch = ({
                 variant="contained"
                 size="small"
                 onClick={handleApplyFilters}
+                sx={{ fontSize: TYPOGRAPHY.fontSize.button }}
               >
                 Apply Filters
               </Button>
@@ -361,19 +392,30 @@ const GlobalSearch = ({
               top: '100%',
               left: 0,
               right: 0,
-              mt: 0.5,
+              mt: SPACING.toUnits(SPACING.xs),
               zIndex: 1300,
               maxHeight: 500,
               overflow: 'auto',
-              borderRadius: 2
+              borderRadius: SPACING.toUnits(SPACING.borderRadius)
             }}
           >
             {/* Recent searches */}
             {searchHistory.length > 0 && searchTerm.length < 3 && (
               <>
-                <Box sx={{ p: 1, bgcolor: 'grey.100' }}>
-                  <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <HistoryIcon fontSize="small" sx={{ mr: 0.5 }} />
+                <Box sx={{
+                  p: SPACING.toUnits(SPACING.sm),
+                  bgcolor: COLORS.grey[100]
+                }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      fontSize: TYPOGRAPHY.fontSize.regularText,
+                      fontWeight: TYPOGRAPHY.fontWeight.medium
+                    }}
+                  >
+                    <HistoryIcon fontSize="small" sx={{ mr: SPACING.toUnits(SPACING.xs) }} />
                     Recent Searches
                   </Typography>
                 </Box>
@@ -383,9 +425,12 @@ const GlobalSearch = ({
                       key={index}
                       button
                       onClick={() => setSearchTerm(term)}
-                      sx={{ py: 0.75 }}
+                      sx={{ py: SPACING.toUnits(SPACING.xs) }}
                     >
-                      <Typography variant="body2">
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+                      >
                         {term}
                       </Typography>
                     </ListItem>
@@ -398,54 +443,92 @@ const GlobalSearch = ({
             {/* Question Results */}
             {searchResults.questions.length > 0 && (
               <>
-                <Box sx={{ p: 1, bgcolor: 'grey.100' }}>
-                  <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <HighlightIcon fontSize="small" sx={{ mr: 0.5 }} />
+                <Box sx={{
+                  p: SPACING.toUnits(SPACING.sm),
+                  bgcolor: COLORS.grey[100]
+                }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      fontSize: TYPOGRAPHY.fontSize.regularText,
+                      fontWeight: TYPOGRAPHY.fontWeight.medium
+                    }}
+                  >
+                    <HighlightIcon fontSize="small" sx={{ mr: SPACING.toUnits(SPACING.xs) }} />
                     Questions
                   </Typography>
                 </Box>
                 <List disablePadding>
-                  {searchResults.questions.map((question) => (
-                    <ListItem
-                      key={question.id}
-                      button
-                      onClick={() => handleSelectQuestion(question)}
-                      sx={{
-                        py: 1,
-                        borderLeft: `3px solid ${getSkillLevelColor(question.skillLevel)}`,
-                        backgroundColor: gradesMap[question.id] ? 'rgba(102, 187, 106, 0.05)' : 'transparent'
-                      }}
-                    >
-                      <Box sx={{ width: '100%' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {highlightMatch(question.shortTitle || question.question, searchTerm)}
-                          </Typography>
-                          {gradesMap[question.id] && (
-                            <CheckCircleIcon fontSize="small" sx={{ color: '#66bb6a', ml: 1 }} />
-                          )}
+                  {searchResults.questions.map((question) => {
+                    const skillLevelColor = getSkillLevelColor(question.skillLevel);
+
+                    return (
+                      <ListItem
+                        key={question.id}
+                        button
+                        onClick={() => handleSelectQuestion(question)}
+                        sx={{
+                          py: SPACING.toUnits(SPACING.sm),
+                          borderLeft: `3px solid ${skillLevelColor}`,
+                          backgroundColor: gradesMap[question.id] ? `${COLORS.success.main}05` : 'transparent'
+                        }}
+                      >
+                        <Box sx={{ width: '100%' }}>
+                          <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start'
+                          }}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: TYPOGRAPHY.fontWeight.medium,
+                                fontSize: TYPOGRAPHY.fontSize.regularText
+                              }}
+                            >
+                              {highlightMatch(question.shortTitle || question.question, searchTerm)}
+                            </Typography>
+                            {gradesMap[question.id] && (
+                              <CheckCircleIcon
+                                fontSize="small"
+                                sx={{
+                                  color: COLORS.success.main,
+                                  ml: SPACING.toUnits(SPACING.sm)
+                                }}
+                              />
+                            )}
+                          </Box>
+                          <Box sx={{
+                            display: 'flex',
+                            mt: SPACING.toUnits(SPACING.xs),
+                            gap: SPACING.toUnits(SPACING.xs)
+                          }}>
+                            <Chip
+                              size="small"
+                              label={question.skillLevel.charAt(0).toUpperCase() + question.skillLevel.slice(1)}
+                              sx={{
+                                height: 20,
+                                fontSize: TYPOGRAPHY.fontSize.small,
+                                backgroundColor: `${skillLevelColor}20`,
+                                color: skillLevelColor,
+                              }}
+                            />
+                            <Chip
+                              size="small"
+                              label={getCategoryName(question.categoryId, categories)}
+                              sx={{
+                                height: 20,
+                                fontSize: TYPOGRAPHY.fontSize.small
+                              }}
+                              variant="outlined"
+                            />
+                          </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', mt: 0.5, gap: 0.5 }}>
-                          <Chip
-                            size="small"
-                            label={question.skillLevel.charAt(0).toUpperCase() + question.skillLevel.slice(1)}
-                            sx={{
-                              height: 20,
-                              fontSize: '0.7rem',
-                              backgroundColor: `${getSkillLevelColor(question.skillLevel)}20`,
-                              color: getSkillLevelColor(question.skillLevel),
-                            }}
-                          />
-                          <Chip
-                            size="small"
-                            label={getCategoryName(question.categoryId, categories)}
-                            sx={{ height: 20, fontSize: '0.7rem' }}
-                            variant="outlined"
-                          />
-                        </Box>
-                      </Box>
-                    </ListItem>
-                  ))}
+                      </ListItem>
+                    )
+                  })}
                 </List>
                 <Divider />
               </>
@@ -454,9 +537,20 @@ const GlobalSearch = ({
             {/* Category Results */}
             {searchResults.categories.length > 0 && (
               <>
-                <Box sx={{ p: 1, bgcolor: 'grey.100' }}>
-                  <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <TagIcon fontSize="small" sx={{ mr: 0.5 }} />
+                <Box sx={{
+                  p: SPACING.toUnits(SPACING.sm),
+                  bgcolor: COLORS.grey[100]
+                }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      fontSize: TYPOGRAPHY.fontSize.regularText,
+                      fontWeight: TYPOGRAPHY.fontWeight.medium
+                    }}
+                  >
+                    <TagIcon fontSize="small" sx={{ mr: SPACING.toUnits(SPACING.xs) }} />
                     Categories
                   </Typography>
                 </Box>
@@ -467,11 +561,17 @@ const GlobalSearch = ({
                       button
                       onClick={() => handleSelectCategory(category.id)}
                       sx={{
-                        py: 1,
-                        borderLeft: category.id === selectedCategory ? '3px solid #2196f3' : '3px solid transparent',
+                        py: SPACING.toUnits(SPACING.sm),
+                        borderLeft: category.id === selectedCategory ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
                       }}
                     >
-                      <Typography variant="body2" sx={{ fontWeight: category.id === selectedCategory ? 500 : 400 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: category.id === selectedCategory ? TYPOGRAPHY.fontWeight.medium : TYPOGRAPHY.fontWeight.regular,
+                          fontSize: TYPOGRAPHY.fontSize.regularText
+                        }}
+                      >
                         {highlightMatch(category.name, searchTerm)}
                       </Typography>
                     </ListItem>
@@ -482,8 +582,15 @@ const GlobalSearch = ({
 
             {/* No results */}
             {searchResults.questions.length === 0 && searchResults.categories.length === 0 && searchTerm.trim() && (
-              <Box sx={{ p: 2, textAlign: 'center' }}>
-                <Typography variant="body2" color="text.secondary">
+              <Box sx={{
+                p: SPACING.toUnits(SPACING.sm),
+                textAlign: 'center'
+              }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+                >
                   No results found for "{searchTerm}"
                 </Typography>
               </Box>
@@ -499,16 +606,6 @@ const GlobalSearch = ({
 function getCategoryName(categoryId, categories) {
   const category = categories.find(c => c.id === categoryId);
   return category ? category.name : 'Unknown';
-}
-
-// Helper function to get skill level color
-function getSkillLevelColor(level) {
-  switch (level) {
-    case 'beginner': return '#66bb6a'; // green
-    case 'intermediate': return '#ffb300'; // amber/yellow
-    case 'advanced': return '#fb8c00'; // deeper orange
-    default: return '#9e9e9e'; // gray
-  }
 }
 
 export default GlobalSearch;

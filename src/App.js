@@ -1,4 +1,4 @@
-// src/App.js
+// src/App.js - Refactored
 import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import HealthCheck from './components/HealthCheck';
 import ErrorBoundary from './components/ErrorBoundary';
 import { categories, getAllQuestions } from './data/questionLoader';
 import createAppTheme from './utils/theme';
-import './styles/main.css'; // Note: We'll gradually phase this out
+import { SPACING, LAYOUT, COLORS } from './utils/theme';
 
 // Create the application theme
 const theme = createAppTheme();
@@ -54,9 +54,13 @@ function App() {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          bgcolor: theme.palette.background.light,
+          bgcolor: COLORS.background.light,
           overflow: 'auto',
-          minHeight: { xs: '600px', sm: '700px', md: '800px' }
+          minHeight: {
+            xs: SPACING.toUnits(SPACING.lg) * 10,
+            sm: SPACING.toUnits(SPACING.lg) * 12,
+            md: SPACING.toUnits(SPACING.lg) * 14
+          }
         }}>
           {/* Global Search - Only shown on main interview page */}
           <Routes>
@@ -65,7 +69,7 @@ function App() {
               element={
                 <Box sx={{
                   position: 'fixed',
-                  top: 12,
+                  top: SPACING.toUnits(SPACING.sm),
                   left: '50%',
                   transform: 'translateX(-50%)',
                   zIndex: theme.zIndex.appBar,
@@ -88,7 +92,7 @@ function App() {
           <Routes>
             <Route path="/" element={
               <ErrorBoundary>
-                <Box sx={{ pt: 7 }}> {/* Add padding for the fixed search bar */}
+                <Box sx={{ pt: SPACING.toUnits(SPACING.xl) }}> {/* Add padding for the fixed search bar */}
                   <InterviewPanel
                     interviewState={interviewState}
                     updateInterviewState={updateInterviewState}

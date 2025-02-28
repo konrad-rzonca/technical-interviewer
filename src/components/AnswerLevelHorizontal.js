@@ -1,4 +1,4 @@
-// src/components/AnswerLevelHorizontal.js
+// src/components/AnswerLevelHorizontal.js - Refactored
 import React, { useState } from 'react';
 import {
   Box,
@@ -13,7 +13,7 @@ import {
   useAnswerLevelStyles,
   globalStyles
 } from '../utils/styleHooks';
-import { SPACING } from '../utils/theme';
+import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
 
 const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
   const [selectedPoints, setSelectedPoints] = useState({});
@@ -96,7 +96,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
           {parts.map((part, index) => {
             // Even indices are regular text, odd indices are code
             if (index % 2 === 0) {
-              return part ? <Typography key={index} variant="body1" sx={{ mb: 1 }}>{part}</Typography> : null;
+              return part ? <Typography key={index} variant="body1" sx={{ mb: SPACING.toUnits(SPACING.sm) }}>{part}</Typography> : null;
             } else {
               return (
                 <Box
@@ -117,7 +117,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
     }
 
     return (
-      <Typography variant="body1" sx={{ fontSize: '1rem', lineHeight: 1.6 }}>
+      <Typography variant="body1" sx={{ fontSize: TYPOGRAPHY.fontSize.regularText, lineHeight: 1.6 }}>
         {description}
       </Typography>
     );
@@ -129,8 +129,8 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
       <Box sx={{
         display: 'flex',
         flexDirection: 'row',
-        gap: 2,
-        mb: 2
+        gap: SPACING.toUnits(SPACING.sm),
+        mb: SPACING.toUnits(SPACING.sm)
       }}>
         {answerInsights && answerInsights.map((category, categoryIndex) => {
           // Get level styles for this category
@@ -142,24 +142,24 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
               key={categoryIndex}
               sx={{
                 flex: 1,
-                p: 1.5,
+                p: SPACING.toUnits(SPACING.md),
                 ...answerStyles
               }}
             >
               <Typography
                 variant="subtitle1"
                 sx={{
-                  mb: 1.5,
+                  mb: SPACING.toUnits(SPACING.md),
                   color: answerStyles.color,
-                  fontWeight: 500,
+                  fontWeight: TYPOGRAPHY.fontWeight.medium,
                   textAlign: 'center',
-                  pb: 1
+                  pb: SPACING.toUnits(SPACING.sm)
                 }}
               >
                 {category.category}
               </Typography>
 
-              <Grid container spacing={1}>
+              <Grid container spacing={SPACING.toUnits(SPACING.xs)}>
                 {category.points && category.points.map((point, pointIndex) => {
                   const key = `${categoryIndex}-${pointIndex}`;
                   const isSelected = selectedPoints[key];
@@ -172,8 +172,8 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                         onMouseEnter={(e) => handlePointMouseEnter(e, point.description, categoryIndex, pointIndex)}
                         onMouseLeave={() => handlePointMouseLeave(categoryIndex, pointIndex)}
                         sx={{
-                          p: 1.5,
-                          borderRadius: 1,
+                          p: SPACING.toUnits(SPACING.md),
+                          borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
                           cursor: 'pointer',
                           backgroundColor: isSelected
                             ? `${answerStyles.color}15`
@@ -181,7 +181,7 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                           border: `1px solid ${isSelected
                             ? `${answerStyles.color}50`
                             : (learningMode && !isHovered && !isSelected
-                              ? '#e0e0e080'
+                              ? COLORS.grey[200]
                               : `${answerStyles.color}50`)}`,
                           transition: 'all 0.2s',
                           display: 'flex',
@@ -201,15 +201,15 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
                               width: '70%',
                               height: '8px',
                               borderRadius: '4px',
-                              backgroundColor: '#e0e0e080'
+                              backgroundColor: COLORS.grey[200]
                             }}
                           />
                         ) : (
                           <Typography
                             variant="body2"
                             sx={{
-                              fontWeight: isSelected ? 500 : 400,
-                              fontSize: '0.9rem',
+                              fontWeight: isSelected ? TYPOGRAPHY.fontWeight.medium : TYPOGRAPHY.fontWeight.regular,
+                              fontSize: TYPOGRAPHY.fontSize.small,
                               textAlign: 'center'
                             }}
                           >
@@ -252,8 +252,8 @@ const AnswerLevelHorizontal = ({ answerInsights, learningMode = false }) => {
               <Paper
                 elevation={6}
                 sx={{
-                  p: 3,
-                  borderRadius: 2,
+                  p: SPACING.toUnits(SPACING.lg),
+                  borderRadius: SPACING.toUnits(SPACING.sm),
                   boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
                 }}
               >

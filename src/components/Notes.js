@@ -1,10 +1,11 @@
-// src/components/Notes.js
+// src/components/Notes.js - Refactored
 import React from 'react';
 import {
   Box,
   TextField,
   Typography
 } from '@mui/material';
+import { SPACING, TYPOGRAPHY } from '../utils/theme';
 
 const Notes = ({ questionId, notes, onNotesChange }) => {
   // Handle notes change
@@ -13,7 +14,7 @@ const Notes = ({ questionId, notes, onNotesChange }) => {
   };
 
   return (
-    <Box sx={{ mt: 1 }}>
+    <Box sx={{ mt: SPACING.toUnits(SPACING.sm) }}>
       <TextField
         id={`notes-${questionId}`}
         label="Add notes about candidate's response"
@@ -24,8 +25,21 @@ const Notes = ({ questionId, notes, onNotesChange }) => {
         value={notes}
         onChange={handleChange}
         placeholder="Take notes on the candidate's answer quality, reasoning approach, communication skills, etc."
+        sx={{
+          '& .MuiInputBase-root': {
+            fontSize: TYPOGRAPHY.fontSize.regularText
+          }
+        }}
       />
-      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{
+          mt: SPACING.toUnits(SPACING.sm),
+          display: 'block',
+          fontSize: TYPOGRAPHY.fontSize.caption
+        }}
+      >
         Notes are saved automatically and persist throughout the interview session.
       </Typography>
     </Box>

@@ -1,4 +1,4 @@
-// src/components/AnswerLevelSections.js
+// src/components/AnswerLevelSections.js - Refactored
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -11,6 +11,8 @@ import {
   Tab,
   Grid
 } from '@mui/material';
+import { getSkillLevelStyles, globalStyles } from '../utils/styleHooks';
+import { SPACING, TYPOGRAPHY, COLORS } from '../utils/theme';
 
 // Smarter bullet point extraction
 const extractKeyPoints = (content) => {
@@ -174,14 +176,11 @@ const AnswerLevelSections = ({ answerLevels }) => {
     }
   };
 
-  // Get level color based on index - new color scheme without red
-  const getLevelColor = (index) => {
-    switch (index) {
-      case 0: return '#66bb6a'; // green
-      case 1: return '#ffb300'; // amber/yellow - changed from #ffca28 to more intense #ffb300
-      case 2: return '#fb8c00'; // deeper orange (no red)
-      default: return '#9e9e9e'; // gray
-    }
+  // Get level styles based on index
+  const getLevelStyles = (index) => {
+    const levelMap = ['beginner', 'intermediate', 'advanced'];
+    const level = levelMap[index] || 'beginner';
+    return getSkillLevelStyles(level);
   };
 
   // Replace code blocks with properly formatted code
@@ -201,21 +200,16 @@ const AnswerLevelSections = ({ answerLevels }) => {
           {parts.map((part, index) => {
             // Even indices are regular text, odd indices are code
             if (index % 2 === 0) {
-              return part ? <Typography key={index} variant="body1">{part}</Typography> : null;
+              return part ? <Typography key={index} variant="body1" sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}>{part}</Typography> : null;
             } else {
               return (
                 <Box
                   key={index}
                   component="pre"
                   sx={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                    p: 1.5,
-                    borderRadius: 1,
-                    overflowX: 'auto',
-                    fontFamily: 'monospace',
-                    fontSize: '0.875rem',
-                    mt: 1,
-                    mb: 1
+                    ...globalStyles.pre,
+                    mt: SPACING.toUnits(SPACING.sm),
+                    mb: SPACING.toUnits(SPACING.sm)
                   }}
                 >
                   {part}
@@ -237,9 +231,9 @@ const AnswerLevelSections = ({ answerLevels }) => {
         value={selectedTab}
         onChange={handleTabChange}
         sx={{
-          mb: 2,
+          mb: SPACING.toUnits(SPACING.sm),
           '& .MuiTabs-indicator': {
-            backgroundColor: getLevelColor(selectedTab)
+            backgroundColor: getLevelStyles(selectedTab).main
           }
         }}
       >
@@ -251,7 +245,7 @@ const AnswerLevelSections = ({ answerLevels }) => {
               textTransform: 'none',
               color: 'text.primary',
               '&.Mui-selected': {
-                color: getLevelColor(index)
+                color: getLevelStyles(index).main
               }
             }}
           />
@@ -259,52 +253,61 @@ const AnswerLevelSections = ({ answerLevels }) => {
       </Tabs>
 
       {/* Key points for selected level */}
-      {organizedLevels.map((level, levelIndex) => (
-        <Box
-          key={levelIndex}
-          sx={{
-            display: selectedTab === levelIndex ? 'block' : 'none',
-            p: 2,
-            border: `1px solid ${getLevelColor(levelIndex)}20`,
-            borderRadius: 2,
-            backgroundColor: `${getLevelColor(levelIndex)}05`
-          }}
-        >
-          <Grid container spacing={2}>
-            {level.keyPoints.map((point, pointIndex) => {
-              const key = `${levelIndex}-${pointIndex}`;
-              const isSelected = selectedPoints[key];
+      {organizedLevels.map((level, levelIndex) => {
+        const levelStyles = getLevelStyles(levelIndex);
 
-              return (
-                <Grid item xs={12} sm={6} md={4} key={pointIndex}>
-                  <Box
-                    onClick={() => handlePointClick(levelIndex, pointIndex)}
-                    onMouseEnter={(e) => handlePointMouseEnter(e, point.description)}
-                    onMouseLeave={handlePointMouseLeave}
-                    sx={{
-                      p: 1.5,
-                      borderRadius: 1,
-                      cursor: 'pointer',
-                      backgroundColor: isSelected ? `${getLevelColor(levelIndex)}10` : 'white',
-                      border: `1px solid ${isSelected ? `${getLevelColor(levelIndex)}50` : '#e0e0e080'}`,
-                      height: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      transition: 'all 0.2s',
-                      '&:hover': {
-                        backgroundColor: `${getLevelColor(levelIndex)}10`,
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-                      }
-                    }}
-                  >
-                    <Typography variant="body2">{point.title}</Typography>
-                  </Box>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
-      ))}
+        return (
+          <Box
+            key={levelIndex}
+            sx={{
+              display: selectedTab === levelIndex ? 'block' : 'none',
+              p: SPACING.toUnits(SPACING.sm),
+              border: `1px solid ${levelStyles.border}`,
+              borderRadius: SPACING.toUnits(SPACING.borderRadius),
+              backgroundColor: levelStyles.background
+            }}
+          >
+            <Grid container spacing={SPACING.toUnits(SPACING.sm)}>
+              {level.keyPoints.map((point, pointIndex) => {
+                const key = `${levelIndex}-${pointIndex}`;
+                const isSelected = selectedPoints[key];
+
+                return (
+                  <Grid item xs={12} sm={6} md={4} key={pointIndex}>
+                    <Box
+                      onClick={() => handlePointClick(levelIndex, pointIndex)}
+                      onMouseEnter={(e) => handlePointMouseEnter(e, point.description)}
+                      onMouseLeave={handlePointMouseLeave}
+                      sx={{
+                        p: SPACING.toUnits(SPACING.md),
+                        borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
+                        cursor: 'pointer',
+                        backgroundColor: isSelected ? `${levelStyles.main}10` : 'white',
+                        border: `1px solid ${isSelected ? `${levelStyles.main}50` : COLORS.grey[200]}`,
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        transition: 'all 0.2s',
+                        '&:hover': {
+                          backgroundColor: `${levelStyles.main}10`,
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                        }
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: TYPOGRAPHY.fontSize.regularText }}
+                      >
+                        {point.title}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+        );
+      })}
 
       {/* Tooltip */}
       <Popper
@@ -323,7 +326,7 @@ const AnswerLevelSections = ({ answerLevels }) => {
         {({ TransitionProps }) => (
           <ClickAwayListener onClickAway={handleTooltipClose}>
             <Fade {...TransitionProps} timeout={100}>
-              <Paper elevation={3} sx={{ p: 2 }}>
+              <Paper elevation={3} sx={{ p: SPACING.toUnits(SPACING.sm) }}>
                 {formatDescription(tooltipContent)}
               </Paper>
             </Fade>
