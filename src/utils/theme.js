@@ -118,12 +118,12 @@ export const SPACING = {
   unit: 8,
 
   // Commonly used spacing values
-  xs: 4,  // Extra small: 4px
-  sm: 8,  // Small: 8px
-  md: 16, // Medium: 16px
-  lg: 24, // Large: 24px
-  xl: 32, // Extra large: 32px
-  xxl: 48, // Double extra large: 48px
+  xs: 8,
+  sm: 10,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
 
   // Spacing for specific components
   panelPadding: 24,    // 3 units, corresponds to p: 3 in MUI
@@ -142,17 +142,17 @@ export const SPACING = {
 export const TYPOGRAPHY = {
   // Font sizes
   fontSize: {
-    h1: '2.25rem',      // 32px
-    h2: '2rem',   // 28px
-    h3: '1.75rem',    // 24px
-    h4: '1.5rem',   // 21.6px - Panel titles
-    h5: '1.45rem',    // 20.8px - Question title
-    h6: '1.35rem',   // 20px - Section titles
-    body1: '1.25rem', // 18.4px - Main content, questions, categories
-    body2: '1.15rem',    // 16px - Secondary text
-    caption: '1rem', // 15.2px - Metadata
-    button: '1.1rem',   // 17.6px - Button text
-    small: '0.9rem',   // 13.6px - Very small text
+    h1: '2.25rem',
+    h2: '2rem',
+    h3: '1.75rem',
+    h4: '1.5rem',
+    h5: '1.45rem',
+    h6: '1.35rem',
+    body1: '1.25rem',
+    body2: '1.15rem',
+    caption: '1rem',
+    button: '1.1rem',
+    small: '0.9rem',
   },
 
   // Specific component sizes

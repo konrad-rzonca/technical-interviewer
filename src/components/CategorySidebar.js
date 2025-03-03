@@ -190,15 +190,15 @@ const CategorySidebar = ({
               {/* Sets dropdown */}
               <Tooltip title="Select Question Sets">
                 <IconButton
-                    size="small"
+                    size="medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       onCategorySelect(category.id);
                       handleSetMenuOpen(e);
                     }}
-                    sx={{mr: 0.75}} // Reduced margin
+                    sx={{mr: 2}} // Reduced margin
                 >
-                  <FolderOpenIcon fontSize="small"/>
+                  <FolderOpenIcon/>
                 </IconButton>
               </Tooltip>
 
