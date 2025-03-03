@@ -30,9 +30,9 @@ The application follows a three-panel layout for optimal experience:
 
 - **Left Panel**: Categories and subcategories, with collapsible sections and question set selection
 - **Middle Panel**:
-    - Question details at the top with answer insights
-    - Candidate evaluation section below
-    - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
+  - Question details at the top with answer insights
+  - Candidate evaluation section below
+  - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
 - **Right Panel**: Related questions with answered status and category information
 
 Each section has independent scrolling for better usability with large question sets.
@@ -58,6 +58,44 @@ The application is optimized for smooth performance even with large question set
 - **Error Boundaries**: Graceful error handling that maintains app stability
 - **Virtualization Support**: Groundwork laid for windowing long lists, rendering only visible elements
 
+## Theming
+
+The application supports multiple themes:
+
+### Available Themes
+
+- **Base Theme**: The default theme with blue primary color
+- **Corporate Theme**: A branded theme with red primary color and professional typography
+
+### How to Use Different Themes
+
+You can select a theme at startup using npm scripts:
+
+```bash
+# Start the app with the Base theme
+npm run start:base
+
+# Start the app with the Corporate theme
+npm run start:ubs
+
+# Build the app with the Base theme
+npm run build:base
+
+# Build the app with the Corporate theme
+npm run build:ubs
+```
+
+### Technical Implementation
+
+Themes are implemented as overlays on top of the base theme, with each theme only specifying the properties it needs to
+override. This ensures:
+
+1. Minimal code duplication
+2. Consistent behavior across themes
+3. Easy maintenance as the application evolves
+
+The theme selection is determined at build/start time via environment variables and remains fixed during runtime.
+
 ## Theme and Styling Architecture
 
 The application uses a sophisticated, consolidated styling system:
@@ -70,19 +108,19 @@ The application uses a sophisticated, consolidated styling system:
 ### Key Style Files
 
 - `src/utils/baseTheme.js` - Contains all design tokens:
-    - Color palette with semantic naming
-    - Skill level color variations
-    - Spacing system with consistent units
-    - Typography definitions (sizes, weights, families)
-    - Layout dimensions for responsive design
-    - Component-specific style templates
+  - Color palette with semantic naming
+  - Skill level color variations
+  - Spacing system with consistent units
+  - Typography definitions (sizes, weights, families)
+  - Layout dimensions for responsive design
+  - Component-specific style templates
 
 - `src/utils/styleHooks.js` - Collection of reusable style hooks:
-    - `usePanelStyles()` - For panels and containers
-    - `useQuestionItemStyles()` - For question items with state variations
-    - `useSkillLevelSectionStyles()` - For skill level containers
-    - `useItemTextStyles()` - For typography with responsive sizes
-    - Global style utilities (scrollbars, code blocks, etc.)
+  - `usePanelStyles()` - For panels and containers
+  - `useQuestionItemStyles()` - For question items with state variations
+  - `useSkillLevelSectionStyles()` - For skill level containers
+  - `useItemTextStyles()` - For typography with responsive sizes
+  - Global style utilities (scrollbars, code blocks, etc.)
 
 ### Using the Style System
 
@@ -100,7 +138,7 @@ const MyComponent = ({isSelected, isAnswered}) => {
 
   return (
 
-      Question
+          Question
   Title
 
 )
@@ -264,14 +302,17 @@ subcategory.
             {
               "title": "Operator vs Method",
               "description": "== is an operator, while .equals() is a method that belongs to the Object class."
-            },
+            }
             // More points...
           ]
-        },
+        }
         // Intermediate and Advanced sections...
       ],
-      "relatedQuestions": ["java-hashcode", "java-object-class"]
-    },
+      "relatedQuestions": [
+        "java-hashcode",
+        "java-object-class"
+      ]
+    }
     // More questions...
   ]
 }

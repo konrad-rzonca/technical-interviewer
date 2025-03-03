@@ -132,7 +132,7 @@ export function useQuestionItemStyles(
       backgroundColor: isSelected
           ? withOpacity(levelColor, '15') // Selected background
           : (isAnswered
-              ? COMPONENT_STYLES.questionItem.variants.answered.backgroundColor
+              ? withOpacity(levelColor, '14')
               : COMPONENT_STYLES.questionItem.variants.normal.backgroundColor),
       border: isSelected
           ? `2px solid ${withOpacity(levelColor, '60')}` // Selected border

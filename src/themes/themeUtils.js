@@ -37,22 +37,15 @@ export const deepMerge = (target, source) => {
 };
 
 /**
- * Merge a base theme with theme overrides
- * @param {Object} baseTheme The base theme object
- * @param {Object} themeOverrides The theme overrides to apply
- * @returns {Object} The merged theme
- */
-export const mergeThemes = (baseTheme, themeOverrides) => {
-  return deepMerge(baseTheme, themeOverrides);
-};
-
-/**
- * Get the current theme name from environment or configuration
+ * Get the current theme name from environment variable
  * @returns {string} The theme name
  */
 export const getThemeName = () => {
-  // Priority:
-  // 1. Environment variable
-  // 2. Default to 'base'
   return process.env.REACT_APP_THEME || 'base';
 };
+
+/**
+ * Check if current theme is UBS theme
+ * @returns {boolean} Whether UBS theme is active
+ */
+export const isUbsTheme = () => getThemeName().toLowerCase() === 'ubs';

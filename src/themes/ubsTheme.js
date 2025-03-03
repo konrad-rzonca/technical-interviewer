@@ -1,6 +1,6 @@
-﻿// src/themes/ubs/ubsTheme.js
+﻿// src/themes/ubsTheme.js
 import {createBaseTheme, TYPOGRAPHY as BASE_TYPOGRAPHY} from './baseTheme';
-import {mergeThemes} from './themeUtils';
+import {deepMerge} from './themeUtils';
 
 /**
  * UBS Brand Theme
@@ -35,10 +35,9 @@ export const UBS_COLORS = {
 
 // UBS typography
 export const UBS_TYPOGRAPHY = {
-  fontFamily: '"Helvetica Neue", Arial, sans-serif',
+  fontFamily: '"UBS Sans", "Helvetica Neue", Arial, sans-serif',
   fontSize: {
     ...BASE_TYPOGRAPHY.fontSize,
-    // Adjustments to font sizes if needed
   },
   fontWeight: {
     ...BASE_TYPOGRAPHY.fontWeight,
@@ -60,13 +59,15 @@ export const UBS_COMPONENT_STYLES = {
 
 // Create UBS theme by merging with base theme
 export const createUbsTheme = (options = {}) => {
-  // Deep merge of UBS overrides with base theme
+  // UBS overrides to apply to base theme
   const ubsOverrides = {
     palette: {
       primary: UBS_COLORS.primary,
       secondary: UBS_COLORS.secondary,
       background: UBS_COLORS.background,
       text: UBS_COLORS.text,
+      // Explicitly NOT overriding success, warning, info colors
+      // to maintain skill level color consistency
     },
     typography: {
       fontFamily: UBS_TYPOGRAPHY.fontFamily,
@@ -133,7 +134,7 @@ export const createUbsTheme = (options = {}) => {
   };
 
   // Create base theme with UBS overrides
-  return createBaseTheme(mergeThemes({}, ubsOverrides));
+  return createBaseTheme(deepMerge({}, ubsOverrides));
 };
 
 export default createUbsTheme;

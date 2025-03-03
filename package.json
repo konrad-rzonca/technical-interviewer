@@ -1,44 +1,49 @@
 {
-    "name": "technical-interview-platform",
-    "version": "1.0.0",
-    "description": "A React application for conducting technical interviews",
-    "main": "src/index.js",
-    "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
-    },
-    "engines": {
-        "node": ">=20.0.0"
-    },
-    "dependencies": {
-        "@emotion/react": "^11.11.1",
-        "@emotion/styled": "^11.11.0",
-        "@mui/icons-material": "^5.14.5",
-        "@mui/material": "^5.14.5",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-router-dom": "^6.15.0",
-        "react-scripts": "5.0.1",
-        "react-virtualized-auto-sizer": "^1.0.25",
-        "react-window": "^1.8.11"
-    },
-    "devDependencies": {
-        "@testing-library/jest-dom": "^5.17.0",
-        "@testing-library/react": "^14.0.0",
-        "@testing-library/user-event": "^14.4.3"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    }
+  "name": "technical-interview-platform",
+  "version": "1.0.0",
+  "description": "A React application for conducting technical interviews",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "start:base": "cross-env REACT_APP_THEME=base react-scripts start",
+    "start:ubs": "cross-env REACT_APP_THEME=ubs react-scripts start",
+    "build": "react-scripts build",
+    "build:base": "cross-env REACT_APP_THEME=base react-scripts build",
+    "build:ubs": "cross-env REACT_APP_THEME=ubs react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.5",
+    "@mui/material": "^5.14.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "react-scripts": "5.0.1",
+    "react-virtualized-auto-sizer": "^1.0.25",
+    "react-window": "^1.8.11"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "cross-env": "^7.0.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

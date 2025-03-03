@@ -17,7 +17,7 @@ import {categories, getAllQuestions} from './data/questionLoader';
 import {createAppTheme} from './themes';
 import {NAVIGATION} from './utils/constants';
 
-// Create the application theme using the new theme system
+// Create the application theme using the theme system
 const theme = createAppTheme();
 
 function App() {

@@ -1,7 +1,7 @@
 ﻿// src/themes/index.js
 import createBaseTheme from './baseTheme';
 import createUbsTheme from './ubsTheme';
-import {getThemeName} from './themeUtils';
+import {getThemeName, isUbsTheme} from './themeUtils';
 
 /**
  * Create theme based on configuration
@@ -11,17 +11,13 @@ import {getThemeName} from './themeUtils';
 export const createAppTheme = (options = {}) => {
   const themeName = getThemeName();
 
-  //return createUbsTheme(options);
-  // Select theme based on configuration
-  switch (themeName.toLowerCase()) {
-    case 'ubs':
-      console.log('Using UBS theme');
-      return createUbsTheme(options);
-
-    case 'base':
-    default:
-      console.log('Using base theme');
-      return createBaseTheme(options);
+  // Select theme based on environment variable
+  if (themeName.toLowerCase() === 'ubs') {
+    console.log('Using UBS theme');
+    return createUbsTheme(options);
+  } else {
+    console.log('Using base theme');
+    return createBaseTheme(options);
   }
 };
 
@@ -29,7 +25,6 @@ export const createAppTheme = (options = {}) => {
 export * from './baseTheme';
 
 // Export isUbsTheme helper
-export const isUbsTheme = () => getThemeName().toLowerCase() === 'ubs';
-//export const isUbsTheme = () => true;
+export {isUbsTheme};
 
 export default createAppTheme;
