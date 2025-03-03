@@ -1,4 +1,4 @@
-// src/components/InterviewPanel.js - Refactored with separated components
+// src/components/InterviewPanel.js
 import React, {useEffect, useState} from 'react';
 import {Box, IconButton, Paper, useMediaQuery, useTheme} from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -20,10 +20,12 @@ import QuestionDetailsPanel from './QuestionDetailsPanel';
 import QuestionNavigation from './QuestionNavigation';
 import RelatedQuestionsSidebar from './RelatedQuestionsSidebar';
 import SidebarPanel from './SidebarPanel';
-import TopNavbar from './TopNavbar';
-import SettingsMenu from './SettingsMenu';
 import {MobileBottomNav, MobileDrawer} from './MobileNavigation';
 
+/**
+ * InterviewPanel - Main interview interface component
+ * Provides question navigation, details, and evaluation
+ */
 const InterviewPanel = ({interviewState, updateInterviewState}) => {
   const {currentQuestion, notesMap, gradesMap} = interviewState;
   const theme = useTheme();
@@ -38,15 +40,15 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
   const [mobileView, setMobileView] = useState('question'); // 'category', 'question', 'related'
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  // Settings state
-  const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
+  // Local settings state that will be used within the component
+  // In a real app, this would likely come from props or context
   const [settings, setSettings] = useState({
     learningMode: false,
     hideAnsweredQuestions: false,
     hideAnsweredInRelated: false,
   });
 
-  // Original state for question management
+  // Category state
   const [activeCategories, setActiveCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -57,34 +59,6 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
   const [selectedSets, setSelectedSets] = useState({});
   const [selectedSubcategories, setSelectedSubcategories] = useState({});
   const [subcategoryFilter, setSubcategoryFilter] = useState(null);
-
-  // Get panel styles from hooks
-  const mainPanelStyles = usePanelStyles(false, true, {
-    flexGrow: 1,
-    p: 3,
-    overflow: 'hidden',
-    flexDirection: 'column',
-    ml: !isMobile && leftSidebarCollapsed ? 10 : 0,
-    mr: !isMobile && rightSidebarCollapsed ? 10 : 0,
-    width: isMobile ? 'calc(100% - 24px)' : 'auto',
-    transition: 'margin 0.3s ease, width 0.3s ease',
-    display: isMobile ? (mobileView === 'question' ? 'flex' : 'none') : 'flex',
-  });
-
-  // Responsive sidebar management
-  useEffect(() => {
-    if (isMobile) {
-      setLeftSidebarCollapsed(true);
-      setRightSidebarCollapsed(true);
-    } else if (isTablet) {
-      setRightSidebarCollapsed(true);
-      setLeftSidebarCollapsed(false);
-    } else {
-      // On wide screens, always expand sidebars
-      setLeftSidebarCollapsed(false);
-      setRightSidebarCollapsed(false);
-    }
-  }, [isMobile, isTablet]);
 
   // Sidebar toggle handlers
   const toggleLeftSidebar = () => setLeftSidebarCollapsed(
@@ -187,7 +161,8 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
     selectedSubcategories,
     subcategoryFilter,
     currentQuestion,
-    updateInterviewState]);
+    updateInterviewState,
+  ]);
 
   // Apply hide answered questions filter
   useEffect(() => {
@@ -208,7 +183,8 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
     settings.hideAnsweredQuestions,
     gradesMap,
     currentQuestion,
-    updateInterviewState]);
+    updateInterviewState,
+  ]);
 
   // Load related questions when current question changes
   useEffect(() => {
@@ -246,13 +222,29 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
     }
   }, [mobileView, isMobile]);
 
+  // Responsive sidebar management
+  useEffect(() => {
+    if (isMobile) {
+      setLeftSidebarCollapsed(true);
+      setRightSidebarCollapsed(true);
+    } else if (isTablet) {
+      setRightSidebarCollapsed(true);
+      setLeftSidebarCollapsed(false);
+    } else {
+      // On wide screens, always expand sidebars
+      setLeftSidebarCollapsed(false);
+      setRightSidebarCollapsed(false);
+    }
+  }, [isMobile, isTablet]);
+
   // Handle category selection
   const handleCategorySelect = (categoryId, explicitExpandedState = null) => {
     if (categoryId === selectedCategory) {
       // Toggle expansion if the category is already selected
       setExpandedCategory(
           explicitExpandedState !== null ? explicitExpandedState :
-              (expandedCategory === categoryId ? null : categoryId));
+              (expandedCategory === categoryId ? null : categoryId),
+      );
       return;
     }
 
@@ -264,7 +256,8 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
       setExpandedCategory(explicitExpandedState);
     } else {
       setExpandedCategory(
-          category && category.subcategories.length > 0 ? categoryId : null);
+          category && category.subcategories.length > 0 ? categoryId : null,
+      );
     }
 
     setSubcategoryFilter(null);
@@ -358,22 +351,6 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
     });
   };
 
-  // Settings menu handlers
-  const handleSettingsMenuOpen = (event) => {
-    setSettingsMenuAnchor(event.currentTarget);
-  };
-
-  const handleSettingsMenuClose = () => {
-    setSettingsMenuAnchor(null);
-  };
-
-  const handleSettingChange = (setting) => {
-    setSettings(prev => ({
-      ...prev,
-      [setting]: !prev[setting],
-    }));
-  };
-
   // Handle set selection changes
   const handleSetToggle = (setId) => {
     setSelectedSets(prev => ({
@@ -436,6 +413,16 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
     setSubcategoryFilter(null);
   };
 
+  // Handle settings changes - update local settings if global not available
+  const handleSettingChange = (setting) => {
+    if (!globalSettings) {
+      setLocalSettings(prev => ({
+        ...prev,
+        [setting]: !prev[setting],
+      }));
+    }
+  };
+
   // Sidebar toggle button styles
   const sidebarToggleButtonStyle = (position, isCollapsed, width) => ({
     position: 'fixed',
@@ -463,24 +450,7 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
         height: '100%',
         minHeight: {xs: '600px', sm: '700px', md: '800px'},
       }}>
-        {/* Top Navigation - now using TopNavbar component */}
-        <TopNavbar
-            isMobile={isMobile}
-            onMobileDrawerOpen={() => setMobileDrawerOpen(true)}
-            onSettingsMenuOpen={handleSettingsMenuOpen}
-            settings={settings}
-        />
-
-        {/* Settings Menu - now using SettingsMenu component */}
-        <SettingsMenu
-            anchorEl={settingsMenuAnchor}
-            open={Boolean(settingsMenuAnchor)}
-            onClose={handleSettingsMenuClose}
-            settings={settings}
-            onSettingChange={handleSettingChange}
-        />
-
-        {/* Mobile Drawer - now using MobileDrawer component */}
+        {/* Mobile Drawer */}
         {isMobile && (
             <MobileDrawer
                 open={mobileDrawerOpen}
@@ -578,7 +548,19 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
           {/* Main Content */}
           <Paper
               elevation={0}
-              sx={mainPanelStyles}
+              sx={usePanelStyles(false, true, {
+                flexGrow: 1,
+                p: 3,
+                overflow: 'hidden',
+                flexDirection: 'column',
+                ml: !isMobile && leftSidebarCollapsed ? 10 : 0,
+                mr: !isMobile && rightSidebarCollapsed ? 10 : 0,
+                width: isMobile ? 'calc(100% - 24px)' : 'auto',
+                transition: 'margin 0.3s ease, width 0.3s ease',
+                display: isMobile ? (mobileView === 'question'
+                    ? 'flex'
+                    : 'none') : 'flex',
+              })}
           >
             {/* Question Details Panel - placed at the top */}
             <QuestionDetailsPanel
@@ -633,7 +615,7 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
           </SidebarPanel>
         </Box>
 
-        {/* Mobile Bottom Navigation - now using MobileBottomNav component */}
+        {/* Mobile Bottom Navigation */}
         {isMobile && (
             <MobileBottomNav
                 currentView={mobileView}

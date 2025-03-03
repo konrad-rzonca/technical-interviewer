@@ -1,6 +1,6 @@
-// src/App.js - Updated imports
+// src/App.js
 import React, {useEffect, useState} from 'react';
-import {Box, CssBaseline, ThemeProvider} from '@mui/material';
+import {CssBaseline, ThemeProvider} from '@mui/material';
 import {
   BrowserRouter as Router,
   Navigate,
@@ -8,11 +8,14 @@ import {
   Routes,
 } from 'react-router-dom';
 import InterviewPanel from './components/InterviewPanel';
-import GlobalSearch from './components/GlobalSearch';
+import CodingPanel from './components/coding/CodingPanel';
+import BestPracticesPanel from './components/best-practises/BestPracticesPanel';
 import HealthCheck from './components/HealthCheck';
 import ErrorBoundary from './components/ErrorBoundary';
+import MainLayout from './components/MainLayout';
 import {categories, getAllQuestions} from './data/questionLoader';
-import createAppTheme, {COLORS, SPACING} from './utils/theme';
+import createAppTheme from './utils/theme';
+import {NAVIGATION} from './utils/constants';
 
 // Create the application theme
 const theme = createAppTheme();
@@ -25,6 +28,13 @@ function App() {
     gradesMap: {}, // Map of questionId -> grade (1-5)
   });
   const [allQuestions, setAllQuestions] = useState([]);
+
+  // App-wide settings
+  const [settings, setSettings] = useState({
+    learningMode: false,
+    hideAnsweredQuestions: false,
+    hideAnsweredInRelated: false,
+  });
 
   // Load all questions for search capability
   useEffect(() => {
@@ -50,61 +60,52 @@ function App() {
     // We're not setting it here to avoid state duplication
   };
 
+  // Handle settings changes
+  const handleSettingChange = (setting) => {
+    setSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting],
+    }));
+  };
+
   return (
       <ThemeProvider theme={theme}>
         <CssBaseline/>
         <Router>
-          <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-            bgcolor: COLORS.background.light,
-            overflow: 'auto',
-          }}>
-            {/* Global Search - Only shown on main interview page */}
+          <MainLayout
+              questions={allQuestions}
+              categories={categories}
+              gradesMap={interviewState.gradesMap}
+              settings={settings}
+              onSettingChange={handleSettingChange}
+              onQuestionSelect={handleQuestionSelect}
+              onCategorySelect={handleCategorySelect}
+          >
             <Routes>
-              <Route
-                  path="/"
-                  element={
-                    <Box sx={{
-                      position: 'fixed',
-                      top: SPACING.toUnits(SPACING.sm),
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      zIndex: theme.zIndex.appBar,
-                      width: '50%',
-                      maxWidth: 600,
-                      minWidth: 300,
-                    }}>
-                      <GlobalSearch
-                          questions={allQuestions}
-                          categories={categories}
-                          onQuestionSelect={handleQuestionSelect}
-                          onCategorySelect={handleCategorySelect}
-                          gradesMap={interviewState.gradesMap}
-                      />
-                    </Box>
-                  }
-              />
-            </Routes>
-
-            <Routes>
-              <Route path="/" element={
+              <Route path={NAVIGATION.ROUTES.INTERVIEW} element={
                 <ErrorBoundary>
-                  <Box sx={{
-                    pt: SPACING.toUnits(SPACING.xl),
-                  }}> {/* Add padding for the fixed search bar */}
-                    <InterviewPanel
-                        interviewState={interviewState}
-                        updateInterviewState={updateInterviewState}
-                    />
-                  </Box>
+                  <InterviewPanel
+                      interviewState={interviewState}
+                      updateInterviewState={updateInterviewState}
+                  />
                 </ErrorBoundary>
               }/>
-              <Route path="/healtz" element={<HealthCheck/>}/>
-              <Route path="*" element={<Navigate to="/" replace/>}/>
+              <Route path={NAVIGATION.ROUTES.CODING} element={
+                <ErrorBoundary>
+                  <CodingPanel/>
+                </ErrorBoundary>
+              }/>
+              <Route path={NAVIGATION.ROUTES.BEST_PRACTICES} element={
+                <ErrorBoundary>
+                  <BestPracticesPanel/>
+                </ErrorBoundary>
+              }/>
+              <Route path={NAVIGATION.ROUTES.HEALTH} element={<HealthCheck/>}/>
+              <Route path="*"
+                     element={<Navigate to={NAVIGATION.ROUTES.INTERVIEW}
+                                        replace/>}/>
             </Routes>
-          </Box>
+          </MainLayout>
         </Router>
       </ThemeProvider>
   );

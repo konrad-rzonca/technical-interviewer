@@ -1,24 +1,19 @@
-// src/components/GlobalSearch.js - Refactored and simplified
+// src/components/GlobalSearch.js - Updated for new layout without advanced filters
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
-  Badge,
   Box,
-  Button,
   Chip,
   ClickAwayListener,
   Divider,
-  FormControl,
   IconButton,
   InputAdornment,
-  InputLabel,
   List,
   ListItem,
-  MenuItem,
   Paper,
-  Select,
   TextField,
-  Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -26,7 +21,6 @@ import HighlightIcon from '@mui/icons-material/Highlight';
 import HistoryIcon from '@mui/icons-material/History';
 import SearchIcon from '@mui/icons-material/Search';
 import TagIcon from '@mui/icons-material/Tag';
-import TuneIcon from '@mui/icons-material/Tune';
 import {getSkillLevelStyles} from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
 
@@ -125,137 +119,6 @@ const QuestionResultItem = React.memo(
       );
     });
 
-// Search filters component
-const SearchFilters = React.memo(({
-  open,
-  filters,
-  onFilterChange,
-  onFilterReset,
-  onFilterApply,
-  categories,
-}) => {
-  return open ? (
-      <Paper
-          elevation={3}
-          sx={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            mt: SPACING.toUnits(SPACING.md),
-            zIndex: 1301,
-            p: SPACING.toUnits(SPACING.sm),
-            borderRadius: SPACING.toUnits(SPACING.borderRadius),
-          }}
-      >
-        <Typography
-            variant="subtitle2"
-            gutterBottom
-            sx={{
-              fontSize: TYPOGRAPHY.fontSize.regularText,
-              fontWeight: TYPOGRAPHY.fontWeight.medium,
-            }}
-        >
-          Advanced Filters
-        </Typography>
-
-        {/* Skill Level Filter */}
-        <FormControl fullWidth size="small"
-                     sx={{mb: SPACING.toUnits(SPACING.sm)}}>
-          <InputLabel id="skill-level-filter-label">Skill Level</InputLabel>
-          <Select
-              labelId="skill-level-filter-label"
-              value={filters.skillLevel}
-              label="Skill Level"
-              onChange={(e) => onFilterChange('skillLevel', e.target.value)}
-              sx={{fontSize: TYPOGRAPHY.fontSize.regularText}}
-          >
-            <MenuItem value="all">All Levels</MenuItem>
-            <MenuItem value="beginner">Beginner</MenuItem>
-            <MenuItem value="intermediate">Intermediate</MenuItem>
-            <MenuItem value="advanced">Advanced</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* Answered Status Filter */}
-        <FormControl fullWidth size="small"
-                     sx={{mb: SPACING.toUnits(SPACING.sm)}}>
-          <InputLabel id="answered-filter-label">Answered Status</InputLabel>
-          <Select
-              labelId="answered-filter-label"
-              value={filters.answered}
-              label="Answered Status"
-              onChange={(e) => onFilterChange('answered', e.target.value)}
-              sx={{fontSize: TYPOGRAPHY.fontSize.regularText}}
-          >
-            <MenuItem value="all">All Questions</MenuItem>
-            <MenuItem value="answered">Answered Only</MenuItem>
-            <MenuItem value="unanswered">Unanswered Only</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* Category Filter */}
-        <Typography
-            variant="body2"
-            gutterBottom
-            sx={{fontSize: TYPOGRAPHY.fontSize.regularText}}
-        >
-          Categories
-        </Typography>
-        <Box sx={{
-          mb: SPACING.toUnits(SPACING.sm),
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: SPACING.toUnits(SPACING.sm),
-        }}>
-          {categories.map(category => (
-              <Chip
-                  key={category.id}
-                  label={category.name}
-                  size="small"
-                  onClick={() => onFilterChange('categories',
-                      filters.categories.includes(category.id)
-                          ? filters.categories.filter(id => id !== category.id)
-                          : [...filters.categories, category.id],
-                  )}
-                  color={filters.categories.includes(category.id)
-                      ? 'primary'
-                      : 'default'}
-                  variant={filters.categories.includes(category.id)
-                      ? 'filled'
-                      : 'outlined'}
-                  sx={{fontSize: TYPOGRAPHY.fontSize.caption}}
-              />
-          ))}
-        </Box>
-
-        {/* Action buttons */}
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          mt: SPACING.toUnits(SPACING.sm),
-        }}>
-          <Button
-              variant="outlined"
-              size="small"
-              onClick={onFilterReset}
-              sx={{fontSize: TYPOGRAPHY.fontSize.button}}
-          >
-            Reset
-          </Button>
-          <Button
-              variant="contained"
-              size="small"
-              onClick={onFilterApply}
-              sx={{fontSize: TYPOGRAPHY.fontSize.button}}
-          >
-            Apply Filters
-          </Button>
-        </Box>
-      </Paper>
-  ) : null;
-});
-
 // Main GlobalSearch component
 const GlobalSearch = ({
   questions = [],
@@ -272,22 +135,11 @@ const GlobalSearch = ({
     categories: [],
   });
   const [searchHistory, setSearchHistory] = useState([]);
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [filters, setFilters] = useState({
-    skillLevel: 'all',
-    answered: 'all',
-    categories: [],
-  });
 
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
-
-  // Calculate active filter count
-  const activeFilterCount = useMemo(() => {
-    return (filters.skillLevel !== 'all' ? 1 : 0) +
-        (filters.answered !== 'all' ? 1 : 0) +
-        filters.categories.length;
-  }, [filters]);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   // Search questions and categories based on the search term
   useEffect(() => {
@@ -298,36 +150,12 @@ const GlobalSearch = ({
 
     const term = searchTerm.toLowerCase();
 
-    // Filter questions based on search term and active filters
+    // Filter questions based on search term
     const filteredQuestions = questions.filter(question => {
       // Text search
-      const matchesText =
-          question.question.toLowerCase().includes(term) ||
+      return question.question.toLowerCase().includes(term) ||
           (question.shortTitle &&
               question.shortTitle.toLowerCase().includes(term));
-
-      if (!matchesText) return false;
-
-      // Apply skill level filter
-      if (filters.skillLevel !== 'all' && question.skillLevel !==
-          filters.skillLevel) {
-        return false;
-      }
-
-      // Apply answered filter
-      if (filters.answered === 'answered' && !gradesMap[question.id]) {
-        return false;
-      } else if (filters.answered === 'unanswered' && gradesMap[question.id]) {
-        return false;
-      }
-
-      // Apply category filter
-      if (filters.categories.length > 0 &&
-          !filters.categories.includes(question.categoryId)) {
-        return false;
-      }
-
-      return true;
     }).slice(0, 10); // Limit to top 10 for performance
 
     // Filter categories based on search term
@@ -341,7 +169,7 @@ const GlobalSearch = ({
       questions: filteredQuestions,
       categories: filteredCategories,
     });
-  }, [searchTerm, questions, categories, filters, gradesMap]);
+  }, [searchTerm, questions, categories, gradesMap]);
 
   // Add search term to search history when selecting a result
   const addToSearchHistory = (term) => {
@@ -383,33 +211,6 @@ const GlobalSearch = ({
     setShowResults(false);
   };
 
-  // Toggle advanced filters
-  const handleToggleFilters = () => {
-    setShowAdvancedFilters(!showAdvancedFilters);
-  };
-
-  // Update filter values
-  const handleFilterChange = (filterType, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterType]: value,
-    }));
-  };
-
-  // Apply selected filters
-  const handleApplyFilters = () => {
-    setShowAdvancedFilters(false);
-  };
-
-  // Reset filters to default
-  const handleResetFilters = () => {
-    setFilters({
-      skillLevel: 'all',
-      answered: 'all',
-      categories: [],
-    });
-  };
-
   // Highlight matching text in search results
   const highlightMatch = (text, term) => {
     if (!term || !text) return text;
@@ -428,11 +229,17 @@ const GlobalSearch = ({
   return (
       <ClickAwayListener onClickAway={() => setShowResults(false)}>
         <Box ref={searchContainerRef}
-             sx={{position: 'relative', width: '100%', maxWidth: 600}}>
+             sx={{
+               position: 'relative',
+               width: '100%',
+               minWidth: isSmallScreen ? 200 : 300,
+               maxWidth: isSmallScreen ? 300 : 600,
+             }}>
           <TextField
               ref={searchInputRef}
               placeholder="Search questions, categories..."
               fullWidth
+              size="small"
               value={searchTerm}
               onChange={handleSearchChange}
               onClick={() => searchTerm.trim() && setShowResults(true)}
@@ -450,25 +257,12 @@ const GlobalSearch = ({
                             <ClearIcon fontSize="small"/>
                           </IconButton>
                       )}
-                      <Tooltip title="Advanced Filters">
-                        <IconButton
-                            size="small"
-                            onClick={handleToggleFilters}
-                            color={activeFilterCount > 0
-                                ? 'primary'
-                                : 'default'}
-                        >
-                          <Badge badgeContent={activeFilterCount}
-                                 color="primary">
-                            <TuneIcon fontSize="small"/>
-                          </Badge>
-                        </IconButton>
-                      </Tooltip>
                     </InputAdornment>
                 ),
                 sx: {
                   borderRadius: SPACING.toUnits(SPACING.borderRadius),
                   background: 'white',
+                  height: '40px', // Fixed height for the search input
                   '&:hover': {
                     bgcolor: 'white',
                   },
@@ -481,18 +275,9 @@ const GlobalSearch = ({
                 },
                 '& .MuiInputBase-input': {
                   fontSize: TYPOGRAPHY.fontSize.regularText,
+                  py: 1,
                 },
               }}
-          />
-
-          {/* Advanced Filters Panel */}
-          <SearchFilters
-              open={showAdvancedFilters}
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onFilterReset={handleResetFilters}
-              onFilterApply={handleApplyFilters}
-              categories={categories}
           />
 
           {/* Search Results Dropdown */}
