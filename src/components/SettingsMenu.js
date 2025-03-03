@@ -6,7 +6,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffOutlinedIcon
   from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import {COLORS} from '../utils/theme';
+import {COLORS} from '../themes/baseTheme';
 
 const SettingsMenu = ({
   anchorEl,

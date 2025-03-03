@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {Box} from '@mui/material';
 import TopNavbar from './TopNavbar';
 import SettingsMenu from './SettingsMenu';
-import {COLORS} from '../utils/theme';
+import {COLORS} from '../themes/baseTheme';
 
 /**
  * MainLayout - Main application layout component

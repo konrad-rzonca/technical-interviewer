@@ -28,7 +28,7 @@ import {
 import React, {useMemo, useState} from 'react';
 
 import {useTitleStyles} from '../utils/styles';
-import {COLORS, TYPOGRAPHY} from '../utils/theme';
+import {COLORS, TYPOGRAPHY} from '../themes/baseTheme';
 
 // Constants for styling
 const CATEGORY_ITEM_PADDING = 1.2; // Reduced padding

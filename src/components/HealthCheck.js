@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {usePanelStyles, useTitleStyles} from '../utils/styles';
-import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
+import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 const HealthCheck = () => {
   const [health, setHealth] = useState({

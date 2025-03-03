@@ -7,7 +7,7 @@ import {
   useItemTextStyles,
   useQuestionItemStyles,
 } from '../utils/styles';
-import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
+import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 // Constants for styling
 const DOT_SIZE = 12; // Smaller dot size for better proportions
@@ -50,10 +50,9 @@ const QuestionItem = ({
 
   // Memoize the tooltip content for better performance
   const tooltipContent = useMemo(() => (
-      <Box sx={{p: SPACING.toUnits(SPACING.md)}}>
+      <Box sx={{p: SPACING.toUnits(SPACING.sm)}}>
         <Typography sx={{
           fontSize: TYPOGRAPHY.fontSize.h6,
-          mb: SPACING.toUnits(SPACING.md),
         }}>
           {question.question}
         </Typography>
@@ -87,10 +86,10 @@ const QuestionItem = ({
               display: 'flex',
               alignItems: 'center',
               position: 'relative',
-              // Fixed height for consistency
-              height: 44,
-              // Remove left padding from item styles for better control
               pl: 0,
+              pt: 0,
+              pb: 0,
+              mb: 0,
             }}
         >
           {/* Container for dot with consistent spacing */}

@@ -15,9 +15,10 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {Link, useLocation} from 'react-router-dom';
-import {COLORS, SPACING} from '../utils/theme';
+import {SPACING} from '../themes/baseTheme';
 import {NAVIGATION} from '../utils/constants';
 import GlobalSearch from './GlobalSearch';
+import Logo from './Logo';
 
 /**
  * Get the active tab index based on the current route path
@@ -64,7 +65,7 @@ const TopNavbar = ({
   return (
       <AppBar position="static" elevation={1} color="default">
         <Toolbar sx={{
-          minHeight: 72, // Increased height
+          minHeight: 68,
           justifyContent: 'space-between',
           px: {xs: 1, sm: 2},
           gap: 2,
@@ -87,6 +88,11 @@ const TopNavbar = ({
                 </IconButton>
             )}
 
+            {/* Logo component - will use UBS logo or app name based on theme */}
+            <Box sx={{display: {xs: 'none', md: 'block'}}}>
+              <Logo/>
+            </Box>
+
             <Tabs
                 value={currentTabIndex}
                 textColor="primary"
@@ -94,9 +100,9 @@ const TopNavbar = ({
                 variant={isSmallScreen ? 'scrollable' : 'standard'}
                 scrollButtons={isSmallScreen ? 'auto' : false}
                 sx={{
-                  minHeight: 72,
+                  minHeight: 68,
                   '& .MuiTab-root': {
-                    minHeight: 72,
+                    minHeight: 68,
                     textTransform: 'none',
                     fontWeight: 500,
                     fontSize: isSmallScreen ? '0.875rem' : '1rem',
@@ -165,10 +171,10 @@ const TopNavbar = ({
                     height: 48,
                     borderRadius: '8px',
                     bgcolor: activeSettingsCount > 0
-                        ? `${COLORS.primary.main}10`
+                        ? `${theme.palette.primary.main}10`
                         : 'transparent',
                     '&:hover': {
-                      bgcolor: `${COLORS.primary.main}20`,
+                      bgcolor: `${theme.palette.primary.main}20`,
                     },
                   }}
               >

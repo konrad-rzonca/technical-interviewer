@@ -13,7 +13,7 @@ import {
 } from '../data/questionLoader';
 
 import {usePanelStyles} from '../utils/styles';
-import {LAYOUT} from '../utils/theme';
+import {LAYOUT} from '../themes/baseTheme';
 import CategorySidebar from './CategorySidebar';
 import QuestionDetailsPanel from './QuestionDetailsPanel';
 import QuestionNavigation from './QuestionNavigation';

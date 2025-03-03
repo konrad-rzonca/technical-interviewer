@@ -12,7 +12,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import AnswerLevelHorizontal from './AnswerLevelHorizontal';
 import {usePanelStyles, useTitleStyles} from '../utils/styles';
-import {SPACING, TYPOGRAPHY} from '../utils/theme';
+import {SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 // Constants for styling
 const QUESTION_PANEL_STYLES = {
@@ -30,8 +30,8 @@ const QUESTION_TEXT_STYLES = {
   textAlign: 'center',
   flexGrow: 1,
   fontWeight: TYPOGRAPHY.fontWeight.medium,
-  fontSize: '1.8rem', // Significantly larger question font
-  lineHeight: 1.4,
+  fontSize: '1.25rem', // Significantly larger question font
+  lineHeight: 0.6,
   py: SPACING.toUnits(SPACING.md), // More vertical padding
   px: SPACING.toUnits(SPACING.md), // Horizontal padding
 };
@@ -189,7 +189,7 @@ const QuestionDetailsPanel = ({
                 name={`grade-${currentQuestion.id}`}
                 value={gradesMap[currentQuestion.id] || 0}
                 onChange={handleGradeChange}
-                size="large"
+                size="medium"
             />
           </Box>
 

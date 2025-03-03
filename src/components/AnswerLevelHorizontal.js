@@ -14,7 +14,7 @@ import {
   useAnswerLevelStyles,
   useItemTextStyles,
 } from '../utils/styles';
-import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
+import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 import {INDEX_TO_LEVEL} from '../utils/answerConstants';
 
 const AnswerLevelHorizontal = ({

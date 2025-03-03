@@ -17,7 +17,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {getSkillLevelStyles, useTitleStyles} from '../utils/styles';
-import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
+import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 // Related question item component for better code organization
 const RelatedQuestionItem = React.memo(({

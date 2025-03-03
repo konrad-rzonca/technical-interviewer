@@ -1,10 +1,13 @@
 # Technical Interview Platform
 
-A modern React application for conducting technical interviews with a focus on optimal UX for recruiters and interviewers.
+A modern React application for conducting technical interviews with a focus on optimal UX for recruiters and
+interviewers.
 
 ## Project Overview
 
-This platform is designed to help recruiters conduct technical interviews efficiently by providing a structured database of questions organized by category and subcategory. It focuses solely on the interviewer experience and does not handle candidate information.
+This platform is designed to help recruiters conduct technical interviews efficiently by providing a structured database
+of questions organized by category and subcategory. It focuses solely on the interviewer experience and does not handle
+candidate information.
 
 ### Key Features
 
@@ -17,7 +20,8 @@ This platform is designed to help recruiters conduct technical interviews effici
 - **Related Questions**: Suggested follow-up questions with answered status and category info
 - **Health Monitoring**: `/healtz` endpoint for application health monitoring
 - **Content-Aware Layout**: Responsive design that adjusts based on actual content space
-- **Performance Optimizations**: Component splitting and virtualization for improved performance with large question sets
+- **Performance Optimizations**: Component splitting and virtualization for improved performance with large question
+  sets
 - **Centralized Theming**: Comprehensive theming system for consistent UI across components
 
 ## UI Organization
@@ -25,10 +29,10 @@ This platform is designed to help recruiters conduct technical interviews effici
 The application follows a three-panel layout for optimal experience:
 
 - **Left Panel**: Categories and subcategories, with collapsible sections and question set selection
-- **Middle Panel**: 
-  - Question details at the top with answer insights
-  - Candidate evaluation section below
-  - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
+- **Middle Panel**:
+    - Question details at the top with answer insights
+    - Candidate evaluation section below
+    - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
 - **Right Panel**: Related questions with answered status and category information
 
 Each section has independent scrolling for better usability with large question sets.
@@ -65,20 +69,20 @@ The application uses a sophisticated, consolidated styling system:
 
 ### Key Style Files
 
-- `src/utils/theme.js` - Contains all design tokens:
-  - Color palette with semantic naming
-  - Skill level color variations
-  - Spacing system with consistent units
-  - Typography definitions (sizes, weights, families)
-  - Layout dimensions for responsive design
-  - Component-specific style templates
+- `src/utils/baseTheme.js` - Contains all design tokens:
+    - Color palette with semantic naming
+    - Skill level color variations
+    - Spacing system with consistent units
+    - Typography definitions (sizes, weights, families)
+    - Layout dimensions for responsive design
+    - Component-specific style templates
 
 - `src/utils/styleHooks.js` - Collection of reusable style hooks:
-  - `usePanelStyles()` - For panels and containers
-  - `useQuestionItemStyles()` - For question items with state variations
-  - `useSkillLevelSectionStyles()` - For skill level containers
-  - `useItemTextStyles()` - For typography with responsive sizes
-  - Global style utilities (scrollbars, code blocks, etc.)
+    - `usePanelStyles()` - For panels and containers
+    - `useQuestionItemStyles()` - For question items with state variations
+    - `useSkillLevelSectionStyles()` - For skill level containers
+    - `useItemTextStyles()` - For typography with responsive sizes
+    - Global style utilities (scrollbars, code blocks, etc.)
 
 ### Using the Style System
 
@@ -86,19 +90,21 @@ Components use the style system through hooks:
 
 ```javascript
 // Example component using style hooks
-import { useQuestionItemStyles, useItemTextStyles } from '../utils/styleHooks';
-import { COLORS } from '../utils/theme';
+import {useQuestionItemStyles, useItemTextStyles} from '../utils/styleHooks';
+import {COLORS} from '../utils/theme';
 
-const MyComponent = ({ isSelected, isAnswered }) => {
+const MyComponent = ({isSelected, isAnswered}) => {
   // Get styles from hooks, passing component state
   const itemStyles = useQuestionItemStyles(isSelected, isAnswered, 'intermediate');
   const textStyles = useItemTextStyles(isSelected);
-  
+
   return (
-    
-      Question Title
-    
-  );
+
+      Question
+  Title
+
+)
+  ;
 };
 ```
 
@@ -128,7 +134,7 @@ Colors are organized semantically for consistency:
 
 To modify the appearance throughout the app:
 
-1. Update tokens in `theme.js` (for global changes)
+1. Update tokens in `baseTheme.js` (for global changes)
 2. Modify style hooks in `styleHooks.js` (for component patterns)
 3. Apply hooks in components (for specific implementations)
 
@@ -184,6 +190,7 @@ Each insight category contains multiple points with titles and detailed descript
 ## Learning Mode
 
 The platform includes a Learning Mode that hides answer details until:
+
 - The mouse hovers over a specific answer point
 - A point is clicked (making it persistently visible)
 
@@ -213,7 +220,7 @@ interview-platform/
 │   │   ├── HealthCheck.js
 │   │   └── [other components]
 │   ├── utils/
-│   │   ├── theme.js
+│   │   ├── baseTheme.js
 │   │   ├── useStyles.js 
 │   │   └── constants.js
 │   ├── data/
@@ -235,7 +242,8 @@ interview-platform/
 
 ## Question Format
 
-Questions are stored in JSON files organized by category and subcategory. Each file contains questions for a specific subcategory.
+Questions are stored in JSON files organized by category and subcategory. Each file contains questions for a specific
+subcategory.
 
 ### JSON File Structure
 
@@ -342,4 +350,5 @@ npm run build
 The application is designed to work in modern browsers (Chrome, Firefox, Safari, Edge).
 
 ## License
+
 This project is licensed under the MIT License - see the [LICENSE](misc/LICENSE.txt) file for details.

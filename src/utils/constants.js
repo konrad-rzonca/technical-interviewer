@@ -13,7 +13,7 @@ export const NAVIGATION = {
     HEALTH: '/healtz',
   },
   TAB_LABELS: {
-    INTERVIEW: 'Technical Interviewer',
+    INTERVIEW: 'Questions',
     CODING: 'Coding',
     BEST_PRACTICES: 'Best Practices',
   },

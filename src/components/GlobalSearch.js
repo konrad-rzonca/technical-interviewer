@@ -22,7 +22,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import SearchIcon from '@mui/icons-material/Search';
 import TagIcon from '@mui/icons-material/Tag';
 import {getSkillLevelStyles} from '../utils/styles';
-import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
+import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 // SearchResultItem component for questions
 const QuestionResultItem = React.memo(

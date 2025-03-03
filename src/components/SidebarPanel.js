@@ -3,7 +3,7 @@ import {Box, IconButton} from '@mui/material';
 import React, {useMemo} from 'react';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {COLORS} from '../utils/theme';
+import {COLORS} from '../themes/baseTheme';
 
 /**
  * A reusable sidebar panel component that handles collapsed/expanded states

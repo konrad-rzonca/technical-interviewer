@@ -1,4 +1,4 @@
-// src/utils/theme.js
+// src/utils/baseTheme.js
 import {createTheme} from '@mui/material/styles';
 
 /**
@@ -115,15 +115,16 @@ export const SKILL_LEVEL_COLORS = {
 // Spacing system - defines all spacing values used in the app
 export const SPACING = {
   // Base unit in pixels
-  unit: 8,
+  unit: 6,
 
   // Commonly used spacing values
-  xs: 8,
-  sm: 10,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
+  xxs: 4,
+  xs: 6,
+  sm: 8,
+  md: 10,
+  lg: 16,
+  xl: 22,
+  xxl: 28,
 
   // Spacing for specific components
   panelPadding: 24,    // 3 units, corresponds to p: 3 in MUI
@@ -142,24 +143,24 @@ export const SPACING = {
 export const TYPOGRAPHY = {
   // Font sizes
   fontSize: {
-    h1: '2.25rem',
-    h2: '2rem',
-    h3: '1.75rem',
-    h4: '1.5rem',
-    h5: '1.45rem',
-    h6: '1.35rem',
-    body1: '1.25rem',
-    body2: '1.15rem',
-    caption: '1rem',
-    button: '1.1rem',
-    small: '0.9rem',
+    h1: '1.2rem',
+    h2: '1.10rem',
+    h3: '1.08rem',
+    h4: '1.04rem',
+    h5: '1.00rem',
+    h6: '0.96rem',
+    body1: '0.92rem',
+    body2: '0.8rem',
+    caption: '0.7rem',
+    button: '1.0rem',
+    small: '0.8rem',
   },
 
   // Specific component sizes
-  panelTitle: '1.35rem',   // Panel headers
-  questionTitle: '1.3rem',  // Question titles in main panel
-  itemTitle: '1.15rem',     // Question titles in lists, category names, etc.
-  regularText: '1.15rem',   // Regular text in the application
+  panelTitle: '1.15rem',   // Panel headers
+  questionTitle: '1.1rem',  // Question titles in main panel
+  itemTitle: '1.05rem',     // Question titles in lists, category names, etc.
+  regularText: '1.05rem',   // Regular text in the application
   metadataText: '0.95rem',  // Metadata, subcategory names, etc.
 
   // Font weights
@@ -184,15 +185,15 @@ export const TYPOGRAPHY = {
 // Layout dimensions
 export const LAYOUT = {
   // Column widths
-  LEFT_SIDEBAR_WIDTH: 450,
-  RIGHT_SIDEBAR_WIDTH: 525,
+  LEFT_SIDEBAR_WIDTH: 325,
+  RIGHT_SIDEBAR_WIDTH: 325,
   COLLAPSED_SIDEBAR_WIDTH: 80,
-  COLUMN_THRESHOLD: 1800, // Screen width threshold for multi-column layout
+  COLUMN_THRESHOLD: 2100, // Screen width threshold for multi-column layout
 
   // Heights
   TOP_HEADER_HEIGHT: 64,
   BOTTOM_NAV_HEIGHT: 64,
-  ITEM_HEIGHT: 44, // Height for list items, question items, etc.
+  ITEM_HEIGHT: 38, // Height for list items, question items, etc.
 
   // Media query breakpoints
   breakpoints: {
@@ -272,8 +273,7 @@ export const COMPONENT_STYLES = {
   },
 };
 
-// Create and export the theme function
-export default function createAppTheme(options = {}) {
+export const createBaseTheme = (options = {}) => {
   return createTheme({
     palette: {
       primary: COLORS.primary,
@@ -377,4 +377,6 @@ export default function createAppTheme(options = {}) {
     },
     ...options,
   });
-}
+};
+
+export default createBaseTheme;
