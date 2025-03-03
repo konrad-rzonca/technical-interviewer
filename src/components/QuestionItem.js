@@ -7,7 +7,7 @@ import {
   useItemTextStyles,
   useQuestionItemStyles,
 } from '../utils/styles';
-import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
+import {SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 // Constants for styling
 const DOT_SIZE = 12; // Smaller dot size for better proportions
@@ -66,7 +66,7 @@ const QuestionItem = ({
                   value={rating}
                   readOnly
                   size="large"
-                  sx={{color: COLORS.success.main}}
+                  sx={{color: indicatorColor}}
               />
             </Box>
         )}

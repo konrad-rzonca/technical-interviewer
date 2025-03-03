@@ -23,24 +23,23 @@ export const COLORS = {
     contrastText: '#ffffff',
   },
 
-  // Semantic colors
-  success: {
-    main: '#66bb6a', // Green for Basic level and success states
-    light: '#e8f5e9',
-    dark: '#388e3c',
-    contrastText: '#ffffff',
+  'basic': {
+    'main': '#00BCD4',    // Maintain core cyan
+    'light': '#E0F7FA',
+    'dark': '#00838F',
+    'contrastText': '#000000',
   },
-  warning: {
-    main: '#f6c600', // Stronger, darker gold for Intermediate level
-    light: '#FDE68A', // Warm gold background
-    dark: '#B45309', // Deep, rich gold
-    contrastText: '#000000',
+  'intermediate': {
+    'main': '#FFB300',    // Brighter gold yellow
+    'light': '#FFD700',
+    'dark': '#f9a800',
+    'contrastText': '#000000',
   },
-  info: {
-    main: '#fb7800', // Orange for Advanced level
-    light: '#fff3e0',
-    dark: '#c75100',
-    contrastText: '#000000',
+  'advanced': {
+    'main': '#FF1A1A',    // Bright scarlet
+    'light': '#FFEBEB',
+    'dark': '#D40000',
+    'contrastText': '#FFFFFF',
   },
   error: {
     main: '#f44336',
@@ -84,31 +83,31 @@ export const COLORS = {
 // Skill level colors - these map to the semantic colors above
 export const SKILL_LEVEL_COLORS = {
   beginner: {
-    main: COLORS.success.main,
-    light: COLORS.success.light,
-    text: COLORS.success.contrastText,
-    border: `${COLORS.success.main}60`, // 50% opacity
-    background: `${COLORS.success.main}08`, // 8% opacity
-    hoverBg: `${COLORS.success.main}15`, // 15% opacity
-    darkBorder: `${COLORS.success.main}60`, // 60% opacity
+    main: COLORS.basic.main,
+    light: COLORS.basic.light,
+    text: COLORS.basic.contrastText,
+    border: `${COLORS.basic.main}60`,
+    background: `${COLORS.basic.main}08`,
+    hoverBg: `${COLORS.basic.main}15`,
+    darkBorder: `${COLORS.basic.main}60`,
   },
   intermediate: {
-    main: COLORS.warning.main,
-    light: COLORS.warning.light,
-    text: COLORS.warning.contrastText,
-    border: `${COLORS.warning.main}70`, // 60% opacity - stronger for intermediate
-    background: `${COLORS.warning.main}08`, // 8% opacity
-    hoverBg: `${COLORS.warning.main}15`, // 15% opacity
-    darkBorder: `${COLORS.warning.main}70`, // 70% opacity
+    main: COLORS.intermediate.main,
+    light: COLORS.intermediate.light,
+    text: COLORS.intermediate.contrastText,
+    border: `${COLORS.intermediate.main}60`,
+    background: `${COLORS.intermediate.main}09`,
+    hoverBg: `${COLORS.intermediate.main}15`,
+    darkBorder: `${COLORS.intermediate.main}70`,
   },
   advanced: {
-    main: COLORS.info.main,
-    light: COLORS.info.light,
-    text: COLORS.info.contrastText,
-    border: `${COLORS.info.main}60`, // 50% opacity
-    background: `${COLORS.info.main}08`, // 8% opacity
-    hoverBg: `${COLORS.info.main}15`, // 15% opacity
-    darkBorder: `${COLORS.info.main}60`, // 60% opacity
+    main: COLORS.advanced.main,
+    light: COLORS.advanced.light,
+    text: COLORS.advanced.contrastText,
+    border: `${COLORS.advanced.main}60`,
+    background: `${COLORS.advanced.main}08`,
+    hoverBg: `${COLORS.advanced.main}15`,
+    darkBorder: `${COLORS.advanced.main}60`,
   },
 };
 
@@ -244,7 +243,7 @@ export const COMPONENT_STYLES = {
 
       // Answered state
       answered: {
-        border: `1px solid ${COLORS.success.main}25`,
+        border: `1px solid ${COLORS.basic.main}25`,
       },
 
       // Normal state
@@ -277,9 +276,9 @@ export const createBaseTheme = (options = {}) => {
     palette: {
       primary: COLORS.primary,
       secondary: COLORS.secondary,
-      success: COLORS.success,
-      warning: COLORS.warning,
-      info: COLORS.info,
+      success: COLORS.basic,
+      warning: COLORS.intermediate,
+      info: COLORS.advanced,
       error: COLORS.error,
       grey: COLORS.grey,
       background: COLORS.background,

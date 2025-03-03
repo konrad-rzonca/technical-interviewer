@@ -43,7 +43,7 @@ const QuestionResultItem = React.memo(
         return parts.map((part, i) =>
             part.toLowerCase() === term.toLowerCase()
                 ? <span key={i} style={{
-                  backgroundColor: `${COLORS.warning.light}`,
+                  backgroundColor: `${COLORS.intermediate.light}`,
                   fontWeight: 'bold',
                 }}>{part}</span>
                 : part,
@@ -58,7 +58,7 @@ const QuestionResultItem = React.memo(
                 py: SPACING.toUnits(SPACING.sm),
                 borderLeft: `3px solid ${skillLevelColor}`,
                 backgroundColor: answered
-                    ? `${COLORS.success.main}05`
+                    ? `${COLORS.basic.main}05`
                     : 'transparent',
               }}
           >
@@ -82,7 +82,7 @@ const QuestionResultItem = React.memo(
                     <CheckCircleIcon
                         fontSize="small"
                         sx={{
-                          color: COLORS.success.main,
+                          color: COLORS.basic.main,
                           ml: SPACING.toUnits(SPACING.sm),
                         }}
                     />
@@ -219,7 +219,7 @@ const GlobalSearch = ({
     return parts.map((part, i) =>
         part.toLowerCase() === term.toLowerCase()
             ? <span key={i} style={{
-              backgroundColor: `${COLORS.warning.light}`,
+              backgroundColor: `${COLORS.intermediate.light}`,
               fontWeight: 'bold',
             }}>{part}</span>
             : part,

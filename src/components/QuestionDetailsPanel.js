@@ -31,7 +31,7 @@ const QUESTION_TEXT_STYLES = {
   flexGrow: 1,
   fontWeight: TYPOGRAPHY.fontWeight.medium,
   fontSize: '1.25rem', // Significantly larger question font
-  lineHeight: 0.6,
+  lineHeight: 1.2,
   py: SPACING.toUnits(SPACING.md), // More vertical padding
   px: SPACING.toUnits(SPACING.md), // Horizontal padding
 };
