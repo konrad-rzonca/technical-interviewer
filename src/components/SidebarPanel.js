@@ -1,7 +1,6 @@
-// src/components/SidebarPanel.js - Updated with unified styles
-import {Box, Paper} from '@mui/material';
+// src/components/SidebarPanel.js
+import {Box} from '@mui/material';
 import React, {useMemo} from 'react';
-import {usePanelStyles} from '../utils/styles';
 
 /**
  * A reusable sidebar panel component that handles collapsed/expanded states
@@ -25,30 +24,24 @@ const SidebarPanel = ({
   onToggle,
   ...otherProps
 }) => {
-  // Get panel styles using the optimized custom hook
-  const panelStyles = usePanelStyles(isCollapsed, true);
-
   // Memoize box styles to prevent unnecessary recalculations
   const boxStyles = useMemo(() => ({
     width: isCollapsed ? collapsedWidth : expandedWidth,
     minWidth: isCollapsed ? collapsedWidth : expandedWidth,
     transition: 'width 0.3s ease, min-width 0.3s ease',
-    ...(position === 'left' ? {mr: 2} : {ml: 2}),
+    height: '100%',
+    backgroundColor: 'background.paper',
+    borderRadius: 1,
+    border: '1px solid rgba(0, 0, 0, 0.06)',
+    // Removed box shadow and additional padding
+    // Added proper margin based on position
+    ...(position === 'left' ? {mr: 1.5} : {ml: 1.5}),
     ...sx,
   }), [isCollapsed, collapsedWidth, expandedWidth, position, sx]);
 
   return (
       <Box sx={boxStyles} {...otherProps}>
-        <Paper
-            elevation={0}
-            sx={{
-              ...panelStyles,
-              height: '100%',
-              width: '100%',
-            }}
-        >
-          {children}
-        </Paper>
+        {children}
       </Box>
   );
 };

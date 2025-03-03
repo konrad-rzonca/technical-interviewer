@@ -1,4 +1,4 @@
-// src/components/SkillLevelSection.js - Updated with unified styles
+// src/components/SkillLevelSection.js
 import React, {useMemo} from 'react';
 import {Box, Grid, Paper, Typography} from '@mui/material';
 import QuestionItem from './QuestionItem';

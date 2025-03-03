@@ -1,5 +1,5 @@
 // src/utils/theme.js
-import { createTheme } from '@mui/material/styles';
+import {createTheme} from '@mui/material/styles';
 
 /**
  * DESIGN TOKENS
@@ -142,17 +142,17 @@ export const SPACING = {
 export const TYPOGRAPHY = {
   // Font sizes
   fontSize: {
-    h1: '2rem',      // 32px
-    h2: '1.75rem',   // 28px
-    h3: '1.5rem',    // 24px
-    h4: '1.35rem',   // 21.6px - Panel titles
-    h5: '1.3rem',    // 20.8px - Question title
-    h6: '1.25rem',   // 20px - Section titles
-    body1: '1.15rem', // 18.4px - Main content, questions, categories
-    body2: '1rem',    // 16px - Secondary text
-    caption: '0.95rem', // 15.2px - Metadata
+    h1: '2.25rem',      // 32px
+    h2: '2rem',   // 28px
+    h3: '1.75rem',    // 24px
+    h4: '1.5rem',   // 21.6px - Panel titles
+    h5: '1.45rem',    // 20.8px - Question title
+    h6: '1.35rem',   // 20px - Section titles
+    body1: '1.25rem', // 18.4px - Main content, questions, categories
+    body2: '1.15rem',    // 16px - Secondary text
+    caption: '1rem', // 15.2px - Metadata
     button: '1.1rem',   // 17.6px - Button text
-    small: '0.85rem',   // 13.6px - Very small text
+    small: '0.9rem',   // 13.6px - Very small text
   },
 
   // Specific component sizes
@@ -284,7 +284,7 @@ export default function createAppTheme(options = {}) {
       grey: COLORS.grey,
       background: COLORS.background,
       text: COLORS.text,
-      ...options.palette
+      ...options.palette,
     },
     typography: {
       fontFamily: TYPOGRAPHY.fontFamily,
@@ -334,7 +334,7 @@ export default function createAppTheme(options = {}) {
         fontWeight: TYPOGRAPHY.fontWeight.medium,
         textTransform: 'none',
       },
-      ...options.typography
+      ...options.typography,
     },
     spacing: SPACING.unit,
     components: {
@@ -368,12 +368,12 @@ export default function createAppTheme(options = {}) {
           root: {
             '& .MuiInputBase-input': {
               fontSize: TYPOGRAPHY.fontSize.body1,
-            }
-          }
-        }
+            },
+          },
+        },
       },
-      ...options.components
+      ...options.components,
     },
-    ...options
+    ...options,
   });
 }

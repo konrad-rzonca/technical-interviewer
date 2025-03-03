@@ -1,4 +1,4 @@
-// src/components/CategorySidebar.js - Updated with unified styles
+// src/components/CategorySidebar.js
 import CategoryIcon from '@mui/icons-material/Category';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -19,7 +19,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Paper,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -27,13 +26,16 @@ import {
 } from '@mui/material';
 import React, {useMemo, useState} from 'react';
 
-import {usePanelStyles, useTitleStyles} from '../utils/styles';
+import {useTitleStyles} from '../utils/styles';
 import {COLORS, TYPOGRAPHY} from '../utils/theme';
+
+// Constants for styling
+const CATEGORY_ITEM_PADDING = 1.2; // Reduced padding
 
 // Utility function for category item styles (not a hook)
 const getCategoryItemStyles = (isSelected) => ({
-  p: 1.5,
-  mb: 1,
+  p: CATEGORY_ITEM_PADDING,
+  mb: 0.75, // Reduced margin
   borderRadius: 1,
   cursor: 'pointer',
   backgroundColor: isSelected ? `${COLORS.primary.main}08` : 'transparent',
@@ -51,7 +53,7 @@ const getCategoryItemStyles = (isSelected) => ({
 // Utility function for subcategory item styles (not a hook)
 const getSubcategoryItemStyles = (isSelected) => ({
   p: 0,
-  mb: 0.75,
+  mb: 0.5, // Reduced margin
   bgcolor: isSelected ? `${COLORS.primary.main}08` : 'transparent',
   borderRadius: 1,
   display: 'flex',
@@ -66,7 +68,7 @@ const getSubcategoryLabelStyles = () => ({
   display: 'flex',
   alignItems: 'center',
   flex: 1,
-  p: 0.75,
+  p: 0.6, // Reduced padding
   cursor: 'pointer',
   '&:hover': {
     bgcolor: 'rgba(0, 0, 0, 0.04)',
@@ -141,8 +143,7 @@ const CategorySidebar = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Get panel styles from hooks - called at top level
-  const panelStyles = usePanelStyles(isCollapsed, false);
+  // Get title styles from hooks
   const titleStyles = useTitleStyles();
 
   const handleSetMenuOpen = (event) => {
@@ -204,7 +205,7 @@ const CategorySidebar = ({
                       onCategorySelect(category.id);
                       handleSetMenuOpen(e);
                     }}
-                    sx={{mr: 1}}
+                    sx={{mr: 0.75}} // Reduced margin
                 >
                   <FolderOpenIcon fontSize="small"/>
                 </IconButton>
@@ -237,16 +238,16 @@ const CategorySidebar = ({
                   timeout={0} // Set timeout to 0 to disable animation
                   unmountOnExit // Fully unmount when collapsed for better performance
               >
-                <List dense sx={{ml: 3, mt: 0, mb: 1.5}}>
+                <List dense sx={{ml: 2.5, mt: 0, mb: 1}}>
                   <ListItem
                       dense
-                      sx={{p: 0, mb: 0.75}}
+                      sx={{p: 0, mb: 0.5}}
                   >
                     <Button
                         size="small"
                         onClick={() => onSelectAllSubcategories(category.id)}
                         sx={{
-                          mr: 1,
+                          mr: 0.75,
                           minWidth: 'auto',
                           fontSize: TYPOGRAPHY.fontSize.caption,
                         }}
@@ -291,9 +292,10 @@ const CategorySidebar = ({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          pt: 1, // Added top padding
         }}>
           <Tooltip title="Categories" placement="right">
-            <Box sx={{mb: 2, textAlign: 'center'}}>
+            <Box sx={{mb: 1.5, textAlign: 'center'}}>
               <CategoryIcon color="primary" sx={{fontSize: '1.6rem'}}/>
             </Box>
           </Tooltip>
@@ -310,7 +312,7 @@ const CategorySidebar = ({
                       badgeContent={activeSubcategoryCount}
                       color="primary"
                       invisible={activeSubcategoryCount === 0}
-                      sx={{mb: 1.5}}
+                      sx={{mb: 1.25}}
                   >
                     <IconButton
                         onClick={() => onCategorySelect(category.id)}
@@ -350,11 +352,11 @@ const CategorySidebar = ({
   };
 
   return (
-      <Paper
-          elevation={0}
+      <Box
           sx={{
-            ...panelStyles,
-            p: isCollapsed ? 1 : 3,
+            height: '100%',
+            p: isCollapsed ? 0.75 : 2.5, // Adjusted padding
+            overflow: 'auto',
           }}
       >
         {!isCollapsed ? (
@@ -362,7 +364,10 @@ const CategorySidebar = ({
             <>
               <Typography
                   variant="subtitle1"
-                  sx={titleStyles}
+                  sx={{
+                    ...titleStyles,
+                    mb: 2, // Reduced margin
+                  }}
               >
                 Categories
               </Typography>
@@ -454,7 +459,7 @@ const CategorySidebar = ({
               </MenuItem>
           )}
         </Menu>
-      </Paper>
+      </Box>
   );
 };
 

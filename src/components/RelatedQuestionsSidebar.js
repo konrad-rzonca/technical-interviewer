@@ -1,11 +1,10 @@
-// src/components/RelatedQuestionsSidebar.js - Updated with unified styles
+// src/components/RelatedQuestionsSidebar.js
 import React, {useMemo} from 'react';
 import {
   Badge,
   Box,
   List,
   ListItem,
-  Paper,
   Rating,
   Tooltip,
   Typography,
@@ -15,11 +14,7 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LinkIcon from '@mui/icons-material/Link';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import {
-  getSkillLevelStyles,
-  usePanelStyles,
-  useTitleStyles,
-} from '../utils/styles';
+import {getSkillLevelStyles, useTitleStyles} from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
 
 // Related question item component for better code organization
@@ -61,7 +56,7 @@ const RelatedQuestionItem = React.memo(({
   return (
       <ListItem
           disablePadding
-          sx={{mb: SPACING.toUnits(SPACING.sm)}}
+          sx={{mb: 0.75}} // Reduced margin
       >
         <Tooltip
             title={tooltipContent}
@@ -71,11 +66,11 @@ const RelatedQuestionItem = React.memo(({
           <Box
               onClick={() => onQuestionSelect(question)}
               sx={{
-                p: SPACING.toUnits(SPACING.md),
-                borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
+                p: 1.5, // Reduced padding
+                borderRadius: 1,
                 cursor: 'pointer',
                 position: 'relative',
-                paddingLeft: SPACING.toUnits(SPACING.md * 1.5),
+                paddingLeft: 2,
                 width: '100%',
                 '&:hover': {
                   backgroundColor: `${COLORS.primary.main}04`,
@@ -90,7 +85,7 @@ const RelatedQuestionItem = React.memo(({
                 <Box
                     sx={{
                       position: 'absolute',
-                      right: SPACING.toUnits(SPACING.sm),
+                      right: 0.75, // Reduced spacing
                       top: '50%',
                       transform: 'translateY(-50%)',
                       display: 'flex',
@@ -108,7 +103,7 @@ const RelatedQuestionItem = React.memo(({
               fontSize: TYPOGRAPHY.fontSize.itemTitle,
               lineHeight: 1.5,
               fontWeight: TYPOGRAPHY.fontWeight.regular,
-              mb: SPACING.toUnits(SPACING.xs),
+              mb: 0.5, // Reduced margin
             }}>
               {question.shortTitle ||
                   question.question.split(' ').slice(0, 5).join(' ')}
@@ -141,8 +136,7 @@ const RelatedQuestionsSidebar = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Get styles from hooks
-  const panelStyles = usePanelStyles(isCollapsed, false);
+  // Get title styles from hooks
   const titleStyles = useTitleStyles();
 
   // Filter related questions based on hideAnswered setting - memoized for performance
@@ -171,12 +165,11 @@ const RelatedQuestionsSidebar = ({
   }, [filteredRelatedQuestions]);
 
   return (
-      <Paper
-          elevation={0}
+      <Box
           sx={{
-            ...panelStyles,
-            p: isCollapsed ? SPACING.toUnits(SPACING.sm) : SPACING.toUnits(
-                SPACING.panelPadding),
+            height: '100%',
+            p: isCollapsed ? 0.75 : 2.5, // Adjusted padding
+            overflow: 'auto',
           }}
       >
         {!isCollapsed ? (
@@ -184,6 +177,7 @@ const RelatedQuestionsSidebar = ({
             <>
               <Typography variant="subtitle1" sx={{
                 ...titleStyles,
+                mb: 2, // Reduced margin
                 fontSize: TYPOGRAPHY.fontSize.panelTitle,
               }}>
                 Related Questions {filteredRelatedQuestions.length > 0 &&
@@ -208,7 +202,7 @@ const RelatedQuestionsSidebar = ({
                       color="text.secondary"
                       sx={{
                         textAlign: 'center',
-                        py: SPACING.toUnits(SPACING.md),
+                        py: 2, // Adjusted padding
                         fontSize: TYPOGRAPHY.fontSize.regularText,
                       }}
                   >
@@ -224,10 +218,11 @@ const RelatedQuestionsSidebar = ({
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              pt: 1, // Added top padding
             }}>
               <Tooltip title="Related Questions" placement="left">
                 <Box
-                    sx={{mb: SPACING.toUnits(SPACING.md), textAlign: 'center'}}>
+                    sx={{mb: 1.5, textAlign: 'center'}}>
                   <LinkIcon color="primary" sx={{fontSize: '1.6rem'}}/>
                 </Box>
               </Tooltip>
@@ -237,7 +232,7 @@ const RelatedQuestionsSidebar = ({
                 <Badge
                     badgeContent={sortedQuestions.length}
                     color="primary"
-                    sx={{mb: SPACING.toUnits(SPACING.md)}}
+                    sx={{mb: 1.5}}
                 >
                   <QuestionAnswerIcon
                       color={sortedQuestions.length === 0
@@ -249,7 +244,7 @@ const RelatedQuestionsSidebar = ({
               </Tooltip>
             </Box>
         )}
-      </Paper>
+      </Box>
   );
 };
 

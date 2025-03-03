@@ -1,4 +1,4 @@
-// src/components/AnswerLevelHorizontal.js - Fixed tooltip memory leak
+// src/components/AnswerLevelHorizontal.js
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   Box,
@@ -173,6 +173,13 @@ const AnswerLevelHorizontal = ({
                         fontWeight: TYPOGRAPHY.fontWeight.medium,
                         textAlign: 'center',
                         pb: SPACING.toUnits(SPACING.sm),
+                        // Added more vertical spacing around the title
+                        py: SPACING.toUnits(SPACING.sm),
+                        // Vertical alignment improvement
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: '40px',
                       }}
                   >
                     {category.category}
@@ -242,6 +249,9 @@ const AnswerLevelHorizontal = ({
                                           sx={{
                                             ...textStyles,
                                             color: COLORS.text.primary,
+                                            // Improved text alignment
+                                            textAlign: 'center',
+                                            width: '100%',
                                           }}
                                       >
                                         {point.title}

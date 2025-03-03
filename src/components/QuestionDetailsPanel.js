@@ -1,4 +1,4 @@
-// src/components/QuestionDetailsPanel.js - Updated with unified styles
+// src/components/QuestionDetailsPanel.js
 import React, {useMemo} from 'react';
 import {
   Box,
@@ -14,6 +14,28 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import AnswerLevelHorizontal from './AnswerLevelHorizontal';
 import {usePanelStyles, useTitleStyles} from '../utils/styles';
 import {SPACING, TYPOGRAPHY} from '../utils/theme';
+
+// Constants for styling
+const QUESTION_PANEL_STYLES = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  mb: SPACING.toUnits(SPACING.md),
+  p: SPACING.toUnits(SPACING.lg), // Increased padding
+  border: '1px solid rgba(0, 0, 0, 0.04)',
+  borderRadius: SPACING.toUnits(SPACING.borderRadius),
+  backgroundColor: 'rgba(0, 0, 0, 0.01)', // Slightly darker for better contrast
+};
+
+const QUESTION_TEXT_STYLES = {
+  textAlign: 'center',
+  flexGrow: 1,
+  fontWeight: TYPOGRAPHY.fontWeight.medium,
+  fontSize: '1.8rem', // Significantly larger question font
+  lineHeight: 1.4,
+  py: SPACING.toUnits(SPACING.md), // More vertical padding
+  px: SPACING.toUnits(SPACING.md), // Horizontal padding
+};
 
 const QuestionDetailsPanel = ({
   currentQuestion,
@@ -71,6 +93,7 @@ const QuestionDetailsPanel = ({
           <Typography variant="subtitle1" sx={{
             ...titleStyles,
             fontSize: TYPOGRAPHY.fontSize.panelTitle,
+            mb: SPACING.toUnits(SPACING.md), // Added more bottom margin
           }}>
             Question Details
           </Typography>
@@ -78,34 +101,23 @@ const QuestionDetailsPanel = ({
           {/* Question header with navigation and full question */}
           <Paper
               elevation={0}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: SPACING.toUnits(SPACING.md),
-                p: SPACING.toUnits(SPACING.md),
-                border: '1px solid rgba(0, 0, 0, 0.04)',
-                borderRadius: SPACING.toUnits(SPACING.borderRadius),
-                backgroundColor: 'rgba(0, 0, 0, 0.005)',
-              }}
+              sx={QUESTION_PANEL_STYLES}
           >
             <IconButton
                 size="medium"
                 onClick={() => onNavigateQuestion('prev')}
+                sx={{
+                  mr: SPACING.toUnits(SPACING.sm),
+                  height: 48,
+                  width: 48,
+                }}
             >
-              <KeyboardArrowLeftIcon fontSize="medium"/>
+              <KeyboardArrowLeftIcon fontSize="large"/>
             </IconButton>
 
             <Typography
                 variant="h5"
-                sx={{
-                  textAlign: 'center',
-                  flexGrow: 1,
-                  fontWeight: TYPOGRAPHY.fontWeight.medium,
-                  fontSize: TYPOGRAPHY.fontSize.questionTitle,
-                  lineHeight: 1.4,
-                  py: SPACING.toUnits(SPACING.xs),
-                }}
+                sx={QUESTION_TEXT_STYLES}
             >
               {currentQuestion.question}
             </Typography>
@@ -113,8 +125,13 @@ const QuestionDetailsPanel = ({
             <IconButton
                 size="medium"
                 onClick={() => onNavigateQuestion('next')}
+                sx={{
+                  ml: SPACING.toUnits(SPACING.sm),
+                  height: 48,
+                  width: 48,
+                }}
             >
-              <KeyboardArrowRightIcon fontSize="medium"/>
+              <KeyboardArrowRightIcon fontSize="large"/>
             </IconButton>
           </Paper>
 
@@ -125,7 +142,9 @@ const QuestionDetailsPanel = ({
           />
         </Box>
 
-        <Divider/>
+        <Divider sx={{
+          my: SPACING.toUnits(SPACING.md),
+        }}/> {/* Added more margin to divider */}
 
         {/* Candidate Evaluation */}
         <Box sx={{

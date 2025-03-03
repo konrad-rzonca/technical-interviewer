@@ -1,4 +1,4 @@
-// src/components/QuestionItem.js - Optimized with unified styles
+// src/components/QuestionItem.js
 import React, {useMemo} from 'react';
 import {Box, Rating, Tooltip, Typography} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -8,6 +8,10 @@ import {
   useQuestionItemStyles,
 } from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
+
+// Constants for styling
+const DOT_SIZE = 12; // Smaller dot size for better proportions
+const DOT_MARGIN = 10; // Equal margin on both sides of the dot
 
 // Memoized component to prevent unnecessary re-renders
 const QuestionItem = ({
@@ -78,44 +82,73 @@ const QuestionItem = ({
       >
         <Box
             onClick={() => onQuestionSelect(question)}
-            sx={itemStyles}
+            sx={{
+              ...itemStyles,
+              display: 'flex',
+              alignItems: 'center',
+              position: 'relative',
+              // Fixed height for consistency
+              height: 44,
+              // Remove left padding from item styles for better control
+              pl: 0,
+            }}
         >
-          {/* Skill level indicator dot */}
-          <Box
-              sx={{
-                width: 14,
-                height: 14,
-                borderRadius: '50%',
-                backgroundColor: indicatorColor,
-                position: 'absolute',
-                left: SPACING.toUnits(SPACING.lg),
-                top: '50%',
-                transform: 'translateY(-50%)',
-              }}
-          />
+          {/* Container for dot with consistent spacing */}
+          <Box sx={{
+            width: DOT_MARGIN * 2 + DOT_SIZE,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+          }}>
+            {/* Skill level indicator dot - perfectly centered */}
+            <Box
+                sx={{
+                  width: DOT_SIZE,
+                  height: DOT_SIZE,
+                  borderRadius: '50%',
+                  backgroundColor: indicatorColor,
+                  flexShrink: 0,
+                }}
+            />
+          </Box>
 
-          {/* Answered indicator */}
+          {/* Text with consistent spacing from dot */}
+          <Box sx={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            pr: isAnswered ? 3 : 1, // Space for answered icon
+          }}>
+            <Typography
+                variant="body2"
+                sx={{
+                  ...textStyles,
+                  // Remove margin that might affect alignment
+                  m: 0,
+                }}
+            >
+              {question.shortTitle ||
+                  question.question.split(' ').slice(0, 5).join(' ') + '...'}
+            </Typography>
+          </Box>
+
+          {/* Answered indicator - fixed position */}
           {isAnswered && (
               <Box
                   sx={{
                     position: 'absolute',
                     right: SPACING.toUnits(SPACING.sm),
-                    top: '50%',
-                    transform: 'translateY(-50%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
                     color: COLORS.success.main,
                   }}
               >
                 <CheckCircleIcon fontSize="small" style={{fontSize: '18px'}}/>
               </Box>
           )}
-
-          <Typography
-              variant="body2"
-              sx={textStyles}
-          >
-            {question.shortTitle ||
-                question.question.split(' ').slice(0, 5).join(' ') + '...'}
-          </Typography>
         </Box>
       </Tooltip>
   );
