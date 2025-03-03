@@ -3,6 +3,7 @@ import React, {useMemo} from 'react';
 import {
   Badge,
   Box,
+  IconButton,
   List,
   ListItem,
   Rating,
@@ -14,6 +15,7 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LinkIcon from '@mui/icons-material/Link';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {getSkillLevelStyles, useTitleStyles} from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
 
@@ -132,6 +134,7 @@ const RelatedQuestionsSidebar = ({
   onQuestionSelect,
   hideAnswered,
   isCollapsed,
+  onToggle, // Added onToggle prop
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -175,14 +178,40 @@ const RelatedQuestionsSidebar = ({
         {!isCollapsed ? (
             // Full sidebar content
             <>
-              <Typography variant="subtitle1" sx={{
-                ...titleStyles,
-                mb: 2, // Reduced margin
-                fontSize: TYPOGRAPHY.fontSize.panelTitle,
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 2,
+                mt: 0.5,
               }}>
-                Related Questions {filteredRelatedQuestions.length > 0 &&
-                  `(${filteredRelatedQuestions.length})`}
-              </Typography>
+                {/* Toggle button positioned on the left (inner side) */}
+                <IconButton
+                    onClick={onToggle}
+                    aria-label="Collapse sidebar"
+                    size="small"
+                    sx={{
+                      borderRadius: 1,
+                      backgroundColor: 'transparent',
+                      padding: 0.5,
+                      '&:hover': {
+                        backgroundColor: COLORS.grey[100],
+                      },
+                    }}
+                >
+                  <ChevronRightIcon fontSize="small"/>
+                </IconButton>
+
+                {/* Title - right aligned */}
+                <Typography variant="subtitle1" sx={{
+                  ...titleStyles,
+                  mb: 0,
+                  textAlign: 'right',
+                }}>
+                  Related Questions {filteredRelatedQuestions.length > 0 &&
+                    `(${filteredRelatedQuestions.length})`}
+                </Typography>
+              </Box>
 
               {sortedQuestions.length > 0 ? (
                   <List dense disablePadding>

@@ -5,6 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import GridViewIcon from '@mui/icons-material/GridView';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import {
   Badge,
   Box,
@@ -129,6 +130,7 @@ const CategorySidebar = ({
   onSelectAllSets,
   onDeselectAllSets,
   isCollapsed,
+  onToggle, // Added onToggle prop
 }) => {
   const [setMenuAnchor, setSetMenuAnchor] = useState(null);
   const theme = useTheme();
@@ -346,22 +348,47 @@ const CategorySidebar = ({
       <Box
           sx={{
             height: '100%',
-            p: isCollapsed ? 0.75 : 2.5, // Adjusted padding
+            p: isCollapsed ? 0.75 : 2.5,
             overflow: 'auto',
           }}
       >
         {!isCollapsed ? (
             // Full sidebar content
             <>
-              <Typography
-                  variant="subtitle1"
-                  sx={{
-                    ...titleStyles,
-                    mb: 2, // Reduced margin
-                  }}
-              >
-                Categories
-              </Typography>
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 2,
+                mt: 0.5,
+              }}>
+                <Typography
+                    variant="subtitle1"
+                    sx={{
+                      ...titleStyles,
+                      mb: 0,
+                    }}
+                >
+                  Categories
+                </Typography>
+
+                {/* Toggle button positioned on the right (inner side) */}
+                <IconButton
+                    onClick={onToggle}
+                    aria-label="Collapse sidebar"
+                    size="small"
+                    sx={{
+                      borderRadius: 1,
+                      backgroundColor: 'transparent',
+                      padding: 0.5,
+                      '&:hover': {
+                        backgroundColor: COLORS.grey[100],
+                      },
+                    }}
+                >
+                  <ChevronLeftIcon fontSize="small"/>
+                </IconButton>
+              </Box>
 
               {categories.map(renderCategorySection)}
             </>

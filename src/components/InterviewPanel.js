@@ -114,12 +114,15 @@ const InterviewPanel = ({
 
       if (subcategoryFilter) {
         // Filter by specific subcategory if selected
-        baseQuestions = getFilteredQuestions(selectedCategory,
-            subcategoryFilter);
+        baseQuestions = getFilteredQuestions(
+            selectedCategory,
+            subcategoryFilter,
+        );
       } else if (selectedSubcategories[selectedCategory]) {
         // Filter by multiple selected subcategories
         const activeSubcategories = Object.entries(
-            selectedSubcategories[selectedCategory]).
+            selectedSubcategories[selectedCategory],
+        ).
             filter(([_, isSelected]) => isSelected).
             map(([subcategory, _]) => subcategory);
 
@@ -127,8 +130,10 @@ const InterviewPanel = ({
           // Get questions from all active subcategories
           baseQuestions = [];
           activeSubcategories.forEach(subcategory => {
-            const subcategoryQuestions = getFilteredQuestions(selectedCategory,
-                subcategory);
+            const subcategoryQuestions = getFilteredQuestions(
+                selectedCategory,
+                subcategory,
+            );
             baseQuestions.push(...subcategoryQuestions);
           });
         } else {
@@ -166,8 +171,11 @@ const InterviewPanel = ({
       setFilteredQuestions(filtered);
 
       // If current question is filtered out, select first visible question
-      if (filtered.length > 0 && currentQuestion &&
-          gradesMap[currentQuestion.id]) {
+      if (
+          filtered.length > 0 &&
+          currentQuestion &&
+          gradesMap[currentQuestion.id]
+      ) {
         updateInterviewState({currentQuestion: filtered[0]});
       }
     } else {
@@ -237,8 +245,11 @@ const InterviewPanel = ({
     if (categoryId === selectedCategory) {
       // Toggle expansion if the category is already selected
       setExpandedCategory(
-          explicitExpandedState !== null ? explicitExpandedState :
-              (expandedCategory === categoryId ? null : categoryId),
+          explicitExpandedState !== null
+              ? explicitExpandedState
+              : expandedCategory === categoryId
+                  ? null
+                  : categoryId,
       );
       return;
     }
@@ -265,7 +276,7 @@ const InterviewPanel = ({
   };
 
   // Toggle a single subcategory selection
-  const handleSubcategorySelect = (subcategory) => {
+  const handleSubcategorySelect = subcategory => {
     // If we have an active filter, change to this subcategory
     if (subcategoryFilter === subcategory) {
       setSubcategoryFilter(null);
@@ -287,7 +298,7 @@ const InterviewPanel = ({
   };
 
   // Handle question selection
-  const handleQuestionSelect = (question) => {
+  const handleQuestionSelect = question => {
     // Find the category for this question
     const category = getCategoryForQuestion(question);
 
@@ -305,13 +316,16 @@ const InterviewPanel = ({
   };
 
   // Navigate to next/previous question
-  const handleNavigateQuestion = (direction) => {
+  const handleNavigateQuestion = direction => {
     if (!currentQuestion || filteredQuestions.length <= 1) return;
 
     const currentIndex = filteredQuestions.findIndex(
-        q => q.id === currentQuestion.id);
+        q => q.id === currentQuestion.id,
+    );
+
     if (currentIndex === -1) return;
 
+    // Navigate sequentially through filtered questions
     let newIndex;
     if (direction === 'next') {
       newIndex = currentIndex + 1 >= filteredQuestions.length
@@ -347,7 +361,7 @@ const InterviewPanel = ({
   };
 
   // Handle set selection changes
-  const handleSetToggle = (setId) => {
+  const handleSetToggle = setId => {
     setSelectedSets(prev => ({
       ...prev,
       [setId]: !prev[setId],
@@ -373,7 +387,7 @@ const InterviewPanel = ({
   };
 
   // Select all subcategories for a category
-  const handleSelectAllSubcategories = (categoryId) => {
+  const handleSelectAllSubcategories = categoryId => {
     const category = categories.find(c => c.id === categoryId);
     if (!category) return;
 
@@ -391,7 +405,7 @@ const InterviewPanel = ({
   };
 
   // Deselect all subcategories for a category
-  const handleDeselectAllSubcategories = (categoryId) => {
+  const handleDeselectAllSubcategories = categoryId => {
     const category = categories.find(c => c.id === categoryId);
     if (!category) return;
 
@@ -409,18 +423,20 @@ const InterviewPanel = ({
   };
 
   // Handle settings changes
-  const handleSettingChange = (setting) => {
+  const handleSettingChange = setting => {
     onSettingChange(setting);
   };
 
   return (
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-        minHeight: {xs: '600px', sm: '700px', md: '800px'},
-      }}>
+      <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            minHeight: {xs: '600px', sm: '700px', md: '800px'},
+          }}
+      >
         {/* Mobile Drawer */}
         {isMobile && (
             <MobileDrawer
@@ -433,17 +449,19 @@ const InterviewPanel = ({
         )}
 
         {/* Main Content - Adaptive Three Column Layout */}
-        <Box sx={{
-          flexGrow: 1,
-          display: 'flex',
-          p: 2,
-          minHeight: 'calc(100vh - 64px)',
-          overflow: 'hidden', // Changed from 'auto' to prevent double scrollbars
-          maxWidth: '100vw',
-          boxSizing: 'border-box',
-          position: 'relative',
-          pb: isMobile ? '56px' : 2, // Space for bottom navigation on mobile
-        }}>
+        <Box
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              p: 2,
+              minHeight: 'calc(100vh - 64px)',
+              overflow: 'hidden', // Changed from 'auto' to prevent double scrollbars
+              maxWidth: '100vw',
+              boxSizing: 'border-box',
+              position: 'relative',
+              pb: isMobile ? '56px' : 2, // Space for bottom navigation on mobile
+            }}
+        >
           {/* Left Sidebar - Categories */}
           <SidebarPanel
               isCollapsed={leftSidebarCollapsed}
@@ -483,6 +501,7 @@ const InterviewPanel = ({
                 onSelectAllSets={handleSelectAllSets}
                 onDeselectAllSets={handleDeselectAllSets}
                 isCollapsed={leftSidebarCollapsed && !isMobile}
+                onToggle={toggleLeftSidebar}
             />
           </SidebarPanel>
 
@@ -496,9 +515,11 @@ const InterviewPanel = ({
                 flexDirection: 'column',
                 width: isMobile ? 'calc(100% - 24px)' : 'auto',
                 transition: 'margin 0.3s ease, width 0.3s ease',
-                display: isMobile ? (mobileView === 'question'
-                    ? 'flex'
-                    : 'none') : 'flex',
+                display: isMobile
+                    ? mobileView === 'question'
+                        ? 'flex'
+                        : 'none'
+                    : 'flex',
                 // Very subtle edge shadows to help with panel separation
                 boxShadow: '0 0 2px rgba(0,0,0,0.05)',
               })}
@@ -551,16 +572,15 @@ const InterviewPanel = ({
                 onQuestionSelect={handleQuestionSelect}
                 hideAnswered={settings.hideAnsweredInRelated}
                 isCollapsed={rightSidebarCollapsed && !isMobile}
+                onToggle={toggleRightSidebar}
             />
           </SidebarPanel>
         </Box>
 
         {/* Mobile Bottom Navigation */}
         {isMobile && (
-            <MobileBottomNav
-                currentView={mobileView}
-                onViewChange={setMobileView}
-            />
+            <MobileBottomNav currentView={mobileView}
+                             onViewChange={setMobileView}/>
         )}
       </Box>
   );
