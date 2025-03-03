@@ -1,8 +1,6 @@
 // src/components/InterviewPanel.js
 import React, {useEffect, useState} from 'react';
-import {Box, IconButton, Paper, useMediaQuery, useTheme} from '@mui/material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {Box, Paper, useMediaQuery, useTheme} from '@mui/material';
 
 import {
   categories,
@@ -26,7 +24,12 @@ import {MobileBottomNav, MobileDrawer} from './MobileNavigation';
  * InterviewPanel - Main interview interface component
  * Provides question navigation, details, and evaluation
  */
-const InterviewPanel = ({interviewState, updateInterviewState}) => {
+const InterviewPanel = ({
+  interviewState,
+  updateInterviewState,
+  settings,
+  onSettingChange,
+}) => {
   const {currentQuestion, notesMap, gradesMap} = interviewState;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -39,14 +42,6 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
   // Mobile navigation state
   const [mobileView, setMobileView] = useState('question'); // 'category', 'question', 'related'
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-
-  // Local settings state that will be used within the component
-  // In a real app, this would likely come from props or context
-  const [settings, setSettings] = useState({
-    learningMode: false,
-    hideAnsweredQuestions: false,
-    hideAnsweredInRelated: false,
-  });
 
   // Category state
   const [activeCategories, setActiveCategories] = useState([]);
@@ -413,34 +408,10 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
     setSubcategoryFilter(null);
   };
 
-  // Handle settings changes - update local settings if global not available
+  // Handle settings changes
   const handleSettingChange = (setting) => {
-    if (!globalSettings) {
-      setLocalSettings(prev => ({
-        ...prev,
-        [setting]: !prev[setting],
-      }));
-    }
+    onSettingChange(setting);
   };
-
-  // Sidebar toggle button styles
-  const sidebarToggleButtonStyle = (position, isCollapsed, width) => ({
-    position: 'fixed',
-    [position]: isCollapsed ? width + 10 : LAYOUT.LEFT_SIDEBAR_WIDTH + 10,
-    top: '50%',
-    transform: 'translateY(-50%)',
-    bgcolor: 'background.paper',
-    border: '1px solid',
-    borderColor: 'divider',
-    zIndex: theme.zIndex.drawer - 100,
-    transition: `${position} 0.3s ease`,
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    width: 40,
-    height: 40,
-    '&:hover': {
-      bgcolor: 'primary.light',
-    },
-  });
 
   return (
       <Box sx={{
@@ -467,10 +438,10 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
           display: 'flex',
           p: 2,
           minHeight: 'calc(100vh - 64px)',
-          overflow: 'auto',
+          overflow: 'hidden', // Changed from 'auto' to prevent double scrollbars
           maxWidth: '100vw',
           boxSizing: 'border-box',
-          position: 'relative', // For positioning toggle buttons
+          position: 'relative',
           pb: isMobile ? '56px' : 2, // Space for bottom navigation on mobile
         }}>
           {/* Left Sidebar - Categories */}
@@ -490,7 +461,6 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
                 top: isMobile ? 0 : 'auto',
                 left: 0,
                 bgcolor: 'background.paper',
-                overflowY: 'auto',
                 maxHeight: isMobile
                     ? 'calc(100vh - 120px)'
                     : 'calc(100vh - 100px)',
@@ -516,35 +486,6 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
             />
           </SidebarPanel>
 
-          {/* Sidebar toggle buttons - desktop only */}
-          {!isMobile && (
-              <>
-                <IconButton
-                    onClick={toggleLeftSidebar}
-                    sx={sidebarToggleButtonStyle(
-                        'left',
-                        leftSidebarCollapsed,
-                        LAYOUT.COLLAPSED_SIDEBAR_WIDTH,
-                    )}
-                >
-                  {leftSidebarCollapsed ? <ChevronRightIcon/> :
-                      <ChevronLeftIcon/>}
-                </IconButton>
-
-                <IconButton
-                    onClick={toggleRightSidebar}
-                    sx={sidebarToggleButtonStyle(
-                        'right',
-                        rightSidebarCollapsed,
-                        LAYOUT.COLLAPSED_SIDEBAR_WIDTH,
-                    )}
-                >
-                  {rightSidebarCollapsed ? <ChevronLeftIcon/> :
-                      <ChevronRightIcon/>}
-                </IconButton>
-              </>
-          )}
-
           {/* Main Content */}
           <Paper
               elevation={0}
@@ -553,13 +494,13 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
                 p: 3,
                 overflow: 'hidden',
                 flexDirection: 'column',
-                ml: !isMobile && leftSidebarCollapsed ? 10 : 0,
-                mr: !isMobile && rightSidebarCollapsed ? 10 : 0,
                 width: isMobile ? 'calc(100% - 24px)' : 'auto',
                 transition: 'margin 0.3s ease, width 0.3s ease',
                 display: isMobile ? (mobileView === 'question'
                     ? 'flex'
                     : 'none') : 'flex',
+                // Add a subtle shadow to better distinguish the main panel
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               })}
           >
             {/* Question Details Panel - placed at the top */}
@@ -599,7 +540,6 @@ const InterviewPanel = ({interviewState, updateInterviewState}) => {
                 top: isMobile ? 0 : 'auto',
                 right: 0,
                 bgcolor: 'background.paper',
-                overflowY: 'auto',
                 maxHeight: isMobile
                     ? 'calc(100vh - 120px)'
                     : 'calc(100vh - 100px)',

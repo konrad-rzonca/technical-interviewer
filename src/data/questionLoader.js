@@ -1,9 +1,12 @@
 // src/data/questionLoader.js
 
 // Import question files
-import fundamentalsQuestions from './questions/java/core-java/fundamentals.json';
-import memoryManagementQuestions from './questions/java/core-java/memory-management.json';
-import concurrencyQuestions from './questions/java/concurrency-multithreading/concurrency-basics.json';
+import fundamentalsQuestions
+  from './questions/java/core-java/fundamentals.json';
+import memoryManagementQuestions
+  from './questions/java/core-java/memory-management.json';
+import concurrencyQuestions
+  from './questions/java/concurrency-multithreading/concurrency-basics.json';
 
 // Question sets with author information
 const questionSets = {
@@ -13,54 +16,54 @@ const questionSets = {
       name: 'Basic Set',
       files: {
         'Fundamentals': fundamentalsQuestions,
-        'Memory Management': memoryManagementQuestions
-      }
-    }
+        'Memory Management': memoryManagementQuestions,
+      },
+    },
   ],
   'concurrency-multithreading': [
     {
       id: 'basic-set-concurrency',
       name: 'Basic Set',
       files: {
-        'Concurrency and Multithreading': concurrencyQuestions
-      }
-    }
+        'Concurrency and Multithreading': concurrencyQuestions,
+      },
+    },
   ],
   'software-design': [
     {
       id: 'design-patterns-basic-set',
       name: 'Basic Set',
-      files: {}
-    }
+      files: {},
+    },
   ],
   'databases': [
     {
       id: 'databases-basic-set',
       name: 'Basic Set',
-      files: {}
-    }
+      files: {},
+    },
   ],
   'frameworks': [
     {
       id: 'frameworks-basic-set',
       name: 'Basic Set',
-      files: {}
-    }
+      files: {},
+    },
   ],
   'dsa': [
     {
       id: 'dsa-basic-set',
       name: 'Basic Set',
-      files: {}
-    }
+      files: {},
+    },
   ],
   'engineering-practices': [
     {
       id: 'engineering-basic-set',
       name: 'Basic Set',
-      files: {}
-    }
-  ]
+      files: {},
+    },
+  ],
 };
 
 // Extract all questions from files
@@ -77,7 +80,7 @@ const extractQuestionsFromFiles = () => {
             ...question,
             categoryId,
             subcategoryName,
-            setId: set.id
+            setId: set.id,
           }));
           allQuestions.push(...questionsWithMetadata);
         }
@@ -91,44 +94,47 @@ const extractQuestionsFromFiles = () => {
 // All questions array
 const questions = extractQuestionsFromFiles();
 
-
 // Categories with subcategories
 export const categories = [
   {
     id: 'core-java',
     name: 'Core Java',
-    subcategories: ['Fundamentals', 'Memory Management', 'Collections', 'Exceptions']
+    subcategories: [
+      'Fundamentals',
+      'Memory Management',
+      'Collections',
+      'Exceptions'],
   },
   {
     id: 'concurrency-multithreading',
     name: 'Concurrency and Multithreading',
-    subcategories: ['Concurrency and Multithreading']
+    subcategories: ['Concurrency and Multithreading'],
   },
   {
     id: 'software-design',
     name: 'Software Design',
-    subcategories: ['Design Patterns', 'Microservices', 'REST API']
+    subcategories: ['Design Patterns', 'Microservices', 'REST API'],
   },
   {
     id: 'databases',
     name: 'Databases',
-    subcategories: ['SQL', 'NoSQL', 'Transactions']
+    subcategories: ['SQL', 'NoSQL', 'Transactions'],
   },
   {
     id: 'frameworks',
     name: 'Frameworks',
-    subcategories: ['Spring', 'Hibernate']
+    subcategories: ['Spring', 'Hibernate'],
   },
   {
     id: 'dsa',
     name: 'Data Structures & Algorithms',
-    subcategories: ['Data Structures & Algorithms']
+    subcategories: ['Data Structures & Algorithms'],
   },
   {
     id: 'engineering-practices',
-    name: 'Engineering Practices',
-    subcategories: ['Git', 'CI/CD', 'Testing']
-  }
+    name: 'Engineering',
+    subcategories: ['Git', 'CI/CD', 'Testing', 'Cloud', 'Open Questions'],
+  },
 ];
 
 // Get all questions
@@ -142,7 +148,8 @@ export const getQuestionsByCategory = (categoryId) => {
 };
 
 // Get filtered questions by category and subcategory
-export const getFilteredQuestions = (categoryId = null, subcategory = null, skillLevel = null) => {
+export const getFilteredQuestions = (
+    categoryId = null, subcategory = null, skillLevel = null) => {
   let filtered = questions;
 
   // Filter by category if specified
@@ -179,10 +186,9 @@ export const getRelatedQuestions = (questionId) => {
   const question = getQuestionById(questionId);
   if (!question || !question.relatedQuestions) return [];
 
-  return question.relatedQuestions
-    .map(id => getQuestionById(id))
-    .filter(Boolean) // Filter out any undefined results
-    .filter(q => q.id !== questionId); // Filter out self-references
+  return question.relatedQuestions.map(id => getQuestionById(id)).
+      filter(Boolean) // Filter out any undefined results
+      .filter(q => q.id !== questionId); // Filter out self-references
 };
 
 // Get category by ID

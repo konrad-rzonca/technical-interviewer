@@ -63,19 +63,6 @@ const getSubcategoryItemStyles = (isSelected) => ({
   pr: 1,
 });
 
-// Utility function for subcategory label styles (not a hook)
-const getSubcategoryLabelStyles = () => ({
-  display: 'flex',
-  alignItems: 'center',
-  flex: 1,
-  p: 0.6, // Reduced padding
-  cursor: 'pointer',
-  '&:hover': {
-    bgcolor: 'rgba(0, 0, 0, 0.04)',
-    borderRadius: 1,
-  },
-});
-
 // SubcategoryItem component for better organization
 const SubcategoryItem = React.memo(({
   subcategory,
@@ -90,7 +77,18 @@ const SubcategoryItem = React.memo(({
           sx={getSubcategoryItemStyles(isSelected)}
       >
         <Box
-            sx={getSubcategoryLabelStyles()}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between', // Use space-between for better spacing
+              width: '100%',
+              p: 0.6,
+              cursor: 'pointer',
+              '&:hover': {
+                bgcolor: 'rgba(0, 0, 0, 0.04)',
+                borderRadius: 1,
+              },
+            }}
             onClick={() => onSelect(subcategory)}
         >
           <Typography
@@ -101,14 +99,7 @@ const SubcategoryItem = React.memo(({
           >
             {subcategory}
           </Typography>
-        </Box>
 
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          width: 28,
-        }}>
           <Checkbox
               size="medium"
               checked={isChecked}

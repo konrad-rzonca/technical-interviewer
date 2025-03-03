@@ -1,6 +1,8 @@
 // src/components/SidebarPanel.js
-import {Box} from '@mui/material';
+import {Box, IconButton} from '@mui/material';
 import React, {useMemo} from 'react';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 /**
  * A reusable sidebar panel component that handles collapsed/expanded states
@@ -24,24 +26,66 @@ const SidebarPanel = ({
   onToggle,
   ...otherProps
 }) => {
-  // Memoize box styles to prevent unnecessary recalculations
-  const boxStyles = useMemo(() => ({
+  // Container style that determines overall width and positioning
+  const containerStyles = useMemo(() => ({
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
     width: isCollapsed ? collapsedWidth : expandedWidth,
     minWidth: isCollapsed ? collapsedWidth : expandedWidth,
     transition: 'width 0.3s ease, min-width 0.3s ease',
+    ...(position === 'left' ? {marginRight: 0} : {marginLeft: 0}),
+    overflow: 'visible', // Ensure toggle button is visible
+  }), [isCollapsed, collapsedWidth, expandedWidth, position]);
+
+  // Content box styles
+  const contentBoxStyles = useMemo(() => ({
     height: '100%',
+    width: '100%',
     backgroundColor: 'background.paper',
     borderRadius: 1,
     border: '1px solid rgba(0, 0, 0, 0.06)',
-    // Removed box shadow and additional padding
-    // Added proper margin based on position
-    ...(position === 'left' ? {mr: 1.5} : {ml: 1.5}),
+    overflow: 'auto',
     ...sx,
-  }), [isCollapsed, collapsedWidth, expandedWidth, position, sx]);
+  }), [sx]);
+
+  // Toggle button styles - positioned at the extreme edge
+  const toggleButtonStyles = useMemo(() => ({
+    position: 'absolute',
+    [position === 'left' ? 'right' : 'left']: '-18px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    backgroundColor: 'background.paper',
+    border: '1px solid',
+    borderColor: 'divider',
+    zIndex: 20,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    width: 36,
+    height: 36,
+    '&:hover': {
+      backgroundColor: 'primary.light',
+    },
+  }), [position]);
 
   return (
-      <Box sx={boxStyles} {...otherProps}>
-        {children}
+      <Box sx={containerStyles}>
+        {/* Content box */}
+        <Box sx={contentBoxStyles} {...otherProps}>
+          {children}
+        </Box>
+
+           {/* Toggle button */}
+        <IconButton
+            onClick={onToggle}
+            sx={toggleButtonStyles}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {position === 'left' ? (
+              isCollapsed ? <ChevronRightIcon/> : <ChevronLeftIcon/>
+          ) : (
+              isCollapsed ? <ChevronLeftIcon/> : <ChevronRightIcon/>
+          )}
+        </IconButton>
       </Box>
   );
 };

@@ -87,6 +87,8 @@ function App() {
                   <InterviewPanel
                       interviewState={interviewState}
                       updateInterviewState={updateInterviewState}
+                      settings={settings}
+                      onSettingChange={handleSettingChange}
                   />
                 </ErrorBoundary>
               }/>
