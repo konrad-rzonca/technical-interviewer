@@ -8,7 +8,7 @@ import {
   useSectionHeaderStyles,
   useSkillLevelSectionStyles,
 } from '../utils/styles';
-import {SPACING, TYPOGRAPHY} from '../utils/theme';
+import {SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 import {SKILL_LEVEL_LABELS} from '../utils/answerConstants';
 
 const SkillLevelSection = ({
@@ -59,7 +59,7 @@ const SkillLevelSection = ({
           minHeight: SPACING.toUnits(SPACING.xl) * 5,
         }}>
           {/* Responsive grid based on container width */}
-          <Grid container spacing={SPACING.toUnits(SPACING.xs)}
+          <Grid container spacing={SPACING.toUnits(SPACING.sm)}
                 columns={columnCount}>
             {questions.map((question) => (
                 <Grid item xs={1} key={question.id}>

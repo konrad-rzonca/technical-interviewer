@@ -1,12 +1,13 @@
 ﻿// src/utils/styles.js - Unified styling system
 import {useMemo} from 'react';
+import {useTheme} from '@mui/material/styles';
 import {
   COLORS,
   COMPONENT_STYLES,
   SKILL_LEVEL_COLORS,
   SPACING,
   TYPOGRAPHY,
-} from './theme';
+} from '../themes/baseTheme';
 
 /**
  * UTILITY FUNCTIONS
@@ -60,7 +61,7 @@ export const preStyles = {
   padding: SPACING.toUnits(SPACING.md),
   borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
   overflowX: 'auto',
-  margin: `${SPACING.toUnits(SPACING.xs)} 0`,
+  margin: `${SPACING.toUnits(SPACING.xxs)} 0`,
   fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace',
   fontSize: TYPOGRAPHY.fontSize.small,
   lineHeight: 1.5,
@@ -85,39 +86,48 @@ export const panelBaseStyles = {
 // Hook for panel styling
 export function usePanelStyles(
     isCollapsed = false, isMainPanel = false, options = {}) {
+  const theme = useTheme();
+
   return useMemo(() => ({
     ...panelBaseStyles,
     width: '100%',
     border: isMainPanel ? COMPONENT_STYLES.panel.border : 'none',
+    borderRadius: theme.shape.borderRadius || SPACING.borderRadius,
     transition: 'width 0.3s ease, min-width 0.3s ease',
     padding: isCollapsed
         ? SPACING.toUnits(COMPONENT_STYLES.panel.paddingCollapsed)
         : SPACING.toUnits(COMPONENT_STYLES.panel.padding),
     ...options,
-  }), [isCollapsed, isMainPanel, options]);
+  }), [isCollapsed, isMainPanel, options, theme.shape.borderRadius]);
 }
 
 // Hook for title styling
 export function useTitleStyles(options = {}) {
+  const theme = useTheme();
+
   return useMemo(() => ({
     fontSize: TYPOGRAPHY.fontSize.h4,
     fontWeight: TYPOGRAPHY.fontWeight.medium,
     lineHeight: 1.2,
     marginBottom: SPACING.toUnits(SPACING.md),
+    color: theme.palette.text.primary,
     ...options,
-  }), [options]);
+  }), [options, theme.palette.text.primary]);
 }
 
 // Hook for question item styling
 export function useQuestionItemStyles(
     isSelected, isAnswered, skillLevel, options = {}) {
+  const theme = useTheme();
+
   return useMemo(() => {
     const levelColors = getSkillLevelStyles(skillLevel);
     const levelColor = levelColors.main;
 
     return {
       padding: SPACING.toUnits(COMPONENT_STYLES.questionItem.padding),
-      borderRadius: SPACING.toUnits(COMPONENT_STYLES.questionItem.borderRadius),
+      borderRadius: theme.shape.borderRadius / 2 ||
+          COMPONENT_STYLES.questionItem.borderRadius,
       cursor: 'pointer',
       backgroundColor: isSelected
           ? withOpacity(levelColor, '15') // Selected background
@@ -144,12 +154,14 @@ export function useQuestionItemStyles(
       alignItems: 'center',
       ...options,
     };
-  }, [isSelected, isAnswered, skillLevel, options]);
+  }, [isSelected, isAnswered, skillLevel, options, theme.shape.borderRadius]);
 }
 
 // Hook for text styling in items
 export function useItemTextStyles(
     isSelected, isSmallScreen = false, options = {}) {
+  const theme = useTheme();
+
   return useMemo(() => ({
     fontWeight: isSelected
         ? TYPOGRAPHY.fontWeight.semiBold
@@ -164,25 +176,27 @@ export function useItemTextStyles(
         : TYPOGRAPHY.fontSize.body1,
     paddingRight: SPACING.toUnits(SPACING.xs),
     lineHeight: 1.5,
+    color: theme.palette.text.primary,
     ...options,
-  }), [isSelected, isSmallScreen, options]);
+  }), [isSelected, isSmallScreen, options, theme.palette.text.primary]);
 }
 
 // Hook for skill level section styling
 export function useSkillLevelSectionStyles(level, options = {}) {
+  const theme = useTheme();
   const levelColors = getSkillLevelStyles(level);
 
   return useMemo(() => ({
     padding: SPACING.toUnits(SPACING.itemPadding),
     border: `1px solid ${levelColors.border}`,
-    borderRadius: SPACING.toUnits(SPACING.borderRadius),
+    borderRadius: theme.shape.borderRadius || SPACING.borderRadius,
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: levelColors.background,
     height: '100%',
     minHeight: SPACING.lg * 5, // 120px
     ...options,
-  }), [level, levelColors, options]);
+  }), [level, levelColors, options, theme.shape.borderRadius]);
 }
 
 // Hook for section header styling
@@ -203,6 +217,7 @@ export function useSectionHeaderStyles(level, options = {}) {
 
 // Hook for answer level styling
 export function useAnswerLevelStyles(level, options = {}) {
+  const theme = useTheme();
   const index = ['beginner', 'intermediate', 'advanced'].indexOf(level);
   const styles = COMPONENT_STYLES.answerLevel(index);
 
@@ -212,9 +227,9 @@ export function useAnswerLevelStyles(level, options = {}) {
     hoverBg: styles.hoverBg,
     color: styles.color,
     padding: SPACING.toUnits(SPACING.md),
-    borderRadius: SPACING.toUnits(SPACING.borderRadius),
+    borderRadius: theme.shape.borderRadius || SPACING.borderRadius,
     ...options,
-  }), [level, styles, options]);
+  }), [level, styles, options, theme.shape.borderRadius]);
 }
 
 // Collection of all global styles - for direct imports

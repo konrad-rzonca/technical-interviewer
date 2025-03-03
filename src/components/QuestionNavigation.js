@@ -3,7 +3,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Box, Grid, Typography, useMediaQuery, useTheme} from '@mui/material';
 import SkillLevelSection from './SkillLevelSection';
 import {usePanelStyles, useTitleStyles} from '../utils/styles';
-import {LAYOUT, SPACING, TYPOGRAPHY} from '../utils/theme';
+import {LAYOUT, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 const QuestionNavigation = ({
   filteredQuestions,

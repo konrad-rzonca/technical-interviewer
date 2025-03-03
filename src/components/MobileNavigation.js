@@ -13,7 +13,7 @@ import {
 import CategoryIcon from '@mui/icons-material/Category';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import LinkIcon from '@mui/icons-material/Link';
-import {LAYOUT} from '../utils/theme';
+import {LAYOUT} from '../themes/baseTheme';
 
 const MobileDrawer = ({
   open,

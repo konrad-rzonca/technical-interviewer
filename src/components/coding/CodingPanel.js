@@ -2,7 +2,7 @@
 import React from 'react';
 import {Box, Paper, Typography} from '@mui/material';
 import {usePanelStyles, useTitleStyles} from '../../utils/styles';
-import {SPACING, TYPOGRAPHY} from '../../utils/theme';
+import {SPACING, TYPOGRAPHY} from '../../themes/baseTheme';
 
 const CodingPanel = () => {
   // Use the same styling hooks as other panels for consistency

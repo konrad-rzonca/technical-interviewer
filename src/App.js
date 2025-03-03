@@ -14,10 +14,10 @@ import HealthCheck from './components/HealthCheck';
 import ErrorBoundary from './components/ErrorBoundary';
 import MainLayout from './components/MainLayout';
 import {categories, getAllQuestions} from './data/questionLoader';
-import createAppTheme from './utils/theme';
+import {createAppTheme} from './themes';
 import {NAVIGATION} from './utils/constants';
 
-// Create the application theme
+// Create the application theme using the new theme system
 const theme = createAppTheme();
 
 function App() {
