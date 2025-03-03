@@ -66,7 +66,7 @@ const HealthCheck = () => {
 
   // Get appropriate color based on health status
   const getStatusColor = (status) => {
-    return status === 'healthy' ? COLORS.success.main : COLORS.warning.main;
+    return status === 'healthy' ? COLORS.basic.main : COLORS.intermediate.main;
   };
 
   return (

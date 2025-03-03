@@ -48,7 +48,7 @@ const RelatedQuestionItem = React.memo(({
                   value={gradesMap[question.id]}
                   readOnly
                   size="medium"
-                  sx={{color: COLORS.success.main}}
+                  sx={{color: COLORS.basic.main}}
               />
             </Box>
         )}
@@ -79,7 +79,7 @@ const RelatedQuestionItem = React.memo(({
                 },
                 borderLeft: `3px solid ${levelStyles.main}`,
                 backgroundColor: isAnswered
-                    ? `${COLORS.success.main}05`
+                    ? `${COLORS.basic.main}05`
                     : 'transparent',
               }}
           >
@@ -93,7 +93,7 @@ const RelatedQuestionItem = React.memo(({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: COLORS.success.main,
+                      color: COLORS.basic.main,
                     }}
                 >
                   <CheckCircleIcon sx={{fontSize: '18px'}}/>
