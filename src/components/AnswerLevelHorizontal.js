@@ -15,13 +15,16 @@ import {
   useItemTextStyles,
 } from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../utils/theme';
+import {INDEX_TO_LEVEL} from '../utils/answerConstants';
 
 const AnswerLevelHorizontal = ({
   answerInsights,
+  questionId,
+  selectedPoints = {}, // Now passed from parent - no longer local state
+  onPointSelect, // New callback for selection
   learningMode = false,
   isSmallScreen = false,
 }) => {
-  const [selectedPoints, setSelectedPoints] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const [tooltipContent, setTooltipContent] = useState('');
   const [hoveredPoints, setHoveredPoints] = useState({});
@@ -36,18 +39,17 @@ const AnswerLevelHorizontal = ({
 
   // Map category index to skill level
   const getLevelForIndex = (index) => {
-    const levels = ['beginner', 'intermediate', 'advanced'];
-    return levels[index] || 'beginner';
+    return INDEX_TO_LEVEL[index] || 'beginner';
   };
 
   // Handle bullet point click
   const handlePointClick = useCallback((categoryIndex, pointIndex) => {
-    const key = `${categoryIndex}-${pointIndex}`;
-    setSelectedPoints(prev => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  }, []);
+    if (typeof onPointSelect === 'function') {
+      onPointSelect(categoryIndex, pointIndex);
+    } else {
+      console.error('onPointSelect is not a function in AnswerLevelHorizontal');
+    }
+  }, [onPointSelect]);
 
   // Handle bullet point hover start
   const handlePointMouseEnter = useCallback(
@@ -92,6 +94,12 @@ const AnswerLevelHorizontal = ({
     const key = `${categoryIndex}-${pointIndex}`;
     return !!hoveredPoints[key];
   }, [hoveredPoints]);
+
+  // Check if a point is selected - now uses passed selectedPoints
+  const isPointSelected = useCallback((categoryIndex, pointIndex) => {
+    const key = `${categoryIndex}-${pointIndex}`;
+    return !!selectedPoints[key];
+  }, [selectedPoints]);
 
   // Replace code blocks with properly formatted code
   const formatDescription = useCallback((description) => {
@@ -156,8 +164,6 @@ const AnswerLevelHorizontal = ({
             const level = getLevelForIndex(categoryIndex);
             const answerStyles = useAnswerLevelStyles(level);
 
-            console.log(categoryIndex, level, answerStyles);
-
             return (
                 <Box
                     key={categoryIndex}
@@ -190,8 +196,8 @@ const AnswerLevelHorizontal = ({
                   <Grid container spacing={SPACING.toUnits(SPACING.sm)}>
                     {category.points &&
                         category.points.map((point, pointIndex) => {
-                          const key = `${categoryIndex}-${pointIndex}`;
-                          const isSelected = selectedPoints[key];
+                          const isSelected = isPointSelected(categoryIndex,
+                              pointIndex);
                           const isHovered = isPointHovered(categoryIndex,
                               pointIndex);
                           const textStyles = useItemTextStyles(isSelected,

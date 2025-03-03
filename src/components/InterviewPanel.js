@@ -9,6 +9,7 @@ import {
   getQuestionsByCategory,
   getQuestionSets,
   getRelatedQuestions,
+  sortQuestionsByOrder,
 } from '../data/questionLoader';
 
 import {usePanelStyles} from '../utils/styles';
@@ -27,10 +28,16 @@ import {MobileBottomNav, MobileDrawer} from './MobileNavigation';
 const InterviewPanel = ({
   interviewState,
   updateInterviewState,
+  onAnswerPointSelect,
   settings,
   onSettingChange,
 }) => {
-  const {currentQuestion, notesMap, gradesMap} = interviewState;
+  const {
+    currentQuestion,
+    notesMap,
+    gradesMap,
+    selectedAnswerPointsMap,
+  } = interviewState;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
@@ -54,6 +61,12 @@ const InterviewPanel = ({
   const [selectedSets, setSelectedSets] = useState({});
   const [selectedSubcategories, setSelectedSubcategories] = useState({});
   const [subcategoryFilter, setSubcategoryFilter] = useState(null);
+
+  // Navigation state - Added for ordered navigation
+  const [navigationState, setNavigationState] = useState({
+    orderedQuestions: [],
+    currentIndex: -1,
+  });
 
   // Sidebar toggle handlers
   const toggleLeftSidebar = () => setLeftSidebarCollapsed(
@@ -136,6 +149,9 @@ const InterviewPanel = ({
             );
             baseQuestions.push(...subcategoryQuestions);
           });
+
+          // Sort the combined questions for consistent ordering
+          baseQuestions = sortQuestionsByOrder(baseQuestions);
         } else {
           baseQuestions = [];
         }
@@ -188,6 +204,25 @@ const InterviewPanel = ({
     currentQuestion,
     updateInterviewState,
   ]);
+
+  // Update navigation state when filtered questions or current question changes
+  useEffect(() => {
+    if (filteredQuestions.length > 0) {
+      // Create ordered list for navigation
+      const orderedQuestions = sortQuestionsByOrder([...filteredQuestions]);
+
+      const currentIndex = currentQuestion
+          ? orderedQuestions.findIndex(q => q.id === currentQuestion.id)
+          : 0;
+
+      setNavigationState({
+        orderedQuestions,
+        currentIndex: currentIndex !== -1 ? currentIndex : 0,
+      });
+    } else {
+      setNavigationState({orderedQuestions: [], currentIndex: -1});
+    }
+  }, [filteredQuestions, currentQuestion]);
 
   // Load related questions when current question changes
   useEffect(() => {
@@ -315,29 +350,20 @@ const InterviewPanel = ({
     }
   };
 
-  // Navigate to next/previous question
+  // Navigate to next/previous question - UPDATED for consistent navigation
   const handleNavigateQuestion = direction => {
-    if (!currentQuestion || filteredQuestions.length <= 1) return;
+    const {orderedQuestions, currentIndex} = navigationState;
+    if (orderedQuestions.length <= 1) return;
 
-    const currentIndex = filteredQuestions.findIndex(
-        q => q.id === currentQuestion.id,
-    );
-
-    if (currentIndex === -1) return;
-
-    // Navigate sequentially through filtered questions
     let newIndex;
     if (direction === 'next') {
-      newIndex = currentIndex + 1 >= filteredQuestions.length
-          ? 0
-          : currentIndex + 1;
+      newIndex = (currentIndex + 1) % orderedQuestions.length;
     } else {
-      newIndex = currentIndex - 1 < 0
-          ? filteredQuestions.length - 1
-          : currentIndex - 1;
+      newIndex = (currentIndex - 1 + orderedQuestions.length) %
+          orderedQuestions.length;
     }
 
-    updateInterviewState({currentQuestion: filteredQuestions[newIndex]});
+    updateInterviewState({currentQuestion: orderedQuestions[newIndex]});
   };
 
   // Handle notes change
@@ -529,6 +555,8 @@ const InterviewPanel = ({
                 currentQuestion={currentQuestion}
                 notesMap={notesMap}
                 gradesMap={gradesMap}
+                selectedAnswerPointsMap={selectedAnswerPointsMap}
+                onAnswerPointSelect={onAnswerPointSelect}
                 learningMode={settings.learningMode}
                 onNotesChange={handleNotesChange}
                 onGradeChange={handleGradeChange}

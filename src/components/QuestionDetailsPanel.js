@@ -40,6 +40,8 @@ const QuestionDetailsPanel = ({
   currentQuestion,
   notesMap,
   gradesMap,
+  selectedAnswerPointsMap,
+  onAnswerPointSelect, // New prop for handling answer point selection
   learningMode,
   onNotesChange,
   onGradeChange,
@@ -69,6 +71,20 @@ const QuestionDetailsPanel = ({
   if (!currentQuestion) {
     return emptyStateContent;
   }
+
+  // Get the selected points for the current question
+  const selectedPoints = selectedAnswerPointsMap[currentQuestion.id] || {};
+
+  // Handle point selection
+  const handlePointSelect = (categoryIndex, pointIndex) => {
+    const key = `${categoryIndex}-${pointIndex}`;
+    if (typeof onAnswerPointSelect === 'function') {
+      onAnswerPointSelect(currentQuestion.id, key);
+    } else {
+      console.error('onAnswerPointSelect is not a function',
+          onAnswerPointSelect);
+    }
+  };
 
   // Handle notes change
   const handleNotesChange = (event) => {
@@ -134,9 +150,12 @@ const QuestionDetailsPanel = ({
             </IconButton>
           </Paper>
 
-          {/* Answer insights horizontal layout */}
+          {/* Answer insights horizontal layout - updated with selection handling */}
           <AnswerLevelHorizontal
               answerInsights={currentQuestion.answerInsights}
+              questionId={currentQuestion.id}
+              selectedPoints={selectedPoints}
+              onPointSelect={handlePointSelect}
               learningMode={learningMode}
           />
         </Box>

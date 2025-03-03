@@ -26,6 +26,7 @@ function App() {
     currentQuestion: null,
     notesMap: {}, // Map of questionId -> notes
     gradesMap: {}, // Map of questionId -> grade (1-5)
+    selectedAnswerPointsMap: {}, // Map of questionId -> {categoryIndex-pointIndex: boolean}
   });
   const [allQuestions, setAllQuestions] = useState([]);
 
@@ -52,6 +53,25 @@ function App() {
   // Handle question selection from global search
   const handleQuestionSelect = (question) => {
     updateInterviewState({currentQuestion: question});
+  };
+
+  // Handle answer point selection - improved with direct state update
+  const handleAnswerPointSelect = (questionId, categoryPointKey) => {
+    setInterviewState(prevState => {
+      const currentPoints = prevState.selectedAnswerPointsMap[questionId] || {};
+      const updatedPoints = {
+        ...currentPoints,
+        [categoryPointKey]: !currentPoints[categoryPointKey],
+      };
+
+      return {
+        ...prevState,
+        selectedAnswerPointsMap: {
+          ...prevState.selectedAnswerPointsMap,
+          [questionId]: updatedPoints,
+        },
+      };
+    });
   };
 
   // Handle category selection from global search
@@ -87,6 +107,7 @@ function App() {
                   <InterviewPanel
                       interviewState={interviewState}
                       updateInterviewState={updateInterviewState}
+                      onAnswerPointSelect={handleAnswerPointSelect}
                       settings={settings}
                       onSettingChange={handleSettingChange}
                   />

@@ -9,6 +9,7 @@ import {
   useSkillLevelSectionStyles,
 } from '../utils/styles';
 import {SPACING, TYPOGRAPHY} from '../utils/theme';
+import {SKILL_LEVEL_LABELS} from '../utils/answerConstants';
 
 const SkillLevelSection = ({
   level,
@@ -24,15 +25,10 @@ const SkillLevelSection = ({
   const headerStyles = useSectionHeaderStyles(level);
   const levelStyles = getSkillLevelStyles(level);
 
-  // Get label for this level - memoized
-  const levelLabel = useMemo(() => {
-    const levelLabels = {
-      beginner: 'Basic',
-      intermediate: 'Intermediate',
-      advanced: 'Advanced',
-    };
-    return levelLabels[level] || level;
-  }, [level]);
+  // Get label for this level - using constants
+  const levelLabel = useMemo(() =>
+          SKILL_LEVEL_LABELS[level] || level
+      , [level]);
 
   // Memoized scrollbar styles with level-specific colors
   const customScrollbarStyles = useMemo(() => ({

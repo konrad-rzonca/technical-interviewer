@@ -1,4 +1,5 @@
 // src/data/questionLoader.js
+import {LEVEL_ORDER} from '../utils/answerConstants';
 
 // Import question files
 import fundamentalsQuestions
@@ -64,6 +65,20 @@ const questionSets = {
       files: {},
     },
   ],
+};
+
+// Sort questions in a consistent order
+export const sortQuestionsByOrder = (questions) => {
+  return [...questions].sort((a, b) => {
+    // First sort by skill level (beginner → intermediate → advanced)
+    const levelDiff = LEVEL_ORDER[a.skillLevel] - LEVEL_ORDER[b.skillLevel];
+    if (levelDiff !== 0) return levelDiff;
+
+    // Then sort alphabetically by title
+    const titleA = a.shortTitle || a.question;
+    const titleB = b.shortTitle || b.question;
+    return titleA.localeCompare(titleB);
+  });
 };
 
 // Extract all questions from files
@@ -139,12 +154,14 @@ export const categories = [
 
 // Get all questions
 export const getAllQuestions = () => {
-  return [...questions]; // Return a copy to avoid mutations
+  return sortQuestionsByOrder([...questions]); // Return a sorted copy
 };
 
 // Get questions by category
 export const getQuestionsByCategory = (categoryId) => {
-  return questions.filter(question => question.categoryId === categoryId);
+  const categoryQuestions = questions.filter(
+      question => question.categoryId === categoryId);
+  return sortQuestionsByOrder(categoryQuestions);
 };
 
 // Get filtered questions by category and subcategory
@@ -167,8 +184,8 @@ export const getFilteredQuestions = (
     filtered = filtered.filter(q => q.skillLevel === skillLevel);
   }
 
-  // Create a new array to ensure we're not returning references to the original questions
-  return [...filtered];
+  // Return a sorted copy to ensure consistent ordering
+  return sortQuestionsByOrder([...filtered]);
 };
 
 // Get question sets for a category
@@ -186,9 +203,12 @@ export const getRelatedQuestions = (questionId) => {
   const question = getQuestionById(questionId);
   if (!question || !question.relatedQuestions) return [];
 
-  return question.relatedQuestions.map(id => getQuestionById(id)).
+  const relatedQs = question.relatedQuestions.map(id => getQuestionById(id)).
       filter(Boolean) // Filter out any undefined results
       .filter(q => q.id !== questionId); // Filter out self-references
+
+  // Return related questions in sorted order
+  return sortQuestionsByOrder(relatedQs);
 };
 
 // Get category by ID
