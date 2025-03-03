@@ -87,8 +87,8 @@ export const SKILL_LEVEL_COLORS = {
     main: COLORS.success.main,
     light: COLORS.success.light,
     text: COLORS.success.contrastText,
-    border: `${COLORS.success.main}50`, // 50% opacity
-    background: `${COLORS.success.main}10`, // 10% opacity
+    border: `${COLORS.success.main}60`, // 50% opacity
+    background: `${COLORS.success.main}08`, // 8% opacity
     hoverBg: `${COLORS.success.main}15`, // 15% opacity
     darkBorder: `${COLORS.success.main}60`, // 60% opacity
   },
@@ -96,8 +96,8 @@ export const SKILL_LEVEL_COLORS = {
     main: COLORS.warning.main,
     light: COLORS.warning.light,
     text: COLORS.warning.contrastText,
-    border: `${COLORS.warning.main}60`, // 60% opacity - stronger for intermediate
-    background: `${COLORS.warning.main}10`, // 10% opacity
+    border: `${COLORS.warning.main}70`, // 60% opacity - stronger for intermediate
+    background: `${COLORS.warning.main}08`, // 8% opacity
     hoverBg: `${COLORS.warning.main}15`, // 15% opacity
     darkBorder: `${COLORS.warning.main}70`, // 70% opacity
   },
@@ -105,8 +105,8 @@ export const SKILL_LEVEL_COLORS = {
     main: COLORS.info.main,
     light: COLORS.info.light,
     text: COLORS.info.contrastText,
-    border: `${COLORS.info.main}50`, // 50% opacity
-    background: `${COLORS.info.main}10`, // 10% opacity
+    border: `${COLORS.info.main}60`, // 50% opacity
+    background: `${COLORS.info.main}08`, // 8% opacity
     hoverBg: `${COLORS.info.main}15`, // 15% opacity
     darkBorder: `${COLORS.info.main}60`, // 60% opacity
   },
@@ -266,6 +266,7 @@ export const COMPONENT_STYLES = {
     return {
       border: `1px solid ${colors.border}`,
       backgroundColor: colors.background,
+      hoverBg: colors.hoverBg,
       color: colors.main,
     };
   },

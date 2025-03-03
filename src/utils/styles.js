@@ -208,7 +208,8 @@ export function useAnswerLevelStyles(level, options = {}) {
 
   return useMemo(() => ({
     border: styles.border,
-    backgroundColor: styles.background,
+    backgroundColor: styles.backgroundColor,
+    hoverBg: styles.hoverBg,
     color: styles.color,
     padding: SPACING.toUnits(SPACING.md),
     borderRadius: SPACING.toUnits(SPACING.borderRadius),

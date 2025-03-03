@@ -156,6 +156,8 @@ const AnswerLevelHorizontal = ({
             const level = getLevelForIndex(categoryIndex);
             const answerStyles = useAnswerLevelStyles(level);
 
+            console.log(categoryIndex, level, answerStyles);
+
             return (
                 <Box
                     key={categoryIndex}
@@ -210,25 +212,17 @@ const AnswerLevelHorizontal = ({
                                       borderRadius: SPACING.toUnits(
                                           SPACING.borderRadius / 2),
                                       cursor: 'pointer',
-                                      backgroundColor: isSelected
-                                          ? `${answerStyles.color}15`
-                                          : (learningMode && !isHovered &&
-                                          !isSelected
-                                              ? 'white'
-                                              : `${answerStyles.color}05`),
-                                      border: `1px solid ${isSelected
-                                          ? `${answerStyles.color}50`
-                                          : (learningMode && !isHovered &&
-                                          !isSelected
-                                              ? COLORS.grey[200]
-                                              : `${answerStyles.color}50`)}`,
+                                      backgroundColor: !isHovered && !isSelected
+                                          ? '#ffffff' + '80'
+                                          : `${answerStyles.hoverBg}`,
+                                      border: `1px solid ${answerStyles.color}50`,
                                       transition: 'all 0.2s',
                                       display: 'flex',
                                       justifyContent: 'center',
                                       alignItems: 'center',
                                       minHeight: '2.5rem',
                                       '&:hover': {
-                                        backgroundColor: `${answerStyles.color}15`,
+                                        backgroundColor: answerStyles.hoverBg,
                                         boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                                       },
                                     }}
@@ -237,10 +231,10 @@ const AnswerLevelHorizontal = ({
                                   {learningMode && !isHovered && !isSelected ? (
                                       <Box
                                           sx={{
-                                            width: '70%',
-                                            height: '8px',
-                                            borderRadius: '4px',
-                                            backgroundColor: COLORS.grey[200],
+                                            width: '100%',
+                                            height: '32px',
+                                            borderRadius: '6px',
+                                            backgroundColor: COLORS.grey[100],
                                           }}
                                       />
                                   ) : (
