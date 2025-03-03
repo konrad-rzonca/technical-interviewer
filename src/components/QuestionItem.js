@@ -142,7 +142,7 @@ const QuestionItem = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                     height: '100%',
-                    color: COLORS.success.main,
+                    color: indicatorColor,
                   }}
               >
                 <CheckCircleIcon fontSize="small" style={{fontSize: '18px'}}/>

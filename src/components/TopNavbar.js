@@ -105,7 +105,7 @@ const TopNavbar = ({
                     minHeight: 68,
                     textTransform: 'none',
                     fontWeight: 500,
-                    fontSize: isSmallScreen ? '0.875rem' : '1rem',
+                    fontSize: isSmallScreen ? '0.675rem' : '0.8rem',
                     px: {xs: 1, sm: 2},
                   },
                 }}

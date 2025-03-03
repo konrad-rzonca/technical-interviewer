@@ -1,12 +1,11 @@
 ﻿// src/components/SettingsMenu.js
 import React from 'react';
-import {Box, Menu, MenuItem, Switch, Typography} from '@mui/material';
+import {Box, Menu, MenuItem, Switch, Typography, useTheme} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffOutlinedIcon
   from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import {COLORS} from '../themes/baseTheme';
 
 const SettingsMenu = ({
   anchorEl,
@@ -16,6 +15,7 @@ const SettingsMenu = ({
   onSettingChange,
 }) => {
   const {learningMode, hideAnsweredQuestions, hideAnsweredInRelated} = settings;
+  const theme = useTheme();
 
   // Handle toggle with prevention of event propagation
   const handleToggle = (setting, e) => {
@@ -63,11 +63,12 @@ const SettingsMenu = ({
               display: 'flex',
               justifyContent: 'space-between',
               py: 1.5,
+              px: 2,
               borderLeft: learningMode
-                  ? `3px solid ${COLORS.primary.main}`
+                  ? `3px solid ${theme.palette.primary.main}`
                   : '3px solid transparent',
               backgroundColor: learningMode
-                  ? `${COLORS.primary.main}04`
+                  ? `${theme.palette.primary.main}04`
                   : 'transparent',
             }}
             onClick={(e) => e.stopPropagation()} // Prevent menu from closing
@@ -75,13 +76,16 @@ const SettingsMenu = ({
           <Box sx={{display: 'flex', alignItems: 'center'}}>
             {learningMode
                 ?
-                <VisibilityOffIcon fontSize="medium"
-                                   sx={{mr: 1.5, color: COLORS.primary.main}}/>
+                <VisibilityOffIcon fontSize="small"
+                                   sx={{
+                                     mr: 1.5,
+                                     color: theme.palette.primary.main,
+                                   }}/>
                 :
-                <VisibilityIcon fontSize="medium"
-                                sx={{mr: 1.5, color: 'text.secondary'}}/>
+                <VisibilityIcon fontSize="small"
+                                sx={{mr: 1.5, color: 'primary'}}/>
             }
-            <Typography variant="body2" sx={{fontSize: '1.1rem'}}>Learning
+            <Typography variant="body2" sx={{fontSize: '0.9rem'}}>Learning
               Mode</Typography>
           </Box>
           <Switch
@@ -102,7 +106,7 @@ const SettingsMenu = ({
               pb: 0.5,
               color: 'text.secondary',
               fontWeight: 500,
-              fontSize: '0.95rem',
+              fontSize: '0.75rem',
             }}
         >
           QUESTION VISIBILITY
@@ -117,28 +121,28 @@ const SettingsMenu = ({
               py: 1.5,
               px: 2,
               borderLeft: hideAnsweredQuestions
-                  ? `3px solid ${COLORS.primary.main}`
+                  ? `3px solid ${theme.palette.primary.main}`
                   : '3px solid transparent',
               backgroundColor: hideAnsweredQuestions
-                  ? `${COLORS.primary.main}04`
+                  ? `${theme.palette.primary.main}04`
                   : 'transparent',
             }}
             onClick={(e) => e.stopPropagation()} // Prevent menu from closing
         >
           <Box sx={{display: 'flex', alignItems: 'center'}}>
             {hideAnsweredQuestions ?
-                <VisibilityOffOutlinedIcon fontSize="medium" sx={{
+                <VisibilityOffOutlinedIcon fontSize="small" sx={{
                   mr: 1.5,
                   color: hideAnsweredQuestions
-                      ? COLORS.primary.main
+                      ? theme.palette.primary.main
                       : 'text.secondary',
                 }}/> :
-                <VisibilityOutlinedIcon fontSize="medium" sx={{
+                <VisibilityOutlinedIcon fontSize="small" sx={{
                   mr: 1.5,
                   color: 'text.secondary',
                 }}/>
             }
-            <Typography variant="body2" sx={{fontSize: '1.1rem'}}>Hide answered
+            <Typography variant="body2" sx={{fontSize: '0.9rem'}}>Hide answered
               in Navigation</Typography>
           </Box>
           <Switch
@@ -158,28 +162,28 @@ const SettingsMenu = ({
               py: 1.5,
               px: 2,
               borderLeft: hideAnsweredInRelated
-                  ? `3px solid ${COLORS.primary.main}`
+                  ? `3px solid ${theme.palette.primary.main}`
                   : '3px solid transparent',
               backgroundColor: hideAnsweredInRelated
-                  ? `${COLORS.primary.main}04`
+                  ? `${theme.palette.primary.main}04`
                   : 'transparent',
             }}
             onClick={(e) => e.stopPropagation()} // Prevent menu from closing
         >
           <Box sx={{display: 'flex', alignItems: 'center'}}>
             {hideAnsweredInRelated ?
-                <VisibilityOffOutlinedIcon fontSize="medium" sx={{
+                <VisibilityOffOutlinedIcon fontSize="small" sx={{
                   mr: 1.5,
                   color: hideAnsweredInRelated
-                      ? COLORS.primary.main
+                      ? theme.palette.primary.main
                       : 'text.secondary',
                 }}/> :
-                <VisibilityOutlinedIcon fontSize="medium" sx={{
+                <VisibilityOutlinedIcon fontSize="small" sx={{
                   mr: 1.5,
                   color: 'text.secondary',
                 }}/>
             }
-            <Typography variant="body2" sx={{fontSize: '1.1rem'}}>Hide answered
+            <Typography variant="body2" sx={{fontSize: '0.9rem'}}>Hide answered
               in Related Questions</Typography>
           </Box>
           <Switch

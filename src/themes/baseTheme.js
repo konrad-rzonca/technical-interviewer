@@ -31,15 +31,15 @@ export const COLORS = {
     contrastText: '#ffffff',
   },
   warning: {
-    main: '#ffb300', // Amber for Intermediate level
-    light: '#ffde74',
-    dark: '#ffa000',
+    main: '#f6c600', // Stronger, darker gold for Intermediate level
+    light: '#FDE68A', // Warm gold background
+    dark: '#B45309', // Deep, rich gold
     contrastText: '#000000',
   },
   info: {
-    main: '#fb8c00', // Orange for Advanced level
+    main: '#fb7800', // Orange for Advanced level
     light: '#fff3e0',
-    dark: '#f57c00',
+    dark: '#c75100',
     contrastText: '#000000',
   },
   error: {
@@ -245,7 +245,6 @@ export const COMPONENT_STYLES = {
       // Answered state
       answered: {
         border: `1px solid ${COLORS.success.main}25`,
-        backgroundColor: `${COLORS.success.main}08`,
       },
 
       // Normal state
