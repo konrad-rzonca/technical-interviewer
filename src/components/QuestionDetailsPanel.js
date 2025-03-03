@@ -2,7 +2,6 @@
 import React, {useMemo} from 'react';
 import {
   Box,
-  Divider,
   IconButton,
   Paper,
   Rating,
@@ -142,9 +141,6 @@ const QuestionDetailsPanel = ({
           />
         </Box>
 
-        <Divider sx={{
-          my: SPACING.toUnits(SPACING.md),
-        }}/> {/* Added more margin to divider */}
 
         {/* Candidate Evaluation */}
         <Box sx={{

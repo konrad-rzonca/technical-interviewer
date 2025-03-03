@@ -499,8 +499,8 @@ const InterviewPanel = ({
                 display: isMobile ? (mobileView === 'question'
                     ? 'flex'
                     : 'none') : 'flex',
-                // Add a subtle shadow to better distinguish the main panel
-                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                // Very subtle edge shadows to help with panel separation
+                boxShadow: '0 0 2px rgba(0,0,0,0.05)',
               })}
           >
             {/* Question Details Panel - placed at the top */}

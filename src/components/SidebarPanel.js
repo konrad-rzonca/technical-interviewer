@@ -26,6 +26,9 @@ const SidebarPanel = ({
   onToggle,
   ...otherProps
 }) => {
+  // Very minimal panel spacing - just enough to see separation
+  const PANEL_SPACING = 1;
+
   // Container style that determines overall width and positioning
   const containerStyles = useMemo(() => ({
     position: 'relative',
@@ -34,7 +37,10 @@ const SidebarPanel = ({
     width: isCollapsed ? collapsedWidth : expandedWidth,
     minWidth: isCollapsed ? collapsedWidth : expandedWidth,
     transition: 'width 0.3s ease, min-width 0.3s ease',
-    ...(position === 'left' ? {marginRight: 0} : {marginLeft: 0}),
+    // Minimal margin based on position
+    ...(position === 'left'
+        ? {marginRight: PANEL_SPACING}
+        : {marginLeft: PANEL_SPACING}),
     overflow: 'visible', // Ensure toggle button is visible
   }), [isCollapsed, collapsedWidth, expandedWidth, position]);
 
@@ -49,10 +55,11 @@ const SidebarPanel = ({
     ...sx,
   }), [sx]);
 
-  // Toggle button styles - positioned at the extreme edge
+  // Toggle button styles - attached to the edge of the sidebar
   const toggleButtonStyles = useMemo(() => ({
     position: 'absolute',
-    [position === 'left' ? 'right' : 'left']: '-18px',
+    // Position button to overlap the edge slightly
+    [position === 'left' ? 'right' : 'left']: '-16px',
     top: '50%',
     transform: 'translateY(-50%)',
     backgroundColor: 'background.paper',
@@ -60,8 +67,8 @@ const SidebarPanel = ({
     borderColor: 'divider',
     zIndex: 20,
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    width: 36,
-    height: 36,
+    width: 32, // Slightly smaller button
+    height: 32, // Slightly smaller button
     '&:hover': {
       backgroundColor: 'primary.light',
     },
@@ -74,16 +81,19 @@ const SidebarPanel = ({
           {children}
         </Box>
 
-           {/* Toggle button */}
+           {/* Toggle button - attached to sidebar edge */}
         <IconButton
             onClick={onToggle}
             sx={toggleButtonStyles}
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            size="small" // Smaller size for better proportions
         >
           {position === 'left' ? (
-              isCollapsed ? <ChevronRightIcon/> : <ChevronLeftIcon/>
+              isCollapsed ? <ChevronRightIcon fontSize="small"/> :
+                  <ChevronLeftIcon fontSize="small"/>
           ) : (
-              isCollapsed ? <ChevronLeftIcon/> : <ChevronRightIcon/>
+              isCollapsed ? <ChevronLeftIcon fontSize="small"/> :
+                  <ChevronRightIcon fontSize="small"/>
           )}
         </IconButton>
       </Box>
