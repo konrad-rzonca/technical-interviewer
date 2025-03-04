@@ -13,8 +13,8 @@ import {useTooltip} from '../utils/useTooltip';
 const AnswerLevelHorizontal = ({
   answerInsights,
   questionId,
-  selectedPoints = {}, // Now passed from parent - no longer local state
-  onPointSelect, // New callback for selection
+  selectedPoints = {},
+  onPointSelect,
   learningMode = false,
   isSmallScreen = false,
 }) => {

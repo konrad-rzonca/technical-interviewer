@@ -1,5 +1,4 @@
-// src/data/questionLoader.js
-import {LEVEL_ORDER} from '../utils/answerConstants';
+import {ANSWER_LEVELS, LEVEL_ORDER} from '../utils/answerConstants';
 
 // Import question files
 import fundamentalsQuestions
@@ -85,18 +84,52 @@ export const sortQuestionsByOrder = (questions) => {
 const extractQuestionsFromFiles = () => {
   const allQuestions = [];
 
+  // Required answer insight levels
+  const requiredLevels = [
+    ANSWER_LEVELS.BASIC,
+    ANSWER_LEVELS.INTERMEDIATE,
+    ANSWER_LEVELS.ADVANCED,
+  ];
+
   // Process question sets
   Object.entries(questionSets).forEach(([categoryId, sets]) => {
     sets.forEach(set => {
       Object.entries(set.files).forEach(([subcategoryName, file]) => {
         if (file && file.questions && Array.isArray(file.questions)) {
           // Add category, subcategory, and set info to each question
-          const questionsWithMetadata = file.questions.map(question => ({
-            ...question,
-            categoryId,
-            subcategoryName,
-            setId: set.id,
-          }));
+          const questionsWithMetadata = file.questions.map(question => {
+            // Ensure answerInsights exists
+            let answerInsights = question.answerInsights || [];
+
+            // Build a map for existing insights based on their category
+            const insightsByCategory = {};
+            answerInsights.forEach(insight => {
+              // If insight is missing a category, ignore it and let the default be added below.
+              if (insight.category &&
+                  requiredLevels.includes(insight.category)) {
+                insightsByCategory[insight.category] = insight;
+              }
+            });
+
+            // Ensure that each required level is present
+            requiredLevels.forEach(level => {
+              if (!insightsByCategory[level]) {
+                insightsByCategory[level] = {category: level, points: []};
+              }
+            });
+
+            // Reconstruct the answerInsights array in the required order
+            const completeAnswerInsights = requiredLevels.map(
+                level => insightsByCategory[level]);
+
+            return {
+              ...question,
+              answerInsights: completeAnswerInsights,
+              categoryId,
+              subcategoryName,
+              setId: set.id,
+            };
+          });
           allQuestions.push(...questionsWithMetadata);
         }
       });
@@ -118,7 +151,8 @@ export const categories = [
       'Fundamentals',
       'Memory Management',
       'Collections',
-      'Exceptions'],
+      'Exceptions',
+    ],
   },
   {
     id: 'concurrency-multithreading',
@@ -143,12 +177,19 @@ export const categories = [
   {
     id: 'dsa',
     name: 'Data Structures & Algorithms',
-    subcategories: ['Data Structures & Algorithms'],
+    subcategories: ['Data Structures', 'Algorithms'],
   },
   {
     id: 'engineering-practices',
     name: 'Engineering',
-    subcategories: ['Git', 'CI/CD', 'Testing', 'Cloud', 'Open Questions'],
+    subcategories: [
+      'Git',
+      'CI/CD',
+      'Testing',
+      'Cloud',
+      'Security',
+      'Open Questions',
+    ],
   },
 ];
 
