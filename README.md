@@ -325,8 +325,8 @@ To ensure high-quality question/answer data:
 - Focus on One Concept per Question:
     - Ask a single, clear question to spark discussion.
     - Merge closely related topics into the answer insights.
-    - Determine the category based on how hard/well known/important to know the concept is (harder is more advanced,
-      while well known/important is more basic).
+    - Determine the category based on how hard/well known/important the concept is (harder is more advanced,
+      while popular/important is more basic).
 - Conversational, Varied Phrasing:
     - Use diverse, human-friendly starters (e.g., "Can you explain...", "Do you know...", "In your experience...", "
       Could you
@@ -337,7 +337,8 @@ To ensure high-quality question/answer data:
     - Provide a roadmap for further discussion on each topic. Link related questions if any.
     - If answer insight is not obvious then you should provide more details and examples. Answer can be substantial as
       long as it starts with the summary.
-    - Use new lines and spaces for styling, not ` `, or ' '
+    - Use new lines, and spaces for styling
+    - You can also use code blocks with `Code`, ```\nCode\n```, as well as **bolded text**
 - Consistency and Uniqueness:
     - Ensure each question has a unique identifier and follows a consistent JSON structure.
     - Align the content with the interview goals by focusing on key concepts and practical problem-solving.

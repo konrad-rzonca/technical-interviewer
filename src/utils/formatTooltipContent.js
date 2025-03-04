@@ -5,7 +5,7 @@ import {TYPOGRAPHY} from '../themes/baseTheme';
 import {globalStyles} from './styles';
 
 /**
- * Formats content for tooltips with proper handling of newlines and code blocks
+ * Formats content for tooltips with proper handling of newlines, code blocks, inline code, and Markdown-style bold formatting
  * @param {string} content - The text content to format
  * @param {object} options - Additional formatting options
  * @returns {JSX.Element} Formatted content ready for tooltip display
@@ -16,8 +16,61 @@ export const formatTooltipContent = (content, options = {}) => {
   const {
     fontSize = TYPOGRAPHY.fontSize.regularText,
     lineHeight = 1.6,
-    codeMaxHeight = '300px',
+    codeMaxHeight = '700px',
   } = options;
+
+  // Process both bold and inline code formatting in a text segment
+  const processTextFormatting = (text) => {
+    if (!text.includes('**') && !text.includes('`')) return <span>{text}</span>;
+
+    // First handle inline code with backticks
+    const codeSegments = text.split(/(`[^`]+`)/g);
+
+    return (
+        <>
+          {codeSegments.map((segment, i) => {
+            // Handle inline code (wrapped in single backticks)
+            if (segment.startsWith('`') && segment.endsWith('`')) {
+              const codeText = segment.slice(1, -1);
+              return (
+                  <Box
+                      key={i}
+                      component="code"
+                      sx={{
+                        backgroundColor: 'rgba(0, 0, 0, 0.06)',
+                        padding: '2px 4px',
+                        borderRadius: '3px',
+                        fontFamily: 'monospace',
+                        fontSize: '0.85em',
+                        display: 'inline-block',
+                      }}
+                  >
+                    {codeText}
+                  </Box>
+              );
+            }
+
+            // For non-code segments, process bold formatting
+            if (!segment.includes('**')) return <span key={i}>{segment}</span>;
+
+            const boldSegments = segment.split(/(\*\*.*?\*\*)/g);
+            return (
+                <React.Fragment key={i}>
+                  {boldSegments.map((boldSegment, j) => {
+                    if (boldSegment.startsWith('**') &&
+                        boldSegment.endsWith('**')) {
+                      const boldText = boldSegment.slice(2, -2);
+                      return <span key={j}
+                                   style={{fontWeight: 'bold'}}>{boldText}</span>;
+                    }
+                    return <span key={j}>{boldSegment}</span>;
+                  })}
+                </React.Fragment>
+            );
+          })}
+        </>
+    );
+  };
 
   // Handle content with code blocks
   if (content.includes('```')) {
@@ -39,7 +92,7 @@ export const formatTooltipContent = (content, options = {}) => {
                         lineHeight,
                       }}
                   >
-                    {part}
+                    {processTextFormatting(part)}
                   </Typography>
               ) : null;
             }
@@ -74,7 +127,7 @@ export const formatTooltipContent = (content, options = {}) => {
             whiteSpace: 'pre-line', // Preserve line breaks
           }}
       >
-        {content}
+        {processTextFormatting(content)}
       </Typography>
   );
 };

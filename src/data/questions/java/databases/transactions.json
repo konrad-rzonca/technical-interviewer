@@ -1,0 +1,666 @@
+﻿{
+  "category": "Databases",
+  "subcategory": "Transactions",
+  "questions": [
+    {
+      "id": "databases-transactions-acid-1",
+      "skillLevel": "beginner",
+      "shortTitle": "ACID Properties",
+      "question": "Could you explain the ACID properties of database transactions?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**ACID** is an acronym that stands for **Atomicity**, **Consistency**, **Isolation**, and **Durability** - four critical properties that guarantee reliable processing of database transactions."
+            },
+            {
+              "title": "Atomicity",
+              "description": "**Atomicity** ensures that a transaction is treated as a single, indivisible unit of work. Either all operations within the transaction are completed successfully (commit), or none of them are (rollback)."
+            },
+            {
+              "title": "Consistency",
+              "description": "**Consistency** ensures that a transaction brings the database from one valid state to another valid state, maintaining all predefined rules, constraints, cascades, and triggers."
+            },
+            {
+              "title": "Isolation",
+              "description": "**Isolation** ensures that concurrent execution of transactions leaves the database in the same state as if the transactions were executed sequentially. It prevents transactions from interfering with each other."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Durability",
+              "description": "**Durability** guarantees that once a transaction has been committed, it will remain committed even in the case of system failure (crash or power outage). Committed data is saved by the DBMS in non-volatile memory."
+            },
+            {
+              "title": "Implementation Mechanisms",
+              "description": "Database systems implement ACID through mechanisms like **write-ahead logging (WAL)**, **shadow paging**, **two-phase locking**, and **multi-version concurrency control (MVCC)**."
+            },
+            {
+              "title": "Transaction Control",
+              "description": "ACID properties are maintained using transaction control statements: **BEGIN** (or START TRANSACTION), **COMMIT**, and **ROLLBACK**, which mark the boundaries and determine the outcome of transactions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "ACID Trade-offs",
+              "description": "Strict ACID compliance can impact performance and scalability. Systems may relax certain properties (particularly isolation levels) to improve performance at the cost of potential anomalies."
+            },
+            {
+              "title": "Distributed ACID",
+              "description": "Maintaining ACID properties across distributed database systems is challenging and typically requires additional protocols like **Two-Phase Commit (2PC)** or **Three-Phase Commit (3PC)**."
+            },
+            {
+              "title": "ACID vs. BASE",
+              "description": "NoSQL databases often follow the **BASE** model (Basically Available, Soft state, Eventually consistent) instead of ACID, prioritizing availability and partition tolerance over strong consistency for better scalability in distributed environments."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-isolation-levels-2",
+        "databases-transactions-nosql-6"
+      ]
+    },
+    {
+      "id": "databases-transactions-isolation-levels-2",
+      "skillLevel": "intermediate",
+      "shortTitle": "Isolation Levels",
+      "question": "Can you describe the different transaction isolation levels and their implications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Transaction isolation levels** control the degree to which the operations of one transaction are visible to other concurrent transactions, balancing data consistency against performance."
+            },
+            {
+              "title": "Standard Levels",
+              "description": "The SQL standard defines four isolation levels: **Read Uncommitted**, **Read Committed**, **Repeatable Read**, and **Serializable**, each providing increasing levels of isolation and consistency."
+            },
+            {
+              "title": "Common Phenomena",
+              "description": "Isolation levels protect against three phenomena: **Dirty Reads** (reading uncommitted data), **Non-repeatable Reads** (data changing between reads), and **Phantom Reads** (new rows appearing between reads)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Read Uncommitted",
+              "description": "The lowest isolation level, **Read Uncommitted** allows a transaction to see uncommitted changes made by other transactions. It provides maximum concurrency but can result in dirty reads, non-repeatable reads, and phantom reads."
+            },
+            {
+              "title": "Read Committed",
+              "description": "**Read Committed** ensures that a transaction only reads committed data from other transactions. It prevents dirty reads but still allows non-repeatable reads and phantom reads. This is the default level in many DBMSs like PostgreSQL and SQL Server."
+            },
+            {
+              "title": "Repeatable Read",
+              "description": "**Repeatable Read** guarantees that if a transaction reads a row once, it will get the same data on subsequent reads of that row during the transaction. It prevents dirty and non-repeatable reads but may still allow phantom reads. This is MySQL's default level."
+            },
+            {
+              "title": "Serializable",
+              "description": "The highest isolation level, **Serializable** ensures transactions execute as if they were run one after another (serially), preventing all concurrency anomalies but with the highest performance cost due to increased locking."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Implementation Variations",
+              "description": "Different database systems implement isolation levels differently. For example, **PostgreSQL's Repeatable Read** actually prevents phantom reads (unlike the SQL standard definition), while **Oracle** doesn't support Read Uncommitted and calls its default level Read Committed."
+            },
+            {
+              "title": "Snapshot Isolation",
+              "description": "Some databases offer **Snapshot Isolation** (like Oracle's Serializable or SQL Server's Snapshot), which provides transactions with a consistent view of the database at the start of the transaction, avoiding many locks but potentially allowing serialization anomalies."
+            },
+            {
+              "title": "Performance Impact",
+              "description": "Higher isolation levels typically reduce concurrency and increase the likelihood of deadlocks or lock contention. Carefully select isolation levels based on application requirements, preferring the lowest level that ensures data correctness for your specific scenario."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-acid-1",
+        "databases-transactions-concurrency-3"
+      ]
+    },
+    {
+      "id": "databases-transactions-concurrency-3",
+      "skillLevel": "intermediate",
+      "shortTitle": "Transaction Concurrency",
+      "question": "What concurrency problems can occur with transactions and how are they addressed?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Common Concurrency Issues",
+              "description": "Database transaction concurrency can lead to issues like **dirty reads**, **non-repeatable reads**, **phantom reads**, **lost updates**, and **deadlocks**."
+            },
+            {
+              "title": "Dirty Reads",
+              "description": "A **dirty read** occurs when a transaction reads data that has been modified by another concurrent transaction but not yet committed. If the modifying transaction rolls back, the reading transaction has incorrect data."
+            },
+            {
+              "title": "Non-repeatable Reads",
+              "description": "A **non-repeatable read** happens when a transaction reads the same row twice and gets different values because another transaction modified and committed changes to that row between reads."
+            },
+            {
+              "title": "Phantom Reads",
+              "description": "A **phantom read** occurs when a transaction re-executes a query returning a set of rows that satisfy a condition and finds that the set of rows has changed due to another recently committed transaction."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Lost Updates",
+              "description": "A **lost update** happens when two transactions read the same row, then both update it based on what they read, with the later update overwriting the earlier one without incorporating its changes."
+            },
+            {
+              "title": "Deadlocks",
+              "description": "A **deadlock** occurs when two or more transactions are each waiting for locks held by the others, creating a cycle of dependencies. Database systems detect deadlocks and typically resolve them by aborting one of the transactions."
+            },
+            {
+              "title": "Locking Strategies",
+              "description": "Databases use various locking strategies to address concurrency issues, including **shared locks** (for reads), **exclusive locks** (for writes), **intention locks**, **predicate locks**, and **multi-granularity locking**."
+            },
+            {
+              "title": "MVCC",
+              "description": "**Multi-Version Concurrency Control (MVCC)** is an alternative approach where each transaction sees a snapshot of the database as it was at a particular point in time, allowing readers and writers to operate without blocking each other."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Optimistic vs. Pessimistic Concurrency",
+              "description": "**Optimistic concurrency control** assumes conflicts are rare and verifies at commit time that no conflicts occurred, while **pessimistic concurrency control** prevents conflicts by acquiring locks before operations. The choice depends on expected contention levels and transaction characteristics."
+            },
+            {
+              "title": "Row-Level vs. Table-Level Locking",
+              "description": "Databases can lock at different granularities. **Table-level locking** is simpler but limits concurrency, while **row-level locking** allows more concurrent operations but has higher overhead. Some systems also support **page-level** or **partition-level** locking."
+            },
+            {
+              "title": "Handling Hotspots",
+              "description": "**Hotspots** (frequently accessed or updated data) can create severe concurrency bottlenecks. Techniques to mitigate include denormalization, data partitioning, application-level locking, and specialized structures like **commutative data types** or **conflict-free replicated data types (CRDTs)**."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-isolation-levels-2",
+        "databases-transactions-locking-4"
+      ]
+    },
+    {
+      "id": "databases-transactions-locking-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Optimistic vs. Pessimistic Locking",
+      "question": "How do optimistic and pessimistic locking approaches differ in transaction management?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Fundamental Difference",
+              "description": "**Pessimistic locking** prevents conflicts by acquiring locks before data access, while **optimistic locking** allows concurrent access and checks for conflicts only at commit time."
+            },
+            {
+              "title": "Pessimistic Locking Approach",
+              "description": "With pessimistic locking, a transaction locks resources it intends to modify, preventing other transactions from modifying them until the lock is released. This guarantees no conflicts but reduces concurrency."
+            },
+            {
+              "title": "Optimistic Locking Approach",
+              "description": "With optimistic locking, transactions operate on data without locks, but before committing, verify that no other transaction has modified the data since it was read. If modified, the transaction typically aborts and retries."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Implementation Techniques",
+              "description": "Pessimistic locking uses database locks (shared, exclusive, etc.), while optimistic locking typically uses version numbers, timestamps, or checksums to detect changes."
+            },
+            {
+              "title": "Version-Based Optimistic Locking",
+              "description": "A common implementation of optimistic locking uses a version column that is incremented with each update. Before committing an update, the transaction verifies the version hasn't changed:\n\n```sql\nUPDATE accounts\nSET balance = 500, version = version + 1\nWHERE id = 123 AND version = 5;\n```\n\nIf no row is updated (because the version no longer matches), the transaction knows another transaction modified the data and can retry or abort."
+            },
+            {
+              "title": "Use Case Selection",
+              "description": "Pessimistic locking is better for high-contention scenarios with many conflicts, long transactions, or when rollbacks are expensive. Optimistic locking suits low-contention environments with short transactions and when blocking would significantly impact performance."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Implications",
+              "description": "Pessimistic locking can lead to lock contention, blocking, and deadlocks. Optimistic locking avoids these issues but may waste work on transactions that ultimately fail due to conflicts, especially in high-contention environments."
+            },
+            {
+              "title": "Hybrid Approaches",
+              "description": "Some systems implement hybrid strategies, such as using optimistic locking for reads and pessimistic locking for writes, or dynamically switching between approaches based on observed contention patterns."
+            },
+            {
+              "title": "Distributed Considerations",
+              "description": "In distributed systems, pessimistic locking is challenging to implement efficiently and may create availability issues. Optimistic approaches often work better but require careful design to handle conflict resolution across nodes."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-concurrency-3",
+        "databases-transactions-distributed-5"
+      ]
+    },
+    {
+      "id": "databases-transactions-distributed-5",
+      "skillLevel": "advanced",
+      "shortTitle": "Distributed Transactions",
+      "question": "What approaches are available for managing transactions across distributed databases, and what are their trade-offs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Distributed Transaction Challenge",
+              "description": "**Distributed transactions** coordinate operations across multiple databases or services, maintaining ACID properties despite network partitions, partial failures, and independent systems."
+            },
+            {
+              "title": "Two-Phase Commit (2PC)",
+              "description": "The classic distributed transaction protocol has two phases: 1) the **prepare phase** where all participants vote on whether they can commit, and 2) the **commit phase** where the coordinator tells all participants to commit or abort based on the votes."
+            },
+            {
+              "title": "XA Standard",
+              "description": "The **X/Open XA** standard defines interfaces for implementing two-phase commit between multiple resource managers (databases, message queues, etc.) coordinated by a transaction manager."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Saga Pattern",
+              "description": "The **Saga pattern** breaks a distributed transaction into a sequence of local transactions, each with a compensating transaction to undo its effects if a later step fails. This pattern sacrifices isolation but improves availability and performance."
+            },
+            {
+              "title": "Eventual Consistency",
+              "description": "**Eventually consistent** approaches accept temporary inconsistencies by processing transactions asynchronously, with the guarantee that all replicas will converge to a consistent state given enough time without new updates."
+            },
+            {
+              "title": "Outbox Pattern",
+              "description": "The **Outbox pattern** ensures reliable message publishing alongside database transactions by storing messages in an \"outbox\" table within the same transaction, then asynchronously delivering them to the message broker."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "2PC Limitations",
+              "description": "Two-Phase Commit has significant drawbacks: it's blocking (participants lock resources until completion), vulnerable to coordinator failures (stuck transactions), and scales poorly with more participants. These issues make it problematic for modern distributed systems."
+            },
+            {
+              "title": "Three-Phase Commit (3PC)",
+              "description": "**Three-Phase Commit** adds a \"pre-commit\" phase to make the protocol non-blocking under certain failure conditions, but still has limitations and isn't widely implemented in commercial databases."
+            },
+            {
+              "title": "Consensus Algorithms",
+              "description": "Modern distributed systems may use consensus algorithms like **Paxos** or **Raft** to coordinate transactions across nodes, offering stronger guarantees than eventual consistency approaches while avoiding some 2PC pitfalls."
+            },
+            {
+              "title": "CAP Theorem Implications",
+              "description": "The **CAP theorem** states distributed systems cannot simultaneously guarantee Consistency, Availability, and Partition tolerance. In practice, this means distributed transactions must sacrifice either strong consistency or high availability during network partitions."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-acid-1",
+        "databases-transactions-nosql-6"
+      ]
+    },
+    {
+      "id": "databases-transactions-nosql-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "NoSQL Transactions",
+      "question": "How do NoSQL databases handle transactions compared to traditional relational databases?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Traditional vs. NoSQL Approach",
+              "description": "While relational databases typically offer strong ACID transactions, NoSQL databases historically prioritized performance, scalability, and availability over strict transactional guarantees."
+            },
+            {
+              "title": "BASE Properties",
+              "description": "Many NoSQL systems follow the **BASE** model (Basically Available, Soft state, Eventually consistent) instead of ACID, accepting weaker consistency for better availability and partition tolerance."
+            },
+            {
+              "title": "Transaction Support Variations",
+              "description": "Transaction support varies widely across NoSQL databases: some offer document-level atomicity, others provide multi-document transactions within partitions, and modern systems increasingly offer distributed transactions."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Document Databases",
+              "description": "**Document databases** like MongoDB initially provided single-document atomicity, but newer versions offer multi-document transactions with various consistency guarantees. MongoDB 4.0+ supports multi-document ACID transactions within a replica set, and 4.2+ supports them across sharded clusters."
+            },
+            {
+              "title": "Key-Value Stores",
+              "description": "**Key-value stores** like Redis may offer atomic operations on individual keys or limited transaction support (e.g., Redis MULTI/EXEC for executing commands in a batch). DynamoDB provides ACID guarantees within a single partition but limited isolation across partitions."
+            },
+            {
+              "title": "Column-Family Stores",
+              "description": "**Column-family stores** like Cassandra traditionally offered row-level atomicity with eventual consistency. Modern versions may provide lightweight transactions (LWTs) for conditional operations, but with performance trade-offs."
+            },
+            {
+              "title": "Graph Databases",
+              "description": "**Graph databases** like Neo4j often provide full ACID transactions similar to relational databases, as preserving graph integrity typically requires strong consistency guarantees."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Consistency Levels",
+              "description": "Many NoSQL systems offer configurable consistency levels (e.g., Cassandra's ONE, QUORUM, ALL; DynamoDB's eventual or strong consistency), allowing developers to balance consistency against performance for each operation."
+            },
+            {
+              "title": "NewSQL Approach",
+              "description": "**NewSQL** databases like Google Spanner, CockroachDB, and FaunaDB aim to combine NoSQL scalability with traditional ACID guarantees using techniques like consensus protocols, globally distributed timestamps, and clever partitioning strategies."
+            },
+            {
+              "title": "Application-Level Transactions",
+              "description": "When working with NoSQL databases that lack robust transaction support, developers often implement **application-level transactions** using patterns like two-phase commits, sagas, or event sourcing to maintain logical consistency across operations."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-acid-1",
+        "databases-transactions-distributed-5"
+      ]
+    },
+    {
+      "id": "databases-transactions-jdbc-7",
+      "skillLevel": "beginner",
+      "shortTitle": "JDBC Transaction Management",
+      "question": "How do you manage database transactions using JDBC in Java applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Auto-Commit Mode",
+              "description": "By default, JDBC connections operate in **auto-commit mode**, where each SQL statement is treated as a separate transaction. To group multiple statements into a single transaction, you must disable auto-commit."
+            },
+            {
+              "title": "Basic Transaction Control",
+              "description": "The basic flow for JDBC transaction management is:\n\n```java\nConnection conn = DriverManager.getConnection(url, user, password);\ntry {\n    conn.setAutoCommit(false);  // Start transaction\n    \n    // Execute SQL statements\n    Statement stmt = conn.createStatement();\n    stmt.executeUpdate(\"UPDATE accounts SET balance = balance - 100 WHERE id = 1\");\n    stmt.executeUpdate(\"UPDATE accounts SET balance = balance + 100 WHERE id = 2\");\n    \n    conn.commit();  // Commit transaction\n} catch (SQLException e) {\n    conn.rollback();  // Rollback on error\n    throw e;\n} finally {\n    conn.setAutoCommit(true);  // Reset to default\n    conn.close();\n}\n```"
+            },
+            {
+              "title": "Transaction Boundaries",
+              "description": "A JDBC transaction begins when auto-commit is disabled and ends with an explicit `commit()` or `rollback()` call, or when the connection is closed (typically resulting in a rollback of uncommitted changes)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Savepoints",
+              "description": "JDBC supports **savepoints** that allow partial rollback within a transaction:\n\n```java\nconn.setAutoCommit(false);\n\n// Execute first operation\nstatement.executeUpdate(\"INSERT INTO orders VALUES (1, 'New Order')\");\n\n// Create savepoint after first operation\nSavepoint savepoint = conn.setSavepoint();\n\ntry {\n    // Execute second operation\n    statement.executeUpdate(\"UPDATE inventory SET stock = stock - 1 WHERE item_id = 100\");\n} catch (SQLException e) {\n    // Rollback to savepoint if second operation fails\n    conn.rollback(savepoint);\n    // The first operation (INSERT) is still in effect\n}\n\nconn.commit();\n```"
+            },
+            {
+              "title": "Isolation Levels",
+              "description": "JDBC allows setting transaction isolation levels using `Connection.setTransactionIsolation()` with constants like `TRANSACTION_READ_UNCOMMITTED`, `TRANSACTION_READ_COMMITTED`, `TRANSACTION_REPEATABLE_READ`, and `TRANSACTION_SERIALIZABLE`."
+            },
+            {
+              "title": "Connection Pooling Considerations",
+              "description": "When using connection pools, failing to commit or rollback transactions before returning connections to the pool can cause subsequent operations to be part of the previous transaction or encounter lock conflicts."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Distributed Transactions",
+              "description": "JDBC supports distributed transactions through the **JTA (Java Transaction API)** and the **XA protocol**. This involves using `XADataSource` and a transaction manager to coordinate actions across multiple resources."
+            },
+            {
+              "title": "Statement Batching",
+              "description": "For performance optimization, JDBC supports batching multiple statements within a transaction using `addBatch()` and `executeBatch()` methods, reducing network roundtrips while maintaining transaction atomicity."
+            },
+            {
+              "title": "Higher-Level Abstractions",
+              "description": "In practice, direct JDBC transaction management is often replaced with higher-level abstractions like Spring's `@Transactional`, JPA's `EntityTransaction`, or Hibernate's transaction API, which handle many low-level details automatically."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-spring-8"
+      ]
+    },
+    {
+      "id": "databases-transactions-spring-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Transaction Management",
+      "question": "How does Spring framework's transaction management work, and what are its benefits?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Declarative Transactions",
+              "description": "Spring provides **declarative transaction management** using annotations like `@Transactional`, allowing developers to define transaction boundaries without writing explicit transaction code."
+            },
+            {
+              "title": "Transaction Managers",
+              "description": "Spring uses **PlatformTransactionManager** implementations to abstract different transaction APIs (JDBC, JPA, Hibernate, JTA, etc.), providing a consistent programming model regardless of the underlying technology."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "The most common way to use Spring transactions is to annotate service methods with `@Transactional`:\n\n```java\n@Service\npublic class PaymentService {\n    \n    @Autowired\n    private AccountRepository accountRepository;\n    \n    @Transactional\n    public void transferMoney(long fromId, long toId, BigDecimal amount) {\n        Account from = accountRepository.findById(fromId).orElseThrow();\n        Account to = accountRepository.findById(toId).orElseThrow();\n        \n        from.setBalance(from.getBalance().subtract(amount));\n        to.setBalance(to.getBalance().add(amount));\n        \n        accountRepository.save(from);\n        accountRepository.save(to);\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Transaction Attributes",
+              "description": "The `@Transactional` annotation supports attributes for fine-tuning behavior:\n\n```java\n@Transactional(\n    propagation = Propagation.REQUIRED,\n    isolation = Isolation.READ_COMMITTED,\n    timeout = 30,\n    readOnly = false,\n    rollbackFor = {DataAccessException.class},\n    noRollbackFor = {NotFoundException.class}\n)\n```"
+            },
+            {
+              "title": "Propagation Behaviors",
+              "description": "Spring defines several **propagation behaviors** controlling how transactions relate to existing transactions:\n- **REQUIRED**: Use current transaction or create new one (default)\n- **REQUIRES_NEW**: Always create new transaction, suspending current one\n- **SUPPORTS**: Use current transaction if exists, otherwise non-transactional\n- **MANDATORY**: Use current transaction, throw exception if none exists\n- **NOT_SUPPORTED**: Execute non-transactionally, suspending current transaction\n- **NEVER**: Execute non-transactionally, throw exception if transaction exists\n- **NESTED**: Execute in nested transaction if one exists, otherwise like REQUIRED"
+            },
+            {
+              "title": "AOP Implementation",
+              "description": "Spring implements transaction management using **Aspect-Oriented Programming (AOP)** proxies that intercept method calls to `@Transactional` methods, managing transaction boundaries before and after method execution."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Proxy Limitations",
+              "description": "Spring's transaction management has important limitations related to its proxy-based implementation:\n- `@Transactional` on private methods won't work\n- Self-invocation (calling a `@Transactional` method from another method in the same class) bypasses the proxy\n- Only external method calls coming through the proxy are intercepted"
+            },
+            {
+              "title": "Programmatic Transactions",
+              "description": "Spring also offers **programmatic transaction management** using `TransactionTemplate` or direct `PlatformTransactionManager` access when declarative transactions are insufficient:\n\n```java\n@Service\npublic class ComplexService {\n    \n    @Autowired\n    private TransactionTemplate transactionTemplate;\n    \n    public void complexOperation() {\n        transactionTemplate.execute(status -> {\n            // Transactional operations here\n            if (someCondition) {\n                status.setRollbackOnly();\n            }\n            return null;\n        });\n    }\n}\n```"
+            },
+            {
+              "title": "Transaction Synchronization",
+              "description": "Spring provides a **TransactionSynchronization** mechanism allowing code to be executed at different transaction lifecycle points (before commit, after commit, after completion), useful for sending events or cleaning resources only when transactions succeed."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-jdbc-7",
+        "databases-transactions-jpa-9"
+      ]
+    },
+    {
+      "id": "databases-transactions-jpa-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "JPA Transaction Management",
+      "question": "How are transactions handled in JPA, and how does it compare to JDBC transaction management?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "JPA Transaction Basics",
+              "description": "In JPA, transactions are managed through the **EntityManager** and **EntityTransaction** interfaces, providing a higher-level abstraction compared to JDBC's connection-based approach."
+            },
+            {
+              "title": "Standard JPA Transaction",
+              "description": "A standard JPA transaction looks like this:\n\n```java\nEntityManager em = emf.createEntityManager();\nEntityTransaction tx = em.getTransaction();\n\ntry {\n    tx.begin();\n    \n    // Perform JPA operations\n    Customer customer = new Customer();\n    customer.setName(\"New Customer\");\n    em.persist(customer);\n    \n    tx.commit();\n} catch (Exception e) {\n    if (tx != null && tx.isActive()) {\n        tx.rollback();\n    }\n    throw e;\n} finally {\n    em.close();\n}\n```"
+            },
+            {
+              "title": "Entity Manager Context",
+              "description": "The **persistence context** managed by the EntityManager tracks entity state changes during a transaction, automatically generating appropriate SQL statements at commit time instead of immediately executing each operation."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Container vs. Application-Managed",
+              "description": "JPA supports two transaction management modes: **application-managed** (shown above) where the application controls transaction boundaries, and **container-managed** where the Java EE container or framework (like Spring) manages transactions."
+            },
+            {
+              "title": "Flush Control",
+              "description": "JPA provides control over when changes are flushed to the database using `em.flush()` (explicit flush), `em.setFlushMode()` (AUTO or COMMIT), and query execution (which may trigger automatic flush depending on the flush mode)."
+            },
+            {
+              "title": "JPA vs. JDBC Transactions",
+              "description": "Compared to JDBC, JPA transactions offer:\n- **Higher abstraction**: Work with objects rather than SQL\n- **Change tracking**: Automatic detection of modified entities\n- **Caching**: First-level cache within transaction\n- **Lazy loading**: Ability to load related entities as needed\n- **Optimistic locking**: Built-in version-based concurrency control"
+            },
+            {
+              "title": "Pessimistic Locking",
+              "description": "JPA provides pessimistic locking capabilities through the `LockModeType` enum used with `em.lock()` or `em.find()` methods, supporting modes like `PESSIMISTIC_READ`, `PESSIMISTIC_WRITE`, and `PESSIMISTIC_FORCE_INCREMENT`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Extended Persistence Context",
+              "description": "JPA supports **extended persistence contexts** that span multiple transactions, enabling conversational state management in applications with multiple user interactions while maintaining identity and relationship consistency."
+            },
+            {
+              "title": "Transaction Rollback Only",
+              "description": "JPA provides the ability to mark a transaction for rollback only using `tx.setRollbackOnly()` when an operation fails but you want to continue processing before ultimately rolling back the entire transaction."
+            },
+            {
+              "title": "Implementation Differences",
+              "description": "Different JPA providers (Hibernate, EclipseLink, OpenJPA) may implement transaction management with subtle differences, particularly around flush behavior, locking strategies, and integration with native features."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-spring-8",
+        "databases-transactions-jdbc-7"
+      ]
+    },
+    {
+      "id": "databases-transactions-patterns-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Transaction Patterns",
+      "question": "What are some common design patterns for handling transactions in enterprise applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Transaction Script",
+              "description": "The **Transaction Script** pattern organizes business logic as procedural scripts, each handling a single request or transaction, with explicit transaction boundaries at the beginning and end of each script."
+            },
+            {
+              "title": "Unit of Work",
+              "description": "The **Unit of Work** pattern tracks changes made to objects during a business transaction and coordinates writing them back to the database, maintaining a list of objects affected by a business transaction and the operations performed on them."
+            },
+            {
+              "title": "Service Layer",
+              "description": "The **Service Layer** pattern defines an application's boundary and its set of available operations from the perspective of clients. Service methods typically represent transaction boundaries, with one transaction per service method."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Repository Pattern",
+              "description": "The **Repository** pattern mediates between the domain and data mapping layers, collecting domain objects within transaction boundaries, and coordinating persistence operations when the transaction commits."
+            },
+            {
+              "title": "Command Pattern",
+              "description": "The **Command** pattern encapsulates a request as an object, allowing parameterization of clients with different requests and queue/log operations. This naturally aligns with transactions, as each command can be wrapped in a transaction context."
+            },
+            {
+              "title": "Saga Pattern",
+              "description": "The **Saga** pattern manages failures in distributed transactions by defining a sequence of local transactions where each step publishes an event that triggers the next step. If a step fails, compensating transactions undo previous steps.\n\nExample in pseudo-code:\n```java\npublic void bookTrip() {\n    try {\n        // Start saga\n        String bookingId = bookFlightService.bookFlight(flightDetails);  // Step 1\n        hotelService.bookHotel(bookingId, hotelDetails);               // Step 2\n        carService.rentCar(bookingId, carDetails);                     // Step 3\n        paymentService.processPayment(bookingId, paymentDetails);      // Step 4\n        notificationService.sendConfirmation(bookingId);               // Step 5\n        // Saga complete\n    } catch (FlightException e) {\n        // No compensating actions needed - failed at first step\n    } catch (HotelException e) {\n        // Compensate for flight booking\n        bookFlightService.cancelFlight(bookingId);\n    } catch (CarException e) {\n        // Compensate for hotel and flight\n        hotelService.cancelHotel(bookingId);\n        bookFlightService.cancelFlight(bookingId);\n    } catch (PaymentException e) {\n        // Compensate for car, hotel, and flight\n        carService.cancelCar(bookingId);\n        hotelService.cancelHotel(bookingId);\n        bookFlightService.cancelFlight(bookingId);\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Event Sourcing",
+              "description": "**Event Sourcing** stores the state of an entity as a sequence of state-changing events rather than just its current state. Transactions in event sourcing involve appending immutable events to an event log, simplifying concurrency and providing a complete audit trail."
+            },
+            {
+              "title": "CQRS",
+              "description": "**Command Query Responsibility Segregation (CQRS)** separates read and write operations into different models. Write operations (commands) may use transactions for consistency, while read operations (queries) can use eventually consistent views optimized for specific use cases."
+            },
+            {
+              "title": "Transactional Outbox",
+              "description": "The **Transactional Outbox** pattern ensures reliable message publishing alongside database transactions by storing outgoing messages in a database table within the same transaction as business operations, then asynchronously publishing them to a message broker."
+            },
+            {
+              "title": "Try-Confirm-Cancel (TCC)",
+              "description": "The **TCC** pattern is a form of distributed transaction control where each service first tries a provisional operation, then either confirms or cancels it based on the overall outcome. Each operation must be designed to be compensatable."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "databases-transactions-distributed-5"
+      ]
+    }
+  ]
+}

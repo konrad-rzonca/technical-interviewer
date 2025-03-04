@@ -1,0 +1,1325 @@
+﻿{
+  "category": "Frameworks",
+  "subcategory": "Hibernate",
+  "questions": [
+    {
+      "id": "java-hibernate-basics-frameworks-hibernate-1",
+      "skillLevel": "beginner",
+      "shortTitle": "Hibernate Basics",
+      "question": "Could you explain what Hibernate is and its core advantages in Java applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Hibernate** is an Object-Relational Mapping (ORM) framework that implements the Java Persistence API (JPA) specification. It maps Java objects to database tables and vice versa, abstracting away much of the JDBC code."
+            },
+            {
+              "title": "Core Advantages",
+              "description": "Key benefits include **database independence**, **reduced boilerplate code**, **automatic table creation**, and **simplified CRUD operations** without writing SQL queries manually."
+            },
+            {
+              "title": "Programming Paradigm",
+              "description": "Hibernate enables **object-oriented** interaction with relational databases, allowing developers to work with persistent objects rather than SQL statements."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "JPA Implementation",
+              "description": "Hibernate implements the **Java Persistence API** standard but extends it with additional features like custom SQL, filters, and more powerful caching options."
+            },
+            {
+              "title": "Caching Mechanism",
+              "description": "Hibernate provides a **multi-level caching** architecture that can significantly improve application performance by reducing database hits."
+            },
+            {
+              "title": "Query Languages",
+              "description": "It supports multiple query approaches including **HQL** (Hibernate Query Language), **JPQL** (JPA Query Language), **Criteria API**, and **native SQL** when needed."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Architecture",
+              "description": "Hibernate's architecture consists of **SessionFactory** (thread-safe, immutable cache of compiled mappings), **Session** (single-threaded object representing a conversation with the database), **Transaction**, **ConnectionProvider**, and **TransactionFactory** components."
+            },
+            {
+              "title": "Lazy Loading",
+              "description": "Hibernate implements **lazy loading** through proxy objects, allowing for efficient loading of object graphs without retrieving unnecessary data from the database."
+            },
+            {
+              "title": "Integration Flexibility",
+              "description": "Hibernate can be used standalone, integrated with Spring (via Spring ORM), or in Java EE environments, making it adaptable to various architectural requirements."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-jpa-vs-hibernate-frameworks-hibernate-2"
+      ]
+    },
+    {
+      "id": "java-jpa-vs-hibernate-frameworks-hibernate-2",
+      "skillLevel": "beginner",
+      "shortTitle": "JPA vs Hibernate",
+      "question": "What is the difference between JPA and Hibernate?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Specification vs Implementation",
+              "description": "**JPA** (Java Persistence API) is a specification that defines a standard interface for ORM in Java, while **Hibernate** is one of several implementations of the JPA specification."
+            },
+            {
+              "title": "Standardization",
+              "description": "JPA provides a **standard set of annotations** and interfaces for ORM, making code portable across different JPA providers, whereas Hibernate-specific features may create vendor lock-in."
+            },
+            {
+              "title": "Package Structure",
+              "description": "JPA uses the `javax.persistence` package (or `jakarta.persistence` in newer versions), while Hibernate-specific features use the `org.hibernate` package."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Feature Coverage",
+              "description": "Hibernate offers **additional features** beyond the JPA specification, such as natural IDs, filters, more cache providers, and custom types."
+            },
+            {
+              "title": "Query Capabilities",
+              "description": "JPA defines JPQL (Java Persistence Query Language), while Hibernate provides its own HQL (Hibernate Query Language) with extended functionality, though they are very similar."
+            },
+            {
+              "title": "Configuration Options",
+              "description": "Hibernate provides more detailed configuration options than what's required by the JPA specification, allowing for fine-tuned control over persistence behavior."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Naming Conventions",
+              "description": "JPA uses **EntityManager** and **EntityManagerFactory**, while Hibernate uses **Session** and **SessionFactory**. However, Hibernate implements EntityManager internally by wrapping its Session API."
+            },
+            {
+              "title": "Portability Considerations",
+              "description": "Applications using only JPA annotations and interfaces can easily switch to another JPA provider like EclipseLink, whereas using Hibernate-specific features creates a dependency on Hibernate."
+            },
+            {
+              "title": "Implementation Strategy",
+              "description": "In practice, many applications use JPA annotations for mapping but leverage Hibernate-specific features for performance optimization, creating a hybrid approach that balances standardization with advanced functionality."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hibernate-basics-frameworks-hibernate-1",
+        "java-entity-mapping-frameworks-hibernate-3"
+      ]
+    },
+    {
+      "id": "java-entity-mapping-frameworks-hibernate-3",
+      "skillLevel": "beginner",
+      "shortTitle": "Entity Mapping",
+      "question": "How do you map Java classes to database tables using Hibernate?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Entity Annotation",
+              "description": "The primary mapping is done using the `@Entity` annotation on the class, marking it as a persistent entity that corresponds to a database table."
+            },
+            {
+              "title": "Table Configuration",
+              "description": "The `@Table` annotation specifies the table name, schema, and other database-specific settings. If omitted, Hibernate uses the class name as the table name."
+            },
+            {
+              "title": "ID Definition",
+              "description": "Each entity requires a unique identifier marked with `@Id`. Generation strategies for this identifier can be specified using `@GeneratedValue` with options like AUTO, IDENTITY, SEQUENCE, or TABLE."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Column Mapping",
+              "description": "The `@Column` annotation customizes how fields map to columns, including name, length, nullable status, unique constraints, and more. By default, fields are mapped to columns with the same name."
+            },
+            {
+              "title": "Relationship Mapping",
+              "description": "Relationships between entities are defined using `@OneToOne`, `@OneToMany`, `@ManyToOne`, and `@ManyToMany` annotations, with additional options for cascade behavior, fetch type, and join columns."
+            },
+            {
+              "title": "Inheritance Mapping",
+              "description": "Hibernate supports different inheritance strategies via `@Inheritance` with options like SINGLE_TABLE (default), JOINED, or TABLE_PER_CLASS, each with different database representation implications."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Types",
+              "description": "For complex data types, Hibernate allows creating custom type mappings using `@Type` or implementing the `UserType` or `CompositeUserType` interfaces for advanced type conversion."
+            },
+            {
+              "title": "Formula and Derived Properties",
+              "description": "The `@Formula` annotation enables SQL expressions to be mapped to entity properties, allowing for calculated fields that don't exist as columns in the database."
+            },
+            {
+              "title": "Embedded Objects",
+              "description": "Using `@Embedded` and `@Embeddable` annotations, developers can map value objects or components that don't have their own identity but are part of an entity, promoting better domain modeling while maintaining efficient database structure."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-relationship-mapping-frameworks-hibernate-4"
+      ]
+    },
+    {
+      "id": "java-relationship-mapping-frameworks-hibernate-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Relationship Mapping",
+      "question": "Can you explain how different types of relationships are mapped in Hibernate?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "One-to-One Relationship",
+              "description": "Mapped using the `@OneToOne` annotation. Each entity has a single reference to another entity, typically implemented with a foreign key column or a shared primary key.\n\nExample:\n```java\n@Entity\npublic class Employee {\n    @Id\n    private Long id;\n    \n    @OneToOne(cascade = CascadeType.ALL)\n    @JoinColumn(name = \"address_id\")\n    private Address address;\n}\n```"
+            },
+            {
+              "title": "One-to-Many Relationship",
+              "description": "Mapped using `@OneToMany` on the \"one\" side and typically `@ManyToOne` on the \"many\" side. Represents a collection of entities referenced by a single entity.\n\nExample:\n```java\n@Entity\npublic class Department {\n    @Id\n    private Long id;\n    \n    @OneToMany(mappedBy = \"department\", cascade = CascadeType.ALL)\n    private List<Employee> employees;\n}\n\n@Entity\npublic class Employee {\n    @Id\n    private Long id;\n    \n    @ManyToOne\n    @JoinColumn(name = \"department_id\")\n    private Department department;\n}\n```"
+            },
+            {
+              "title": "Many-to-Many Relationship",
+              "description": "Mapped using `@ManyToMany` on both sides, requiring a join table to store the relationships between entities.\n\nExample:\n```java\n@Entity\npublic class Student {\n    @Id\n    private Long id;\n    \n    @ManyToMany\n    @JoinTable(\n        name = \"student_course\",\n        joinColumns = @JoinColumn(name = \"student_id\"),\n        inverseJoinColumns = @JoinColumn(name = \"course_id\")\n    )\n    private List<Course> courses;\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Bidirectional vs Unidirectional",
+              "description": "Relationships can be **unidirectional** (navigable from only one side) or **bidirectional** (navigable from both sides). Bidirectional relationships require the `mappedBy` attribute on the non-owning side to avoid duplicate mappings."
+            },
+            {
+              "title": "Cascade Operations",
+              "description": "The `cascade` attribute defines operations that propagate from a parent entity to its associated entities. Options include PERSIST, MERGE, REMOVE, REFRESH, DETACH, or ALL, controlling how changes to an entity affect related entities."
+            },
+            {
+              "title": "Fetch Strategies",
+              "description": "The `fetch` attribute determines when associated entities are loaded: EAGER (load immediately with parent) or LAZY (load on demand). Default is EAGER for `@ManyToOne` and `@OneToOne`, LAZY for `@OneToMany` and `@ManyToMany`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Orphan Removal",
+              "description": "The `orphanRemoval = true` option ensures that child entities are deleted when they're no longer referenced by the parent, which is useful for parent-child relationships where children cannot exist independently."
+            },
+            {
+              "title": "Join Table Customization",
+              "description": "For `@ManyToMany` or `@OneToMany` with join tables, the `@JoinTable` annotation provides detailed customization including table name, join columns, and additional constraints."
+            },
+            {
+              "title": "Mapping Collections and Maps",
+              "description": "Hibernate supports mapping collections (`Set`, `List`, `Map`) with special annotations like `@OrderBy`, `@OrderColumn`, `@MapKey`, and `@ElementCollection` for collections of simple types or embeddable objects, providing flexible relationship structures."
+            },
+            {
+              "title": "Performance Implications",
+              "description": "Relationship mapping choices significantly impact performance. N+1 query problems can occur with lazy loading, cascade operations may cause unexpected database operations, and improper fetch strategies can lead to excessive queries or memory usage."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-entity-mapping-frameworks-hibernate-3",
+        "java-fetch-strategies-frameworks-hibernate-6"
+      ]
+    },
+    {
+      "id": "java-hibernate-lifecycle-frameworks-hibernate-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Entity Lifecycle",
+      "question": "What are the different states in the Hibernate entity lifecycle?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Transient State",
+              "description": "A **transient** entity is a plain Java object that has been instantiated but is not associated with a Hibernate Session and has no representation in the database. It exists only in memory."
+            },
+            {
+              "title": "Persistent State",
+              "description": "A **persistent** entity is associated with a Hibernate Session, has a database representation, and changes to the entity are tracked and synchronized with the database during transaction commit."
+            },
+            {
+              "title": "Detached State",
+              "description": "A **detached** entity was previously persistent but is no longer associated with a Session. It still has a database identity but changes to it are not automatically tracked."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Removed State",
+              "description": "A **removed** entity is scheduled for deletion from the database. It is still associated with a Session until the transaction completes, at which point it becomes transient."
+            },
+            {
+              "title": "State Transitions",
+              "description": "Entities move between states through Session operations: `persist()` (transient → persistent), `evict()` or session close (persistent → detached), `merge()` (detached → persistent copy), `remove()` (persistent → removed), and `saveOrUpdate()` (transient/detached → persistent)."
+            },
+            {
+              "title": "Automatic Dirty Checking",
+              "description": "For persistent entities, Hibernate performs **dirty checking** during transaction commit, automatically detecting changes and generating appropriate SQL without explicit update calls."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Lifecycle Callbacks",
+              "description": "JPA provides annotations like `@PrePersist`, `@PostPersist`, `@PreUpdate`, `@PostUpdate`, `@PreRemove`, `@PostRemove`, `@PostLoad` that allow executing code at specific points in the entity lifecycle."
+            },
+            {
+              "title": "Entity Listeners",
+              "description": "In addition to lifecycle annotations on entity methods, you can define separate listener classes with `@EntityListeners` to externalize lifecycle event handling."
+            },
+            {
+              "title": "Session Flush",
+              "description": "The Session's `flush()` operation synchronizes the persistence context with the database, executing SQL for dirty entities without committing the transaction. Flush occurs automatically at transaction commit, before query execution, or can be triggered manually."
+            },
+            {
+              "title": "Cascading Effects",
+              "description": "Lifecycle state transitions can propagate to associated entities through cascade settings, potentially resulting in complex state transition chains that affect large object graphs."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-session-management-frameworks-hibernate-7"
+      ]
+    },
+    {
+      "id": "java-fetch-strategies-frameworks-hibernate-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "Fetch Strategies",
+      "question": "How do lazy and eager fetching work in Hibernate, and when should each be used?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Lazy Fetching",
+              "description": "**Lazy fetching** defers loading of associated entities or collections until they are explicitly accessed. This is defined using `FetchType.LAZY` and helps minimize unnecessary data retrieval."
+            },
+            {
+              "title": "Eager Fetching",
+              "description": "**Eager fetching** loads associated entities or collections immediately when the parent entity is loaded, using `FetchType.EAGER`. This ensures all data is available upfront."
+            },
+            {
+              "title": "Default Behaviors",
+              "description": "By default, `@ManyToOne` and `@OneToOne` relationships are EAGER, while `@OneToMany` and `@ManyToMany` relationships are LAZY. These defaults can be overridden as needed."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Lazy Loading Proxies",
+              "description": "Hibernate implements lazy loading using proxy objects (via Javassist or ByteBuddy) or collection wrappers that load the actual data when methods are invoked on them."
+            },
+            {
+              "title": "LazyInitializationException",
+              "description": "A common pitfall with lazy loading occurs when trying to access a lazy association after the session is closed, resulting in a `LazyInitializationException`. This requires careful session management or eager loading when necessary."
+            },
+            {
+              "title": "Join Fetching",
+              "description": "Beyond the basic fetch types, Hibernate supports **join fetching** via `@Fetch(FetchMode.JOIN)` or JPQL/HQL `JOIN FETCH` clauses, which load associations with a single query rather than separate selects."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "N+1 Query Problem",
+              "description": "Lazy loading can lead to the **N+1 query problem**, where loading a collection of N entities results in N+1 database queries. This can be addressed with batch fetching, join fetching, or entity graphs."
+            },
+            {
+              "title": "Batch Fetching",
+              "description": "Hibernate provides `@BatchSize` and `@Fetch(FetchMode.SUBSELECT)` to optimize lazy loading by retrieving multiple lazy associations in a single query rather than one query per entity."
+            },
+            {
+              "title": "Entity Graphs",
+              "description": "JPA 2.1 introduced **Entity Graphs** as a flexible way to define fetch plans for specific use cases, allowing dynamic definition of which associations to load eagerly or lazily for particular operations."
+            },
+            {
+              "title": "Selection Strategy",
+              "description": "The optimal fetch strategy depends on: 1) How often the association is accessed, 2) The size of the associated data, 3) The usage pattern (e.g., display vs. processing), and 4) Session lifecycle management in the application architecture."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-relationship-mapping-frameworks-hibernate-4",
+        "java-n-plus-one-problem-frameworks-hibernate-11"
+      ]
+    },
+    {
+      "id": "java-session-management-frameworks-hibernate-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Session Management",
+      "question": "What is the Hibernate Session and how should it be managed in applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Session Definition",
+              "description": "The **Session** is the primary interface between Java application code and Hibernate, representing a single-threaded unit of work with the database, including a first-level cache of persistent objects."
+            },
+            {
+              "title": "SessionFactory",
+              "description": "The **SessionFactory** is a thread-safe, immutable factory for Session instances, created once at application startup. It's expensive to create but designed to be shared across the application."
+            },
+            {
+              "title": "Basic Operations",
+              "description": "Key Session operations include `save()/persist()`, `get()/load()`, `update()`, `delete()/remove()`, `createQuery()`, `beginTransaction()`, `flush()`, and `close()`."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Session Lifecycle Patterns",
+              "description": "Common patterns include **session-per-request**, **session-per-conversation**, and **long session**, each with different implications for performance, concurrency, and data consistency."
+            },
+            {
+              "title": "Transaction Boundaries",
+              "description": "Sessions should be used within clear transaction boundaries. In most applications, a transaction should be started at the beginning of a business operation and committed at the end, with the session following the same lifecycle."
+            },
+            {
+              "title": "First-Level Cache",
+              "description": "The Session includes a mandatory first-level cache that maintains the state of objects within a transaction, ensuring that the same Java object instance is returned for repeated lookups of the same database row."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Session Flush Modes",
+              "description": "Session flush modes (AUTO, COMMIT, MANUAL, ALWAYS) control when changes are synchronized with the database, allowing optimization of write operations and management of consistency constraints."
+            },
+            {
+              "title": "Stateless Sessions",
+              "description": "For bulk operations, Hibernate offers **StatelessSession**, which bypasses the first-level cache and doesn't perform dirty checking, providing improved performance at the cost of consistency guarantees."
+            },
+            {
+              "title": "Integration Approaches",
+              "description": "In enterprise applications, Session management is typically integrated with frameworks like Spring (using `HibernateTransactionManager` or `JpaTransactionManager`), CDI, or Java EE container-managed persistence contexts, which handle session creation, transaction management, and cleanup."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Effective session management requires understanding the trade-offs between session scope, transaction boundaries, and caching. Long-lived sessions can improve performance but may lead to stale data, excessive memory usage, or lock contention in concurrent environments."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hibernate-lifecycle-frameworks-hibernate-5",
+        "java-transaction-management-frameworks-hibernate-10"
+      ]
+    },
+    {
+      "id": "java-hibernate-caching-frameworks-hibernate-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Hibernate Caching",
+      "question": "How does Hibernate's multi-level caching system work?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "First-Level Cache",
+              "description": "The **first-level cache** (Session cache) is mandatory and session-scoped. It ensures that the same Java object is returned for repeated lookups within a session and tracks changes to persistent objects."
+            },
+            {
+              "title": "Second-Level Cache",
+              "description": "The **second-level cache** is optional and SessionFactory-scoped (shared across sessions). It caches objects across sessions to reduce database access for frequently-accessed, relatively static data."
+            },
+            {
+              "title": "Query Cache",
+              "description": "The **query cache** stores the results of HQL/JPQL queries, caching the identifiers of entities that match query criteria, but requires the second-level cache to be effective."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Cache Providers",
+              "description": "Hibernate supports various second-level cache providers including EHCache, Infinispan, Hazelcast, and JCache (JSR-107) compatible implementations, each with different features for distribution, persistence, and eviction."
+            },
+            {
+              "title": "Cache Concurrency Strategies",
+              "description": "Hibernate offers multiple concurrency strategies: **READ_ONLY** (for immutable data), **NONSTRICT_READ_WRITE** (for mostly-read data with infrequent updates), **READ_WRITE** (for read-write data requiring strict consistency), and **TRANSACTIONAL** (for full transaction isolation)."
+            },
+            {
+              "title": "Entity and Collection Caching",
+              "description": "Entities are cached using `@Cacheable` and `@Cache` annotations or XML configuration, specifying the cache region and concurrency strategy. Collections can be separately cached with their own settings."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Cache Regions",
+              "description": "Cache data can be organized into separate **regions** (typically one per entity or collection) with different settings for size, expiration, and concurrency, allowing fine-grained control over caching behavior."
+            },
+            {
+              "title": "Natural ID Caching",
+              "description": "Hibernate offers specialized caching for **natural IDs** (business keys), providing efficient lookups by natural identifiers without requiring separate query cache entries."
+            },
+            {
+              "title": "Cache Statistics and Monitoring",
+              "description": "Hibernate can expose detailed cache statistics through JMX or programmatic access, providing metrics on hit/miss ratios, put rates, and eviction counts to help optimize cache configuration."
+            },
+            {
+              "title": "Distributed Caching Considerations",
+              "description": "In clustered environments, cache coherency becomes critical. Cache implementations must support distributed invalidation or updates, and application designs must account for potential inconsistencies, especially with query caching."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-session-management-frameworks-hibernate-7",
+        "java-performance-optimization-frameworks-hibernate-13"
+      ]
+    },
+    {
+      "id": "java-hibernate-queries-frameworks-hibernate-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Hibernate Query Options",
+      "question": "What are the different ways to query data using Hibernate and their relative advantages?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "HQL/JPQL",
+              "description": "**Hibernate Query Language (HQL)** and **Java Persistence Query Language (JPQL)** are object-oriented query languages similar to SQL but operate on entity objects rather than database tables.\n\nExample:\n```java\nQuery<Employee> query = session.createQuery(\n    \"FROM Employee e WHERE e.department.name = :deptName\", Employee.class);\nquery.setParameter(\"deptName\", \"Engineering\");\nList<Employee> results = query.getResultList();\n```"
+            },
+            {
+              "title": "Criteria API",
+              "description": "The **Criteria API** provides a type-safe, programmatic way to create queries, which helps avoid runtime errors from string-based queries.\n\nExample:\n```java\nCriteriaBuilder cb = session.getCriteriaBuilder();\nCriteriaQuery<Employee> cq = cb.createQuery(Employee.class);\nRoot<Employee> root = cq.from(Employee.class);\ncq.where(cb.equal(root.get(\"department\").get(\"name\"), \"Engineering\"));\nList<Employee> results = session.createQuery(cq).getResultList();\n```"
+            },
+            {
+              "title": "Native SQL",
+              "description": "Hibernate supports **native SQL** queries for when you need database-specific features or optimizations not available in HQL/JPQL.\n\nExample:\n```java\nNativeQuery<Employee> query = session.createNativeQuery(\n    \"SELECT * FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = :deptName\", \n    Employee.class);\nquery.setParameter(\"deptName\", \"Engineering\");\nList<Employee> results = query.getResultList();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Query By Example (QBE)",
+              "description": "**Query By Example** allows creating queries based on example entity instances, useful for dynamic query conditions and UI-based searches.\n\nExample:\n```java\nEmployee example = new Employee();\nexample.setDepartment(new Department(\"Engineering\"));\n\nExample<Employee> qbe = Example.of(example);\nList<Employee> results = session.createQuery(\n    \"FROM Employee e WHERE \" + qbe.toString(), Employee.class)\n    .getResultList();\n```"
+            },
+            {
+              "title": "Named Queries",
+              "description": "**Named Queries** are defined at the entity level with `@NamedQuery` or `@NamedNativeQuery` annotations, promoting reuse and allowing for precompilation and caching.\n\nExample:\n```java\n@Entity\n@NamedQuery(name = \"Employee.findByDepartment\", \n           query = \"FROM Employee e WHERE e.department.name = :deptName\")\npublic class Employee { ... }\n\n// Usage\nList<Employee> results = session.createNamedQuery(\n    \"Employee.findByDepartment\", Employee.class)\n    .setParameter(\"deptName\", \"Engineering\")\n    .getResultList();\n```"
+            },
+            {
+              "title": "Direct Get/Load",
+              "description": "For simple primary key lookups, the `session.get()` or `session.load()` methods provide the most straightforward and efficient approach, with different behavior regarding proxies and exceptions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Dynamic vs. Static Queries",
+              "description": "Static queries (like named queries) can be pre-compiled and cached, offering better performance, while dynamic queries provide flexibility for conditions not known until runtime."
+            },
+            {
+              "title": "Query Pagination and Optimization",
+              "description": "For large result sets, Hibernate provides pagination through `setFirstResult()` and `setMaxResults()`, as well as optimization hints via `setHint()` for controlling caching, fetch size, and timeout behaviors."
+            },
+            {
+              "title": "Projections and Transformers",
+              "description": "Instead of fetching entire entities, you can use projections to select specific properties or calculate aggregate values, and transformers to map results to DTOs or custom result formats."
+            },
+            {
+              "title": "Selection Criteria",
+              "description": "Choose query methods based on: 1) Type safety requirements, 2) Query complexity, 3) Database portability needs, 4) Performance considerations, and 5) Team familiarity with the approach."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-criteria-api-frameworks-hibernate-12",
+        "java-hql-vs-jpql-frameworks-hibernate-14"
+      ]
+    },
+    {
+      "id": "java-transaction-management-frameworks-hibernate-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Transaction Management",
+      "question": "How should transactions be managed in Hibernate applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Transaction Basics",
+              "description": "A **transaction** groups multiple database operations into a single unit of work that either completes entirely or fails completely, ensuring data integrity through ACID properties (Atomicity, Consistency, Isolation, Durability)."
+            },
+            {
+              "title": "Hibernate Transaction API",
+              "description": "Basic transaction management in Hibernate uses the Transaction interface:\n\n```java\nSession session = sessionFactory.openSession();\nTransaction tx = null;\ntry {\n    tx = session.beginTransaction();\n    // perform database operations\n    tx.commit();\n} catch (Exception e) {\n    if (tx != null) tx.rollback();\n    throw e;\n} finally {\n    session.close();\n}\n```"
+            },
+            {
+              "title": "Transaction Boundaries",
+              "description": "Transactions should encompass complete business operations with clear boundaries, typically starting at the service layer and spanning multiple repository/DAO method calls."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "JTA Transactions",
+              "description": "For distributed or XA (cross-resource) transactions, Hibernate integrates with **Java Transaction API (JTA)**, allowing participation in container-managed or application-server transactions that span multiple resources."
+            },
+            {
+              "title": "Spring Integration",
+              "description": "Spring provides declarative transaction management through `@Transactional` annotations and AOP, simplifying transaction handling and allowing configuration of attributes like propagation, isolation, and timeout:\n\n```java\n@Service\npublic class EmployeeService {\n    @Transactional\n    public void hireEmployee(Employee employee) {\n        // operations happen in a transaction\n    }\n}\n```"
+            },
+            {
+              "title": "Transaction Propagation",
+              "description": "In layered applications, transaction propagation controls how transactions span method calls. Options include REQUIRED (use existing or create new), REQUIRES_NEW (always create new), SUPPORTS (use existing or non-transactional), and others."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Isolation Levels",
+              "description": "Transaction isolation levels (READ_UNCOMMITTED, READ_COMMITTED, REPEATABLE_READ, SERIALIZABLE) define how concurrent transactions interact, affecting visibility of uncommitted changes, non-repeatable reads, and phantom reads."
+            },
+            {
+              "title": "Optimistic vs. Pessimistic Locking",
+              "description": "**Optimistic locking** (using `@Version`) detects conflicts at commit time, allowing high concurrency but requiring conflict resolution. **Pessimistic locking** (using `LockMode` or `@Lock`) acquires database locks during read, preventing conflicts but reducing concurrency."
+            },
+            {
+              "title": "Transaction Pitfalls",
+              "description": "Common pitfalls include: 1) Long-running transactions causing resource contention, 2) Lazy loading outside transaction boundaries, 3) Inefficient transaction demarcation causing excessive commits, and 4) Inappropriate isolation levels leading to data inconsistency."
+            },
+            {
+              "title": "Testing Transactions",
+              "description": "Testing transactional behavior requires understanding how frameworks like Spring's test support handle transactions. Use `@Transactional` with `@Rollback` for test methods, or frameworks like Testcontainers for integration testing with real transaction boundaries."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-session-management-frameworks-hibernate-7",
+        "java-locking-strategies-frameworks-hibernate-15"
+      ]
+    },
+    {
+      "id": "java-n-plus-one-problem-frameworks-hibernate-11",
+      "skillLevel": "advanced",
+      "shortTitle": "N+1 Problem",
+      "question": "What is the N+1 query problem in Hibernate and how can it be solved?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Problem Definition",
+              "description": "The **N+1 query problem** occurs when Hibernate executes 1 query to fetch a list of N parent entities, followed by N additional queries to fetch the associated child entities for each parent, resulting in N+1 total queries."
+            },
+            {
+              "title": "Common Scenario",
+              "description": "This typically happens with lazy loading of collections or associations when iterating through a list of entities and accessing their associations, especially in view rendering code."
+            },
+            {
+              "title": "Performance Impact",
+              "description": "The N+1 problem significantly degrades performance due to the overhead of multiple database round-trips, increased network traffic, and reduced opportunity for the database to optimize queries."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Eager Fetching",
+              "description": "The simplest solution is to use eager fetching with `FetchType.EAGER` on the association, but this can lead to over-fetching in cases where the association isn't needed."
+            },
+            {
+              "title": "Join Fetch in JPQL/HQL",
+              "description": "Using the JOIN FETCH clause in JPQL or HQL loads associations in a single query:\n\n```java\nList<Department> depts = session.createQuery(\n    \"FROM Department d JOIN FETCH d.employees\", Department.class)\n    .getResultList();\n\n// No additional queries when accessing employees\nfor (Department dept : depts) {\n    for (Employee emp : dept.getEmployees()) {\n        // process employee\n    }\n}\n```"
+            },
+            {
+              "title": "EntityGraph API",
+              "description": "JPA 2.1's EntityGraph API provides a flexible way to define which associations to load:\n\n```java\nEntityGraph<Department> graph = em.createEntityGraph(Department.class);\ngraph.addSubgraph(\"employees\");\n\nMap<String, Object> hints = new HashMap<>();\nhints.put(\"javax.persistence.fetchgraph\", graph);\n\nDepartment dept = em.find(Department.class, deptId, hints);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Batch Fetching",
+              "description": "The `@BatchSize` annotation or `default_batch_fetch_size` configuration reduces N+1 to N/batch_size+1 queries by fetching multiple associations in one query:\n\n```java\n@Entity\npublic class Department {\n    @OneToMany(mappedBy = \"department\", fetch = FetchType.LAZY)\n    @BatchSize(size = 20)\n    private Set<Employee> employees;\n    // ...\n}\n```"
+            },
+            {
+              "title": "Subselect Fetching",
+              "description": "The `@Fetch(FetchMode.SUBSELECT)` annotation loads all associations for all entities retrieved in the initial query using a subselect, efficient for loading all items in a collection:\n\n```java\n@Entity\npublic class Department {\n    @OneToMany(mappedBy = \"department\", fetch = FetchType.LAZY)\n    @Fetch(FetchMode.SUBSELECT)\n    private Set<Employee> employees;\n    // ...\n}\n```"
+            },
+            {
+              "title": "Composite Approaches",
+              "description": "For complex domain models, a combination of strategies may be needed: 1) Join fetching for direct, small associations, 2) Batch fetching for larger collections, 3) Separate queries with DTOs for specialized views, and 4) Second-level caching for frequently accessed, relatively static data."
+            },
+            {
+              "title": "Query Selection",
+              "description": "The optimal approach depends on the specific access pattern. For unique cases, consider: 1) Native SQL with joins for complex queries, 2) Hibernate's multiselect with constructor expressions to populate DTOs, or 3) Query-specific fetch plans with EntityGraphs."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-fetch-strategies-frameworks-hibernate-6",
+        "java-performance-optimization-frameworks-hibernate-13"
+      ]
+    },
+    {
+      "id": "java-criteria-api-frameworks-hibernate-12",
+      "skillLevel": "intermediate",
+      "shortTitle": "Criteria API",
+      "question": "Could you explain the Criteria API in Hibernate and how it compares to HQL?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose and Concept",
+              "description": "The **Criteria API** provides a type-safe, object-oriented alternative to string-based HQL/JPQL queries, allowing queries to be built programmatically with compile-time checking."
+            },
+            {
+              "title": "Core Components",
+              "description": "Key components include **CriteriaBuilder** (creates queries and expressions), **CriteriaQuery** (represents the query), **Root** (query root representing the entity), and **Predicate** (conditions for filtering)."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "A simple example of retrieving filtered results:\n\n```java\nCriteriaBuilder cb = session.getCriteriaBuilder();\nCriteriaQuery<Employee> cq = cb.createQuery(Employee.class);\nRoot<Employee> root = cq.from(Employee.class);\ncq.select(root)\n  .where(cb.equal(root.get(\"department\").get(\"name\"), \"Engineering\"));\nList<Employee> results = session.createQuery(cq).getResultList();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Comparison with HQL",
+              "description": "Criteria API offers **type safety** and **compile-time checking** versus HQL's string-based approach. HQL is more concise and often more readable, while Criteria API excels with programmatically constructed queries."
+            },
+            {
+              "title": "Complex Conditions",
+              "description": "Criteria API allows building complex conditions with logical operators and nested expressions:\n\n```java\nPredicate salaryCondition = cb.between(root.get(\"salary\"), 50000, 100000);\nPredicate deptCondition = cb.equal(root.get(\"department\").get(\"name\"), \"Engineering\");\ncq.where(cb.and(salaryCondition, deptCondition));\n```"
+            },
+            {
+              "title": "Ordering and Grouping",
+              "description": "Results can be ordered and grouped similarly to SQL:\n\n```java\n// Ordering\ncq.orderBy(cb.desc(root.get(\"salary\")), cb.asc(root.get(\"lastName\")));\n\n// Grouping with having clause\ncq.groupBy(root.get(\"department\"))\n  .having(cb.gt(cb.count(root), 5));\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Subqueries",
+              "description": "Criteria API supports subqueries for complex data retrieval:\n\n```java\nSubquery<Long> subquery = cq.subquery(Long.class);\nRoot<Department> deptRoot = subquery.from(Department.class);\nsubquery.select(cb.count(deptRoot.get(\"employees\")))\n        .where(cb.equal(deptRoot, root.get(\"department\")));\n\ncq.where(cb.gt(subquery, 10L)); // Departments with > 10 employees\n```"
+            },
+            {
+              "title": "Typed vs. Untyped Results",
+              "description": "Beyond simple entity queries, Criteria API can retrieve specific attributes, tuples, or construct custom objects:\n\n```java\n// Selecting specific attributes\nCriteriaQuery<Tuple> tupleQuery = cb.createTupleQuery();\nRoot<Employee> root = tupleQuery.from(Employee.class);\ntupleQuery.multiselect(\n    root.get(\"id\").alias(\"id\"),\n    root.get(\"firstName\").alias(\"firstName\"),\n    root.get(\"salary\").alias(\"salary\")\n);\n\n// Using constructor expressions\nCriteriaQuery<EmployeeDTO> dtoQuery = cb.createQuery(EmployeeDTO.class);\nRoot<Employee> root = dtoQuery.from(Employee.class);\ndtoQuery.select(cb.construct(\n    EmployeeDTO.class,\n    root.get(\"id\"),\n    root.get(\"firstName\"),\n    root.get(\"salary\")\n));\n```"
+            },
+            {
+              "title": "Metamodel API",
+              "description": "For maximum type safety, the Metamodel API uses generated classes that represent entity attributes, eliminating string-based property references:\n\n```java\n// Using generated metamodel classes\nCriteriaQuery<Employee> cq = cb.createQuery(Employee.class);\nRoot<Employee> root = cq.from(Employee.class);\ncq.where(cb.equal(root.get(Employee_.department).get(Department_.name), \"Engineering\"));\n```"
+            },
+            {
+              "title": "Selection Considerations",
+              "description": "Choose Criteria API when: 1) Queries are built dynamically at runtime, 2) Type safety is crucial for complex queries, 3) IDE tooling and refactoring support is important. Prefer HQL when: 1) Queries are static and known at compile time, 2) Readability is prioritized, 3) The team is more familiar with SQL-like syntax."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hibernate-queries-frameworks-hibernate-9",
+        "java-hql-vs-jpql-frameworks-hibernate-14"
+      ]
+    },
+    {
+      "id": "java-performance-optimization-frameworks-hibernate-13",
+      "skillLevel": "advanced",
+      "shortTitle": "Performance Optimization",
+      "question": "What strategies can be employed to optimize Hibernate performance in high-load applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Fetching Strategies",
+              "description": "Optimize fetching strategies by using lazy loading as the default but strategically applying eager loading for commonly accessed associations to prevent N+1 queries."
+            },
+            {
+              "title": "Caching",
+              "description": "Implement multi-level caching appropriately: use first-level (session) cache efficiently with proper session management, and configure second-level cache for frequently accessed, relatively static entities."
+            },
+            {
+              "title": "Batch Processing",
+              "description": "For bulk operations, use: 1) JDBC batching with `hibernate.jdbc.batch_size`, 2) Stateless sessions for large inserts, or 3) Direct SQL via `createNativeQuery()` for complex operations."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Query Tuning",
+              "description": "Optimize queries by: 1) Using named queries for precompilation, 2) Applying appropriate fetch joins, 3) Using projections to retrieve only needed data, and 4) Setting query hints for cache usage and fetch size."
+            },
+            {
+              "title": "Connection Management",
+              "description": "Configure connection pooling (e.g., HikariCP, C3P0) with appropriate settings for pool size, timeout, and connection testing, matching your database's capacity and application's usage patterns."
+            },
+            {
+              "title": "Pagination",
+              "description": "Implement pagination for large result sets using `setFirstResult()` and `setMaxResults()` to limit memory usage and network traffic:\n\n```java\nQuery<Employee> query = session.createQuery(\n    \"FROM Employee ORDER BY lastName\", Employee.class);\nquery.setFirstResult(50);  // Skip first 50 results\nquery.setMaxResults(25);   // Retrieve 25 results\nList<Employee> page = query.getResultList();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Data Model Optimization",
+              "description": "Optimize the data model by: 1) Using appropriate identifier generators (sequences or identity for high-volume inserts), 2) Avoiding excessive inheritance depth, 3) Considering denormalization for read-heavy scenarios, and 4) Using compound keys judiciously."
+            },
+            {
+              "title": "Read/Write Splitting",
+              "description": "For high-traffic applications, implement read/write splitting by configuring separate connection pools for read-only and read-write operations, directing queries to replicas and updates to the primary database."
+            },
+            {
+              "title": "Distributed Caching",
+              "description": "In clustered environments, use distributed cache providers (Infinispan, Hazelcast, Redis) with appropriate invalidation strategies to maintain consistency while maximizing performance across multiple application nodes."
+            },
+            {
+              "title": "Performance Testing",
+              "description": "Implement systematic performance testing and monitoring: 1) Use tools like Hibernate Statistics API, 2) Enable SQL logging in development with `show_sql` and `format_sql`, 3) Monitor query performance with APM tools, and 4) Employ profiling to identify bottlenecks."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-n-plus-one-problem-frameworks-hibernate-11",
+        "java-hibernate-caching-frameworks-hibernate-8"
+      ]
+    },
+    {
+      "id": "java-hql-vs-jpql-frameworks-hibernate-14",
+      "skillLevel": "intermediate",
+      "shortTitle": "HQL vs JPQL",
+      "question": "What are the similarities and differences between HQL and JPQL?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Similarities",
+              "description": "Both **HQL** (Hibernate Query Language) and **JPQL** (Java Persistence Query Language) are object-oriented query languages that operate on entity objects rather than database tables and have SQL-like syntax."
+            },
+            {
+              "title": "Conceptual Relationship",
+              "description": "JPQL is part of the JPA specification, while HQL is Hibernate's proprietary query language. HQL is a superset of JPQL, meaning all valid JPQL queries are also valid HQL queries."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "Both use entity names instead of table names, property names instead of column names, and support standard operations like SELECT, FROM, WHERE, ORDER BY, GROUP BY, and JOIN."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Hibernate Extensions",
+              "description": "HQL offers several extensions beyond JPQL, including: 1) More function calls (e.g., `bit_length()`, `extract()`), 2) Additional clauses like FETCH in joins, 3) More SQL features like UNION, and 4) Database-specific dialect features."
+            },
+            {
+              "title": "Polymorphic Queries",
+              "description": "Both support polymorphic queries, but HQL provides more control with the TREAT operator and explicit polymorphism control through keywords like `instanceof` and entity name discrimination."
+            },
+            {
+              "title": "Pagination",
+              "description": "Both support pagination, but implementation differs slightly. JPA uses `setFirstResult()` and `setMaxResults()` on the Query object, while Hibernate additionally supports LIMIT and OFFSET directly in HQL."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Query Structure",
+              "description": "HQL provides more flexibility in query structure, allowing FROM clause without SELECT (implying selection of the entire entity) and supporting multiple collection expressions in path expressions."
+            },
+            {
+              "title": "Function Support",
+              "description": "HQL offers a richer set of functions including database-specific functions and custom function registration, while JPQL is limited to standardized functions defined in the JPA specification."
+            },
+            {
+              "title": "Dialect Awareness",
+              "description": "HQL can leverage Hibernate's dialect system to generate optimized SQL for specific databases, while standard JPQL aims for database independence at the potential cost of optimization opportunities."
+            },
+            {
+              "title": "Practical Approach",
+              "description": "For maximum portability between JPA implementations, stick to JPQL features. When committed to Hibernate as the persistence provider, HQL offers performance advantages and convenience features that can simplify complex queries."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hibernate-queries-frameworks-hibernate-9",
+        "java-criteria-api-frameworks-hibernate-12"
+      ]
+    },
+    {
+      "id": "java-locking-strategies-frameworks-hibernate-15",
+      "skillLevel": "advanced",
+      "shortTitle": "Locking Strategies",
+      "question": "How does Hibernate implement optimistic and pessimistic locking, and when should each be used?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Optimistic Locking",
+              "description": "**Optimistic locking** assumes conflicts are rare and checks for conflicts only at update time using a version attribute, allowing parallel access without database locks.\n\nImplementation using `@Version`:\n```java\n@Entity\npublic class Account {\n    @Id\n    private Long id;\n    \n    private BigDecimal balance;\n    \n    @Version\n    private Integer version;\n    // ...\n}\n```"
+            },
+            {
+              "title": "Pessimistic Locking",
+              "description": "**Pessimistic locking** prevents conflicts by acquiring database locks that block other transactions from accessing or modifying data, implemented through JPA's `LockModeType` or Hibernate's `LockMode`."
+            },
+            {
+              "title": "Version Field Types",
+              "description": "For optimistic locking, the `@Version` field can be numeric (int, long, short) which increments automatically, or a timestamp which updates to the current time. Hibernate ensures this field is updated on each transaction."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Pessimistic Lock Modes",
+              "description": "JPA provides multiple pessimistic lock modes: **PESSIMISTIC_READ** (prevents updates but allows reads), **PESSIMISTIC_WRITE** (prevents both reads and updates), and **PESSIMISTIC_FORCE_INCREMENT** (combines pessimistic locking with version incrementation).\n\nExample usage:\n```java\nAccount account = entityManager.find(Account.class, id, \n    LockModeType.PESSIMISTIC_WRITE);\n// or with query\nQuery query = entityManager.createQuery(\"FROM Account a WHERE a.id = :id\")\n    .setParameter(\"id\", id)\n    .setLockMode(LockModeType.PESSIMISTIC_WRITE);\n```"
+            },
+            {
+              "title": "Optimistic Lock Exceptions",
+              "description": "When an optimistic lock conflict occurs, Hibernate throws an `OptimisticLockException` (JPA) or `StaleObjectStateException` (Hibernate native), which the application must handle by either retrying the operation or notifying the user."
+            },
+            {
+              "title": "Implicit vs. Explicit Versioning",
+              "description": "Besides explicit `@Version` fields, Hibernate can use implicit versioning through `LockModeType.OPTIMISTIC` (verifies entity hasn't changed) or `LockModeType.OPTIMISTIC_FORCE_INCREMENT` (increments version even without changes)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Lock Timeout and Escalation",
+              "description": "Pessimistic locks can lead to deadlocks or long waiting times. Hibernate allows configuring lock timeouts and handling strategies through properties like `javax.persistence.lock.timeout` or native database hints."
+            },
+            {
+              "title": "Dynamic Lock Selection",
+              "description": "Applications can implement dynamic locking strategies based on context, such as using optimistic locking by default but switching to pessimistic locking for critical operations or under high contention:\n\n```java\npublic void updateBalance(Long accountId, BigDecimal amount, boolean highPriority) {\n    LockModeType lockMode = highPriority ?\n        LockModeType.PESSIMISTIC_WRITE : LockModeType.OPTIMISTIC;\n    \n    Account account = entityManager.find(Account.class, accountId, lockMode);\n    account.setBalance(account.getBalance().add(amount));\n}\n```"
+            },
+            {
+              "title": "Custom Optimistic Locking",
+              "description": "Beyond `@Version`, Hibernate supports optimistic locking based on specific properties with `@OptimisticLock(excluded=true)` to exclude properties from dirty checking, and dynamic version source via `@DynamicUpdate` for partial updates with version checking."
+            },
+            {
+              "title": "Selection Strategy",
+              "description": "Choose optimistic locking when: 1) Conflicts are rare, 2) Read operations dominate, 3) High concurrency is needed. Choose pessimistic locking when: 1) Data integrity is critical, 2) Conflicts would be expensive to resolve, 3) The cost of a database lock is acceptable compared to the cost of conflict resolution."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-transaction-management-frameworks-hibernate-10"
+      ]
+    },
+    {
+      "id": "java-inheritance-mapping-frameworks-hibernate-16",
+      "skillLevel": "intermediate",
+      "shortTitle": "Inheritance Mapping",
+      "question": "What are the different inheritance mapping strategies in Hibernate and their trade-offs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Single Table Strategy",
+              "description": "**Single Table** (default) maps the entire class hierarchy to a single table with a discriminator column indicating the specific subclass. It's configured with `@Inheritance(strategy = InheritanceType.SINGLE_TABLE)`."
+            },
+            {
+              "title": "Joined Table Strategy",
+              "description": "**Joined Table** creates a separate table for each class in the hierarchy with primary key associations, using `@Inheritance(strategy = InheritanceType.JOINED)`."
+            },
+            {
+              "title": "Table Per Class Strategy",
+              "description": "**Table Per Class** creates a separate table for each concrete class with all properties, configured with `@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)`."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Single Table Characteristics",
+              "description": "**Advantages**: Best performance for polymorphic queries; simpler queries; only one table to join with others.\n**Disadvantages**: All columns from subclasses must be nullable; potential for large tables with many unused columns; not suitable for entities with many subclasses or disparate attributes."
+            },
+            {
+              "title": "Joined Table Characteristics",
+              "description": "**Advantages**: Normalized data model; supports non-nullable columns in subclasses; efficient storage with no redundant columns.\n**Disadvantages**: Requires joins for polymorphic queries; more complex queries; decreased performance for deep hierarchies."
+            },
+            {
+              "title": "Table Per Class Characteristics",
+              "description": "**Advantages**: Clean separation of data; intuitive mapping between classes and tables; no nullable or unused columns.\n**Disadvantages**: Poor performance for polymorphic queries; may lead to data redundancy; limitations with identity generators."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Mapped Superclass",
+              "description": "Beyond the three JPA inheritance strategies, `@MappedSuperclass` provides a non-entity parent class that contributes attributes to child entities without being queryable itself or requiring a table:\n\n```java\n@MappedSuperclass\npublic abstract class AuditableEntity {\n    @Column(updatable = false)\n    private LocalDateTime createdAt;\n    \n    private LocalDateTime updatedAt;\n    \n    @PrePersist\n    void onCreate() {\n        createdAt = LocalDateTime.now();\n    }\n    \n    @PreUpdate\n    void onUpdate() {\n        updatedAt = LocalDateTime.now();\n    }\n}\n\n@Entity\npublic class Employee extends AuditableEntity {\n    // Inherits createdAt and updatedAt\n}\n```"
+            },
+            {
+              "title": "Performance Implications",
+              "description": "For complex hierarchies, inheritance strategy significantly impacts performance. Single Table offers fastest retrieval but potential insertion bottlenecks. Joined provides balanced performance but with join overhead. Table Per Class often performs worst for polymorphic operations."
+            },
+            {
+              "title": "Strategy Selection",
+              "description": "Choose based on: 1) Query patterns (polymorphic vs. concrete class queries), 2) Data variability among subclasses, 3) Database constraints (e.g., column count limits), and 4) Data integrity requirements (nullable constraints)."
+            },
+            {
+              "title": "Polymorphic Associations",
+              "description": "Inheritance strategy affects the complexity of associations to polymorphic entities. Single Table simplifies these associations, while other strategies may require more complex join conditions or additional indexes."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-entity-mapping-frameworks-hibernate-3"
+      ]
+    },
+    {
+      "id": "java-hibernate-events-frameworks-hibernate-17",
+      "skillLevel": "intermediate",
+      "shortTitle": "Hibernate Events",
+      "question": "How can you leverage Hibernate's event system for entity lifecycle events?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "JPA Lifecycle Annotations",
+              "description": "JPA provides annotations for entity lifecycle callbacks: `@PrePersist`, `@PostPersist`, `@PreUpdate`, `@PostUpdate`, `@PreRemove`, `@PostRemove`, and `@PostLoad`."
+            },
+            {
+              "title": "Entity Method Callbacks",
+              "description": "Lifecycle methods are defined directly on entity classes:\n\n```java\n@Entity\npublic class Employee {\n    @Id\n    private Long id;\n    private String name;\n    private LocalDateTime createdAt;\n    \n    @PrePersist\n    void onCreate() {\n        createdAt = LocalDateTime.now();\n    }\n    \n    @PostLoad\n    void onLoad() {\n        // Initialize transient fields or validate state\n    }\n}\n```"
+            },
+            {
+              "title": "Entity Listeners",
+              "description": "For more modular logic, define separate listener classes and attach them to entities with `@EntityListeners`:\n\n```java\n@EntityListeners(AuditListener.class)\n@Entity\npublic class Employee { /* ... */ }\n\npublic class AuditListener {\n    @PrePersist\n    public void setCreationDate(Object entity) {\n        if (entity instanceof Auditable) {\n            ((Auditable) entity).setCreatedAt(LocalDateTime.now());\n        }\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Hibernate Native Events",
+              "description": "Beyond JPA callbacks, Hibernate offers a richer event system with events like `LoadEvent`, `SaveOrUpdateEvent`, `FlushEvent`, etc., accessed through `EventListenerRegistry`."
+            },
+            {
+              "title": "Global Event Registration",
+              "description": "Register custom listeners for the entire application:\n\n```java\npublic class HibernateConfig {\n    @Bean\n    public SessionFactoryCustomizer sessionFactoryCustomizer() {\n        return sessionFactory -> {\n            ServiceRegistry serviceRegistry = sessionFactory.getServiceRegistry();\n            EventListenerRegistry registry = serviceRegistry\n                .getService(EventListenerRegistry.class);\n            \n            registry.appendListeners(EventType.PRE_INSERT, \n                new CustomInsertListener());\n        };\n    }\n}\n```"
+            },
+            {
+              "title": "Event Granularity",
+              "description": "Hibernate's event system is more granular than JPA, distinguishing between events like `PRE_INSERT` vs. `PRE_INSERT_COLLECTION`, allowing for fine-tuned control over different aspects of entity and collection persistence."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Interceptors",
+              "description": "Hibernate `Interceptor` provides another mechanism for lifecycle events, particularly useful for cross-cutting concerns affecting all entities:\n\n```java\npublic class AuditInterceptor extends EmptyInterceptor {\n    @Override\n    public boolean onFlushDirty(\n        Object entity, \n        Object id, \n        Object[] currentState, \n        Object[] previousState, \n        String[] propertyNames, \n        Type[] types) {\n        \n        if (entity instanceof Auditable) {\n            for (int i = 0; i < propertyNames.length; i++) {\n                if (\"lastModified\".equals(propertyNames[i])) {\n                    currentState[i] = LocalDateTime.now();\n                    return true;\n                }\n            }\n        }\n        return false;\n    }\n}\n```"
+            },
+            {
+              "title": "Event Combining Strategies",
+              "description": "Different event mechanisms serve different purposes: use JPA annotations for entity-specific behavior, entity listeners for reusable behavior across entity types, and Hibernate native events or interceptors for application-wide concerns or complex customizations."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Event listeners can impact performance, especially if they perform expensive operations or too many are registered. Consider using conditional logic to minimize processing, and benchmark critical paths with listeners enabled vs. disabled."
+            },
+            {
+              "title": "Transaction Integration",
+              "description": "Be aware of the transaction context in event handlers. Some events occur outside transaction boundaries, while others allow transaction manipulation. For data changes that should be part of the current transaction, prefer events within transaction boundaries."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hibernate-lifecycle-frameworks-hibernate-5"
+      ]
+    },
+    {
+      "id": "java-hibernate-filters-frameworks-hibernate-18",
+      "skillLevel": "advanced",
+      "shortTitle": "Hibernate Filters",
+      "question": "How do Hibernate Filters work and what problems do they solve?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Filter Concept",
+              "description": "**Hibernate Filters** provide a way to define and apply reusable, parameterized WHERE clauses that are automatically applied to entities, collections, and queries."
+            },
+            {
+              "title": "Filter Definition",
+              "description": "Filters are defined at the entity or collection level using the `@Filter` and `@FilterDef` annotations, specifying condition expressions and parameters:\n\n```java\n@Entity\n@FilterDef(name = \"activeEmployees\", \n          parameters = @ParamDef(name = \"active\", type = \"boolean\"))\n@Filter(name = \"activeEmployees\", \n        condition = \"active = :active\")\npublic class Employee {\n    // ...\n    private boolean active;\n}\n```"
+            },
+            {
+              "title": "Filter Activation",
+              "description": "Filters must be explicitly enabled on a per-session basis, with parameter values provided at runtime:\n\n```java\nsession.enableFilter(\"activeEmployees\")\n       .setParameter(\"active\", true);\n\n// All queries against Employee in this session will include\n// the filter condition \"active = true\"\nList<Employee> employees = session.createQuery(\n    \"FROM Employee\", Employee.class).getResultList();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Multi-Table Filters",
+              "description": "Filters can reference properties from related entities by using qualified column names, allowing filtering across entity associations:\n\n```java\n@Entity\n@FilterDef(name = \"departmentEmployeeCount\",\n          parameters = @ParamDef(name = \"minCount\", type = \"int\"))\n@Filter(name = \"departmentEmployeeCount\", \n        condition = \"id in (select d.id from departments d where \n                           (select count(*) from employees e where \n                            e.department_id = d.id) > :minCount)\")\npublic class Department { /* ... */ }\n```"
+            },
+            {
+              "title": "Collection Filtering",
+              "description": "Filters can be applied specifically to collections within entities, automatically filtering the associated entities when the collection is accessed:\n\n```java\n@Entity\npublic class Department {\n    // ...\n    \n    @OneToMany(mappedBy = \"department\")\n    @Filter(name = \"activeEmployees\", \n            condition = \"active = :active\")\n    private Set<Employee> employees;\n}\n```"
+            },
+            {
+              "title": "Global Filters",
+              "description": "Filters can be defined globally in `SessionFactory` configuration and then referenced by multiple entities, promoting consistent filtering logic across the domain model."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Solving Multi-Tenancy",
+              "description": "Filters are particularly valuable for implementing **data partitioning** or **multi-tenancy** where entities from different tenants share the same tables but must be strictly segregated:\n\n```java\n@FilterDef(name = \"tenantFilter\", \n          parameters = @ParamDef(name = \"tenantId\", type = \"string\"))\n@Filter(name = \"tenantFilter\", \n        condition = \"tenant_id = :tenantId\")\n@MappedSuperclass\npublic abstract class TenantAwareEntity {\n    // ...\n    private String tenantId;\n}\n\n// Application startup\npublic void doFilter(ServletRequest request, ServletResponse response, \n                   FilterChain chain) {\n    Session session = sessionFactory.getCurrentSession();\n    session.enableFilter(\"tenantFilter\")\n           .setParameter(\"tenantId\", getCurrentTenantId());\n    chain.doFilter(request, response);\n}\n```"
+            },
+            {
+              "title": "Performance Implications",
+              "description": "Filters add conditions directly to the SQL WHERE clause, making them efficient compared to application-level filtering. However, they may affect caching and query plan optimization, especially with complex conditions or when frequently enabled/disabled."
+            },
+            {
+              "title": "Dynamic Filters",
+              "description": "For complex scenarios, filters can be dynamically constructed and their parameters adjusted based on application state, user roles, or other runtime conditions, providing flexible data access control."
+            },
+            {
+              "title": "Limitations and Alternatives",
+              "description": "Filters have limitations: they can't be used with native SQL, may complicate cache management, and aren't standardized in JPA. Alternative approaches include: 1) JPA entity graphs for selective loading, 2) Specification pattern for dynamic queries, 3) View-based access control at the database level, or 4) Spring Data's `@Query` with SpEL expressions."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hibernate-queries-frameworks-hibernate-9"
+      ]
+    },
+    {
+      "id": "java-hibernate-envers-frameworks-hibernate-19",
+      "skillLevel": "advanced",
+      "shortTitle": "Hibernate Envers",
+      "question": "What is Hibernate Envers and how can it be used for entity auditing?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Envers Concept",
+              "description": "**Hibernate Envers** is a Hibernate module that provides entity auditing capabilities, automatically tracking historical changes to entities and storing them in audit tables."
+            },
+            {
+              "title": "Basic Setup",
+              "description": "To enable auditing, add the Envers dependency, and annotate entities with `@Audited`:\n\n```java\n// Maven dependency\n<dependency>\n    <groupId>org.hibernate</groupId>\n    <artifactId>hibernate-envers</artifactId>\n</dependency>\n\n// Entity configuration\n@Entity\n@Audited\npublic class Employee {\n    @Id\n    private Long id;\n    private String name;\n    private BigDecimal salary;\n    // ...\n}\n```"
+            },
+            {
+              "title": "Audit Tables",
+              "description": "Envers automatically creates audit tables with names like `{entity_table}_AUD` containing all entity fields plus audit metadata columns: `REV` (revision number), `REVTYPE` (add, modify, delete), and any custom audit information."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Revision Entity",
+              "description": "The revision information can be customized with a revision entity that adds context like username or timestamp:\n\n```java\n@Entity\n@RevisionEntity(CustomRevisionListener.class)\npublic class CustomRevisionEntity extends DefaultRevisionEntity {\n    private String username;\n    \n    // Getters and setters\n}\n\npublic class CustomRevisionListener implements RevisionListener {\n    @Override\n    public void newRevision(Object revisionEntity) {\n        CustomRevisionEntity rev = (CustomRevisionEntity) revisionEntity;\n        rev.setUsername(SecurityContextHolder.getContext()\n             .getAuthentication().getName());\n    }\n}\n```"
+            },
+            {
+              "title": "Selective Auditing",
+              "description": "Audit specific fields with `@Audited` on properties, or exclude fields with `@NotAudited`. For relationships, use `@AuditMappedBy` to control the audit behavior of bidirectional associations."
+            },
+            {
+              "title": "Querying Audit Data",
+              "description": "Access audit information through the `AuditReader` API to find: entity revisions, entity state at a specific revision, or changes between revisions:\n\n```java\nAuditReader reader = AuditReaderFactory.get(entityManager);\n\n// Get all revisions of an entity\nList<Number> revisions = reader.getRevisions(Employee.class, id);\n\n// Get entity at a specific revision\nEmployee oldEmployee = reader.find(Employee.class, id, revNum);\n\n// Get entities as of a specific date\nList<Employee> employeesAsOf = reader.createQuery()\n    .forEntitiesAtRevision(Employee.class, \n        reader.getRevisionNumberForDate(timestamp))\n    .getResultList();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Audit Strategies",
+              "description": "Envers provides different audit strategies that define how audit data is stored: 1) Default strategy (one row per changed entity per revision), 2) Validity strategy (adds validity period), and 3) Custom strategies for specialized needs."
+            },
+            {
+              "title": "Collection Auditing",
+              "description": "For many-to-many relationships or collections of simple values, Envers creates additional audit tables to track collection changes, which can be queried to see evolution of collections over time."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Auditing affects performance through: 1) Additional inserts for audit tables, 2) Increased transaction overhead, 3) Additional space requirements. Optimize by selectively auditing only necessary entities and properties, and consider database partitioning for large audit tables."
+            },
+            {
+              "title": "Integration Patterns",
+              "description": "Envers works well with other patterns: 1) Combine with Spring Security for capturing user context, 2) Use with Spring Data's repository abstraction through `RevisionRepository`, 3) Expose audit APIs through service facades for audit reports, and 4) Create temporal views that reconstruct entity states at any given point in time."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hibernate-events-frameworks-hibernate-17"
+      ]
+    },
+    {
+      "id": "java-hibernate-statistics-frameworks-hibernate-20",
+      "skillLevel": "advanced",
+      "shortTitle": "Hibernate Statistics",
+      "question": "How can you monitor Hibernate's performance using its statistics API?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Statistics Configuration",
+              "description": "Enable Hibernate statistics by setting `hibernate.generate_statistics=true` in configuration and access them through the `SessionFactory`:\n\n```java\n// In application properties/configuration\nhibernateProp.put(\"hibernate.generate_statistics\", \"true\");\n\n// In Java code\nStatistics statistics = sessionFactory.getStatistics();\n```"
+            },
+            {
+              "title": "Global Metrics",
+              "description": "The Statistics API provides global metrics including:\n- Session data: `getSessionOpenCount()`, `getSessionCloseCount()`\n- Transaction data: `getTransactionCount()`, `getSuccessfulTransactionCount()`\n- Entity data: `getEntityLoadCount()`, `getEntityUpdateCount()`, `getEntityInsertCount()`, `getEntityDeleteCount()`\n- Query data: `getQueryExecutionCount()`, `getQueryExecutionMaxTime()`"
+            },
+            {
+              "title": "Cache Statistics",
+              "description": "Statistics for both first and second-level caches are available:\n- Second-level cache: `getSecondLevelCacheHitCount()`, `getSecondLevelCacheMissCount()`, `getSecondLevelCachePutCount()`\n- Query cache: `getQueryCacheHitCount()`, `getQueryCacheMissCount()`, `getQueryCachePutCount()`\n- Collection cache: `getCollectionCacheHitCount()`, `getCollectionCacheMissCount()`"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Entity and Collection Statistics",
+              "description": "Drill down to specific entity and collection statistics to identify problematic areas:\n\n```java\nStatistics stats = sessionFactory.getStatistics();\n\n// For a specific entity\nEntityStatistics entityStats = \n    stats.getEntityStatistics(Employee.class.getName());\nSystem.out.println(\"Employee loads: \" + \n    entityStats.getLoadCount());\n\n// For a specific collection\nCollectionStatistics collectionStats = \n    stats.getCollectionStatistics(\n        \"com.example.Department.employees\");\nSystem.out.println(\"Department.employees loads: \" + \n    collectionStats.getLoadCount());\n```"
+            },
+            {
+              "title": "Query Statistics",
+              "description": "Gather query-specific metrics to identify slow or frequently executed queries:\n\n```java\nQueryStatistics queryStats = \n    stats.getQueryStatistics(\"FROM Employee\");\nSystem.out.println(\"Query execution count: \" + \n    queryStats.getExecutionCount());\nSystem.out.println(\"Query average time: \" + \n    queryStats.getExecutionAvgTime());\nSystem.out.println(\"Query max time: \" + \n    queryStats.getExecutionMaxTime());\n```"
+            },
+            {
+              "title": "JMX Integration",
+              "description": "Expose Hibernate statistics through JMX for monitoring tools integration by enabling `hibernate.jmx.enabled=true` and specifying `hibernate.jmx.domain_name` to create MBeans for runtime monitoring."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Statistics Collection",
+              "description": "Implement a `StatisticsImplementor` to create custom statistics gathering logic, or extend the built-in statistics functionality with additional metrics relevant to your application."
+            },
+            {
+              "title": "Performance Monitoring Framework",
+              "description": "Build a comprehensive monitoring solution combining Hibernate statistics with:\n1. Application metrics from libraries like Micrometer\n2. JVM metrics (memory, threads, garbage collection)\n3. Connection pool metrics (HikariCP, C3P0)\n4. Database metrics (slow query logs, wait events)\n\nCorrelate these metrics to identify bottlenecks across the stack."
+            },
+            {
+              "title": "Threshold Alerting",
+              "description": "Implement threshold-based alerting for critical metrics, such as:\n- Cache hit ratio below expected level\n- Query execution time exceeding thresholds\n- High entity fetch/load counts indicating potential N+1 problems\n- Excessive session creation/destruction indicating connection leaks"
+            },
+            {
+              "title": "Periodic Analysis",
+              "description": "Establish a periodic analysis routine:\n1. Capture statistics snapshots at regular intervals\n2. Maintain historical statistics for trend analysis\n3. Perform differential analysis to detect degradation\n4. Correlate with application changes or load patterns\n\nThis systematic approach allows identifying gradual performance degradation before it becomes critical."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-performance-optimization-frameworks-hibernate-13"
+      ]
+    }
+  ]
+}
