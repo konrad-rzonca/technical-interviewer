@@ -70,7 +70,8 @@ const QuestionItem = ({
             onClick={() => onQuestionSelect(question)}
             sx={{
               ...itemStyles,
-              display: 'flex',
+              display: 'inline-flex',
+              width: '100%',
               alignItems: 'center',
               position: 'relative',
               pl: 0,
@@ -81,7 +82,7 @@ const QuestionItem = ({
         >
           {/* Container for dot with consistent spacing */}
           <Box sx={{
-            width: DOT_MARGIN * 2 + DOT_SIZE,
+            px: DOT_SIZE / 8,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',

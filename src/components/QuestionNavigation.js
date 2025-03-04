@@ -1,8 +1,8 @@
-// src/components/QuestionNavigation.js - Optimized with proper cleanup
+// src/components/QuestionNavigation.js
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Box, Grid, Typography, useMediaQuery, useTheme} from '@mui/material';
 import SkillLevelSection from './SkillLevelSection';
-import {usePanelStyles, useTitleStyles} from '../utils/styles';
+import {scrollbarStyles, usePanelStyles, useTitleStyles} from '../utils/styles';
 import {LAYOUT, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 const QuestionNavigation = ({
@@ -32,8 +32,9 @@ const QuestionNavigation = ({
   // Get panel styles to match QuestionDetailsPanel and Candidate Evaluation
   const contentBoxStyles = usePanelStyles(false, false, {
     overflow: 'visible',
-    flexGrow: 1,
-    mt: SPACING.toUnits(SPACING.md),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
   });
 
   // Function to update width based on container size
@@ -124,18 +125,35 @@ const QuestionNavigation = ({
   return (
       <Box
           ref={containerRef}
-          sx={contentBoxStyles}
+          sx={{
+            ...contentBoxStyles,
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
       >
         <Typography
             variant="subtitle1"
-            sx={titleStyles}
+            sx={{
+              ...titleStyles,
+              mb: SPACING.toUnits(SPACING.sm),
+              flexShrink: 0, // Don't shrink the title
+            }}
         >
           Question Navigation
         </Typography>
 
-        {/* Three-column layout for question skill levels */}
-        <Grid container spacing={SPACING.toUnits(SPACING.sm)}
-              sx={{mt: SPACING.toUnits(SPACING.sm)}}>
+        {/* Three-column layout for question skill levels - allows internal scrolling */}
+        <Grid
+            container
+            spacing={SPACING.toUnits(SPACING.sm)}
+            sx={{
+              flexGrow: 1, // Take remaining space
+              overflow: 'auto', // Enable scrolling
+              pb: SPACING.toUnits(SPACING.md), // Add padding at bottom for better scrolling
+              ...scrollbarStyles, // Apply modern scrollbar styles
+            }}
+        >
           {Object.keys(skillLevelGroups).map((level) => (
               <Grid item xs={12} md={4} key={level}>
                 <SkillLevelSection

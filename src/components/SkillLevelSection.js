@@ -1,15 +1,17 @@
 // src/components/SkillLevelSection.js
+// Update the Box with scrollable content:
+
 import React, {useMemo} from 'react';
-import {Box, Grid, Paper, Typography} from '@mui/material';
-import QuestionItem from './QuestionItem';
 import {
   getSkillLevelStyles,
-  scrollbarStyles,
+  getThemedScrollbarStyles,
   useSectionHeaderStyles,
   useSkillLevelSectionStyles,
 } from '../utils/styles';
-import {SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 import {SKILL_LEVEL_LABELS} from '../utils/answerConstants';
+import {Box, Grid, Paper, Typography} from '@mui/material';
+import QuestionItem from './QuestionItem';
+import {SPACING} from '../themes/baseTheme';
 
 const SkillLevelSection = ({
   level,
@@ -31,32 +33,36 @@ const SkillLevelSection = ({
       , [level]);
 
   // Memoized scrollbar styles with level-specific colors
-  const customScrollbarStyles = useMemo(() => ({
-    ...scrollbarStyles,
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: levelStyles.border,
-      borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
-    },
-  }), [levelStyles.border]);
+  const themedScrollbarStyles = useMemo(() =>
+          getThemedScrollbarStyles(level)
+      , [level]);
 
   return (
       <Paper
           elevation={0}
-          sx={sectionStyles}
+          sx={{
+            ...sectionStyles,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            minHeight: '200px', // Ensure visible height
+          }}
       >
         <Typography
             variant="subtitle2"
-            sx={headerStyles}
+            sx={{
+              ...headerStyles,
+              flexShrink: 0, // Don't shrink the header
+            }}
         >
           {levelLabel} ({questions.length})
         </Typography>
 
         <Box sx={{
-          overflowY: 'auto',
-          ...customScrollbarStyles,
-          flexGrow: 1,
+          overflowY: 'auto', // Enable scrolling
+          ...themedScrollbarStyles, // Apply themed scrollbar styles
+          flexGrow: 1, // Take remaining space
           padding: SPACING.toUnits(SPACING.xs),
-          minHeight: SPACING.toUnits(SPACING.xl) * 5,
         }}>
           {/* Responsive grid based on container width */}
           <Grid container spacing={SPACING.toUnits(SPACING.sm)}
