@@ -325,6 +325,8 @@ To ensure high-quality question/answer data:
 - Focus on One Concept per Question:
     - Ask a single, clear question to spark discussion.
     - Merge closely related topics into the answer insights.
+    - Determine the category based on how hard/well known/important to know the concept is (harder is more advanced,
+      while well known/important is more basic).
 - Conversational, Varied Phrasing:
     - Use diverse, human-friendly starters (e.g., "Can you explain...", "Do you know...", "In your experience...", "
       Could you
