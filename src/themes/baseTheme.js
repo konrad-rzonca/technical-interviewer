@@ -95,10 +95,10 @@ export const SKILL_LEVEL_COLORS = {
     main: COLORS.intermediate.main,
     light: COLORS.intermediate.light,
     text: COLORS.intermediate.contrastText,
-    border: `${COLORS.intermediate.main}60`,
+    border: `${COLORS.intermediate.main}80`,
     background: `${COLORS.intermediate.main}09`,
     hoverBg: `${COLORS.intermediate.main}15`,
-    darkBorder: `${COLORS.intermediate.main}70`,
+    darkBorder: `${COLORS.intermediate.main}90`,
   },
   advanced: {
     main: COLORS.advanced.main,
