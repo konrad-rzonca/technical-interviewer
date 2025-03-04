@@ -344,7 +344,7 @@
     },
     {
       "id": "java-metaspace-core-java-m-8",
-      "skillLevel": "intermediate",
+      "skillLevel": "advanced",
       "shortTitle": "Metaspace vs PermGen",
       "question": "What is the difference between PermGen and Metaspace in Java memory management?",
       "answerInsights": [
