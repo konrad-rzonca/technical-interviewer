@@ -53,7 +53,7 @@
       "id": "java-equals-operator-core-java-f-2",
       "skillLevel": "beginner",
       "shortTitle": "== Operator",
-      "question": "Could you describe how the '==' operator works in Java?",
+      "question": "Could you describe how the '==' (equality) operator works in Java?",
       "answerInsights": [
         {
           "category": "Basic",
@@ -451,37 +451,6 @@
       "relatedQuestions": []
     },
     {
-      "id": "java-exception-handling-core-java-f-12",
-      "skillLevel": "beginner",
-      "shortTitle": "Exception Handling",
-      "question": "Do you know the difference between checked and unchecked exceptions in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Checked Exceptions",
-              "description": "These extend Exception (excluding RuntimeException) and must be caught or declared."
-            },
-            {
-              "title": "Unchecked Exceptions",
-              "description": "These extend RuntimeException and indicate programming errors, so they do not require explicit handling."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Handling Strategies",
-              "description": "Use try-catch blocks for checked exceptions and design APIs to minimize unnecessary checked exceptions."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": []
-    },
-    {
       "id": "java-inheritance-polymorphism-core-java-f-13",
       "skillLevel": "beginner",
       "shortTitle": "Inheritance & Polymorphism",
@@ -683,33 +652,6 @@
             {
               "title": "Custom Annotations",
               "description": "Developers can create custom annotations for domain-specific metadata, processed via reflection or build tools."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": []
-    },
-    {
-      "id": "java-enums-core-java-f-20",
-      "skillLevel": "beginner",
-      "shortTitle": "Enums",
-      "question": "Can you describe the role of enums in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Definition",
-              "description": "Enums define a fixed set of constants and improve type safety and code clarity."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Enhanced Capabilities",
-              "description": "Enums can include fields, methods, and constructors to encapsulate additional behavior."
             }
           ]
         }
@@ -946,33 +888,6 @@
             {
               "title": "Explicit Casting",
               "description": "Requires a cast operator to convert a larger type to a smaller type (e.g., double to int), which may result in data loss."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": []
-    },
-    {
-      "id": "java-inner-classes-core-java-f-29",
-      "skillLevel": "beginner",
-      "shortTitle": "Inner Classes",
-      "question": "Can you describe what inner classes in Java are?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Definition",
-              "description": "Inner classes are defined within another class and have access to its members."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Types",
-              "description": "They include non-static inner classes, static nested classes, local classes, and anonymous classes, each suited for different use cases."
             }
           ]
         }
