@@ -8,6 +8,9 @@ import memoryManagementQuestions
 import concurrencyQuestions
   from './questions/java/concurrency-multithreading/concurrency-basics.json';
 import collectionsQuestions from './questions/java/core-java/collections.json';
+import exceptionsQuestions from './questions/java/core-java/exceptions.json';
+import dataStructuresQuestions
+  from './questions/java/data-structures-and-algorithms/data-structures.json';
 
 // Question sets with author information
 const questionSets = {
@@ -19,6 +22,16 @@ const questionSets = {
         'Fundamentals': fundamentalsQuestions,
         'Memory Management': memoryManagementQuestions,
         'Collections': collectionsQuestions,
+        'Exceptions': exceptionsQuestions,
+      },
+    },
+  ],
+  'dsa': [
+    {
+      id: 'dsa-basic-set',
+      name: 'Basic Set',
+      files: {
+        'Data Structures': dataStructuresQuestions,
       },
     },
   ],
@@ -52,13 +65,7 @@ const questionSets = {
       files: {},
     },
   ],
-  'dsa': [
-    {
-      id: 'dsa-basic-set',
-      name: 'Basic Set',
-      files: {},
-    },
-  ],
+
   'engineering-practices': [
     {
       id: 'engineering-basic-set',
@@ -162,19 +169,9 @@ export const categories = [
     ],
   },
   {
-    id: 'concurrency-multithreading',
-    name: 'Concurrency and Multithreading',
-    subcategories: ['Concurrency and Multithreading'],
-  },
-  {
-    id: 'software-design',
-    name: 'Software Design',
-    subcategories: ['Design Patterns', 'Microservices', 'REST API'],
-  },
-  {
-    id: 'databases',
-    name: 'Databases',
-    subcategories: ['SQL', 'NoSQL', 'Transactions'],
+    id: 'dsa',
+    name: 'Data Structures & Algorithms',
+    subcategories: ['Data Structures', 'Algorithms'],
   },
   {
     id: 'frameworks',
@@ -182,9 +179,24 @@ export const categories = [
     subcategories: ['Spring', 'Hibernate'],
   },
   {
-    id: 'dsa',
-    name: 'Data Structures & Algorithms',
-    subcategories: ['Data Structures', 'Algorithms'],
+    id: 'databases',
+    name: 'Databases',
+    subcategories: ['SQL', 'NoSQL', 'Transactions'],
+  },
+  {
+    id: 'concurrency-multithreading',
+    name: 'Concurrency and Multithreading',
+    subcategories: [
+      'Thread Fundamentals',
+      'Synchronization',
+      'Concurrent Collections',
+      'Executors Framework',
+    ],
+  },
+  {
+    id: 'software-design',
+    name: 'Software Design',
+    subcategories: ['Design Patterns', 'Microservices', 'REST API'],
   },
   {
     id: 'engineering-practices',
