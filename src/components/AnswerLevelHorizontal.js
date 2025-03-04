@@ -1,14 +1,11 @@
 // src/components/AnswerLevelHorizontal.js
 import React, {useCallback, useMemo} from 'react';
 import {Box, Grid, Tooltip, Typography} from '@mui/material';
-import {
-  globalStyles,
-  useAnswerLevelStyles,
-  useItemTextStyles,
-} from '../utils/styles';
+import {useAnswerLevelStyles, useItemTextStyles} from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 import {ANSWER_LEVELS, INDEX_TO_LEVEL} from '../utils/answerConstants';
 import {useTooltip} from '../utils/useTooltip';
+import {formatTooltipContent} from '../utils/formatTooltipContent';
 
 // Constants for layout
 const MAX_ROWS_PER_COLUMN = 2;
@@ -34,56 +31,8 @@ const AnswerPoint = React.memo(({
     return null;
   }
 
-  // Format description for tooltip
-  const formattedDescription = (() => {
-    if (!point.description) return '';
-
-    // Handle code blocks
-    if (point.description.includes('```')) {
-      const parts = point.description.split(/```([\s\S]*?)```/);
-      if (parts.length <= 1) return point.description;
-
-      return (
-          <Box>
-            {parts.map((part, idx) => {
-              if (idx % 2 === 0) {
-                return part ? (
-                    <Typography key={idx} variant="body1" sx={{mb: 1}}>
-                      {part}
-                    </Typography>
-                ) : null;
-              } else {
-                return (
-                    <Box
-                        key={idx}
-                        component="pre"
-                        sx={{
-                          ...globalStyles.pre,
-                          maxHeight: '300px',
-                          margin: '8px 0',
-                        }}
-                    >
-                      {part}
-                    </Box>
-                );
-              }
-            })}
-          </Box>
-      );
-    }
-
-    return (
-        <Typography
-            variant="body1"
-            sx={{
-              fontSize: TYPOGRAPHY.fontSize.regularText,
-              lineHeight: 1.6,
-            }}
-        >
-          {point.description}
-        </Typography>
-    );
-  })();
+  // Format description for tooltip using our utility function
+  const formattedDescription = formatTooltipContent(point.description);
 
   return (
       <Tooltip {...tooltipProps} title={formattedDescription}>

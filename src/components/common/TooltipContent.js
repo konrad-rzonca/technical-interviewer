@@ -1,7 +1,8 @@
 ﻿// src/components/common/TooltipContent.js
 import React from 'react';
-import {Box, Rating, Typography} from '@mui/material';
+import {Box, Rating} from '@mui/material';
 import {COLORS, TYPOGRAPHY} from '../../themes/baseTheme';
+import {formatTooltipContent} from '../../utils/formatTooltipContent';
 
 /**
  * Standardized tooltip content component with consistent styling
@@ -15,14 +16,12 @@ const TooltipContent = ({
       maxWidth: maxWidth,
       // Don't add padding here - it's handled by the tooltip slotProps
     }}>
-      <Typography sx={{
-        fontSize: TYPOGRAPHY.fontSize.regularText,
-        fontWeight: TYPOGRAPHY.fontWeight.regular,
-        lineHeight: 1.4,
-        textAlign: 'center',
-      }}>
-        {title}
-      </Typography>
+      <Box sx={{textAlign: 'center'}}>
+        {formatTooltipContent(title, {
+          fontSize: TYPOGRAPHY.fontSize.regularText,
+          lineHeight: 1.4,
+        })}
+      </Box>
 
       {rating !== undefined && (
           <Box sx={{
