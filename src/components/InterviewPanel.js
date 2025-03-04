@@ -12,7 +12,7 @@ import {
   sortQuestionsByOrder,
 } from '../data/questionLoader';
 
-import {usePanelStyles} from '../utils/styles';
+import {scrollbarStyles, usePanelStyles} from '../utils/styles';
 import {LAYOUT} from '../themes/baseTheme';
 import CategorySidebar from './CategorySidebar';
 import QuestionDetailsPanel from './QuestionDetailsPanel';
@@ -480,8 +480,8 @@ const InterviewPanel = ({
               flexGrow: 1,
               display: 'flex',
               p: 2,
-              minHeight: 'calc(100vh - 64px)',
-              overflow: 'hidden', // Changed from 'auto' to prevent double scrollbars
+              height: 'calc(100vh - 64px)', // Fixed height to contain the content
+              overflow: 'hidden', // Prevent unwanted scrolling at this level
               maxWidth: '100vw',
               boxSizing: 'border-box',
               position: 'relative',
@@ -537,39 +537,53 @@ const InterviewPanel = ({
               sx={usePanelStyles(false, true, {
                 flexGrow: 1,
                 p: 3,
-                overflow: 'hidden',
+                display: 'flex',
                 flexDirection: 'column',
+                overflow: 'hidden', // Container doesn't scroll
                 width: isMobile ? 'calc(100% - 24px)' : 'auto',
                 transition: 'margin 0.3s ease, width 0.3s ease',
-                display: isMobile
+                visibility: isMobile
                     ? mobileView === 'question'
-                        ? 'flex'
-                        : 'none'
-                    : 'flex',
+                        ? 'visible'
+                        : 'hidden'
+                    : 'visible',
                 // Very subtle edge shadows to help with panel separation
                 boxShadow: '0 0 2px rgba(0,0,0,0.05)',
               })}
           >
-            {/* Question Details Panel - placed at the top */}
-            <QuestionDetailsPanel
-                currentQuestion={currentQuestion}
-                notesMap={notesMap}
-                gradesMap={gradesMap}
-                selectedAnswerPointsMap={selectedAnswerPointsMap}
-                onAnswerPointSelect={onAnswerPointSelect}
-                learningMode={settings.learningMode}
-                onNotesChange={handleNotesChange}
-                onGradeChange={handleGradeChange}
-                onNavigateQuestion={handleNavigateQuestion}
-            />
+            {/* Question Details Panel - fixed height, no scrolling */}
+            <Box sx={{
+              flexShrink: 0, // Don't shrink
+              overflow: 'visible', // Allow tooltips to overflow
+            }}>
+              <QuestionDetailsPanel
+                  currentQuestion={currentQuestion}
+                  notesMap={notesMap}
+                  gradesMap={gradesMap}
+                  selectedAnswerPointsMap={selectedAnswerPointsMap}
+                  onAnswerPointSelect={onAnswerPointSelect}
+                  learningMode={settings.learningMode}
+                  onNotesChange={handleNotesChange}
+                  onGradeChange={handleGradeChange}
+                  onNavigateQuestion={handleNavigateQuestion}
+              />
+            </Box>
 
-            {/* Question Navigation below the question details */}
-            <QuestionNavigation
-                filteredQuestions={filteredQuestions}
-                currentQuestion={currentQuestion}
-                gradesMap={gradesMap}
-                onQuestionSelect={handleQuestionSelect}
-            />
+            {/* Question Navigation below - takes remaining space with scrolling */}
+            <Box sx={{
+              flexGrow: 1,
+              overflow: 'auto', // Enable scrolling
+              mt: 2, // Add margin for separation
+              minHeight: '200px', // Ensure minimum visibility
+              ...scrollbarStyles, // Apply modern scrollbar styles
+            }}>
+              <QuestionNavigation
+                  filteredQuestions={filteredQuestions}
+                  currentQuestion={currentQuestion}
+                  gradesMap={gradesMap}
+                  onQuestionSelect={handleQuestionSelect}
+              />
+            </Box>
           </Paper>
 
           {/* Right Sidebar - Related Questions */}

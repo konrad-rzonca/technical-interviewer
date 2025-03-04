@@ -212,6 +212,59 @@ export const LAYOUT = {
   },
 };
 
+export const SCROLLBAR_STYLES = {
+  thin: {
+    '&::-webkit-scrollbar': {
+      width: '6px',
+      height: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+      margin: '4px 0',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: 'rgba(0, 0, 0, 0.2)',
+      borderRadius: '10px',
+      transition: 'background 0.2s ease',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: 'rgba(0, 0, 0, 0.35)',
+    },
+    '&::-webkit-scrollbar-corner': {
+      background: 'transparent',
+    },
+    // Firefox
+    scrollbarWidth: 'thin',
+    scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+  },
+
+  // Variation with custom color
+  themed: (color) => ({
+    '&::-webkit-scrollbar': {
+      width: '6px',
+      height: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+      margin: '4px 0',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: `${color}40`, // 25% opacity
+      borderRadius: '10px',
+      transition: 'background 0.2s ease',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: `${color}60`, // 38% opacity
+    },
+    '&::-webkit-scrollbar-corner': {
+      background: 'transparent',
+    },
+    // Firefox
+    scrollbarWidth: 'thin',
+    scrollbarColor: `${color}40 transparent`,
+  }),
+};
+
 // Component-specific styles
 export const COMPONENT_STYLES = {
   // Panel styles
@@ -222,6 +275,7 @@ export const COMPONENT_STYLES = {
     paddingCollapsed: SPACING.panelPadding / 2,
     boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
   },
+  scrollbar: SCROLLBAR_STYLES,
 
   // Title styles
   title: {

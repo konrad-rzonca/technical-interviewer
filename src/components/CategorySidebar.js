@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import React, {useMemo, useState} from 'react';
 
-import {useTitleStyles} from '../utils/styles';
+import {scrollbarStyles, useTitleStyles} from '../utils/styles';
 import {COLORS, TYPOGRAPHY} from '../themes/baseTheme';
 import {useTooltip} from '../utils/useTooltip';
 
@@ -356,6 +356,7 @@ const CategorySidebar = ({
             height: '100%',
             p: isCollapsed ? 0.75 : 2.5,
             overflow: 'auto',
+            ...scrollbarStyles, // Apply modern scrollbar styles
           }}
       >
         {!isCollapsed ? (

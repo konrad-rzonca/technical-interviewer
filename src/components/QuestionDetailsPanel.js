@@ -50,7 +50,7 @@ const QuestionDetailsPanel = ({
   // Get styles from style hooks
   const titleStyles = useTitleStyles();
   const contentBoxStyles = usePanelStyles(false, false,
-      {overflow: 'visible', flexShrink: 0});
+      {overflow: 'visible'});
 
   // Memoize the empty state to avoid unnecessary re-renders
   const emptyStateContent = useMemo(() => (
@@ -58,7 +58,7 @@ const QuestionDetailsPanel = ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 300,
+        height: 200, // Reduced height to fit better in fixed container
       }}>
         <Typography variant="subtitle1" color="text.secondary" sx={{
           fontSize: TYPOGRAPHY.fontSize.regularText,
@@ -100,7 +100,7 @@ const QuestionDetailsPanel = ({
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
-        height: 'auto',
+        height: '100%',
         overflow: 'visible',
       }}>
         {/* Question Details Section */}
@@ -196,7 +196,7 @@ const QuestionDetailsPanel = ({
           <TextField
               placeholder="Add notes about candidate's response..."
               multiline
-              rows={4}
+              rows={2} // Reduced from 4 to better fit in the fixed container
               variant="outlined"
               fullWidth
               value={notesMap[currentQuestion.id] || ''}

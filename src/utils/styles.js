@@ -4,6 +4,7 @@ import {useTheme} from '@mui/material/styles';
 import {
   COLORS,
   COMPONENT_STYLES,
+  SCROLLBAR_STYLES,
   SKILL_LEVEL_COLORS,
   SPACING,
   TYPOGRAPHY,
@@ -36,24 +37,7 @@ export const getIndicatorColor = (level) => {
  */
 
 // Scrollbar styling
-export const scrollbarStyles = {
-  '&::-webkit-scrollbar': {
-    width: '8px',
-    height: '8px',
-  },
-  '&::-webkit-scrollbar-track': {
-    background: 'transparent',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: COLORS.grey[300],
-    borderRadius: '4px',
-  },
-  '&::-webkit-scrollbar-thumb:hover': {
-    background: COLORS.grey[400],
-  },
-  scrollbarWidth: 'thin',
-  scrollbarColor: `${COLORS.grey[300]} transparent`,
-};
+export const scrollbarStyles = SCROLLBAR_STYLES.thin;
 
 // Pre block for code examples
 export const preStyles = {
@@ -82,6 +66,11 @@ export const panelBaseStyles = {
  * STYLE HOOKS
  * React hooks that create memoized styles based on props/state
  */
+
+export const getThemedScrollbarStyles = (level) => {
+  const levelColors = getSkillLevelStyles(level);
+  return SCROLLBAR_STYLES.themed(levelColors.main);
+};
 
 // Hook for panel styling
 export function usePanelStyles(
