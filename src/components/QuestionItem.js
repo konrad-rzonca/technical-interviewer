@@ -1,13 +1,15 @@
 // src/components/QuestionItem.js
 import React, {useMemo} from 'react';
-import {Box, Rating, Tooltip, Typography} from '@mui/material';
+import {Box, Tooltip, Typography} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
   getIndicatorColor,
   useItemTextStyles,
   useQuestionItemStyles,
 } from '../utils/styles';
-import {SPACING, TYPOGRAPHY} from '../themes/baseTheme';
+import {SPACING} from '../themes/baseTheme';
+import {useTooltip} from '../utils/useTooltip';
+import TooltipContent from './common/TooltipContent';
 
 // Constants for styling
 const DOT_SIZE = 12; // Smaller dot size for better proportions
@@ -48,36 +50,21 @@ const QuestionItem = ({
       [question.skillLevel],
   );
 
+  // Get standardized tooltip props
+  const tooltipProps = useTooltip('question');
+
   // Memoize the tooltip content for better performance
   const tooltipContent = useMemo(() => (
-      <Box sx={{p: SPACING.toUnits(SPACING.sm)}}>
-        <Typography sx={{
-          fontSize: TYPOGRAPHY.fontSize.h6,
-        }}>
-          {question.question}
-        </Typography>
-        {isAnswered && (
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <Rating
-                  value={rating}
-                  readOnly
-                  size="large"
-                  sx={{color: indicatorColor}}
-              />
-            </Box>
-        )}
-      </Box>
+      <TooltipContent
+          title={question.question}
+          rating={isAnswered ? rating : undefined}
+      />
   ), [question.question, isAnswered, rating]);
 
   return (
       <Tooltip
+          {...tooltipProps}
           title={tooltipContent}
-          placement="top"
-          arrow
       >
         <Box
             onClick={() => onQuestionSelect(question)}

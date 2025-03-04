@@ -345,6 +345,21 @@ export const createBaseTheme = (options = {}) => {
           },
         },
       },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            fontSize: TYPOGRAPHY.fontSize.regularText,
+            backgroundColor: 'rgba(50, 50, 50, 0.97)', // Darker background for modern look
+            color: '#ffffff',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+            borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
+            padding: 0, // Padding handled in TooltipContent
+          },
+          arrow: {
+            color: 'rgba(50, 50, 50, 0.97)',
+          },
+        },
+      },
       MuiChip: {
         styleOverrides: {
           root: {
