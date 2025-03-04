@@ -30,9 +30,9 @@ The application follows a three-panel layout for optimal experience:
 
 - **Left Panel**: Categories and subcategories, with collapsible sections and question set selection
 - **Middle Panel**:
-  - Question details at the top with answer insights
-  - Candidate evaluation section below
-  - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
+    - Question details at the top with answer insights
+    - Candidate evaluation section below
+    - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
 - **Right Panel**: Related questions with answered status and category information
 
 Each section has independent scrolling for better usability with large question sets.
@@ -108,19 +108,19 @@ The application uses a sophisticated, consolidated styling system:
 ### Key Style Files
 
 - `src/utils/baseTheme.js` - Contains all design tokens:
-  - Color palette with semantic naming
-  - Skill level color variations
-  - Spacing system with consistent units
-  - Typography definitions (sizes, weights, families)
-  - Layout dimensions for responsive design
-  - Component-specific style templates
+    - Color palette with semantic naming
+    - Skill level color variations
+    - Spacing system with consistent units
+    - Typography definitions (sizes, weights, families)
+    - Layout dimensions for responsive design
+    - Component-specific style templates
 
 - `src/utils/styleHooks.js` - Collection of reusable style hooks:
-  - `usePanelStyles()` - For panels and containers
-  - `useQuestionItemStyles()` - For question items with state variations
-  - `useSkillLevelSectionStyles()` - For skill level containers
-  - `useItemTextStyles()` - For typography with responsive sizes
-  - Global style utilities (scrollbars, code blocks, etc.)
+    - `usePanelStyles()` - For panels and containers
+    - `useQuestionItemStyles()` - For question items with state variations
+    - `useSkillLevelSectionStyles()` - For skill level containers
+    - `useItemTextStyles()` - For typography with responsive sizes
+    - Global style utilities (scrollbars, code blocks, etc.)
 
 ### Using the Style System
 
@@ -138,7 +138,7 @@ const MyComponent = ({isSelected, isAnswered}) => {
 
   return (
 
-          Question
+      Question
   Title
 
 )
@@ -317,6 +317,33 @@ subcategory.
   ]
 }
 ```
+
+### Quality Guidelines for Interview Content
+
+To ensure high-quality question/answer data:
+
+- Focus on One Concept per Question:
+    - Ask a single, clear question to spark discussion.
+    - Merge closely related topics into the answer insights.
+- Conversational, Varied Phrasing:
+    - Use diverse, human-friendly starters (e.g., "Can you explain...", "Do you know...", "In your experience...", "
+      Could you
+      describe...") to make the interview engaging.
+    - Ensure that no more than three consecutive questions start the same way.
+- Structured Answer Insights:
+    - Organize insights into clear categories (Basic, Intermediate, Advanced) with up to four points each.
+    - Provide a roadmap for further discussion on each topic. Link related questions if any.
+    - If answer insight is not obvious then you should provide more details and examples. Answer can be substantial as
+      long as it starts with the summary.
+    - Use new lines and spaces for styling, not ` `, or ' '
+- Consistency and Uniqueness:
+    - Ensure each question has a unique identifier and follows a consistent JSON structure.
+    - Align the content with the interview goals by focusing on key concepts and practical problem-solving.
+- Clarity and Conciseness:
+    - Write questions and insights that are straightforward, clear, and easy to understand.
+    - Remove unnecessary complexity while covering essential details.
+- Continuous Improvement:
+    - Refine and update content based on feedback to maintain relevance and clarity.
 
 ## Key UI Features
 

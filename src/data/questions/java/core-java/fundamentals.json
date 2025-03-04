@@ -3,21 +3,21 @@
   "subcategory": "Fundamentals",
   "questions": [
     {
-      "id": "java-equals-method",
+      "id": "java-equals-method-core-java-f-1",
       "skillLevel": "beginner",
       "shortTitle": ".equals() Method",
-      "question": "What is the purpose of the .equals() method in Java and when should you override it?",
+      "question": "Can you explain the role of the .equals() method in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Purpose",
-              "description": "The .equals() method is used to compare the content/value equality of objects, rather than reference equality."
+              "title": "Content Comparison",
+              "description": ".equals() is used to compare the logical equality (i.e. the content) of two objects rather than their memory addresses."
             },
             {
               "title": "Default Behavior",
-              "description": "In the Object class, .equals() simply compares object references (same as ==) unless overridden by a subclass."
+              "description": "By default, Object’s .equals() compares references, so it must be overridden for value-based comparisons."
             }
           ]
         },
@@ -26,11 +26,11 @@
           "points": [
             {
               "title": "When to Override",
-              "description": "Override .equals() when you want to define what makes two instances of your class logically equivalent based on their state/values."
+              "description": "Override .equals() when your class represents an entity whose equality is determined by its data fields."
             },
             {
-              "title": "HashCode Contract",
-              "description": "When overriding .equals(), you must also override hashCode() to maintain the contract that equal objects must have equal hash codes."
+              "title": "hashCode() Contract",
+              "description": "Overriding .equals() requires also overriding hashCode() so that equal objects yield the same hash code."
             }
           ]
         },
@@ -38,37 +38,33 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Implementation Pattern",
-              "description": "A proper .equals() implementation should: check for self-reference, check for null, verify class type, cast and compare relevant fields."
-            },
-            {
-              "title": "Performance Considerations",
-              "description": "For better performance, compare fields that are more likely to differ first, and compare primitive fields before object fields."
+              "title": "Robust Implementation",
+              "description": "A good .equals() implementation checks for self-reference, null values, type compatibility, and compares key fields in an efficient order."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-equals-operator",
-        "java-hashcode-method"
+        "java-equals-operator-core-java-f-2",
+        "java-hashcode-method-core-java-f-3"
       ]
     },
     {
-      "id": "java-equals-operator",
+      "id": "java-equals-operator-core-java-f-2",
       "skillLevel": "beginner",
       "shortTitle": "== Operator",
-      "question": "How does the == operator work in Java and what are its limitations when comparing objects?",
+      "question": "Could you describe how the '==' operator works in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Reference Comparison",
-              "description": "The == operator compares object references (memory addresses), not the actual content of objects."
+              "description": "For objects, '==' checks if two references point to the exact same memory location."
             },
             {
-              "title": "Primitive Behavior",
-              "description": "For primitive types (int, boolean, etc.), == compares the actual values."
+              "title": "Primitive Comparison",
+              "description": "For primitives, it compares the actual values."
             }
           ]
         },
@@ -76,12 +72,8 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "String Comparison Issue",
-              "description": "Using == with String objects can lead to unexpected results due to string pooling (strings with same content may or may not share reference)."
-            },
-            {
-              "title": "Common Mistakes",
-              "description": "A common mistake is using == to compare content equality of objects like String, Integer, or custom classes, when .equals() should be used instead."
+              "title": "Pitfalls",
+              "description": "Using '==' to compare objects can lead to errors because it does not compare internal state; for example, comparing strings with '==' can be unreliable."
             }
           ]
         },
@@ -89,37 +81,36 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Wrapper Classes",
-              "description": "Due to autoboxing and value caching, == may sometimes work for comparing small Integer or Boolean values, but this behavior shouldn't be relied upon."
+              "title": "Autoboxing Considerations",
+              "description": "Autoboxing may obscure issues with '==' when comparing wrapper objects, so its behavior should not be assumed."
             },
             {
               "title": "Null Safety",
-              "description": "One advantage of == is that it's safe to use with null values, while calling .equals() on a null reference will throw NullPointerException."
+              "description": "'==' handles null values safely, returning false if one operand is null."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-equals-method",
-        "java-string-pool"
+        "java-equals-method-core-java-f-1"
       ]
     },
     {
-      "id": "java-hashcode-method",
+      "id": "java-hashcode-method-core-java-f-3",
       "skillLevel": "intermediate",
       "shortTitle": "hashCode() Method",
-      "question": "What is the hashCode() method and how is it related to the equals() method?",
+      "question": "Please describe the role of the hashCode() method in Java.",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Purpose",
-              "description": "hashCode() generates an integer hash value for an object, used in hash-based collections like HashMap and HashSet."
+              "description": "hashCode() generates an integer used by hash-based collections (like HashMap) to locate objects efficiently."
             },
             {
-              "title": "Contract with equals()",
-              "description": "If two objects are equal according to equals(), they MUST have the same hashCode() value."
+              "title": "Equality Contract",
+              "description": "If two objects are equal via .equals(), they must return the same hash code."
             }
           ]
         },
@@ -128,11 +119,11 @@
           "points": [
             {
               "title": "Implementation Guidelines",
-              "description": "A good hashCode() implementation should use the same fields that are used in equals() and distribute hash values evenly across integers."
+              "description": "When overriding hashCode(), use the same fields as in .equals() to maintain consistency."
             },
             {
               "title": "Performance Impact",
-              "description": "Poor hashCode() implementations can severely degrade the performance of hash-based collections by causing excessive collisions."
+              "description": "A poorly implemented hashCode() can cause collisions, degrading collection performance."
             }
           ]
         },
@@ -140,37 +131,40 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Hash Collision Handling",
-              "description": "When hash codes collide (two unequal objects have the same hash code), collections like HashMap use equals() to differentiate objects."
-            },
-            {
-              "title": "Modern Implementations",
-              "description": "In modern Java, use Objects.hash(field1, field2, ...) or Objects.hashCode(field) for convenient, well-distributed hash code generation."
+              "title": "Modern Techniques",
+              "description": "Helper methods like Objects.hash() simplify creating effective hash code implementations."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-equals-method",
-        "java-hashmap-implementation"
+        "java-equals-method-core-java-f-1"
       ]
     },
     {
-      "id": "java-final-variables",
+      "id": "java-final-keyword-core-java-f-4",
       "skillLevel": "beginner",
-      "shortTitle": "final Variables",
-      "question": "How do final variables work in Java and what are their use cases?",
+      "shortTitle": "Final Keyword Usages",
+      "question": "In your experience, what are some common uses of the final keyword in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Immutability",
-              "description": "A final variable can only be assigned once, either at declaration or in the constructor (for instance variables)."
+              "title": "Final Variables",
+              "description": "Final variables can be assigned only once; they are commonly used for constants."
             },
             {
-              "title": "Constant Values",
-              "description": "final is used to create constants, typically with static: static final int MAX_USERS = 100;"
+              "title": "Final Methods",
+              "description": "A final method cannot be overridden by subclasses, preserving its behavior."
+            },
+            {
+              "title": "Final Classes",
+              "description": "Declaring a class as final prevents it from being subclassed, which secures its design."
+            },
+            {
+              "title": "Final Parameters",
+              "description": "Final parameters cannot be reassigned within a method, reducing accidental modifications."
             }
           ]
         },
@@ -178,63 +172,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Reference vs. Content",
-              "description": "For object references, final prevents reassignment but doesn't make the object itself immutable (its internal state can still change)."
+              "title": "Design Clarity",
+              "description": "Using final signals that a variable or method is intended to remain unchanged."
             },
             {
-              "title": "Performance Optimization",
-              "description": "The compiler can optimize code using final variables, especially for primitives and String literals."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Effectively Final",
-              "description": "Variables not declared final but never changed after initialization are 'effectively final' and can be used in lambda expressions."
+              "title": "Effective Final",
+              "description": "Variables that are never reassigned are effectively final and can be used in lambda expressions."
             },
             {
               "title": "Thread Safety",
-              "description": "Final fields are safely published to other threads without synchronization after object construction completes."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-final-methods",
-        "java-immutability"
-      ]
-    },
-    {
-      "id": "java-final-methods",
-      "skillLevel": "beginner",
-      "shortTitle": "final Methods",
-      "question": "What does the final keyword do when applied to methods in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Prevent Overriding",
-              "description": "A final method cannot be overridden by subclasses, securing its implementation and behavior."
-            },
-            {
-              "title": "Design Intent",
-              "description": "Using final methods signals that the method's behavior is essential to the class and shouldn't be modified."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Performance Optimization",
-              "description": "The JVM may optimize final methods through inlining, as it knows the method won't be overridden."
-            },
-            {
-              "title": "Inherited Methods",
-              "description": "If a method is declared final in a superclass, any attempt to override it in a subclass will result in a compilation error."
+              "description": "Final fields support thread safety in immutable classes, although final alone doesn’t guarantee immutability."
             }
           ]
         },
@@ -242,139 +189,34 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Security Considerations",
-              "description": "Final methods help prevent malicious code from overriding critical security-related functionality."
+              "title": "Final vs. Immutability",
+              "description": "Final prevents reassignment, but true immutability requires unmodifiable state and defensive copying."
             },
             {
-              "title": "Design Pattern Usage",
-              "description": "The Template Method pattern often uses final methods to enforce parts of an algorithm that shouldn't be changed."
+              "title": "Performance Benefits",
+              "description": "The JVM can optimize final methods (e.g., via inlining), offering potential performance gains."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-final-variables",
-        "java-final-classes"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-final-classes",
-      "skillLevel": "beginner",
-      "shortTitle": "final Classes",
-      "question": "What is the purpose of making a class final in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Prevent Inheritance",
-              "description": "A final class cannot be extended/subclassed, meaning no other class can inherit from it."
-            },
-            {
-              "title": "Common Examples",
-              "description": "String, Integer, and other wrapper classes are final to ensure their behavior cannot be modified."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Design Implications",
-              "description": "Making a class final is a strong statement that the class's design and behavior is complete and shouldn't be extended."
-            },
-            {
-              "title": "Immutability",
-              "description": "Final classes are often used as part of creating immutable objects, ensuring the class can't be extended to break immutability."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Security Benefits",
-              "description": "Final classes prevent security vulnerabilities that could arise from malicious subclassing."
-            },
-            {
-              "title": "Performance Optimization",
-              "description": "The JVM can optimize final classes more effectively since it knows all method calls are non-virtual (can't be overridden)."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-final-methods",
-        "java-immutability"
-      ]
-    },
-    {
-      "id": "java-string-immutability",
+      "id": "java-string-immutability-core-java-f-5",
       "skillLevel": "beginner",
       "shortTitle": "String Immutability",
-      "question": "Why are Strings immutable in Java and what are the implications?",
+      "question": "Can you share why Strings are immutable in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Definition",
-              "description": "Strings in Java are immutable, meaning once created, their values cannot be changed."
-            },
-            {
-              "title": "Operations",
-              "description": "Operations like concatenation or substring create new String objects rather than modifying existing ones."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Security Benefits",
-              "description": "Immutability ensures that sensitive data like passwords or connection strings can't be modified after creation."
-            },
-            {
-              "title": "String Pool",
-              "description": "Immutability enables string interning (string pool), where identical string literals can share the same memory reference."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Performance Implications",
-              "description": "Heavy string manipulation can lead to performance issues due to creating many temporary objects; StringBuilder or StringBuffer should be used instead."
+              "description": "Once created, a String’s value cannot be changed, which prevents accidental modifications."
             },
             {
               "title": "Thread Safety",
-              "description": "Immutability makes String inherently thread-safe, as concurrent operations cannot cause inconsistent state."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-string-pool",
-        "java-stringbuilder-vs-stringbuffer"
-      ]
-    },
-    {
-      "id": "java-string-pool",
-      "skillLevel": "intermediate",
-      "shortTitle": "String Pool",
-      "question": "What is the String Pool in Java and how does it work?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Definition",
-              "description": "The String Pool is a special memory area in the Java heap where string literals are stored to optimize memory usage."
-            },
-            {
-              "title": "String Literals",
-              "description": "When you create strings using literals (e.g., String s = \"hello\"), Java checks if the string already exists in the pool and reuses it if found."
+              "description": "Immutability makes Strings inherently thread-safe."
             }
           ]
         },
@@ -382,12 +224,8 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "String.intern()",
-              "description": "The intern() method adds a string to the pool or returns the pooled instance if it already exists: s.intern()"
-            },
-            {
-              "title": "new String() vs Literals",
-              "description": "String s1 = new String(\"hello\") creates a new object on the heap, while String s2 = \"hello\" may reuse an existing string from the pool."
+              "title": "Memory Efficiency",
+              "description": "String immutability enables string pooling, reducing memory overhead by reusing identical literals."
             }
           ]
         },
@@ -395,37 +233,65 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Memory Management",
-              "description": "In modern Java, the string pool is part of the heap (not the PermGen/Metaspace), allowing it to grow dynamically."
-            },
-            {
-              "title": "Performance Considerations",
-              "description": "Excessive use of String.intern() can cause memory issues in large applications, as interned strings remain in memory for the life of the JVM."
+              "title": "Drawbacks",
+              "description": "Heavy string manipulation may be inefficient because each modification creates a new object; StringBuilder is recommended for such cases."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-string-immutability",
-        "java-memory-management"
+        "java-string-pool-core-java-f-6"
       ]
     },
     {
-      "id": "java-stringbuilder-vs-stringbuffer",
-      "skillLevel": "beginner",
-      "shortTitle": "StringBuilder vs StringBuffer",
-      "question": "What's the difference between StringBuilder and StringBuffer in Java?",
+      "id": "java-string-pool-core-java-f-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "String Pool",
+      "question": "Could you explain the significance of the String Pool in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Purpose",
-              "description": "Both are mutable alternatives to String, designed for efficient string manipulation and concatenation."
+              "title": "Concept",
+              "description": "The String Pool is a dedicated memory area for storing string literals to avoid duplication."
             },
             {
-              "title": "Key Difference",
-              "description": "StringBuffer is thread-safe (synchronized), while StringBuilder is not. This makes StringBuilder faster in single-threaded scenarios."
+              "title": "Reusability",
+              "description": "Identical string literals share the same instance, which conserves memory."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "intern() Method",
+              "description": "Using intern() allows dynamically created strings to be added to or retrieved from the pool."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-string-immutability-core-java-f-5"
+      ]
+    },
+    {
+      "id": "java-stringbuilder-vs-stringbuffer-core-java-f-7",
+      "skillLevel": "beginner",
+      "shortTitle": "StringBuilder vs StringBuffer",
+      "question": "Can you compare StringBuilder and StringBuffer in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Mutability",
+              "description": "Both classes provide mutable sequences of characters for efficient string manipulation."
+            },
+            {
+              "title": "Thread Safety",
+              "description": "StringBuffer is synchronized and thread-safe, whereas StringBuilder is not."
             }
           ]
         },
@@ -434,49 +300,31 @@
           "points": [
             {
               "title": "Performance",
-              "description": "StringBuilder is generally 10-15% faster than StringBuffer because it doesn't have the overhead of synchronization."
-            },
-            {
-              "title": "API Similarity",
-              "description": "Both share nearly identical APIs with methods like append(), insert(), delete(), and reverse() for string manipulation."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Modern Usage",
-              "description": "In modern Java applications, StringBuilder is the preferred choice unless thread safety is specifically required."
-            },
-            {
-              "title": "String Concatenation",
-              "description": "The Java compiler often automatically converts string concatenation with + operator to StringBuilder when it detects repetitive concatenation in loops."
+              "description": "In single-threaded contexts, StringBuilder is typically faster due to lower overhead."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-string-immutability",
-        "java-concurrency-synchronization"
+        "java-string-immutability-core-java-f-5"
       ]
     },
     {
-      "id": "java-lambda-expressions",
+      "id": "java-lambda-expressions-core-java-f-8",
       "skillLevel": "intermediate",
       "shortTitle": "Lambda Expressions",
-      "question": "How do lambda expressions work in Java and what are their benefits?",
+      "question": "Do you mind explaining what lambda expressions in Java are all about?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Definition",
-              "description": "Lambda expressions are anonymous functions that can be passed around as objects, introduced in Java 8."
+              "description": "Lambda expressions are anonymous functions that provide a concise way to implement interfaces with a single abstract method."
             },
             {
               "title": "Syntax",
-              "description": "Basic syntax: (parameters) -> expression or (parameters) -> { statements; }"
+              "description": "They use the form (parameters) -> expression or block, reducing boilerplate code."
             }
           ]
         },
@@ -484,50 +332,32 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Functional Interfaces",
-              "description": "Lambdas implement functional interfaces - interfaces with a single abstract method, like Runnable, Predicate, Function, etc."
-            },
-            {
-              "title": "Variable Capture",
-              "description": "Lambdas can access variables from their enclosing scope if they are final or effectively final."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Method References",
-              "description": "Method references (ClassName::methodName) provide a shorthand notation for lambdas that simply call another method."
-            },
-            {
-              "title": "Performance Considerations",
-              "description": "The JVM can optimize lambdas through techniques like inlining and invokedynamic, reducing the overhead compared to anonymous classes."
+              "title": "Benefits",
+              "description": "Lambdas simplify code and promote a functional programming style, especially when used with functional interfaces."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-functional-interfaces",
-        "java-streams-api"
+        "java-functional-interfaces-core-java-f-9"
       ]
     },
     {
-      "id": "java-functional-interfaces",
+      "id": "java-functional-interfaces-core-java-f-9",
       "skillLevel": "intermediate",
       "shortTitle": "Functional Interfaces",
-      "question": "What are functional interfaces in Java and how are they used with lambdas?",
+      "question": "Can you describe what a functional interface in Java is?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Definition",
-              "description": "A functional interface is an interface with exactly one abstract method, serving as the type for lambda expressions and method references."
+              "description": "A functional interface has exactly one abstract method and serves as the target for lambda expressions."
             },
             {
               "title": "@FunctionalInterface",
-              "description": "The @FunctionalInterface annotation marks an interface as functional and causes a compilation error if it doesn't meet the requirements."
+              "description": "This annotation ensures that an interface conforms to the functional interface requirements."
             }
           ]
         },
@@ -536,151 +366,31 @@
           "points": [
             {
               "title": "Common Examples",
-              "description": "Java provides built-in functional interfaces in java.util.function: Predicate<T>, Function<T,R>, Consumer<T>, Supplier<T>, etc."
-            },
-            {
-              "title": "Method Count",
-              "description": "A functional interface can contain any number of default or static methods, but must have exactly one abstract method."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Type Inference",
-              "description": "The compiler uses the functional interface type to infer the parameter types of lambda expressions, enabling concise syntax."
-            },
-            {
-              "title": "Custom Functional Interfaces",
-              "description": "Creating custom functional interfaces is useful when the built-in ones don't match your specific needs, particularly for domain-specific operations."
+              "description": "Examples include Runnable, Callable, Predicate, Function, and Consumer."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-lambda-expressions",
-        "java-method-references"
+        "java-lambda-expressions-core-java-f-8"
       ]
     },
     {
-      "id": "java-streams-api",
-      "skillLevel": "intermediate",
-      "shortTitle": "Streams API",
-      "question": "How does the Java Streams API work and what are its advantages?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Overview",
-              "description": "The Streams API enables functional-style operations on collections, allowing for concise and expressive data processing pipelines."
-            },
-            {
-              "title": "Pipeline Components",
-              "description": "Stream operations consist of: 1) source (collection, array), 2) intermediate operations (filter, map, etc.), and 3) terminal operations (collect, reduce, forEach)."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Lazy Evaluation",
-              "description": "Intermediate operations are lazy and not executed until a terminal operation is invoked, allowing for optimization."
-            },
-            {
-              "title": "Parallel Processing",
-              "description": "Streams can easily switch between sequential and parallel execution with parallel() and sequential() methods."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Short-circuiting",
-              "description": "Operations like findFirst(), anyMatch(), or limit() are short-circuiting, potentially improving performance by not processing all elements."
-            },
-            {
-              "title": "Stateful Operations",
-              "description": "Some operations like sorted() or distinct() are stateful and may require examining all elements, which can impact performance, especially in parallel streams."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-lambda-expressions",
-        "java-optional-class"
-      ]
-    },
-    {
-      "id": "java-optional-class",
-      "skillLevel": "intermediate",
-      "shortTitle": "Optional Class",
-      "question": "How should you use the Optional class in Java to handle null values?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Purpose",
-              "description": "Optional<T> is a container object used to represent nullable values, helping to avoid NullPointerExceptions."
-            },
-            {
-              "title": "Creation",
-              "description": "Create using Optional.of(value), Optional.ofNullable(value), or Optional.empty()"
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Usage Patterns",
-              "description": "Use methods like isPresent(), ifPresent(Consumer), orElse(default), orElseGet(Supplier), or orElseThrow() to safely handle the value."
-            },
-            {
-              "title": "Best Practices",
-              "description": "Return Optional from methods that might return null, but avoid passing Optional as a method parameter."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Functional Operations",
-              "description": "Optional supports map(), flatMap(), and filter() operations, enabling functional composition and chaining."
-            },
-            {
-              "title": "Common Pitfalls",
-              "description": "Avoid using Optional.get() without checking isPresent() first, and don't use Optional just to check for null (use direct null checks instead)."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-streams-api",
-        "java-null-handling"
-      ]
-    },
-    {
-      "id": "java-generics",
+      "id": "java-generics-core-java-f-10",
       "skillLevel": "intermediate",
       "shortTitle": "Generics",
-      "question": "How do generics work in Java and what problems do they solve?",
+      "question": "Please explain the concept of generics in Java.",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Purpose",
-              "description": "Generics enable types (classes and interfaces) to be parameters for other types, methods, and constructors, providing compile-time type safety."
+              "title": "Type Safety",
+              "description": "Generics allow classes and methods to operate on parameterized types, reducing runtime type errors."
             },
             {
               "title": "Syntax",
-              "description": "Basic syntax: class Box<T> { private T value; ... } allows creating Box<Integer>, Box<String>, etc."
+              "description": "For example, a generic class like Box<T> enforces compile-time type checks."
             }
           ]
         },
@@ -689,49 +399,29 @@
           "points": [
             {
               "title": "Type Erasure",
-              "description": "Java generics use type erasure - generic type information is removed at compile time, replaced with Object or bounds, and casts are added where needed."
-            },
-            {
-              "title": "Wildcards",
-              "description": "Use wildcards like ? (unknown type), ? extends T (upper bound), and ? super T (lower bound) for flexible generic programming."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Type Bounds",
-              "description": "<T extends Comparable<T>> restricts the type parameter to classes that implement Comparable, allowing use of their methods."
-            },
-            {
-              "title": "PECS Principle",
-              "description": "\"Producer Extends, Consumer Super\" - use ? extends T when reading from a collection, ? super T when adding to it."
+              "description": "At runtime, generic type information is removed (erased), which has implications for reflection and performance."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-type-erasure",
-        "java-collections-framework"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-static-keyword",
+      "id": "java-static-keyword-core-java-f-11",
       "skillLevel": "beginner",
-      "shortTitle": "static Keyword",
-      "question": "How is the static keyword used in Java and what are its implications?",
+      "shortTitle": "Static Keyword",
+      "question": "Could you describe what the static keyword does in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Static Variables",
-              "description": "Static variables (class variables) belong to the class rather than any instance, with all instances sharing the same value."
+              "title": "Class-Level Members",
+              "description": "Static members belong to the class rather than any instance, making them accessible without an object."
             },
             {
-              "title": "Static Methods",
-              "description": "Static methods belong to the class, not instances, and can be called without creating an object: ClassName.methodName()"
+              "title": "Common Uses",
+              "description": "They are used for constants, utility methods, and shared resources."
             }
           ]
         },
@@ -740,11 +430,11 @@
           "points": [
             {
               "title": "Static Blocks",
-              "description": "Static initialization blocks run when the class is loaded, useful for complex initialization of static variables."
+              "description": "Static blocks allow for complex initialization when the class is loaded."
             },
             {
-              "title": "Static Import",
-              "description": "import static allows direct use of static members without class qualification: import static java.lang.Math.PI;"
+              "title": "Static Nested Classes",
+              "description": "These classes are defined within another class and do not require an instance of the outer class."
             }
           ]
         },
@@ -752,37 +442,30 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Static Classes",
-              "description": "Only nested classes can be static. A static nested class doesn't have access to instance members of the outer class."
-            },
-            {
-              "title": "Memory Management",
-              "description": "Static members exist for the lifetime of the application and aren't garbage collected until the class loader is unloaded."
+              "title": "Memory Implications",
+              "description": "Static members exist as long as the class is loaded, which affects resource management."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-access-modifiers",
-        "java-memory-management"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-exception-handling",
+      "id": "java-exception-handling-core-java-f-12",
       "skillLevel": "beginner",
       "shortTitle": "Exception Handling",
-      "question": "What's the difference between checked and unchecked exceptions in Java?",
+      "question": "Do you know the difference between checked and unchecked exceptions in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Checked Exceptions",
-              "description": "Extend Exception (excluding RuntimeException subclasses). Must be declared in the method signature with throws or handled with try-catch."
+              "description": "These extend Exception (excluding RuntimeException) and must be caught or declared."
             },
             {
               "title": "Unchecked Exceptions",
-              "description": "Extend RuntimeException or Error. Do not require explicit handling or declaration."
+              "description": "These extend RuntimeException and indicate programming errors, so they do not require explicit handling."
             }
           ]
         },
@@ -790,50 +473,30 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Design Philosophy",
-              "description": "Checked exceptions are for recoverable conditions the caller should handle. Unchecked exceptions typically represent programming errors or unrecoverable conditions."
-            },
-            {
-              "title": "try-with-resources",
-              "description": "Modern Java provides try-with-resources for automatic resource management: try (Resource r = new Resource()) { ... }"
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Multi-catch",
-              "description": "Java 7+ allows catching multiple exception types in one catch block: catch (IOException | SQLException ex) { ... }"
-            },
-            {
-              "title": "Modern Practices",
-              "description": "Many modern Java libraries prefer unchecked exceptions for better API design, with checked exceptions used only when recovery is truly possible."
+              "title": "Handling Strategies",
+              "description": "Use try-catch blocks for checked exceptions and design APIs to minimize unnecessary checked exceptions."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-try-with-resources",
-        "java-custom-exceptions"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-collections-framework",
-      "skillLevel": "intermediate",
-      "shortTitle": "Collections Framework",
-      "question": "What are the key interfaces and classes in the Java Collections Framework?",
+      "id": "java-inheritance-polymorphism-core-java-f-13",
+      "skillLevel": "beginner",
+      "shortTitle": "Inheritance & Polymorphism",
+      "question": "Can you explain how inheritance and polymorphism work in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Core Interfaces",
-              "description": "The framework is built around interfaces: Collection, List, Set, Queue, Deque, and Map (technically not a Collection)."
+              "title": "Inheritance",
+              "description": "Inheritance allows a class to derive properties and behavior from a parent class."
             },
             {
-              "title": "Common Implementations",
-              "description": "ArrayList, LinkedList, HashSet, TreeSet, HashMap, TreeMap, PriorityQueue, and ArrayDeque are the most frequently used implementations."
+              "title": "Polymorphism",
+              "description": "Polymorphism lets a variable of a parent type refer to objects of child types, enabling flexible code."
             }
           ]
         },
@@ -841,50 +504,203 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Special Collections",
-              "description": "Collections.unmodifiableXXX(), Collections.synchronizedXXX(), and concurrent collections in java.util.concurrent provide special functionalities."
-            },
-            {
-              "title": "Interface Hierarchy",
-              "description": "The collection interfaces form a hierarchy with Collection at the top, extended by more specialized interfaces like List, Set, and Queue."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Performance Characteristics",
-              "description": "Different implementations have different performance trade-offs: ArrayList has O(1) access but O(n) insertion, while LinkedList has O(n) access but O(1) insertion at known positions."
-            },
-            {
-              "title": "Modern Additions",
-              "description": "Recent Java versions added specialized collections like immutable collections (List.of(), Set.of(), Map.of()), as well as more functional operations through Stream API."
+              "title": "Code Reuse",
+              "description": "These concepts promote code reuse and simplify maintenance by reducing duplication."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-list-vs-set",
-        "java-hashmap-implementation"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-records",
+      "id": "java-interfaces-abstract-core-java-f-14",
       "skillLevel": "intermediate",
-      "shortTitle": "Records",
-      "question": "What are Java Records and what problem do they solve?",
+      "shortTitle": "Interfaces vs Abstract Classes",
+      "question": "In your experience, how do interfaces differ from abstract classes in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Interfaces",
+              "description": "Interfaces define a contract without holding state and support multiple inheritance."
+            },
+            {
+              "title": "Abstract Classes",
+              "description": "Abstract classes can provide partial implementation and maintain state, but a class can extend only one."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Usage Considerations",
+              "description": "Interfaces are best when disparate classes share behavior, while abstract classes suit a clear inheritance hierarchy."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-overloading-overriding-core-java-f-15",
+      "skillLevel": "beginner",
+      "shortTitle": "Overloading vs Overriding",
+      "question": "Could you clarify the differences between method overloading and method overriding in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Method Overloading",
+              "description": "Overloading means having multiple methods with the same name but different parameter lists in one class; resolved at compile time."
+            },
+            {
+              "title": "Method Overriding",
+              "description": "Overriding occurs when a subclass provides its own implementation of a method from its parent; resolved at runtime."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Rules and Behavior",
+              "description": "Overriding requires identical method signatures (with allowance for covariant return types) and cannot reduce access levels, while overloading requires differing parameter types or counts."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-access-modifiers-core-java-f-16",
+      "skillLevel": "beginner",
+      "shortTitle": "Access Modifiers",
+      "question": "Please outline the access modifiers available in Java.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Public",
+              "description": "Accessible from any class."
+            },
+            {
+              "title": "Protected",
+              "description": "Accessible within the same package and in subclasses."
+            },
+            {
+              "title": "Private",
+              "description": "Accessible only within the declaring class."
+            },
+            {
+              "title": "Default",
+              "description": "Accessible only within the same package when no modifier is specified."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-constructor-overloading-core-java-f-17",
+      "skillLevel": "beginner",
+      "shortTitle": "Constructor Overloading",
+      "question": "Can you explain what constructor overloading in Java means?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Multiple Constructors",
+              "description": "A class can have several constructors with different parameter lists to allow different ways of instantiation."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Flexibility",
+              "description": "This enables objects to be created with varying levels of initial data, increasing usability."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-immutable-design-core-java-f-18",
+      "skillLevel": "intermediate",
+      "shortTitle": "Immutable Class Design",
+      "question": "Do you know the key principles for designing an immutable class in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Requirements",
+              "description": "Declare all fields as private and final, initialize them in the constructor, and provide no setters."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Defensive Copying",
+              "description": "For mutable fields, create defensive copies to protect the internal state from external changes."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-annotations-core-java-f-19",
+      "skillLevel": "beginner",
+      "shortTitle": "Annotations",
+      "question": "Could you share what annotations in Java are used for?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Metadata",
+              "description": "Annotations provide metadata about the code, influencing both compile-time and runtime behavior without altering program logic."
+            },
+            {
+              "title": "Common Examples",
+              "description": "Examples include @Override, @Deprecated, and @SuppressWarnings."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Custom Annotations",
+              "description": "Developers can create custom annotations for domain-specific metadata, processed via reflection or build tools."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-enums-core-java-f-20",
+      "skillLevel": "beginner",
+      "shortTitle": "Enums",
+      "question": "Can you describe the role of enums in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Definition",
-              "description": "Records are a special kind of class introduced in Java 14 (and finalized in Java 16) that act as transparent carriers for immutable data."
-            },
-            {
-              "title": "Syntax",
-              "description": "Basic declaration: record Person(String name, int age) { } - automatically creates constructor, accessors, equals(), hashCode(), and toString()."
+              "description": "Enums define a fixed set of constants and improve type safety and code clarity."
             }
           ]
         },
@@ -892,12 +708,159 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Use Cases",
-              "description": "Records are ideal for DTOs, value objects, and immutable data holders that don't need custom behavior beyond data access."
+              "title": "Enhanced Capabilities",
+              "description": "Enums can include fields, methods, and constructors to encapsulate additional behavior."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-autoboxing-core-java-f-21",
+      "skillLevel": "beginner",
+      "shortTitle": "Autoboxing",
+      "question": "Please explain the concept of autoboxing in Java.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Automatic Conversion",
+              "description": "Autoboxing automatically converts primitives to their corresponding wrapper classes and vice versa."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Potential Issues",
+              "description": "Excessive autoboxing can lead to performance overhead and unexpected NullPointerExceptions if wrapper objects are null."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-switch-expressions-core-java-f-22",
+      "skillLevel": "intermediate",
+      "shortTitle": "Switch Expressions",
+      "question": "In your experience, what benefits do switch expressions in Java offer?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Simplified Syntax",
+              "description": "Switch expressions use arrow labels and yield statements, making them more concise than traditional switch statements."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Return Values",
+              "description": "They allow a switch block to directly return a value, streamlining control flow."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-best-practices-core-java-f-23",
+      "skillLevel": "beginner",
+      "shortTitle": "Java Best Practices",
+      "question": "Could you share some best practices for writing maintainable Java code?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Consistent Naming",
+              "description": "Use clear and consistent naming conventions to enhance readability."
             },
             {
-              "title": "Customization",
-              "description": "You can add methods, static fields, instance methods, and even override auto-generated methods, but you cannot add instance fields."
+              "title": "Code Organization",
+              "description": "Organize code logically with self-documenting methods and minimal comments for non-obvious logic."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Design Patterns",
+              "description": "Apply proven design patterns to solve common problems and improve code structure."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Implement robust error handling using appropriate exception strategies."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-primitive-vs-reference-core-java-f-24",
+      "skillLevel": "beginner",
+      "shortTitle": "Primitives vs References",
+      "question": "Do you know how primitive types differ from reference types in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Primitives",
+              "description": "Primitives (like int, double) store actual values and have fixed sizes."
+            },
+            {
+              "title": "Reference Types",
+              "description": "Reference types (objects) store memory addresses and can represent complex data."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Memory Allocation",
+              "description": "Primitives are typically stored on the stack, whereas objects are allocated on the heap."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-super-keyword-core-java-f-25",
+      "skillLevel": "beginner",
+      "shortTitle": "Super Keyword",
+      "question": "Can you explain the purpose of the super keyword in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "The super keyword is used to refer to the immediate parent class, enabling access to its methods and variables."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Constructor Chaining",
+              "description": "In a subclass constructor, calling super() as the first statement ensures that the parent class is properly initialized."
+            },
+            {
+              "title": "Method Access",
+              "description": "It also allows calling overridden methods from the parent class."
             }
           ]
         },
@@ -905,20 +868,116 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Compact Constructors",
-              "description": "Compact constructor syntax allows validation without repeating parameters: record Person(String name, int age) { Person { if (age < 0) throw new IllegalArgumentException(); } }"
-            },
-            {
-              "title": "Limitations",
-              "description": "Records cannot extend other classes (they implicitly extend Record), cannot be extended, and are implicitly final. They also cannot declare instance fields other than the record components."
+              "title": "Initialization Order",
+              "description": "Enforcing super() as the first statement guarantees that the parent’s state is established before subclass initialization."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-immutability",
-        "java-sealed-classes"
-      ]
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-tostring-method-core-java-f-26",
+      "skillLevel": "beginner",
+      "shortTitle": "toString() Method",
+      "question": "Please describe the importance of the toString() method in Java.",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Representation",
+              "description": "toString() returns a string representation of an object, which is useful for logging and debugging."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Customization",
+              "description": "Overriding toString() in custom classes helps provide meaningful information about an object's state."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-default-constructor-core-java-f-27",
+      "skillLevel": "beginner",
+      "shortTitle": "Default Constructor",
+      "question": "Could you explain what a default constructor in Java is?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Compiler-Generated",
+              "description": "If no constructors are explicitly defined, the compiler provides a no-argument constructor that initializes fields with default values."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Usage",
+              "description": "The default constructor allows object instantiation without providing initialization parameters."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-type-casting-core-java-f-28",
+      "skillLevel": "beginner",
+      "shortTitle": "Type Casting",
+      "question": "Do you know the different types of casting in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Implicit Casting",
+              "description": "Automatically converts a smaller type to a larger type (e.g., int to long) without data loss."
+            },
+            {
+              "title": "Explicit Casting",
+              "description": "Requires a cast operator to convert a larger type to a smaller type (e.g., double to int), which may result in data loss."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-inner-classes-core-java-f-29",
+      "skillLevel": "beginner",
+      "shortTitle": "Inner Classes",
+      "question": "Can you describe what inner classes in Java are?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "Inner classes are defined within another class and have access to its members."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Types",
+              "description": "They include non-static inner classes, static nested classes, local classes, and anonymous classes, each suited for different use cases."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
     }
   ]
 }

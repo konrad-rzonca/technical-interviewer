@@ -3,72 +3,21 @@
   "subcategory": "Memory Management",
   "questions": [
     {
-      "id": "java-heap-vs-stack",
+      "id": "java-garbage-collection-core-java-m-1",
       "skillLevel": "beginner",
-      "shortTitle": "Heap vs Stack",
-      "question": "What is the difference between heap and stack memory in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Stack",
-              "description": "Stack memory stores method calls, local variables, and references. It's managed in LIFO (Last In, First Out) order."
-            },
-            {
-              "title": "Heap",
-              "description": "Heap memory stores objects and class instances. All objects created with 'new' are allocated on the heap."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Memory Management",
-              "description": "Stack memory is automatically allocated and deallocated as methods are called and return. Heap memory is managed by the garbage collector."
-            },
-            {
-              "title": "Size Differences",
-              "description": "Stack memory is typically much smaller than heap memory and has a fixed maximum size that can cause StackOverflowError if exceeded."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Thread Isolation",
-              "description": "Each thread has its own stack, while the heap is shared across all threads in the application, requiring thread synchronization for safe access."
-            },
-            {
-              "title": "Performance Implications",
-              "description": "Stack allocation is faster than heap allocation. JVM optimizations like escape analysis can sometimes allocate objects on the stack instead of the heap."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-garbage-collection",
-        "java-reference-types"
-      ]
-    },
-    {
-      "id": "java-garbage-collection",
-      "skillLevel": "intermediate",
       "shortTitle": "Garbage Collection",
-      "question": "How does garbage collection work in Java?",
+      "question": "Can you explain how garbage collection works in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Purpose",
-              "description": "Garbage collection automatically reclaims memory occupied by objects that are no longer reachable or in use."
+              "title": "Automatic Memory Reclamation",
+              "description": "Garbage collection frees memory by disposing of objects that are no longer referenced."
             },
             {
-              "title": "Object Eligibility",
-              "description": "An object becomes eligible for garbage collection when it cannot be reached from any live thread, static reference, or other live object."
+              "title": "Root Set Concept",
+              "description": "GC begins from a set of root objects and traces references to determine which objects are collectable."
             }
           ]
         },
@@ -77,11 +26,11 @@
           "points": [
             {
               "title": "Generational Approach",
-              "description": "Most Java GCs use a generational model with young (Eden, Survivor spaces) and old (Tenured) generations, based on the observation that most objects die young."
+              "description": "The heap is divided into young and old generations to optimize collection efficiency."
             },
             {
-              "title": "Mark-and-Sweep",
-              "description": "The basic GC algorithm marks all live objects by tracing references from root objects, then sweeps away unmarked (dead) objects."
+              "title": "Mark and Sweep",
+              "description": "Reachable objects are marked and unreferenced objects are swept away."
             }
           ]
         },
@@ -90,36 +39,83 @@
           "points": [
             {
               "title": "Modern GC Algorithms",
-              "description": "Modern JVMs offer multiple GC algorithms like G1 (Garbage First), ZGC, and Shenandoah with different focus on latency, throughput, or pause times."
+              "description": "Collectors like G1 and CMS use concurrent and incremental strategies to minimize pause times."
             },
             {
-              "title": "Finalization",
-              "description": "The finalize() method is called before garbage collection but is unreliable and deprecated in favor of try-with-resources or explicit close methods."
+              "title": "Tuning Options",
+              "description": "JVM flags allow adjustment of GC behavior based on application needs."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-memory-leaks",
-        "java-heap-vs-stack"
+        "java-generational-gc-core-java-m-4"
       ]
     },
     {
-      "id": "java-reference-types",
+      "id": "java-heap-stack-core-java-m-2",
+      "skillLevel": "beginner",
+      "shortTitle": "Heap vs. Stack Memory",
+      "question": "What are the main differences between heap and stack memory in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Allocation Types",
+              "description": "The stack is for static allocation (method calls, local variables), while the heap is for dynamic allocation (objects)."
+            },
+            {
+              "title": "Lifetime",
+              "description": "Stack memory is short-lived and tied to method execution; heap memory persists until collected."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Access Speed",
+              "description": "Stack allocation is faster due to its LIFO nature compared to the heap."
+            },
+            {
+              "title": "Scope",
+              "description": "Variables on the stack are limited to their context; heap objects can be shared across contexts."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Impact",
+              "description": "Choosing the right memory area is vital for optimizing performance in recursive or memory-intensive applications."
+            },
+            {
+              "title": "Management Techniques",
+              "description": "Efficient allocation patterns can improve overall resource utilization."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-reference-types-core-java-m-3",
       "skillLevel": "intermediate",
       "shortTitle": "Reference Types",
-      "question": "What are the different reference types in Java (Strong, Weak, Soft, Phantom)?",
+      "question": "Can you describe the differences between strong, soft, weak, and phantom references in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Strong References",
-              "description": "Regular object references (e.g., Object obj = new Object()) are strong references. Objects with only strong references are never garbage collected while reachable."
+              "description": "The default reference; objects remain in memory as long as they are strongly referenced."
             },
             {
-              "title": "Weak References",
-              "description": "WeakReference<T> objects don't prevent garbage collection of their referents. Once an object has only weak references, it will be collected in the next GC cycle."
+              "title": "Other References",
+              "description": "Soft, weak, and phantom references allow varying levels of garbage collection eligibility."
             }
           ]
         },
@@ -127,12 +123,12 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Soft References",
-              "description": "SoftReference<T> objects are cleared before OutOfMemoryError is thrown. They're ideal for memory-sensitive caches that can be reclaimed under memory pressure."
+              "title": "Usage Scenarios",
+              "description": "Soft references are useful for caches, while weak and phantom references aid in cleanup tasks."
             },
             {
-              "title": "Phantom References",
-              "description": "PhantomReference<T> objects are enqueued after their referent is physically removed from memory. They're used for resource cleanup or finalization activities."
+              "title": "Reference Queues",
+              "description": "These queues notify you when an object has been marked for collection."
             }
           ]
         },
@@ -140,37 +136,34 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Reference Queues",
-              "description": "ReferenceQueue<T> can be used with weak, soft, and phantom references to be notified when references are cleared by the garbage collector."
+              "title": "Memory Sensitivity",
+              "description": "Selecting the right reference type is crucial under low-memory conditions."
             },
             {
-              "title": "Use Cases",
-              "description": "WeakHashMap uses weak references for keys to allow entries to be garbage collected when keys are no longer referenced elsewhere. Caches often use SoftReferences to avoid memory leaks."
+              "title": "Internal Mechanics",
+              "description": "Understanding how these references are managed can lead to more efficient resource tuning."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-garbage-collection",
-        "java-memory-leaks"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-memory-leaks",
+      "id": "java-generational-gc-core-java-m-4",
       "skillLevel": "intermediate",
-      "shortTitle": "Memory Leaks in Java",
-      "question": "How can memory leaks occur in Java and how do you prevent them?",
+      "shortTitle": "Generational GC",
+      "question": "How does generational garbage collection improve performance in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Definition",
-              "description": "In Java, a memory leak occurs when objects are still referenced but no longer needed, preventing garbage collection and causing memory consumption to grow over time."
+              "title": "Generational Concept",
+              "description": "The heap is split into generations (young and old) based on object lifespan."
             },
             {
-              "title": "Common Causes",
-              "description": "Common causes include static collections that grow unbounded, unclosed resources, and event listeners that aren't removed when no longer needed."
+              "title": "Minor vs. Major GC",
+              "description": "Young generation is collected frequently, easing pressure on full (major) GC cycles."
             }
           ]
         },
@@ -178,12 +171,62 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Static References",
-              "description": "Static fields live for the duration of the JVM and can unintentionally hold references to large object graphs, preventing them from being garbage collected."
+              "title": "Object Promotion",
+              "description": "Objects that survive multiple GC cycles are promoted to the old generation."
+            },
+            {
+              "title": "Efficiency Gains",
+              "description": "This approach focuses on reclaiming short-lived objects for better performance."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Collector Variants",
+              "description": "Modern collectors like G1 and CMS refine these techniques to further reduce pause times."
+            },
+            {
+              "title": "Tuning Strategies",
+              "description": "Adjust JVM parameters to set generation sizes and optimize GC behavior."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-garbage-collection-core-java-m-1"
+      ]
+    },
+    {
+      "id": "java-memory-leaks-core-java-m-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Memory Leaks",
+      "question": "What is a memory leak in Java, and how can it be prevented?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A memory leak happens when unused objects remain referenced, preventing their collection."
+            },
+            {
+              "title": "Consequences",
+              "description": "This leads to increased memory usage and potential OutOfMemoryErrors over time."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Common Causes",
+              "description": "Often caused by improper use of static collections or long-lived object references."
             },
             {
               "title": "Detection Tools",
-              "description": "Tools like JProfiler, VisualVM, and Java Flight Recorder can help identify memory leaks by analyzing heap dumps and memory usage over time."
+              "description": "Profilers and heap dump analyzers can help identify leaks."
             }
           ]
         },
@@ -191,37 +234,34 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "ThreadLocal Variables",
-              "description": "ThreadLocal variables not properly removed can cause memory leaks in long-lived thread pools as they maintain references to objects from completed tasks."
+              "title": "Prevention Best Practices",
+              "description": "Use weak references, proper resource management, and regular code reviews."
             },
             {
-              "title": "Prevention Patterns",
-              "description": "Use weak references for caches and observers, ensure proper resource closure with try-with-resources, and be cautious with static collections and inner classes."
+              "title": "Preventive Techniques",
+              "description": "Automated testing for resource leaks can help maintain a healthy memory footprint."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-reference-types",
-        "java-resource-management"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-pass-by-value",
-      "skillLevel": "beginner",
-      "shortTitle": "Pass by Value",
-      "question": "Is Java pass-by-value or pass-by-reference?",
+      "id": "java-finalization-core-java-m-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "Finalization",
+      "question": "What role does the finalize() method play in Java's memory management, and what are its drawbacks?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Java is Pass-by-Value",
-              "description": "Java is strictly pass-by-value for all data types. A copy of the value is always passed to methods, never a reference to the original variable."
+              "title": "Purpose",
+              "description": "finalize() was intended for cleanup before an object is reclaimed."
             },
             {
-              "title": "Primitive vs Reference Types",
-              "description": "For primitives, the actual value is copied. For objects, the reference value (memory address) is copied, not the object itself."
+              "title": "Automatic Invocation",
+              "description": "It is called by the GC, giving a final chance to release resources."
             }
           ]
         },
@@ -229,12 +269,12 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Common Misconception",
-              "description": "The confusion arises because when passing objects, you can modify the object's state through the copied reference, but you cannot change which object the original reference points to."
+              "title": "Unreliability",
+              "description": "The timing of finalization is unpredictable, delaying resource release."
             },
             {
-              "title": "Reassignment Test",
-              "description": "If reassigning a parameter inside a method doesn't affect the original reference outside the method, it demonstrates pass-by-value behavior."
+              "title": "Deprecation",
+              "description": "Due to these drawbacks, finalize() is deprecated in favor of more reliable mechanisms."
             }
           ]
         },
@@ -242,88 +282,34 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Immutable Objects",
-              "description": "Immutable objects like String effectively behave like primitives - since they can't be modified, passing their references has the same effect as passing their values."
+              "title": "Performance Impact",
+              "description": "Excessive use of finalize() can slow down garbage collection."
             },
             {
-              "title": "Wrapper Classes",
-              "description": "Integer, Boolean, and other wrapper classes are immutable, so their behavior in parameter passing resembles primitives despite being objects."
+              "title": "Best Practices",
+              "description": "Implement explicit cleanup logic using try-with-resources or cleaners instead."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-reference-variables",
-        "java-immutability"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-resource-management",
-      "skillLevel": "intermediate",
-      "shortTitle": "Resource Management",
-      "question": "What are the best practices for managing resources in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "try-with-resources",
-              "description": "Use try-with-resources for automatic resource management: try (Resource r = new Resource()) { ... } automatically closes the resource when the block exits."
-            },
-            {
-              "title": "AutoCloseable Interface",
-              "description": "Resources should implement the AutoCloseable or Closeable interface to work with try-with-resources and to provide a standard way to release resources."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Manual Resource Cleanup",
-              "description": "When try-with-resources isn't appropriate, use try-finally blocks and ensure resources are closed in the finally block, ideally in the reverse order of acquisition."
-            },
-            {
-              "title": "Suppressed Exceptions",
-              "description": "try-with-resources automatically handles suppressed exceptions, capturing any exceptions thrown during close() while preserving the original exception."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Resource Ordering",
-              "description": "When managing multiple resources, open them in the order you'll need them and close them in reverse order to avoid dependencies on closed resources."
-            },
-            {
-              "title": "Resource Pools",
-              "description": "For expensive resources, consider using object pools (e.g., connection pools, thread pools) to efficiently reuse resources rather than repeatedly creating and destroying them."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-try-with-resources",
-        "java-memory-leaks"
-      ]
-    },
-    {
-      "id": "java-immutability",
-      "skillLevel": "intermediate",
-      "shortTitle": "Immutability",
-      "question": "What is immutability in Java and how do you create immutable classes?",
+      "id": "java-escape-analysis-core-java-m-7",
+      "skillLevel": "advanced",
+      "shortTitle": "Escape Analysis",
+      "question": "Can you explain the concept of escape analysis in Java and its impact on memory management?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Definition",
-              "description": "An immutable object cannot be modified after its creation - its state remains constant throughout its lifetime."
+              "description": "Escape analysis determines if an object can be accessed outside its defining scope."
             },
             {
-              "title": "Benefits",
-              "description": "Immutable objects are thread-safe, simpler to understand and debug, and can be freely shared without defensive copying."
+              "title": "Local Allocation",
+              "description": "If an object does not escape, the JVM may allocate it on the stack instead of the heap."
             }
           ]
         },
@@ -331,12 +317,12 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Implementation Rules",
-              "description": "To create an immutable class: make it final, make fields private final, don't provide setters, and defensively copy mutable components in constructors and getters."
+              "title": "Optimization",
+              "description": "This analysis helps reduce garbage collection overhead by limiting heap allocations."
             },
             {
-              "title": "Example Classes",
-              "description": "String, Integer, and LocalDate are common examples of immutable classes in the Java standard library."
+              "title": "Inlining Support",
+              "description": "It can also allow method inlining and lock elision to improve performance."
             }
           ]
         },
@@ -344,37 +330,34 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Handling Mutable Objects",
-              "description": "When immutable objects need to contain mutable objects, defensively copy inputs and outputs to prevent external code from modifying internal state."
+              "title": "JVM Enhancements",
+              "description": "Modern JVMs use escape analysis for aggressive optimizations that reduce heap pressure."
             },
             {
-              "title": "Modern Approaches",
-              "description": "Java Records (from Java 14) provide a concise way to define immutable data classes without the boilerplate typically needed for immutability."
+              "title": "Performance Tuning",
+              "description": "Developers can write code that maximizes these optimizations by keeping objects within method scope."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-records",
-        "java-string-immutability"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-object-lifecycle",
+      "id": "java-metaspace-core-java-m-8",
       "skillLevel": "intermediate",
-      "shortTitle": "Object Lifecycle",
-      "question": "What are the stages in a Java object's lifecycle?",
+      "shortTitle": "Metaspace vs PermGen",
+      "question": "What is the difference between PermGen and Metaspace in Java memory management?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Creation",
-              "description": "Objects are created using 'new' or other instantiation methods, memory is allocated on the heap, and constructors are executed."
+              "title": "Historical Context",
+              "description": "PermGen was used prior to Java 8 for class metadata; Metaspace replaced it from Java 8 onward."
             },
             {
-              "title": "Usage/Active State",
-              "description": "The object is referenced and its methods and fields are accessed by the application."
+              "title": "Memory Allocation",
+              "description": "Metaspace uses native memory, which offers greater flexibility than the fixed-size PermGen."
             }
           ]
         },
@@ -382,12 +365,12 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Unreachable State",
-              "description": "When the last strong reference to an object is removed, it becomes unreachable and eligible for garbage collection."
+              "title": "Dynamic Sizing",
+              "description": "Metaspace can grow dynamically, reducing the risk of out-of-memory errors."
             },
             {
-              "title": "Finalization (Deprecated)",
-              "description": "Before reclamation, the JVM may call finalize() (now deprecated), giving the object a chance to perform cleanup before memory is reclaimed."
+              "title": "Tuning Options",
+              "description": "JVM flags allow you to control the maximum size of Metaspace as needed."
             }
           ]
         },
@@ -395,37 +378,133 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Memory Reclamation",
-              "description": "The garbage collector frees the memory occupied by the object, making it available for new allocations."
+              "title": "Performance Implications",
+              "description": "The shift from PermGen to Metaspace has altered how class metadata impacts GC performance."
             },
             {
-              "title": "Resurrection (Anti-pattern)",
-              "description": "Objects can be 'resurrected' by creating new references to them in finalize(), but this is considered bad practice and may lead to memory leaks."
+              "title": "Advanced Tuning",
+              "description": "Fine-tuning Metaspace settings is key for large, complex applications."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-object-allocation-core-java-m-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Object Allocation",
+      "question": "How does the JVM handle object allocation, and what impact does it have on memory management?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Heap Allocation",
+              "description": "Objects are allocated on the heap, which is managed by the garbage collector."
+            },
+            {
+              "title": "Memory Request",
+              "description": "When a new object is created, the JVM reserves the required memory from the heap."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "TLAB Usage",
+              "description": "Thread-Local Allocation Buffers (TLABs) speed up object allocation in multi-threaded environments."
+            },
+            {
+              "title": "Contiguous Memory",
+              "description": "Efficient allocation relies on contiguous memory blocks, impacting overall GC performance."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Optimization Techniques",
+              "description": "Strategies like object pooling and minimizing temporary object creation help reduce GC overhead."
+            },
+            {
+              "title": "Allocation Patterns",
+              "description": "Careful design of object lifetimes can lead to improved throughput and lower pause times."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-memory-tuning-core-java-m-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Memory Tuning",
+      "question": "How can you tune and profile Java applications for optimal memory usage?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "JVM Options",
+              "description": "Configure options like heap size and GC settings to control memory usage."
+            },
+            {
+              "title": "Monitoring Tools",
+              "description": "Tools such as jstat and VisualVM provide insights into memory performance."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Profiling Techniques",
+              "description": "Use profilers like JProfiler or YourKit to identify memory hotspots and leaks."
+            },
+            {
+              "title": "Heap Dump Analysis",
+              "description": "Analyze heap dumps to understand object retention and allocation patterns."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Advanced GC Tuning and Adaptive Sizing",
+              "description": "Fine-tuning GC parameters can reduce pause times and improve throughput.\n\nExample 1:\nRun your application with:\n  java -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar app.jar\nThis limits GC pauses.\n\nExample 2:\nEnable adaptive sizing with:\n  java -XX:+UseAdaptiveSizePolicy -XX:NewRatio=3 -jar app.jar\nThis allows the JVM to adjust generation sizes dynamically."
+            },
+            {
+              "title": "Continuous Optimization",
+              "description": "Regular profiling and monitoring help maintain optimal memory performance in production."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-garbage-collection",
-        "java-constructors"
+        "java-memory-leaks-core-java-m-5",
+        "java-garbage-collection-core-java-m-1"
       ]
     },
     {
-      "id": "java-memory-optimization",
+      "id": "java-direct-buffers-core-java-m-11",
       "skillLevel": "advanced",
-      "shortTitle": "Memory Optimization",
-      "question": "What techniques can improve memory efficiency in Java applications?",
+      "shortTitle": "Direct Buffers in Java NIO",
+      "question": "Can you explain how direct buffers work in Java NIO and their impact on memory management?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Object Reuse",
-              "description": "Reuse objects instead of creating new ones, especially for frequently created short-lived objects."
+              "title": "Definition",
+              "description": "Direct buffers use native memory outside the regular Java heap for high-performance I/O."
             },
             {
-              "title": "Proper Collections",
-              "description": "Choose appropriate collection types (ArrayList vs LinkedList, HashMap vs TreeMap) based on their memory overhead and access patterns."
+              "title": "Usage Example",
+              "description": "For instance, ByteBuffer.allocateDirect(1024) avoids extra copying during I/O operations."
             }
           ]
         },
@@ -433,12 +512,12 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Primitive Arrays",
-              "description": "Use primitive arrays (int[]) instead of wrapper collections (ArrayList<Integer>) when possible to avoid object overhead."
+              "title": "Memory Management",
+              "description": "Direct buffers are not managed by the standard garbage collector; they require explicit deallocation."
             },
             {
-              "title": "Lazy Initialization",
-              "description": "Initialize expensive objects only when needed, especially for objects that might never be used during program execution."
+              "title": "Practical Scenario",
+              "description": "They are beneficial in network applications where low-latency I/O is critical."
             }
           ]
         },
@@ -446,37 +525,34 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Compact Data Structures",
-              "description": "Use specialized libraries like Eclipse Collections, Trove, or HPPC for memory-efficient collections when handling large data sets."
+              "title": "Performance Pitfalls",
+              "description": "Overuse can lead to native memory exhaustion. Monitor with -XX:MaxDirectMemorySize."
             },
             {
-              "title": "Off-Heap Memory",
-              "description": "For very large datasets, consider off-heap storage solutions like memory-mapped files or direct ByteBuffers that store data outside the Java heap."
+              "title": "Hidden Leaks",
+              "description": "Since they bypass typical GC, leaks may go unnoticed until they cause critical failures."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-memory-leaks",
-        "java-jvm-tuning"
-      ]
+      "relatedQuestions": []
     },
     {
-      "id": "java-jvm-tuning",
+      "id": "java-memory-fragmentation-core-java-m-12",
       "skillLevel": "advanced",
-      "shortTitle": "JVM Memory Tuning",
-      "question": "What are the key JVM memory parameters and how do you tune them?",
+      "shortTitle": "Memory Fragmentation",
+      "question": "Can you discuss memory fragmentation in Java and strategies to mitigate its impact?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Heap Size",
-              "description": "-Xms (initial heap size) and -Xmx (maximum heap size) are the most basic memory settings, often set to the same value for production servers."
+              "title": "Definition",
+              "description": "Fragmentation is when free memory is split into small, non-contiguous blocks."
             },
             {
-              "title": "Garbage Collector Selection",
-              "description": "Use -XX:+UseG1GC for G1 (default in modern Java), -XX:+UseParallelGC for throughput, -XX:+UseZGC for low latency, depending on application needs."
+              "title": "Common Causes",
+              "description": "Frequent allocations and deallocations in long-running apps can lead to fragmentation."
             }
           ]
         },
@@ -484,12 +560,12 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Generation Sizing",
-              "description": "-XX:NewRatio controls the ratio of young to old generation, while -XX:SurvivorRatio controls the Eden/Survivor spaces ratio in the young generation."
+              "title": "Practical Example",
+              "description": "An app that allocates objects of varying sizes may experience sporadic OutOfMemoryErrors due to fragmentation."
             },
             {
-              "title": "Metaspace",
-              "description": "-XX:MaxMetaspaceSize sets the maximum metaspace size (for class metadata, replacing PermGen in older JVMs)."
+              "title": "Mitigation Strategies",
+              "description": "Using object pooling and fixed-size buffers, or selecting a GC with compaction (like G1), can help."
             }
           ]
         },
@@ -497,20 +573,17 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "GC Logging",
-              "description": "-Xlog:gc* (Java 9+) or -XX:+PrintGCDetails -XX:+PrintGCDateStamps (Java 8) enable detailed GC logging for analysis and tuning."
+              "title": "Hidden Fragmentation",
+              "description": "Fragmentation can occur on both heap and off-heap; monitoring with GC logs and JVisualVM is essential."
             },
             {
-              "title": "Concurrent GC Tuning",
-              "description": "For G1, -XX:MaxGCPauseMillis sets target pause time, -XX:ConcGCThreads controls concurrent GC threads, -XX:InitiatingHeapOccupancyPercent determines when concurrent marking starts."
+              "title": "Advanced Mitigation",
+              "description": "Region-based allocation and compaction in modern GCs can improve memory layout and reduce fragmentation."
             }
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-garbage-collection",
-        "java-memory-optimization"
-      ]
+      "relatedQuestions": []
     }
   ]
 }
