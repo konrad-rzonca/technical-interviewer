@@ -4,6 +4,7 @@ import {
   TOOLTIP_PLACEMENT,
   TOOLTIP_STYLING,
   TOOLTIP_TIMING,
+  TOOLTIP_TYPES,
 } from './tooltipConstants';
 
 /**
@@ -13,7 +14,7 @@ import {
  * @param {object} overrides - Any tooltip props to override defaults
  * @returns {object} Tooltip props with consistent configuration
  */
-export function useTooltip(type = 'default', overrides = {}) {
+export function useTooltip(type = TOOLTIP_TYPES.DEFAULT, overrides = {}) {
   return useMemo(() => {
     // Base configuration for all tooltips
     const baseConfig = {
@@ -52,16 +53,16 @@ export function useTooltip(type = 'default', overrides = {}) {
 
     // Type-specific configurations
     const typeConfigs = {
-      question: {
+      [TOOLTIP_TYPES.QUESTION]: {
         placement: TOOLTIP_PLACEMENT.QUESTION_ITEM,
       },
-      related: {
+      [TOOLTIP_TYPES.RELATED]: {
         placement: TOOLTIP_PLACEMENT.RELATED_QUESTION,
       },
-      action: {
+      [TOOLTIP_TYPES.ACTION]: {
         placement: TOOLTIP_PLACEMENT.ACTION_BUTTON,
       },
-      navigation: {
+      [TOOLTIP_TYPES.NAVIGATION]: {
         placement: TOOLTIP_PLACEMENT.NAVIGATION,
       },
     };
