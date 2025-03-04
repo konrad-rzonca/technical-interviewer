@@ -27,7 +27,7 @@ const BestPracticesPanel = () => {
             fontSize: TYPOGRAPHY.fontSize.regularText,
             marginTop: SPACING.toUnits(SPACING.md),
           }}>
-            This tab will contain engineering best practices and guidelines.
+            This tab will contain interviewing best practices and guidelines.
           </Typography>
         </Paper>
       </Box>

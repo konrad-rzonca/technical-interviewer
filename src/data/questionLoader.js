@@ -80,11 +80,17 @@ export const sortQuestionsByOrder = (questions) => {
   });
 };
 
+// Function to create a default insight category structure
+const createDefaultInsight = (category) => ({
+  category,
+  points: [],
+});
+
 // Extract all questions from files
 const extractQuestionsFromFiles = () => {
   const allQuestions = [];
 
-  // Required answer insight levels
+  // Required answer insight levels in the exact order they should appear
   const requiredLevels = [
     ANSWER_LEVELS.BASIC,
     ANSWER_LEVELS.INTERMEDIATE,
@@ -98,29 +104,28 @@ const extractQuestionsFromFiles = () => {
         if (file && file.questions && Array.isArray(file.questions)) {
           // Add category, subcategory, and set info to each question
           const questionsWithMetadata = file.questions.map(question => {
-            // Ensure answerInsights exists
-            let answerInsights = question.answerInsights || [];
+            // Ensure answerInsights exists as an array
+            let answerInsights = Array.isArray(question.answerInsights)
+                ? question.answerInsights
+                : [];
 
             // Build a map for existing insights based on their category
             const insightsByCategory = {};
             answerInsights.forEach(insight => {
-              // If insight is missing a category, ignore it and let the default be added below.
-              if (insight.category &&
+              if (insight && typeof insight === 'object' && insight.category &&
                   requiredLevels.includes(insight.category)) {
-                insightsByCategory[insight.category] = insight;
+                // Ensure points is always an array
+                insightsByCategory[insight.category] = {
+                  ...insight,
+                  points: Array.isArray(insight.points) ? insight.points : [],
+                };
               }
             });
 
-            // Ensure that each required level is present
-            requiredLevels.forEach(level => {
-              if (!insightsByCategory[level]) {
-                insightsByCategory[level] = {category: level, points: []};
-              }
-            });
-
-            // Reconstruct the answerInsights array in the required order
-            const completeAnswerInsights = requiredLevels.map(
-                level => insightsByCategory[level]);
+            // Ensure that each required level is present in proper order
+            const completeAnswerInsights = requiredLevels.map(level =>
+                insightsByCategory[level] || createDefaultInsight(level),
+            );
 
             return {
               ...question,
