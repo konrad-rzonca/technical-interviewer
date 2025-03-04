@@ -1,14 +1,6 @@
 // src/components/AnswerLevelHorizontal.js
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-  Box,
-  ClickAwayListener,
-  Fade,
-  Grid,
-  Paper,
-  Popper,
-  Typography,
-} from '@mui/material';
+import React, {useCallback, useEffect} from 'react';
+import {Box, Grid, Tooltip, Typography} from '@mui/material';
 import {
   globalStyles,
   useAnswerLevelStyles,
@@ -16,6 +8,7 @@ import {
 } from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 import {INDEX_TO_LEVEL} from '../utils/answerConstants';
+import {useTooltip} from '../utils/useTooltip';
 
 const AnswerLevelHorizontal = ({
   answerInsights,
@@ -25,15 +18,16 @@ const AnswerLevelHorizontal = ({
   learningMode = false,
   isSmallScreen = false,
 }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [tooltipContent, setTooltipContent] = useState('');
-  const [hoveredPoints, setHoveredPoints] = useState({});
+  // Get standardized tooltip props
+  const detailsTooltipProps = useTooltip('question', {
+    placement: 'top',
+    enterDelay: 100, // Faster appearance for better UX in this context
+  });
 
   // Cleanup tooltips on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
-      setAnchorEl(null);
-      setHoveredPoints({});
+      // Any cleanup if needed
     };
   }, []);
 
@@ -51,51 +45,7 @@ const AnswerLevelHorizontal = ({
     }
   }, [onPointSelect]);
 
-  // Handle bullet point hover start
-  const handlePointMouseEnter = useCallback(
-      (event, description, categoryIndex, pointIndex) => {
-        // Set the hovered state for this point
-        const key = `${categoryIndex}-${pointIndex}`;
-        setHoveredPoints(prev => ({
-          ...prev,
-          [key]: true,
-        }));
-
-        // Set tooltip content and anchor
-        setTooltipContent(description);
-        setAnchorEl(event.currentTarget);
-      }, []);
-
-  // Handle bullet point hover end
-  const handlePointMouseLeave = useCallback((categoryIndex, pointIndex) => {
-    // Immediately close the tooltip without delay
-    setAnchorEl(null);
-
-    // Reset the hovered state for this point
-    const key = `${categoryIndex}-${pointIndex}`;
-    setHoveredPoints(prev => {
-      const newState = {...prev};
-      delete newState[key];
-      return newState;
-    });
-  }, []);
-
-  // Close tooltip immediately
-  const handleTooltipClose = useCallback(() => {
-    setAnchorEl(null);
-    // Clear all hover states
-    setHoveredPoints({});
-  }, []);
-
-  const open = Boolean(anchorEl);
-
-  // Check if a point is hovered
-  const isPointHovered = useCallback((categoryIndex, pointIndex) => {
-    const key = `${categoryIndex}-${pointIndex}`;
-    return !!hoveredPoints[key];
-  }, [hoveredPoints]);
-
-  // Check if a point is selected - now uses passed selectedPoints
+  // Check if a point is selected - uses passed selectedPoints
   const isPointSelected = useCallback((categoryIndex, pointIndex) => {
     const key = `${categoryIndex}-${pointIndex}`;
     return !!selectedPoints[key];
@@ -119,7 +69,7 @@ const AnswerLevelHorizontal = ({
               // Even indices are regular text, odd indices are code
               if (index % 2 === 0) {
                 return part ? <Typography key={index} variant="body1" sx={{
-                  mb: SPACING.toUnits(SPACING.sm),
+                  mb: 1,
                 }}>{part}</Typography> : null;
               } else {
                 return (
@@ -129,6 +79,7 @@ const AnswerLevelHorizontal = ({
                         sx={{
                           ...globalStyles.pre,
                           maxHeight: '300px',
+                          margin: '8px 0',
                         }}
                     >
                       {part}
@@ -198,66 +149,64 @@ const AnswerLevelHorizontal = ({
                         category.points.map((point, pointIndex) => {
                           const isSelected = isPointSelected(categoryIndex,
                               pointIndex);
-                          const isHovered = isPointHovered(categoryIndex,
-                              pointIndex);
                           const textStyles = useItemTextStyles(isSelected,
                               isSmallScreen);
 
                           return (
                               <Grid item xs={12} key={pointIndex}>
-                                <Box
-                                    onClick={() => handlePointClick(
-                                        categoryIndex, pointIndex)}
-                                    onMouseEnter={(e) => handlePointMouseEnter(
-                                        e, point.description, categoryIndex,
-                                        pointIndex)}
-                                    onMouseLeave={() => handlePointMouseLeave(
-                                        categoryIndex, pointIndex)}
-                                    sx={{
-                                      p: SPACING.toUnits(SPACING.md),
-                                      borderRadius: SPACING.toUnits(
-                                          SPACING.borderRadius / 2),
-                                      cursor: 'pointer',
-                                      backgroundColor: !isHovered && !isSelected
-                                          ? '#ffffff' + '80'
-                                          : `${answerStyles.hoverBg}`,
-                                      border: `1px solid ${answerStyles.color}50`,
-                                      transition: 'all 0.2s',
-                                      display: 'flex',
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      minHeight: '2.5rem',
-                                      '&:hover': {
-                                        backgroundColor: answerStyles.hoverBg,
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                                      },
-                                    }}
+                                <Tooltip
+                                    {...detailsTooltipProps}
+                                    title={formatDescription(point.description)}
                                 >
-                                  {/* Learning mode: show placeholder only when not hovered AND not selected */}
-                                  {learningMode && !isHovered && !isSelected ? (
-                                      <Box
-                                          sx={{
-                                            width: '100%',
-                                            height: '32px',
-                                            borderRadius: '6px',
-                                            backgroundColor: COLORS.grey[100],
-                                          }}
-                                      />
-                                  ) : (
-                                      <Typography
-                                          variant="body2"
-                                          sx={{
-                                            ...textStyles,
-                                            color: COLORS.text.primary,
-                                            // Improved text alignment
-                                            textAlign: 'center',
-                                            width: '100%',
-                                          }}
-                                      >
-                                        {point.title}
-                                      </Typography>
-                                  )}
-                                </Box>
+                                  <Box
+                                      onClick={() => handlePointClick(
+                                          categoryIndex, pointIndex)}
+                                      sx={{
+                                        p: SPACING.toUnits(SPACING.md),
+                                        borderRadius: SPACING.toUnits(
+                                            SPACING.borderRadius / 2),
+                                        cursor: 'pointer',
+                                        backgroundColor: !isSelected
+                                            ? '#ffffff' + '80'
+                                            : `${answerStyles.hoverBg}`,
+                                        border: `1px solid ${answerStyles.color}50`,
+                                        transition: 'all 0.2s',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        minHeight: '2.5rem',
+                                        '&:hover': {
+                                          backgroundColor: answerStyles.hoverBg,
+                                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                                        },
+                                      }}
+                                  >
+                                    {/* Learning mode: show placeholder only when not selected */}
+                                    {learningMode && !isSelected ? (
+                                        <Box
+                                            sx={{
+                                              width: '100%',
+                                              height: '32px',
+                                              borderRadius: '6px',
+                                              backgroundColor: COLORS.grey[100],
+                                            }}
+                                        />
+                                    ) : (
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                              ...textStyles,
+                                              color: COLORS.text.primary,
+                                              // Improved text alignment
+                                              textAlign: 'center',
+                                              width: '100%',
+                                            }}
+                                        >
+                                          {point.title}
+                                        </Typography>
+                                    )}
+                                  </Box>
+                                </Tooltip>
                               </Grid>
                           );
                         })}
@@ -266,46 +215,6 @@ const AnswerLevelHorizontal = ({
             );
           })}
         </Box>
-
-        {/* Large, readable tooltip */}
-        <Popper
-            open={open}
-            anchorEl={anchorEl}
-            placement="top"
-            transition
-            modifiers={[
-              {
-                name: 'offset',
-                options: {
-                  offset: [0, 10],
-                },
-              },
-            ]}
-            sx={{
-              zIndex: 1200,
-              maxWidth: '600px',
-              minWidth: '300px',
-            }}
-        >
-          {({TransitionProps}) => (
-              <ClickAwayListener onClickAway={handleTooltipClose}>
-                <Fade {...TransitionProps} timeout={100}>
-                  <Paper
-                      elevation={6}
-                      sx={{
-                        p: SPACING.toUnits(SPACING.lg),
-                        borderRadius: SPACING.toUnits(SPACING.sm),
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
-                      }}
-                  >
-                    {typeof tooltipContent === 'string'
-                        ? formatDescription(tooltipContent)
-                        : tooltipContent}
-                  </Paper>
-                </Fade>
-              </ClickAwayListener>
-          )}
-        </Popper>
       </Box>
   );
 };

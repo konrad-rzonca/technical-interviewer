@@ -6,7 +6,6 @@ import {
   IconButton,
   List,
   ListItem,
-  Rating,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -17,7 +16,9 @@ import LinkIcon from '@mui/icons-material/Link';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {getSkillLevelStyles, useTitleStyles} from '../utils/styles';
-import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
+import {COLORS, TYPOGRAPHY} from '../themes/baseTheme';
+import {useTooltip} from '../utils/useTooltip';
+import TooltipContent from './common/TooltipContent';
 
 // Related question item component for better code organization
 const RelatedQuestionItem = React.memo(({
@@ -28,32 +29,16 @@ const RelatedQuestionItem = React.memo(({
 }) => {
   const levelStyles = getSkillLevelStyles(question.skillLevel);
 
-  // Tooltip content for the question
-  const tooltipContent = (
-      <Box>
-        <Typography sx={{
-          fontSize: TYPOGRAPHY.fontSize.regularText,
-          p: SPACING.toUnits(SPACING.sm),
-        }}>
-          {question.question}
-        </Typography>
-        {isAnswered && (
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              p: SPACING.toUnits(SPACING.sm),
-            }}>
-              <Rating
-                  value={gradesMap[question.id]}
-                  readOnly
-                  size="medium"
-                  sx={{color: COLORS.basic.main}}
-              />
-            </Box>
-        )}
-      </Box>
-  );
+  // Get standardized tooltip props
+  const tooltipProps = useTooltip('related');
+
+  // Tooltip content for the question - removed category/subcategory info
+  const tooltipContent = useMemo(() => (
+      <TooltipContent
+          title={question.question}
+          rating={isAnswered ? gradesMap[question.id] : undefined}
+      />
+  ), [question.question, isAnswered, gradesMap]);
 
   return (
       <ListItem
@@ -61,9 +46,8 @@ const RelatedQuestionItem = React.memo(({
           sx={{mb: 0.75}} // Reduced margin
       >
         <Tooltip
+            {...tooltipProps}
             title={tooltipContent}
-            placement="left"
-            arrow
         >
           <Box
               onClick={() => onQuestionSelect(question)}
@@ -167,6 +151,9 @@ const RelatedQuestionsSidebar = ({
     });
   }, [filteredRelatedQuestions]);
 
+  // Get standardized tooltip props for navigation items
+  const navTooltipProps = useTooltip('navigation');
+
   return (
       <Box
           sx={{
@@ -249,15 +236,20 @@ const RelatedQuestionsSidebar = ({
               alignItems: 'center',
               pt: 1, // Added top padding
             }}>
-              <Tooltip title="Related Questions" placement="left">
+              <Tooltip
+                  {...navTooltipProps}
+                  title="Related Questions"
+              >
                 <Box
                     sx={{mb: 1.5, textAlign: 'center'}}>
                   <LinkIcon color="primary" sx={{fontSize: '1.6rem'}}/>
                 </Box>
               </Tooltip>
 
-              <Tooltip title={`${sortedQuestions.length} Related Questions`}
-                       placement="left">
+              <Tooltip
+                  {...navTooltipProps}
+                  title={`${sortedQuestions.length} Related Questions`}
+              >
                 <Badge
                     badgeContent={sortedQuestions.length}
                     color="primary"

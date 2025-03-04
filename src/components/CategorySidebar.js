@@ -29,6 +29,7 @@ import React, {useMemo, useState} from 'react';
 
 import {useTitleStyles} from '../utils/styles';
 import {COLORS, TYPOGRAPHY} from '../themes/baseTheme';
+import {useTooltip} from '../utils/useTooltip';
 
 // Constants for styling
 const CATEGORY_ITEM_PADDING = 1.2; // Reduced padding
@@ -132,6 +133,10 @@ const CategorySidebar = ({
   isCollapsed,
   onToggle, // Added onToggle prop
 }) => {
+
+  const actionTooltipProps = useTooltip('action');
+  const navTooltipProps = useTooltip('navigation');
+
   const [setMenuAnchor, setSetMenuAnchor] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -190,7 +195,7 @@ const CategorySidebar = ({
 
             <Box sx={{display: 'flex', alignItems: 'center'}}>
               {/* Sets dropdown */}
-              <Tooltip title="Select Question Sets">
+              <Tooltip {...actionTooltipProps} title="Select Question Sets">
                 <IconButton
                     size="medium"
                     onClick={(e) => {
@@ -287,7 +292,7 @@ const CategorySidebar = ({
           alignItems: 'center',
           pt: 1, // Added top padding
         }}>
-          <Tooltip title="Categories" placement="right">
+          <Tooltip {...navTooltipProps} title="Categories" placement="right">
             <Box sx={{mb: 1.5, textAlign: 'center'}}>
               <CategoryIcon color="primary" sx={{fontSize: '1.6rem'}}/>
             </Box>
@@ -299,7 +304,8 @@ const CategorySidebar = ({
                 category.id);
 
             return (
-                <Tooltip key={category.id} title={category.name}
+                <Tooltip key={category.id} {...navTooltipProps}
+                         title={category.name}
                          placement="right">
                   <Badge
                       badgeContent={activeSubcategoryCount}
