@@ -11,7 +11,7 @@ import {
 import {SKILL_LEVEL_LABELS} from '../utils/answerConstants';
 import {Box, Grid, Paper, Typography} from '@mui/material';
 import QuestionItem from './QuestionItem';
-import {SPACING} from '../themes/baseTheme';
+import {SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
 const SkillLevelSection = ({
   level,
