@@ -7,6 +7,7 @@ import memoryManagementQuestions
   from './questions/java/core-java/memory-management.json';
 import concurrencyQuestions
   from './questions/java/concurrency-multithreading/concurrency-basics.json';
+import collectionsQuestions from './questions/java/core-java/collections.json';
 
 // Question sets with author information
 const questionSets = {
@@ -17,6 +18,7 @@ const questionSets = {
       files: {
         'Fundamentals': fundamentalsQuestions,
         'Memory Management': memoryManagementQuestions,
+        'Collections': collectionsQuestions,
       },
     },
   ],
