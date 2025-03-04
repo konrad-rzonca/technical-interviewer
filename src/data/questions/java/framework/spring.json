@@ -1,0 +1,1545 @@
+﻿{
+  "category": "Frameworks",
+  "subcategory": "Spring",
+  "questions": [
+    {
+      "id": "spring-core-concepts-frameworks-s-1",
+      "skillLevel": "beginner",
+      "shortTitle": "Spring Core Concepts",
+      "question": "Could you explain the core concepts of Spring Framework and its main modules?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition and Purpose",
+              "description": "**Spring Framework** is an open-source application framework for Java that provides comprehensive infrastructure support for developing robust Java applications with features like dependency injection, aspect-oriented programming, and integrated testing support."
+            },
+            {
+              "title": "Key Core Modules",
+              "description": "The core modules include **Spring Core** (fundamental IoC container), **Spring MVC** (web framework), **Spring Data** (data access), **Spring Security** (authentication and authorization), and **Spring Boot** (simplified configuration and deployment)."
+            },
+            {
+              "title": "Design Philosophy",
+              "description": "Spring follows the principles of **POJO-based programming** (Plain Old Java Objects), **dependency injection**, **aspect-oriented programming**, and **minimizing framework invasiveness** to keep application code clean and testable."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "IoC and DI",
+              "description": "**Inversion of Control (IoC)** is the core principle where control over object creation and lifecycle is transferred from the application to the Spring container. **Dependency Injection (DI)** is an implementation of IoC where dependencies are injected rather than created by objects themselves."
+            },
+            {
+              "title": "Application Context",
+              "description": "The **ApplicationContext** is Spring's advanced container that provides enterprise features like internationalization, event publication, and resource loading, extending the basic **BeanFactory** container."
+            },
+            {
+              "title": "Module Integration",
+              "description": "Spring offers seamless integration between its modules and with external frameworks. For example, Spring Data integrates with JPA, MongoDB, and Redis, while Spring Security works with OAuth, LDAP, and other authentication systems."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Spring Module Architecture",
+              "description": "Spring's modular architecture allows selective adoption of components. The framework is built on about 20 distinct modules grouped into Core Container, Data Access/Integration, Web, AOP, Instrumentation, Messaging, and Test."
+            },
+            {
+              "title": "Evolution to Reactive",
+              "description": "Modern Spring has evolved to support **reactive programming** with Spring WebFlux and Project Reactor, enabling non-blocking, event-driven applications that can handle higher concurrency with fewer resources."
+            },
+            {
+              "title": "Spring Ecosystem",
+              "description": "The broader Spring ecosystem includes **Spring Cloud** (distributed systems and microservices), **Spring Batch** (batch processing), **Spring Integration** (enterprise integration patterns), and **Spring Security OAuth** (identity and access management)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-ioc-di-frameworks-s-2"
+      ]
+    },
+    {
+      "id": "spring-ioc-di-frameworks-s-2",
+      "skillLevel": "beginner",
+      "shortTitle": "IoC and DI",
+      "question": "Can you explain Inversion of Control (IoC) and Dependency Injection (DI) in Spring?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "IoC Concept",
+              "description": "**Inversion of Control** is a design principle where control over object creation and lifecycle is transferred from the application code to an external container (the Spring IoC container)."
+            },
+            {
+              "title": "DI Definition",
+              "description": "**Dependency Injection** is an implementation of IoC where dependencies are provided to objects rather than having the objects create or locate their dependencies. Spring manages these dependencies and injects them where needed."
+            },
+            {
+              "title": "Benefits",
+              "description": "IoC and DI lead to **looser coupling** between components, improved **testability** through easier mocking, better **modularity**, and **simplified configuration management**."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Injection Types",
+              "description": "Spring supports three main types of dependency injection: **Constructor Injection** (preferred for required dependencies), **Setter Injection** (for optional dependencies), and **Field Injection** (convenient but less testable)."
+            },
+            {
+              "title": "IoC Container Implementation",
+              "description": "Spring's IoC container is implemented through the **BeanFactory** interface and its more feature-rich extension, **ApplicationContext**. These containers read configuration metadata and manage beans accordingly."
+            },
+            {
+              "title": "Configuration Methods",
+              "description": "Dependencies can be configured using **XML configuration**, **Java-based configuration** with `@Configuration` and `@Bean`, or **annotation-based configuration** with `@Component`, `@Service`, etc., combined with `@Autowired`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Autowiring Strategies",
+              "description": "Spring supports several autowiring strategies including **byName**, **byType**, **constructor**, and **no** autowiring. When using annotations, autowiring is typically done byType with fallback mechanisms for disambiguation."
+            },
+            {
+              "title": "Circular Dependency Handling",
+              "description": "Spring detects and handles circular dependencies in certain scenarios. Constructor injection circular dependencies cannot be resolved and will fail fast, but setter injection can typically handle circular references."
+            },
+            {
+              "title": "Lazy Initialization",
+              "description": "By default, Spring eagerly initializes singleton beans at startup. Using `@Lazy` annotation or `lazy-init` attribute changes this behavior to initialize beans only when first requested, affecting how and when dependencies are injected."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-bean-lifecycle-frameworks-s-3",
+        "spring-configuration-frameworks-s-4"
+      ]
+    },
+    {
+      "id": "spring-bean-lifecycle-frameworks-s-3",
+      "skillLevel": "intermediate",
+      "shortTitle": "Bean Lifecycle",
+      "question": "Could you walk through the lifecycle of a Spring bean and how you can hook into different phases?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Instantiation",
+              "description": "The Spring container **creates an instance** of the bean using a constructor or factory method based on the bean definition."
+            },
+            {
+              "title": "Property Population",
+              "description": "The container **sets properties and dependencies** into the bean instance through setter methods or direct field injection."
+            },
+            {
+              "title": "Initialization and Destruction",
+              "description": "After property setting, various **initialization callbacks** are invoked. Similarly, when the container is shut down, **destruction callbacks** are called before the bean is destroyed."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Initialization Callbacks",
+              "description": "Spring offers multiple ways to define initialization methods: the `@PostConstruct` annotation, implementing `InitializingBean` interface (afterPropertiesSet method), or specifying an init-method in configuration."
+            },
+            {
+              "title": "Destruction Callbacks",
+              "description": "Similarly, destruction hooks include the `@PreDestroy` annotation, implementing `DisposableBean` interface (destroy method), or specifying a destroy-method in configuration."
+            },
+            {
+              "title": "Aware Interfaces",
+              "description": "Beans can implement various **Aware interfaces** (like `BeanNameAware`, `ApplicationContextAware`, `BeanFactoryAware`) to access container resources or their own metadata during initialization."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Complete Lifecycle Sequence",
+              "description": "The full sequence is: 1) Instantiation, 2) Property population, 3) BeanNameAware callback, 4) BeanFactoryAware callback, 5) ApplicationContextAware callback, 6) Pre-initialization (BeanPostProcessor), 7) InitializingBean callback, 8) Custom init-method, 9) Post-initialization (BeanPostProcessor), 10) Bean is ready, 11) Pre-destroy (DestructionAwareBeanPostProcessor), 12) DisposableBean callback, 13) Custom destroy-method."
+            },
+            {
+              "title": "BeanPostProcessors",
+              "description": "**BeanPostProcessors** allow for global customization of bean initialization and destruction. They intercept bean creation with before-initialization and after-initialization methods, enabling modifications to any bean. Many Spring features like AOP are implemented using BeanPostProcessors."
+            },
+            {
+              "title": "Lifecycle Management for Non-Singleton Beans",
+              "description": "Destruction callbacks are only guaranteed for singleton beans. For prototype-scoped beans, Spring doesn't manage the complete lifecycle, and the client code must handle cleanup. Custom bean scopes can use `DestructionAwareBeanPostProcessor` to manage resources properly."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-bean-scopes-frameworks-s-7"
+      ]
+    },
+    {
+      "id": "spring-configuration-frameworks-s-4",
+      "skillLevel": "beginner",
+      "shortTitle": "Spring Configuration",
+      "question": "What are the different ways to configure a Spring application, and what are the trade-offs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "XML Configuration",
+              "description": "Traditional approach using XML files (e.g., `applicationContext.xml`) to define beans and their dependencies. XML configuration is explicit and separates configuration from code, but can be verbose and lacks type safety."
+            },
+            {
+              "title": "Annotation-Based Configuration",
+              "description": "Using annotations like `@Component`, `@Service`, `@Repository`, and `@Controller` for component scanning, along with `@Autowired` for dependency injection. This reduces XML verbosity and keeps configuration closer to code."
+            },
+            {
+              "title": "Java-Based Configuration",
+              "description": "Using `@Configuration` classes with `@Bean` methods to define beans programmatically. This offers type safety, refactoring support, and the full power of Java while maintaining separation of concerns."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Hybrid Approaches",
+              "description": "Most real-world applications use a combination of these approaches. For example, using Java configuration for application beans while enabling component scanning with `@ComponentScan` and still using some XML for legacy integration."
+            },
+            {
+              "title": "Property Sources",
+              "description": "Configuration values can be externalized in properties files, environment variables, or command-line arguments using `@PropertySource`, `@Value`, and the `Environment` abstraction, or through Spring Boot's application.properties/application.yml files."
+            },
+            {
+              "title": "Profiles",
+              "description": "Spring Profiles (`@Profile`) allow for environment-specific bean configurations, enabling different beans to be active in different environments (dev, test, prod) without code changes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Configuration Composition",
+              "description": "Spring supports modular configuration through `@Import` annotations, XML imports, and composition of configuration classes, allowing for separation of concerns and reuse of configuration modules."
+            },
+            {
+              "title": "Conditional Configuration",
+              "description": "Using `@Conditional` and its derivatives (`@ConditionalOnBean`, `@ConditionalOnProperty`, etc.) enables sophisticated conditional bean registration based on the presence of classes, beans, properties, or custom conditions."
+            },
+            {
+              "title": "Boot Auto-Configuration",
+              "description": "Spring Boot extends the configuration model with auto-configuration, which automatically configures beans based on classpath contents, properties, and existing beans. This is implemented using conditional configuration and can be customized or overridden when needed."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-boot-features-frameworks-s-10"
+      ]
+    },
+    {
+      "id": "spring-mvc-frameworks-s-5",
+      "skillLevel": "beginner",
+      "shortTitle": "Spring MVC",
+      "question": "How does Spring MVC work, and what are its key components?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "MVC Pattern",
+              "description": "Spring MVC implements the **Model-View-Controller** pattern where the **Model** represents data, the **View** renders the UI, and the **Controller** handles user requests and updates the model."
+            },
+            {
+              "title": "DispatcherServlet",
+              "description": "The **DispatcherServlet** is the front controller that receives all HTTP requests and dispatches them to appropriate handlers (controllers). It coordinates the entire request processing workflow."
+            },
+            {
+              "title": "Controllers",
+              "description": "Controllers are typically annotated with `@Controller` and contain methods annotated with `@RequestMapping` (or variants like `@GetMapping`, `@PostMapping`) to handle specific URLs and HTTP methods."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Request Processing Flow",
+              "description": "The typical flow is: 1) Request received by DispatcherServlet, 2) Handler mapping finds appropriate controller, 3) Controller processes request and returns a ModelAndView, 4) ViewResolver resolves the logical view name to an actual view, 5) View renders the model data, 6) Response returned to client."
+            },
+            {
+              "title": "Model and ModelAndView",
+              "description": "The **Model** is a Map-like object for storing attributes that will be exposed to the view. **ModelAndView** combines model attributes with a logical view name or a View object."
+            },
+            {
+              "title": "Handler Mappings and Adapters",
+              "description": "**HandlerMapping** determines which controller should process a request. **HandlerAdapter** allows the DispatcherServlet to invoke controllers regardless of how they're defined (annotations, interfaces, etc.)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Form Data Binding and Validation",
+              "description": "Spring MVC provides robust data binding from request parameters to model objects and integrates with Bean Validation (JSR-303) for validation. Validators can be defined as beans or through annotations like `@Valid`."
+            },
+            {
+              "title": "Exception Handling",
+              "description": "Spring MVC offers several approaches for exception handling: `@ExceptionHandler` methods in controllers, global `@ControllerAdvice` classes for centralized exception handling, SimpleMappingExceptionResolver, and custom HandlerExceptionResolvers."
+            },
+            {
+              "title": "Asynchronous Processing",
+              "description": "Spring MVC supports asynchronous request processing using `DeferredResult`, `Callable`, `WebAsyncTask`, and the `@Async` annotation, enabling non-blocking request handling for long-running operations or integrating with reactive programming models."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-rest-frameworks-s-6"
+      ]
+    },
+    {
+      "id": "spring-rest-frameworks-s-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "RESTful Services",
+      "question": "How would you implement RESTful web services with Spring?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Spring MVC Annotations",
+              "description": "Use `@RestController` (combines `@Controller` and `@ResponseBody`) to indicate that method return values should be bound to the web response body. Map endpoints with `@RequestMapping`, `@GetMapping`, `@PostMapping`, etc."
+            },
+            {
+              "title": "Request and Response",
+              "description": "Use `@RequestBody` to bind request JSON/XML to objects, `@ResponseBody` to serialize return values to the response, and `@PathVariable`/`@RequestParam` to extract values from the URL or query string."
+            },
+            {
+              "title": "Content Negotiation",
+              "description": "Spring automatically handles content negotiation between different formats (JSON, XML, etc.) based on Accept headers, file extensions, or query parameters, with appropriate message converters."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "HTTP Status Codes",
+              "description": "Return appropriate HTTP status codes using `ResponseEntity<T>` or `@ResponseStatus`. Follow REST conventions: 200 for success, 201 for creation, 204 for no content, 4xx for client errors, 5xx for server errors."
+            },
+            {
+              "title": "Exception Handling",
+              "description": "Use `@ExceptionHandler` methods in controllers or `@ControllerAdvice` classes to handle exceptions and return appropriate error responses, status codes, and messages."
+            },
+            {
+              "title": "HATEOAS",
+              "description": "Spring HATEOAS provides classes like `EntityModel`, `CollectionModel`, and `WebMvcLinkBuilder` to create representations with hypermedia links, following the HATEOAS constraint of REST."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "API Documentation",
+              "description": "Integrate Swagger/OpenAPI using SpringFox or SpringDoc to automatically generate API documentation from controller methods and model classes, with annotations to enhance documentation."
+            },
+            {
+              "title": "API Versioning",
+              "description": "Implement versioning strategies like URL path versioning (/v1/users), request parameter versioning (?version=1), custom headers (X-API-Version), or content negotiation (Accept: application/vnd.company.app-v1+json)."
+            },
+            {
+              "title": "Reactive REST",
+              "description": "For high-concurrency scenarios, use Spring WebFlux with `@RestController` returning `Mono<T>` or `Flux<T>` types to build non-blocking RESTful services with improved scalability for I/O-bound operations."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-mvc-frameworks-s-5",
+        "spring-webflux-frameworks-s-21"
+      ]
+    },
+    {
+      "id": "spring-bean-scopes-frameworks-s-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Bean Scopes",
+      "question": "What are the different bean scopes in Spring, and when would you use each?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Singleton",
+              "description": "The default scope where a single instance of the bean is created and shared across the entire application context. This is appropriate for stateless beans, services, and most business logic components."
+            },
+            {
+              "title": "Prototype",
+              "description": "A new instance is created each time the bean is requested from the container. Use for stateful beans where each client needs its own instance, or when a bean maintains state that shouldn't be shared."
+            },
+            {
+              "title": "Request",
+              "description": "Each HTTP request gets its own bean instance. It's created when the request starts and destroyed when the request completes. Useful for storing request-specific data in web applications."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Session",
+              "description": "One instance per HTTP session in web applications. The bean is created when the session starts and destroyed when the session ends. Appropriate for user-specific data that needs to persist across multiple requests."
+            },
+            {
+              "title": "Application",
+              "description": "One instance per ServletContext in web applications. Similar to singleton but scoped at the ServletContext level rather than the Spring ApplicationContext level."
+            },
+            {
+              "title": "WebSocket",
+              "description": "One instance per WebSocket session. Used for maintaining state tied to a WebSocket connection in applications using Spring's WebSocket support."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Scoped Proxies",
+              "description": "When a shorter-lived bean (e.g., request-scoped) is injected into a longer-lived bean (e.g., singleton), a proxy must be used. Configure with `@Scope(proxyMode=ScopedProxyMode.TARGET_CLASS)` or in XML with `<aop:scoped-proxy/>`."
+            },
+            {
+              "title": "Custom Scopes",
+              "description": "Spring allows defining custom bean scopes by implementing the `Scope` interface and registering with `CustomScopeConfigurer`. This is useful for very specific scoping requirements like tenant-specific scopes in multi-tenant applications."
+            },
+            {
+              "title": "Lifecycle Management Challenges",
+              "description": "Spring fully manages singleton bean lifecycle (including destruction callbacks), but prototype beans are not destroyed automatically. For web scopes (request/session), destruction is tied to the servlet lifecycle. Custom resource cleanup might be needed, especially for prototype beans."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-bean-lifecycle-frameworks-s-3"
+      ]
+    },
+    {
+      "id": "spring-aop-frameworks-s-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Aspect-Oriented Programming",
+      "question": "Could you explain Spring's AOP capabilities and how it can be used to address cross-cutting concerns?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "AOP Concept",
+              "description": "Aspect-Oriented Programming (AOP) complements OOP by addressing cross-cutting concerns that span multiple components, like logging, security, or transactions, without tangling them with business logic."
+            },
+            {
+              "title": "Core AOP Terminology",
+              "description": "Key terms include **Aspect** (modularization of a concern), **Join Point** (point in program execution), **Advice** (action taken at join point), **Pointcut** (expression matching join points), and **Weaving** (linking aspects with objects)."
+            },
+            {
+              "title": "Spring AOP vs AspectJ",
+              "description": "Spring AOP uses runtime proxies and is simpler but limited to method execution join points. AspectJ is more powerful with bytecode weaving and additional join point types, but more complex. Spring provides AspectJ integration for advanced scenarios."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Advice Types",
+              "description": "Spring supports five types of advice: **@Before** (runs before method), **@After** (runs after method, regardless of outcome), **@AfterReturning** (runs after successful completion), **@AfterThrowing** (runs if exception thrown), and **@Around** (most powerful, controls method execution)."
+            },
+            {
+              "title": "Pointcut Expressions",
+              "description": "Spring uses AspectJ's pointcut expression language. Common syntax includes `execution()` for method matching, `within()` for type matching, `this()`, `target()`, and `@annotation()` for matching based on annotations."
+            },
+            {
+              "title": "AOP Configuration",
+              "description": "Spring AOP can be configured with XML (`<aop:config>`) or annotations. For annotation-based, use `@Aspect` on aspect class, `@EnableAspectJAutoProxy` on configuration, and appropriate advice annotations on methods."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Proxy Mechanisms",
+              "description": "Spring AOP uses either JDK dynamic proxies (for interfaces) or CGLIB proxies (for classes). This creates a proxy object that intercepts method calls, which has important implications: self-invocation doesn't work, only public methods are advised, and proxied objects may not be cast to their implementation types."
+            },
+            {
+              "title": "Common AOP Use Cases",
+              "description": "Spring uses AOP internally for transactions (`@Transactional`), caching (`@Cacheable`), and security (`@Secured`). Custom aspects commonly address logging, performance monitoring, retry logic, validation, and error handling."
+            },
+            {
+              "title": "Advanced AspectJ Integration",
+              "description": "For more complex scenarios requiring field access, constructor interception, or compile-time weaving, Spring integrates with full AspectJ. This requires `spring-aspects` module and AspectJ weaver configuration via load-time weaving or compile-time weaving."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-transactions-frameworks-s-13"
+      ]
+    },
+    {
+      "id": "spring-data-frameworks-s-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Data",
+      "question": "How does Spring Data simplify data access, and what are its key components?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Repository Abstraction",
+              "description": "Spring Data provides a **repository abstraction** that eliminates boilerplate data access code. By extending interfaces like `CrudRepository`, `JpaRepository`, or `MongoRepository`, you get basic CRUD operations for free."
+            },
+            {
+              "title": "Query Methods",
+              "description": "Define **query methods** by method name conventions (e.g., `findByLastName`) and Spring Data automatically generates the implementation. No SQL or query language code needed for common queries."
+            },
+            {
+              "title": "Multiple Data Stores",
+              "description": "Spring Data has modules for various data stores including **JPA** (relational), **MongoDB**, **Redis**, **Cassandra**, **Elasticsearch**, and more, each providing consistent APIs while leveraging store-specific features."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Custom Queries",
+              "description": "For complex queries, use the `@Query` annotation with native SQL or JPQL/HQL, named queries, query by example (QBE), or specifications (criteria API). Spring Data handles parameter binding and result mapping."
+            },
+            {
+              "title": "Paging and Sorting",
+              "description": "Built-in support for pagination and sorting by accepting `Pageable` or `Sort` parameters in repository methods, returning `Page` or `Slice` objects with metadata about the query results."
+            },
+            {
+              "title": "Auditing",
+              "description": "Spring Data provides auditing capabilities to automatically track who created or modified entities and when, using `@CreatedBy`, `@LastModifiedBy`, `@CreatedDate`, and `@LastModifiedDate` annotations along with `@EnableJpaAuditing`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Repository Implementation",
+              "description": "Combine generated repositories with custom implementation using the repository composition pattern. Define a custom interface with additional methods, implement them separately, and Spring Data merges the implementations."
+            },
+            {
+              "title": "Query DSL Integration",
+              "description": "For type-safe queries, Spring Data integrates with **Querydsl**, enabling fluent API queries with compile-time syntax checking. Extend `QuerydslPredicateExecutor` or use the `QuerydslRepositorySupport` base class."
+            },
+            {
+              "title": "Projections",
+              "description": "Use **projections** to retrieve partial entities or custom result shapes via interfaces with getter methods, class-based projections, or dynamic projections, optimizing performance by fetching only needed data."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-transactions-frameworks-s-13"
+      ]
+    },
+    {
+      "id": "spring-boot-features-frameworks-s-10",
+      "skillLevel": "beginner",
+      "shortTitle": "Spring Boot",
+      "question": "What are the key features of Spring Boot and how does it simplify Spring application development?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Auto-configuration",
+              "description": "Spring Boot **automatically configures** beans based on classpath dependencies, properties, and existing beans. For example, it auto-configures JPA with Hibernate if it detects the libraries and a database driver on the classpath."
+            },
+            {
+              "title": "Starter Dependencies",
+              "description": "**Spring Boot Starters** are curated dependency packages that simplify build configuration. Instead of listing individual libraries, you add a single starter (e.g., `spring-boot-starter-web`) that brings in compatible versions of everything needed."
+            },
+            {
+              "title": "Embedded Servers",
+              "description": "Applications include **embedded servers** (Tomcat, Jetty, or Undertow) by default, eliminating the need for deployment to external servers. This enables standalone applications with `java -jar` execution."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Simplified Configuration",
+              "description": "Spring Boot uses **application.properties** or **application.yml** files for externalized configuration, combined with a powerful property binding and conversion system. It also offers profiles for environment-specific configuration."
+            },
+            {
+              "title": "Production-Ready Features",
+              "description": "Spring Boot Actuator provides **production-ready features** like health checks, metrics, info endpoints, environment details, and more through HTTP or JMX endpoints, enabling effective monitoring and management."
+            },
+            {
+              "title": "Developer Tools",
+              "description": "**Developer tools** for rapid development include automatic restart when code changes, LiveReload for browser refreshing, remote debugging, and enhanced property defaults for development environments."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Customizing Auto-configuration",
+              "description": "Spring Boot offers several ways to customize or override auto-configuration: using `@EnableAutoConfiguration(exclude={...})`, setting `spring.autoconfigure.exclude` property, creating custom auto-configuration classes with `@ConditionalOnXYZ` annotations, or simply defining your own beans."
+            },
+            {
+              "title": "Externalized Configuration Hierarchy",
+              "description": "Spring Boot implements a sophisticated configuration hierarchy with predictable overriding: 1) Command-line arguments, 2) JNDI attributes, 3) Java System properties, 4) OS environment variables, 5) Profile-specific properties, 6) Application properties, 7) `@PropertySource` annotations, 8) Default properties."
+            },
+            {
+              "title": "Application Events and Listeners",
+              "description": "Spring Boot extends Spring's event system with additional events like `ApplicationStartedEvent`, `ApplicationReadyEvent`, and `ApplicationFailedEvent`. These can be used with `@EventListener` methods or by implementing `ApplicationListener` to execute logic at specific points in the application lifecycle."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-boot-starters-frameworks-s-11"
+      ]
+    },
+    {
+      "id": "spring-boot-starters-frameworks-s-11",
+      "skillLevel": "beginner",
+      "shortTitle": "Spring Boot Starters",
+      "question": "What are Spring Boot Starters and how do they simplify dependency management?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Starter Concept",
+              "description": "**Spring Boot Starters** are curated sets of dependencies designed to provide everything needed for a specific functionality. They're named with the pattern `spring-boot-starter-*` for official starters."
+            },
+            {
+              "title": "Common Starters",
+              "description": "Popular starters include **spring-boot-starter-web** (for web applications), **spring-boot-starter-data-jpa** (for JPA data access), **spring-boot-starter-security** (for security), and **spring-boot-starter-test** (for testing)."
+            },
+            {
+              "title": "Benefits",
+              "description": "Starters eliminate the need to search for and specify individual libraries and versions, reduce the risk of version conflicts, and ensure compatibility between components."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Transitive Dependencies",
+              "description": "Each starter pulls in **transitive dependencies** that it needs. For example, `spring-boot-starter-web` includes Spring MVC, embedded Tomcat, Jackson for JSON processing, validation, and logging libraries."
+            },
+            {
+              "title": "Dependency Management",
+              "description": "Spring Boot's **dependency management** system (via `spring-boot-dependencies`) pre-defines versions for hundreds of libraries, ensuring that all dependencies work together without explicitly specifying versions."
+            },
+            {
+              "title": "Auto-configuration",
+              "description": "Starters often include **auto-configuration** code that automatically configures the libraries they bring in based on classpath detection, existing beans, and properties, eliminating the need for most manual configuration."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Customizing Starters",
+              "description": "Exclude unwanted dependencies from starters using Maven's `<exclusions>` or Gradle's `exclude` configurations. For example, switching from Tomcat to Jetty by excluding Tomcat and adding Jetty starter."
+            },
+            {
+              "title": "Creating Custom Starters",
+              "description": "Create custom starters for reusable functionality by combining: 1) An **autoconfigure module** with auto-configuration classes, 2) A **starter module** that brings in the autoconfigure module and necessary dependencies. Follow conventions from Spring Boot's documentation."
+            },
+            {
+              "title": "Versioning Strategy",
+              "description": "Spring Boot's versioning strategy releases the framework and starters with synced version numbers. This allows applications to specify just the Boot version and let its dependency management handle compatible versions of all starter components."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-boot-features-frameworks-s-10",
+        "spring-boot-actuator-frameworks-s-12"
+      ]
+    },
+    {
+      "id": "spring-boot-actuator-frameworks-s-12",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Boot Actuator",
+      "question": "How can Spring Boot Actuator help with monitoring and managing applications in production?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Actuator Overview",
+              "description": "**Spring Boot Actuator** adds production-ready features to applications with minimal setup. Add the `spring-boot-starter-actuator` dependency to enable monitoring and management capabilities via HTTP endpoints or JMX."
+            },
+            {
+              "title": "Core Endpoints",
+              "description": "Key endpoints include **/health** (application health information), **/info** (application information), **/metrics** (application metrics), and **/env** (environment properties)."
+            },
+            {
+              "title": "Basic Security",
+              "description": "Actuator endpoints are sensitive by default and secured when Spring Security is present. You can configure which endpoints are exposed and how they're secured using properties like `management.endpoints.web.exposure.include`."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Health Indicators",
+              "description": "The health endpoint aggregates **health indicators** for various components (database, disk space, message brokers, etc.). Custom health indicators can be created by implementing the `HealthIndicator` interface or extending `AbstractHealthIndicator`."
+            },
+            {
+              "title": "Metrics Collection",
+              "description": "Actuator integrates with **Micrometer** to provide a vendor-neutral metrics facade supporting monitoring systems like Prometheus, Datadog, New Relic, and Influx/Graphite. Custom metrics can be created using `MeterRegistry`."
+            },
+            {
+              "title": "Endpoint Customization",
+              "description": "Customize endpoints by enabling/disabling them individually, changing their paths, or configuring caching behavior. Create custom endpoints using `@Endpoint`, `@ReadOperation`, `@WriteOperation`, and `@DeleteOperation` annotations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Advanced Monitoring Integration",
+              "description": "Actuator's metrics can be integrated with advanced monitoring stacks. Common patterns include Prometheus + Grafana dashboards, or integration with distributed tracing systems like Zipkin or Jaeger via Spring Cloud Sleuth."
+            },
+            {
+              "title": "JMX Exposure",
+              "description": "Beyond HTTP endpoints, Actuator exposes capabilities via JMX (Java Management Extensions), allowing integration with JMX consoles like JConsole and VisualVM. Configure with `management.endpoints.jmx.exposure` properties."
+            },
+            {
+              "title": "Production Techniques",
+              "description": "Best practices for production use include: 1) Configuring secure access to endpoints with Spring Security, 2) Setting up health checks for container orchestration systems (Kubernetes, etc.), 3) Collecting and centralizing metrics and logs, 4) Creating custom indicators for application-specific health checks, and 5) Implementing correlation IDs for request tracing."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-boot-features-frameworks-s-10"
+      ]
+    },
+    {
+      "id": "spring-transactions-frameworks-s-13",
+      "skillLevel": "intermediate",
+      "shortTitle": "Transaction Management",
+      "question": "How does Spring manage transactions, and what are the different propagation levels?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Transaction Management Approaches",
+              "description": "Spring offers both **programmatic** transaction management (using `TransactionTemplate` or `PlatformTransactionManager` directly) and **declarative** transaction management (using `@Transactional` annotation or XML configuration), with declarative being most common."
+            },
+            {
+              "title": "Transaction Managers",
+              "description": "Spring provides different `PlatformTransactionManager` implementations for various data access technologies: `DataSourceTransactionManager` for JDBC, `JpaTransactionManager` for JPA, `HibernateTransactionManager` for Hibernate, etc."
+            },
+            {
+              "title": "Basic @Transactional Usage",
+              "description": "Annotate methods or classes with `@Transactional` to define transaction boundaries. Spring creates a proxy that wraps the bean and manages transactions, starting one before method execution and committing or rolling back afterward."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Propagation Behaviors",
+              "description": "**REQUIRED** (default): Use current transaction or create new one if none exists.\n**REQUIRES_NEW**: Always create a new transaction, suspending current if exists.\n**SUPPORTS**: Use current transaction if exists, otherwise non-transactional.\n**NOT_SUPPORTED**: Execute non-transactionally, suspending current if exists.\n**MANDATORY**: Use current transaction, throw exception if none exists.\n**NEVER**: Execute non-transactionally, throw exception if transaction exists.\n**NESTED**: Execute in nested transaction if one exists, otherwise like REQUIRED."
+            },
+            {
+              "title": "Isolation Levels",
+              "description": "Isolation levels control how transactions interact: **DEFAULT** (database default), **READ_UNCOMMITTED** (dirty reads), **READ_COMMITTED** (non-repeatable reads), **REPEATABLE_READ** (phantom reads), and **SERIALIZABLE** (complete isolation but lowest concurrency)."
+            },
+            {
+              "title": "Rollback Rules",
+              "description": "By default, transactions roll back for unchecked exceptions (RuntimeException and Error) but commit for checked exceptions. Customize with `rollbackFor`/`noRollbackFor` attributes to specify which exceptions trigger rollback."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Transaction Pitfalls",
+              "description": "Common pitfalls include: 1) Self-invocation bypassing proxy (calls within the same class), 2) Using private/protected methods (not proxied), 3) Checked exceptions not causing rollback by default, 4) Missing `@EnableTransactionManagement` in configuration, and 5) Multiple transaction managers requiring explicit selection with `transactionManager` attribute."
+            },
+            {
+              "title": "Read-Only Transactions",
+              "description": "Set `readOnly=true` for read-only operations. This is a hint that may be used by some transaction managers for optimization (e.g., Hibernate can avoid dirty checking), but behavior is database and framework-specific."
+            },
+            {
+              "title": "Distributed Transactions",
+              "description": "For operations spanning multiple resources (e.g., two databases or database + message queue), Spring supports JTA (Java Transaction API) with `JtaTransactionManager`. Alternatively, consider eventual consistency patterns or the Saga pattern for distributed transaction management."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-data-frameworks-s-9"
+      ]
+    },
+    {
+      "id": "spring-security-frameworks-s-14",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Security",
+      "question": "Could you explain how Spring Security works and how to implement authentication and authorization?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Architecture",
+              "description": "Spring Security is built around a **filter chain** where each filter handles a specific aspect of security. The `SecurityFilterChain` is registered with the `FilterChainProxy`, which is itself a servlet filter known as the `springSecurityFilterChain`."
+            },
+            {
+              "title": "Basic Configuration",
+              "description": "Configure Spring Security with `@EnableWebSecurity` and by extending `WebSecurityConfigurerAdapter` (deprecated in newer versions) or by defining a `SecurityFilterChain` bean. Configuration includes authentication, authorization rules, CSRF protection, session management, etc."
+            },
+            {
+              "title": "Authentication Methods",
+              "description": "Spring Security supports various authentication mechanisms including form-based login, HTTP Basic, OAuth2/OpenID Connect, LDAP, and custom authentication providers. Configuration is typically done in the `configure(AuthenticationManagerBuilder auth)` method or by defining an `AuthenticationManager` bean."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Authorization Models",
+              "description": "Spring Security provides URL-based authorization through `antMatchers()`, `mvcMatchers()`, or `regexMatchers()` with role/authority checks. Method-level security uses annotations like `@PreAuthorize`, `@PostAuthorize`, `@Secured`, and `@RolesAllowed` with expression-based access control."
+            },
+            {
+              "title": "UserDetailsService",
+              "description": "The `UserDetailsService` interface is central to authentication, retrieving user details by username. Implement it to connect to your user store (database, LDAP, etc.) or use built-in implementations like `InMemoryUserDetailsManager` or `JdbcUserDetailsManager`."
+            },
+            {
+              "title": "Password Encoding",
+              "description": "Spring Security uses `PasswordEncoder` to securely store and validate passwords. Modern applications should use `BCryptPasswordEncoder`, `Pbkdf2PasswordEncoder`, or `SCryptPasswordEncoder` rather than plain text or MD5/SHA hashing."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "JWT Authentication",
+              "description": "Implement JWT (JSON Web Token) authentication with Spring Security by creating custom filters (`JwtAuthenticationFilter`, `JwtAuthorizationFilter`) and integrating them into the security filter chain. This typically involves verifying tokens, extracting claims, and setting the `SecurityContext`."
+            },
+            {
+              "title": "OAuth2 Integration",
+              "description": "Spring Security provides comprehensive OAuth2 support for both client and server scenarios. As a client, configure with `oauth2Login()` or `oauth2Client()`. As a resource server, use `oauth2ResourceServer()` with JWT or opaque token validation. For authorization servers, Spring Authorization Server is the modern approach."
+            },
+            {
+              "title": "Custom Security Extensions",
+              "description": "Extend Spring Security with custom components: 1) `AuthenticationProvider` for custom authentication logic, 2) `AccessDecisionVoter` for custom authorization rules, 3) Custom filters for pre-authentication or specialized processing, 4) `MethodSecurityExpressionHandler` for custom expressions in method security, and 5) `PermissionEvaluator` for fine-grained object permissions."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-testing-frameworks-s-15",
+      "skillLevel": "intermediate",
+      "shortTitle": "Testing in Spring",
+      "question": "What are the different approaches to testing Spring applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Spring Test Module",
+              "description": "Spring provides a dedicated testing module with support for unit and integration testing, including context caching, transaction management, and mock objects. Add `spring-boot-starter-test` dependency for Spring Boot applications."
+            },
+            {
+              "title": "Unit Testing",
+              "description": "Test individual components in isolation using **JUnit** or **TestNG** with mocking frameworks like **Mockito** or **EasyMock**. Spring's `MockitoAnnotations.openMocks()` or `@ExtendWith(MockitoExtension.class)` helps with initialization of mocks."
+            },
+            {
+              "title": "Integration Testing",
+              "description": "Use `@SpringBootTest` for full application context testing or `@WebMvcTest`/`@DataJpaTest`/`@JdbcTest` for focused slice testing of specific layers. These annotations load relevant parts of the application context for testing."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Spring MVC Test",
+              "description": "Test Spring MVC controllers using `MockMvc` for simulating HTTP requests without a server. Configure with `@WebMvcTest` or `MockMvcBuilders`, then perform requests with `.perform(get(\"/path\"))` and verify responses with `.andExpect()` assertions."
+            },
+            {
+              "title": "Data Layer Testing",
+              "description": "Use `@DataJpaTest` for testing JPA repositories with an in-memory database, or `@JdbcTest` for JDBC components. These provide transaction rollback after tests and configured datasources. `TestEntityManager` helps with JPA testing without repositories."
+            },
+            {
+              "title": "TestRestTemplate and WebTestClient",
+              "description": "For testing REST endpoints, use `TestRestTemplate` (blocking) or `WebTestClient` (reactive) to make actual HTTP requests to a running application. These work well with `@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Test Configuration",
+              "description": "Override beans for testing with `@TestConfiguration` classes, `@MockBean`/`@SpyBean` for replacing beans with mocks, and `@ActiveProfiles` for selecting specific profiles. Use `@DynamicPropertySource` for dynamic property values (e.g., with Testcontainers)."
+            },
+            {
+              "title": "Testcontainers Integration",
+              "description": "Use Testcontainers with Spring to test against real databases, message brokers, or other services in Docker containers. This provides more realistic testing than in-memory alternatives while maintaining isolation and clean state between tests."
+            },
+            {
+              "title": "Test Slices and Performance",
+              "description": "Optimize test performance with focused test slices, context caching strategies, and selective component scanning. Avoid `@DirtiesContext` when possible and use parallel test execution. Consider when to use unit tests vs. slice tests vs. full context tests based on speed and fidelity requirements."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-profiles-frameworks-s-16",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Profiles",
+      "question": "How do Spring Profiles help with environment-specific configurations?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Profile Concept",
+              "description": "**Spring Profiles** provide a way to define beans that should only be active in specific environments or conditions. Profiles allow different configurations for development, testing, staging, and production environments."
+            },
+            {
+              "title": "Declaring Profiles",
+              "description": "Add `@Profile(\"profileName\")` to `@Component`, `@Configuration` classes, or individual `@Bean` methods to specify when they should be active. Beans without profile restrictions are always active."
+            },
+            {
+              "title": "Activating Profiles",
+              "description": "Activate profiles using environment variables (`spring.profiles.active`), JVM system properties, web.xml parameters, or programmatically with `SpringApplication.setAdditionalProfiles()`. Multiple profiles can be active simultaneously."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Property Files",
+              "description": "Use profile-specific property files with naming conventions like `application-{profile}.properties` or `application-{profile}.yml` that override values from the default `application.properties` when that profile is active."
+            },
+            {
+              "title": "Profile Groups",
+              "description": "Since Spring Boot 2.4, define profile groups with `spring.profiles.group` to activate multiple profiles together. For example, `spring.profiles.group.production=prod,audit,metrics` activates all three profiles when \"production\" is active."
+            },
+            {
+              "title": "Profile Expressions",
+              "description": "Use logical expressions with `@Profile`: `!dev` (not dev), `dev & staging` (both dev and staging), or `dev | staging` (either dev or staging). This allows for complex conditional bean registration."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Default Profiles",
+              "description": "Set default profiles with `spring.profiles.default` property or `setDefaultProfiles()` method. These are used when no profile is explicitly activated, providing fallback configuration."
+            },
+            {
+              "title": "Profile vs. Property Placeholder",
+              "description": "Understand when to use profiles vs. property placeholders. Use profiles for structural differences (different beans or components) and property placeholders (`${property}`) for value differences (endpoints, credentials, etc.)."
+            },
+            {
+              "title": "Testing with Profiles",
+              "description": "In tests, activate profiles with `@ActiveProfiles` annotation on test classes. Create test-specific profiles for mocked dependencies or specialized configurations. Combine with `@TestPropertySource` for fine-grained control over test properties."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-configuration-frameworks-s-4"
+      ]
+    },
+    {
+      "id": "spring-cloud-frameworks-s-17",
+      "skillLevel": "advanced",
+      "shortTitle": "Spring Cloud",
+      "question": "What is Spring Cloud and how does it help build distributed systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Overview",
+              "description": "**Spring Cloud** provides tools for developers to quickly build common distributed system patterns (e.g., configuration management, service discovery, circuit breakers, routing, etc.) for applications running in any distributed environment."
+            },
+            {
+              "title": "Key Components",
+              "description": "Major components include **Spring Cloud Config** (centralized configuration), **Eureka** (service discovery), **Ribbon** (client-side load balancing), **Feign** (declarative REST clients), **Hystrix/Resilience4j** (circuit breaker), and **Zuul/Spring Cloud Gateway** (API gateway)."
+            },
+            {
+              "title": "Microservices Support",
+              "description": "Spring Cloud simplifies microservices development by addressing cross-cutting concerns like service-to-service communication, distributed configuration, resilience patterns, and observability, allowing developers to focus on business logic."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Service Discovery",
+              "description": "Spring Cloud Netflix Eureka or Consul enables automatic registration and discovery of microservices. Services register themselves with the discovery server, and clients query the server to locate services by name rather than hardcoded URLs."
+            },
+            {
+              "title": "Configuration Management",
+              "description": "Spring Cloud Config provides centralized, version-controlled configuration for all environments and services. It supports Git, SVN, or file system backends and allows real-time configuration updates without service restarts via refresh events."
+            },
+            {
+              "title": "Circuit Breaker Pattern",
+              "description": "Spring Cloud Circuit Breaker (with Resilience4j, Hystrix, or Sentinel) implements the circuit breaker pattern to prevent cascading failures. When a service fails, the circuit opens, and fallback strategies are employed until the service recovers."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Distributed Tracing",
+              "description": "Spring Cloud Sleuth with Zipkin provides distributed tracing across microservices, generating trace IDs and span IDs that flow through service calls. This enables visualization of request flows and latency bottlenecks in complex microservice architectures."
+            },
+            {
+              "title": "API Gateway Patterns",
+              "description": "Spring Cloud Gateway offers a reactive, non-blocking API gateway for routing, filtering, and load balancing. It supports WebSocket, integrates with service discovery, and allows sophisticated routing and filtering predicates beyond simple URL matching."
+            },
+            {
+              "title": "Stream Processing",
+              "description": "Spring Cloud Stream provides an abstraction layer over message brokers (RabbitMQ, Kafka, etc.) with a publisher-subscriber model. It enables event-driven microservices architectures with consistent programming model regardless of the underlying message broker."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-batch-frameworks-s-18",
+      "skillLevel": "advanced",
+      "shortTitle": "Spring Batch",
+      "question": "How does Spring Batch help with batch processing, and what are its key components?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Spring Batch** provides a robust framework for developing batch applications that process large volumes of data with features like transaction management, job processing statistics, job restart, skip, and resource management."
+            },
+            {
+              "title": "Core Components",
+              "description": "The main components are **Job** (a batch process consisting of steps), **Step** (a phase in a job with readers, processors, and writers), **JobRepository** (stores job metadata), and **JobLauncher** (runs jobs with parameters)."
+            },
+            {
+              "title": "Basic Architecture",
+              "description": "Spring Batch follows the \"chunk-oriented processing\" pattern where data is read, processed, and written in chunks. This allows for transaction boundaries and restart capabilities at chunk boundaries rather than the entire job."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Job Configuration",
+              "description": "Jobs are configured using the Job builder API in Java configuration with `@EnableBatchProcessing`. A typical setup includes defining an `ItemReader`, `ItemProcessor`, and `ItemWriter` for each step, along with chunk size, retry/skip policies, and listeners."
+            },
+            {
+              "title": "Reader/Writer Components",
+              "description": "Spring Batch provides ready-to-use readers and writers for common formats: `JdbcCursorItemReader`, `JdbcPagingItemReader`, `JpaPagingItemReader`, `FlatFileItemReader` for CSV/fixed-width files, `StaxEventItemReader` for XML, and corresponding writer implementations."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Spring Batch offers several error handling mechanisms: skip (continue processing after skipping a problematic item), retry (retry an operation with backoff), and restart (resume from the last checkpoint after a failure)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Job Flow Control",
+              "description": "Control job flow with conditional execution using `next()`, `flow()`, `on()`, `to()`, `from()`, and `end()` methods. Implement complex workflows with decision steps, flow splits for parallel execution, and externalized flow definitions."
+            },
+            {
+              "title": "Scaling and Partitioning",
+              "description": "Scale batch processing with several strategies: 1) Multi-threaded steps using `TaskExecutor`, 2) Parallel steps with flow splits, 3) Remote chunking sending chunks to workers, and 4) Partitioning dividing work among multiple step executions running in parallel."
+            },
+            {
+              "title": "Batch Patterns",
+              "description": "Common patterns include: 1) Master-detail processing (related data at different levels), 2) Staging data between steps, 3) Driving queries (dynamic query generation), 4) Composite item processing chains, 5) Late binding of job parameters, and 6) Integration with Spring Integration for event-driven batch jobs."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-validation-frameworks-s-19",
+      "skillLevel": "intermediate",
+      "shortTitle": "Validation",
+      "question": "How can you implement data validation in Spring applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Validation Framework",
+              "description": "Spring supports the Java Bean Validation API (JSR-380) through **Hibernate Validator** (the reference implementation). Add the `spring-boot-starter-validation` dependency to enable validation support."
+            },
+            {
+              "title": "Validation Annotations",
+              "description": "Apply constraint annotations directly to model/domain classes: `@NotNull`, `@NotEmpty`, `@NotBlank`, `@Size`, `@Min`, `@Max`, `@Pattern`, `@Email`, etc. Each annotation defines validation rules for the field."
+            },
+            {
+              "title": "Controller Validation",
+              "description": "In controllers, use the `@Valid` or `@Validated` annotation on method parameters to trigger validation. Combine with `BindingResult` parameter to handle validation errors, or let Spring throw `MethodArgumentNotValidException` automatically."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Custom Validators",
+              "description": "Create custom validation constraints by defining an annotation with `@Constraint` and implementing the `ConstraintValidator` interface. This allows for complex validations beyond the standard constraints."
+            },
+            {
+              "title": "Validation Groups",
+              "description": "Use validation groups to apply different validation rules in different contexts. Define marker interfaces as groups, specify groups in constraint annotations, and activate specific groups with `@Validated(GroupName.class)`."
+            },
+            {
+              "title": "Programmatic Validation",
+              "description": "For manual validation, inject the `Validator` bean and call `validator.validate(object)`. This returns a `Set<ConstraintViolation<?>>` that you can process programmatically, useful for validation in service layers."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Method-Level Validation",
+              "description": "Apply validation to service methods with `@Validated` on the class and constraints on method parameters or return values. Spring creates a proxy that validates inputs and outputs. Use `@Valid` on complex object parameters."
+            },
+            {
+              "title": "Cross-Field Validation",
+              "description": "Implement class-level constraints with `@AssertTrue` methods or custom class-level annotations to validate relationships between multiple fields, like password confirmation matching or date ranges."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Create a global `@ExceptionHandler` or `@ControllerAdvice` to handle validation exceptions consistently, customizing error responses with field names, rejected values, and localized messages, possibly using `MessageSource` for internationalization."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-events-frameworks-s-20",
+      "skillLevel": "advanced",
+      "shortTitle": "Spring Events",
+      "question": "How does the Spring event mechanism work, and when would you use it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Event System Overview",
+              "description": "Spring's event system provides a way for beans to communicate with each other without direct coupling. It follows the observer pattern with events, publishers, and listeners."
+            },
+            {
+              "title": "Core Components",
+              "description": "Key parts include event classes (extending `ApplicationEvent` or any POJO), event publishers (using `ApplicationEventPublisher`), and event listeners (with `@EventListener` annotation or `ApplicationListener` interface)."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "To use events: 1) Define an event class, 2) Publish events with `applicationEventPublisher.publishEvent(event)`, and 3) Create listeners with `@EventListener` methods that take the event type as a parameter."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Built-in Events",
+              "description": "Spring provides built-in events like `ContextRefreshedEvent`, `ContextStartedEvent`, `ContextStoppedEvent`, `ContextClosedEvent`, and `RequestHandledEvent`. Spring Boot adds events like `ApplicationStartedEvent`, `ApplicationReadyEvent`, and `ApplicationFailedEvent`."
+            },
+            {
+              "title": "Async Events",
+              "description": "Make event processing asynchronous with `@Async` annotation on listener methods (requires `@EnableAsync`). This prevents the publisher from waiting for all listeners to complete, improving responsiveness."
+            },
+            {
+              "title": "Conditional Processing",
+              "description": "Add conditions to event listeners with SpEL expressions in `@EventListener(condition = \"#event.success\")` to filter events based on their properties. Use `@Order` to control the sequence of multiple listeners."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Transaction Binding",
+              "description": "Use `@TransactionalEventListener` to bind event processing to transaction phases: `BEFORE_COMMIT`, `AFTER_COMMIT` (default), `AFTER_ROLLBACK`, or `AFTER_COMPLETION`. This ensures events are processed only if the transaction succeeds or fails appropriately."
+            },
+            {
+              "title": "Generic Events",
+              "description": "Implement generic event handling with class-based filtering: `@EventListener(classes = { OrderCreatedEvent.class, OrderShippedEvent.class })` or using generics like `GenericApplicationEvent<T>` for type-safe event handling."
+            },
+            {
+              "title": "Use Cases and Patterns",
+              "description": "Common use cases include: 1) Decoupling components that don't need direct references, 2) Audit logging and monitoring, 3) Multi-step processes with different responsible services, 4) Cache invalidation, 5) Notifications, and 6) Event sourcing patterns. Consider alternatives like message queues for distributed systems or high-volume events."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-webflux-frameworks-s-21",
+      "skillLevel": "advanced",
+      "shortTitle": "Spring WebFlux",
+      "question": "How does Spring WebFlux differ from Spring MVC, and when would you choose one over the other?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Programming Model",
+              "description": "**Spring WebFlux** is a reactive-stack web framework that uses a non-blocking approach with Reactive Streams API, while **Spring MVC** is a traditional servlet-based, blocking framework. Both support annotation-based programming models."
+            },
+            {
+              "title": "Concurrency Model",
+              "description": "WebFlux uses **event-loop concurrency** with a small number of threads handling many concurrent connections, whereas MVC uses a **thread-per-request model** where each request ties up one thread for its duration."
+            },
+            {
+              "title": "Key Dependencies",
+              "description": "WebFlux is built on **Project Reactor** with Mono (0-1 element) and Flux (0-n elements) publishers. It runs on Netty, Undertow, or Servlet 3.1+ containers, while MVC requires a Servlet container like Tomcat or Jetty."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "API Differences",
+              "description": "Controllers in WebFlux return `Mono<T>` or `Flux<T>` types instead of domain objects or `ResponseEntity`. WebFlux also offers a functional programming model with router functions and handler functions as an alternative to annotated controllers."
+            },
+            {
+              "title": "Data Access",
+              "description": "WebFlux pairs best with reactive data access libraries like **R2DBC**, **Spring Data Reactive MongoDB**, **Cassandra**, or **Redis**. Using blocking JDBC or JPA in WebFlux negates the benefits of reactive programming."
+            },
+            {
+              "title": "Client Side",
+              "description": "WebFlux provides a reactive `WebClient` as an alternative to the blocking `RestTemplate`. `WebClient` supports non-blocking, reactive streaming for both sync and async operations with better features for composing complex requests."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Characteristics",
+              "description": "WebFlux excels in scenarios with **high concurrency** and **I/O-bound operations** like calling remote services or databases. It requires fewer threads and memory but adds complexity and may not improve performance for CPU-bound tasks or simple applications with low concurrency requirements."
+            },
+            {
+              "title": "Selection Criteria",
+              "description": "Choose **Spring MVC** for: 1) Simpler imperative programming model, 2) When using blocking dependencies or JDBC/JPA, 3) When thread-per-request is not a bottleneck. Choose **WebFlux** for: 1) Highly concurrent, I/O-intensive applications, 2) Streaming scenarios with backpressure, 3) When using a fully reactive stack, 4) Event-driven microservices architectures."
+            },
+            {
+              "title": "Reactive Streams Contract",
+              "description": "Understanding the reactive contract is crucial: 1) **Backpressure** allows consumers to control producers' speed, 2) The **subscription** lifecycle must be managed correctly, 3) Error handling differs with error signals propagated downstream, 4) Operators compose to form processing pipelines, and 5) Subscription happens only when a terminal operation triggers it."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-mvc-frameworks-s-5",
+        "spring-rest-frameworks-s-6"
+      ]
+    },
+    {
+      "id": "spring-vs-jakarta-ee-frameworks-s-22",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring vs Jakarta EE",
+      "question": "How does Spring Framework compare to Jakarta EE (formerly Java EE), and what are the trade-offs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Architecture Approach",
+              "description": "**Spring** is a lightweight, POJO-based framework emphasizing dependency injection and non-invasive programming. **Jakarta EE** (previously Java EE) is a platform specification implemented by various application servers with a more standardized approach."
+            },
+            {
+              "title": "Deployment Model",
+              "description": "Spring (especially with Spring Boot) favors standalone applications with embedded servers, simplifying deployment and containerization. Jakarta EE traditionally uses the application server model where applications are deployed to a compliant server."
+            },
+            {
+              "title": "Core Features",
+              "description": "Both provide similar capabilities: web development, data access, transaction management, security, etc. Spring offers additional features like advanced caching, reactive programming, and batch processing that may require additional libraries in Jakarta EE."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Configuration Approach",
+              "description": "Spring offers flexible configuration with Java, annotations, or XML. Jakarta EE has moved toward annotation-based configuration but historically relied more on XML deployment descriptors and follows a more convention-over-configuration approach."
+            },
+            {
+              "title": "Learning Curve",
+              "description": "Spring has a steeper initial learning curve due to its flexibility and larger ecosystem of projects. Jakarta EE has a more focused scope with fewer configuration options, potentially making it easier to learn initially, though both are complex in advanced usage."
+            },
+            {
+              "title": "Update Cycle",
+              "description": "Spring has a more frequent release cycle with quicker adoption of new Java features. Jakarta EE follows a standardized process through the Eclipse Foundation (previously JCP) with longer release cycles but with stronger backward compatibility guarantees."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Integration and Ecosystem",
+              "description": "Spring provides out-of-the-box integration with many open-source and commercial technologies. Its ecosystem includes projects for various domains (messaging, cloud, batch). Jakarta EE relies more on standards and vendor implementations, which can limit flexibility but increase portability."
+            },
+            {
+              "title": "Testing and Development",
+              "description": "Spring emphasizes testability with comprehensive testing support and lightweight containers. Jakarta EE has improved its testing story but historically required more setup for unit tests, though tools like Arquillian have addressed many testing challenges."
+            },
+            {
+              "title": "Selection Criteria",
+              "description": "Choose **Spring** for: 1) Microservices or cloud-native applications, 2) Need for rapid delivery and innovation, 3) Diverse technology stack with many integrations, 4) Projects where vendor independence is less critical. Choose **Jakarta EE** for: 1) Enterprise applications with long lifespans, 2) Strong standardization requirements, 3) Organizations with established Jakarta EE expertise, 4) When portable applications across different app servers is important."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-caching-frameworks-s-23",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Cache",
+      "question": "How does Spring's caching abstraction work, and how would you implement it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Cache Abstraction",
+              "description": "Spring provides a caching abstraction that applies aspect-oriented programming to transparently add caching behavior to methods. It supports various cache providers through a consistent API without tying code to specific caching implementations."
+            },
+            {
+              "title": "Basic Configuration",
+              "description": "Enable caching with `@EnableCaching` annotation on a configuration class. Then add `@Cacheable`, `@CachePut`, or `@CacheEvict` annotations to methods. Spring manages the cache interactions automatically."
+            },
+            {
+              "title": "Key Annotations",
+              "description": "**@Cacheable** - Caches method results, returning cached value for same inputs\n**@CachePut** - Updates the cache without affecting method execution\n**@CacheEvict** - Removes entries from the cache\n**@Caching** - Groups multiple cache operations\n**@CacheConfig** - Shares common cache-related settings at class level"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Cache Keys",
+              "description": "By default, cache keys are generated from method parameters. Customize keys with the `key` attribute using SpEL expressions: `@Cacheable(cacheNames=\"books\", key=\"#isbn\")`. For complex keys, implement a `KeyGenerator` and reference it with the `keyGenerator` attribute."
+            },
+            {
+              "title": "Conditional Caching",
+              "description": "Use the `condition` attribute to cache only when specific conditions are met: `@Cacheable(condition=\"#name.length() < 32\")`. Use `unless` to avoid caching specific results: `@Cacheable(unless=\"#result == null\")`."
+            },
+            {
+              "title": "Cache Providers",
+              "description": "Spring supports multiple cache providers including:\n- **Simple** in-memory ConcurrentMap (default)\n- **Caffeine** (high-performance in-memory caching)\n- **EhCache** (feature-rich local cache)\n- **Redis** or **Hazelcast** (distributed caching)\n- **JCache** (JSR-107 compatible providers)\nProvide a `CacheManager` bean to configure your preferred provider."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Cache Resolution",
+              "description": "Use dynamic cache names with SpEL: `@Cacheable(cacheNames=\"#{@environment.getProperty('cache.name')}\")`. Implement a `CacheResolver` for advanced cache resolution logic based on method, arguments, or context."
+            },
+            {
+              "title": "Synchronization and Updates",
+              "description": "Use `sync=true` with `@Cacheable` to prevent cache stampede (multiple concurrent calculations of the same value). For cache invalidation strategies, consider:\n1) TTL (time-to-live) settings in the cache provider\n2) Scheduled cache eviction with `@Scheduled` methods\n3) Event-driven updates with application events\n4) Entity-change-driven eviction with `@CacheEvict` in service methods"
+            },
+            {
+              "title": "Distributed Caching Considerations",
+              "description": "When implementing distributed caching (Redis, Hazelcast):\n1) Consider serialization overhead and format (JSON, protocol buffers, etc.)\n2) Be aware of network latency vs. compute costs trade-offs\n3) Plan for cache coherence across multiple application instances\n4) Implement cache warm-up strategies to prevent cold starts\n5) Consider Spring Session integration for distributed session storage"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-di-best-practices-frameworks-s-24",
+      "skillLevel": "intermediate",
+      "shortTitle": "DI Best Practices",
+      "question": "What are the best practices for dependency injection in Spring applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Constructor Injection",
+              "description": "Prefer **constructor injection** over field or setter injection. It clearly shows dependencies, encourages immutability, prevents null references, makes testing easier, and helps identify design issues (too many dependencies) early."
+            },
+            {
+              "title": "Interface-Based Design",
+              "description": "Code to interfaces rather than implementations to enable loose coupling. Define services with interfaces and inject the interfaces, allowing for different implementations, easier mocking, and better testability."
+            },
+            {
+              "title": "Component Scanning Practices",
+              "description": "Organize components logically and use explicit component scanning with basePackages or basePackageClasses parameters. Avoid scanning the entire application to prevent unintended bean registration and improve startup time."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Bean Lifecycle Management",
+              "description": "Minimize use of initialization and destruction callbacks (`@PostConstruct`, `@PreDestroy`). When needed, prefer annotations over implementing interfaces. Clean up resources properly in destruction methods to prevent memory leaks."
+            },
+            {
+              "title": "Configuration Best Practices",
+              "description": "Organize `@Configuration` classes by functionality or layer. Keep them focused and cohesive. Use `@Import` to compose configurations. Avoid circular dependencies between configuration classes. Leverage profiles for environment-specific configurations."
+            },
+            {
+              "title": "Dependency Resolution",
+              "description": "When multiple beans satisfy a dependency, be explicit rather than relying on autowiring by name. Use `@Qualifier` or custom qualifiers, or consider `@Primary` for default implementations. Avoid relying on order of declaration."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Scoped Bean Management",
+              "description": "When injecting shorter-lived beans (request, session) into longer-lived ones (singleton), always use proxying with `proxyMode=ScopedProxyMode.TARGET_CLASS` or `<aop:scoped-proxy/>`. Consider using `ObjectFactory<T>` or `Provider<T>` for finer control."
+            },
+            {
+              "title": "Circular Dependencies",
+              "description": "Avoid circular dependencies as they indicate design problems. When truly necessary, break cycles using: 1) Setter/field injection instead of constructor injection, 2) `@Lazy` annotation to defer initialization, 3) Event-based communication, or 4) Refactoring to introduce an intermediary service."
+            },
+            {
+              "title": "Testing and DI",
+              "description": "Design with testability in mind: 1) Use constructor injection to make dependencies explicit and replaceable, 2) Consider the lightweight `@WebMvcTest` or `@DataJpaTest` over full application context tests, 3) Favor `@MockBean` and `@SpyBean` over custom test configurations, 4) Use factory methods for complex objects to simplify test setup."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-ioc-di-frameworks-s-2"
+      ]
+    },
+    {
+      "id": "spring-container-internals-frameworks-s-25",
+      "skillLevel": "advanced",
+      "shortTitle": "Spring Container Internals",
+      "question": "Could you explain how Spring's IoC container works internally?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Container Types",
+              "description": "Spring offers two types of IoC containers: the basic **BeanFactory** and the more advanced **ApplicationContext** (which extends BeanFactory). ApplicationContext includes additional enterprise features like event publication, internationalization, and resource loading."
+            },
+            {
+              "title": "Bootstrapping Process",
+              "description": "The container bootstrapping process involves: 1) Loading configuration metadata from XML, Java annotations, or Java code, 2) Constructing bean definitions from this metadata, and 3) Instantiating, configuring, and assembling beans when requested."
+            },
+            {
+              "title": "Bean Definition",
+              "description": "Each bean is represented by a **BeanDefinition** object containing metadata like class name, scope, dependencies, configuration values, and lifecycle callbacks. These definitions are stored in a registry within the container."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Bean Creation",
+              "description": "When a bean is requested, the container: 1) Creates the bean instance using a constructor or factory method, 2) Sets properties and dependencies, 3) Applies BeanPostProcessors before and after initialization, 4) Invokes initialization callbacks, and 5) Returns the fully initialized bean (or a proxy wrapping it)."
+            },
+            {
+              "title": "Dependency Resolution",
+              "description": "The container resolves dependencies through several phases: 1) Identifying dependencies from configuration, 2) Resolving using type, qualifiers, or name, 3) Creating dependent beans first if needed, 4) Applying conversion if necessary, and 5) Handling circular dependencies when possible."
+            },
+            {
+              "title": "BeanPostProcessors",
+              "description": "**BeanPostProcessors** are extension points allowing customization of bean initialization and destruction. They intercept the bean creation process at various points. Many Spring features (AOP, transaction management, etc.) are implemented using BeanPostProcessors."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Proxy Creation",
+              "description": "Spring creates proxies for AOP, scoped beans, and other scenarios using either: 1) JDK dynamic proxies (for beans implementing interfaces) or 2) CGLIB proxies (for concrete classes). Proxy creation happens within specialized BeanPostProcessors like `AbstractAutoProxyCreator`."
+            },
+            {
+              "title": "Annotation Processing",
+              "description": "Annotations are processed by specific BeanPostProcessors like `CommonAnnotationBeanPostProcessor` (for JSR-250), `AutowiredAnnotationBeanPostProcessor` (for `@Autowired`), and `PersistenceAnnotationBeanPostProcessor` (for JPA). They scan bean classes during initialization to apply behavior based on annotations."
+            },
+            {
+              "title": "Optimization Techniques",
+              "description": "Spring uses several optimizations: 1) **Bean definition metadata caching** to avoid repeated parsing, 2) **Singleton bean early instantiation** (unless lazy), 3) **Reflective metadata caching** to improve performance for repetitive operations, 4) **Bean creation strategy adaptation** based on bean type, and 5) **Smart proxy decisions** based on advised method presence."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-ioc-di-frameworks-s-2",
+        "spring-aop-frameworks-s-8"
+      ]
+    }
+  ]
+}

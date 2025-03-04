@@ -1,0 +1,1552 @@
+﻿{
+  "category": "Databases",
+  "subcategory": "SQL",
+  "questions": [
+    {
+      "id": "sql-basic-query-structure-databases-sql-1",
+      "skillLevel": "beginner",
+      "shortTitle": "SQL Query Structure",
+      "question": "Could you explain the basic structure of a SQL query and the order of execution?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Clauses",
+              "description": "The fundamental SQL query structure includes **SELECT** (columns to retrieve), **FROM** (tables to query), and **WHERE** (filtering conditions)."
+            },
+            {
+              "title": "Additional Clauses",
+              "description": "Common extensions include **GROUP BY** (grouping data), **HAVING** (filtering groups), **ORDER BY** (sorting results), and **LIMIT/OFFSET** (pagination)."
+            },
+            {
+              "title": "Simple Example",
+              "description": "```sql\nSELECT column1, column2 \nFROM table_name \nWHERE condition \nORDER BY column1;```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Logical Processing Order",
+              "description": "SQL queries are processed in this order: 1) FROM/JOIN, 2) WHERE, 3) GROUP BY, 4) HAVING, 5) SELECT, 6) ORDER BY, 7) LIMIT/OFFSET."
+            },
+            {
+              "title": "Execution vs. Writing Order",
+              "description": "The logical processing order differs from how we write queries. For example, the SELECT clause is processed after WHERE, even though we write it first."
+            },
+            {
+              "title": "Aliasing",
+              "description": "Column and table aliases (using the **AS** keyword) improve query readability and allow referencing the same table multiple times."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Query Plans",
+              "description": "Database engines generate execution plans that may optimize and reorder operations from the logical processing order to improve performance."
+            },
+            {
+              "title": "Common Table Expressions",
+              "description": "**CTEs** (WITH clause) allow defining temporary result sets that can be referenced multiple times within a query, improving readability for complex queries."
+            },
+            {
+              "title": "Set Operations",
+              "description": "**UNION**, **INTERSECT**, and **EXCEPT** combine results from multiple queries into a single result set, each with specific rules for column compatibility and duplicate handling."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-joins-types-databases-sql-2",
+        "sql-group-by-having-databases-sql-4"
+      ]
+    },
+    {
+      "id": "sql-joins-types-databases-sql-2",
+      "skillLevel": "beginner",
+      "shortTitle": "SQL Joins",
+      "question": "Can you explain the different types of JOIN operations in SQL and when to use each?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "INNER JOIN",
+              "description": "Returns only matching rows from both tables based on the join condition. This is the most common join type and the default when simply using the **JOIN** keyword."
+            },
+            {
+              "title": "LEFT (OUTER) JOIN",
+              "description": "Returns all rows from the left table and matching rows from the right table. If no match exists, NULL values are returned for right table columns."
+            },
+            {
+              "title": "RIGHT (OUTER) JOIN",
+              "description": "Returns all rows from the right table and matching rows from the left table. If no match exists, NULL values are returned for left table columns."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "FULL (OUTER) JOIN",
+              "description": "Returns all rows when there's a match in either the left or right table. If no match exists, NULL values are returned for columns from the non-matching table."
+            },
+            {
+              "title": "CROSS JOIN",
+              "description": "Creates a Cartesian product, combining each row from the first table with every row from the second table, resulting in m × n rows. No join condition is specified."
+            },
+            {
+              "title": "SELF JOIN",
+              "description": "Joins a table to itself, typically requiring table aliases to disambiguate columns. Useful for hierarchical data or comparing rows within the same table."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Non-Equi Joins",
+              "description": "Joins using conditions other than equality (e.g., >, <, BETWEEN) which can be useful for range comparisons or finding gaps in data."
+            },
+            {
+              "title": "Anti-Join Pattern",
+              "description": "Finds rows in one table that don't have a match in another table, typically implemented using **LEFT JOIN** with a **WHERE IS NULL** condition or using **NOT EXISTS** subquery."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Join performance depends on table sizes, indexes, join types, and conditions. INNER JOINs typically perform better than OUTER JOINs, and indexing join columns is crucial for large tables."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-subquery-vs-join-databases-sql-5"
+      ]
+    },
+    {
+      "id": "sql-aggregate-functions-databases-sql-3",
+      "skillLevel": "beginner",
+      "shortTitle": "Aggregate Functions",
+      "question": "What are SQL aggregate functions and how do they work?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Common Functions",
+              "description": "The most used aggregate functions are **COUNT()** (row count), **SUM()** (total), **AVG()** (average), **MIN()** (minimum value), and **MAX()** (maximum value)."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "Aggregate functions operate on a set of rows and return a single value. They're typically used in the SELECT clause.\n\n```sql\nSELECT COUNT(*) as total_customers,\n       AVG(age) as average_age\nFROM customers;\n```"
+            },
+            {
+              "title": "NULL Handling",
+              "description": "Most aggregate functions automatically ignore NULL values, except COUNT(*) which counts all rows regardless of NULL values."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "GROUP BY Integration",
+              "description": "When used with GROUP BY, aggregate functions calculate results for each group separately rather than the entire result set."
+            },
+            {
+              "title": "DISTINCT Option",
+              "description": "Functions like COUNT, SUM, and AVG can use the DISTINCT keyword to consider only unique values in their calculations, e.g., `COUNT(DISTINCT column_name)`."
+            },
+            {
+              "title": "Conditional Aggregation",
+              "description": "Combining aggregate functions with CASE expressions allows for conditional calculations, such as counting rows that meet specific criteria.\n\n```sql\nSELECT \n    COUNT(CASE WHEN status = 'active' THEN 1 END) as active_count,\n    COUNT(CASE WHEN status = 'inactive' THEN 1 END) as inactive_count\nFROM users;\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Window Function Usage",
+              "description": "Aggregate functions can be used as window functions with the OVER clause, allowing aggregation without collapsing rows.\n\n```sql\nSELECT \n    department,\n    employee_name,\n    salary,\n    AVG(salary) OVER (PARTITION BY department) as dept_avg_salary\nFROM employees;\n```"
+            },
+            {
+              "title": "Custom Aggregates",
+              "description": "Some databases support user-defined aggregate functions that can perform custom calculations beyond the built-in functions."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Aggregate functions may require full table scans and can be resource-intensive on large datasets. Indexing, materialized views, and pre-aggregation can improve performance."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-group-by-having-databases-sql-4",
+        "sql-window-functions-databases-sql-14"
+      ]
+    },
+    {
+      "id": "sql-group-by-having-databases-sql-4",
+      "skillLevel": "beginner",
+      "shortTitle": "GROUP BY and HAVING",
+      "question": "Could you explain the GROUP BY and HAVING clauses in SQL?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "GROUP BY Purpose",
+              "description": "The **GROUP BY** clause divides rows into groups based on specified column values, allowing aggregate functions to produce summary results for each group rather than the entire table."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "```sql\nSELECT department, COUNT(*) as employee_count\nFROM employees\nGROUP BY department;\n```"
+            },
+            {
+              "title": "HAVING Purpose",
+              "description": "The **HAVING** clause filters groups based on aggregate conditions, while the WHERE clause filters individual rows before grouping."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Multi-column Grouping",
+              "description": "GROUP BY can include multiple columns, creating more granular groups based on unique combinations of the specified columns.\n\n```sql\nSELECT department, job_title, AVG(salary) as avg_salary\nFROM employees\nGROUP BY department, job_title;\n```"
+            },
+            {
+              "title": "WHERE vs. HAVING",
+              "description": "**WHERE** filters rows before they're grouped and cannot reference aggregate functions. **HAVING** filters after grouping and can use aggregate functions in its conditions."
+            },
+            {
+              "title": "Processing Order",
+              "description": "The logical processing order is: 1) FROM, 2) WHERE, 3) GROUP BY, 4) HAVING, 5) SELECT, 6) ORDER BY. Understanding this order is crucial for writing correct queries."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Grouping Sets",
+              "description": "**GROUPING SETS**, **ROLLUP**, and **CUBE** extensions (supported in many databases) allow multiple grouping operations in a single query, generating subtotals and grand totals.\n\n```sql\nSELECT region, product, SUM(sales) as total_sales\nFROM sales_data\nGROUP BY GROUPING SETS ((region, product), (region), (product), ());\n```"
+            },
+            {
+              "title": "GROUP BY with Expressions",
+              "description": "GROUP BY can use expressions, calculated columns, or functions rather than just column names, allowing for flexible grouping strategies."
+            },
+            {
+              "title": "NULL Handling in Groups",
+              "description": "NULL values in GROUP BY columns are treated as a single group. This behavior can be important when analyzing data with missing values or implementing special handling for NULLs."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-aggregate-functions-databases-sql-3"
+      ]
+    },
+    {
+      "id": "sql-subquery-vs-join-databases-sql-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Subqueries vs. Joins",
+      "question": "What's the difference between subqueries and joins in SQL, and when would you use each?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **subquery** is a query nested inside another query, while a **join** combines rows from two or more tables based on related columns."
+            },
+            {
+              "title": "Basic Syntax Comparison",
+              "description": "**Subquery Example**:\n```sql\nSELECT name FROM employees \nWHERE department_id IN (SELECT id FROM departments WHERE location = 'New York');\n```\n\n**Join Example**:\n```sql\nSELECT e.name FROM employees e \nJOIN departments d ON e.department_id = d.id \nWHERE d.location = 'New York';\n```"
+            },
+            {
+              "title": "Common Use Cases",
+              "description": "**Joins** are typically used when combining data from multiple tables. **Subqueries** are often used for filtering, calculations, or when the operations can't be expressed as joins."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Subquery Types",
+              "description": "Subqueries can be: 1) **Scalar** (returning a single value), 2) **Row** (returning a single row), 3) **Column** (returning a single column), or 4) **Table** (returning multiple rows and columns)."
+            },
+            {
+              "title": "Subquery Locations",
+              "description": "Subqueries can appear in different parts of a query: SELECT list, FROM clause (derived tables), WHERE clause, or HAVING clause, each with different requirements and behaviors."
+            },
+            {
+              "title": "Correlated Subqueries",
+              "description": "A **correlated subquery** references columns from the outer query and is reevaluated for each row processed by the outer query, potentially impacting performance."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Considerations",
+              "description": "Joins typically perform better than subqueries for most operations, especially correlated subqueries, though query optimization can vary between database systems."
+            },
+            {
+              "title": "Rewriting Between Forms",
+              "description": "Many queries can be written using either joins or subqueries. Understanding how to convert between these forms is valuable for optimization and maintainability."
+            },
+            {
+              "title": "EXISTS vs. IN",
+              "description": "For checking existence, the **EXISTS** operator with a correlated subquery often performs better than **IN** with a non-correlated subquery, especially when the subquery would return many rows."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-joins-types-databases-sql-2",
+        "sql-query-optimization-databases-sql-13"
+      ]
+    },
+    {
+      "id": "sql-database-indexing-databases-sql-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "Indexing",
+      "question": "Could you explain how indexing works in databases and the different types of indexes?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Indexes** improve query performance by providing quick access paths to data, similar to how a book index helps find topics without reading every page."
+            },
+            {
+              "title": "Basic Index Types",
+              "description": "The most common index types are **B-tree** (balanced tree, general purpose), **Hash** (fast equality lookups), and **Bitmap** (efficient for low-cardinality columns)."
+            },
+            {
+              "title": "Trade-offs",
+              "description": "Indexes speed up data retrieval (SELECT queries) but slow down data modification (INSERT, UPDATE, DELETE) since the indexes must be updated along with the data."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Single vs. Composite Indexes",
+              "description": "**Single-column indexes** cover one column, while **composite (or multi-column) indexes** cover multiple columns. The order of columns in composite indexes is crucial for their effectiveness."
+            },
+            {
+              "title": "Unique vs. Non-unique",
+              "description": "**Unique indexes** enforce data uniqueness and typically offer better performance due to optimizations made possible by the uniqueness guarantee."
+            },
+            {
+              "title": "Covering Indexes",
+              "description": "A **covering index** includes all columns needed by a query, allowing the database to satisfy the query using only the index without accessing the table data (index-only scan)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Specialized Index Types",
+              "description": "**Full-text indexes** optimize searching text content, **spatial indexes** handle geographic data, and **functional indexes** are based on expressions rather than just column values."
+            },
+            {
+              "title": "Index Usage by Query Optimizers",
+              "description": "Query optimizers decide whether to use available indexes based on factors like table size, data distribution, and query predicates. Using `EXPLAIN` or similar commands reveals these decisions."
+            },
+            {
+              "title": "Index Maintenance",
+              "description": "Regular index maintenance (rebuilding or reorganizing) can be necessary due to fragmentation. Monitoring index usage helps identify unused indexes that consume resources without providing benefits."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-query-optimization-databases-sql-13"
+      ]
+    },
+    {
+      "id": "sql-normalization-denormalization-databases-sql-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Normalization",
+      "question": "Can you explain database normalization and denormalization, and the trade-offs between them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Normalization Definition",
+              "description": "**Normalization** is the process of organizing database tables to minimize redundancy and dependency by dividing large tables into smaller, related tables."
+            },
+            {
+              "title": "Denormalization Definition",
+              "description": "**Denormalization** is the opposite process, deliberately introducing redundancy by combining tables or adding duplicate data to improve read performance."
+            },
+            {
+              "title": "Basic Benefits",
+              "description": "Normalization reduces data anomalies and improves integrity, while denormalization reduces join operations and improves query response time."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Normal Forms",
+              "description": "The main normal forms are 1NF (atomic values), 2NF (no partial dependencies), 3NF (no transitive dependencies), BCNF (more strict 3NF), and 4NF/5NF (handling multi-valued dependencies)."
+            },
+            {
+              "title": "Performance Trade-offs",
+              "description": "Normalized databases generally perform better for write operations (INSERT, UPDATE, DELETE) since data is modified in one place, while denormalized databases often perform better for complex read operations."
+            },
+            {
+              "title": "Common Denormalization Techniques",
+              "description": "These include duplicating columns across tables, pre-joining tables into wider tables, adding redundant summary columns, and creating materialized views or pre-computed aggregates."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Hybrid Approaches",
+              "description": "Modern systems often use a hybrid approach, maintaining normalized core tables for OLTP workloads while creating denormalized views, materialized views, or aggregation tables for OLAP and reporting needs."
+            },
+            {
+              "title": "Normalization Anomalies",
+              "description": "Poorly normalized databases can suffer from **update anomalies** (inconsistent data after updates), **insertion anomalies** (inability to store certain data), and **deletion anomalies** (unintended data loss)."
+            },
+            {
+              "title": "Data Warehouse Perspective",
+              "description": "Data warehouses typically use denormalized designs like star or snowflake schemas, where fact tables connect to dimension tables optimized for complex analytical queries rather than transaction processing."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-database-design-principles-databases-sql-18"
+      ]
+    },
+    {
+      "id": "sql-transactions-acid-databases-sql-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Transactions and ACID",
+      "question": "Could you explain database transactions and the ACID properties?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Transaction Definition",
+              "description": "A **database transaction** is a sequence of operations performed as a single logical unit of work, which either completely succeeds or completely fails."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "```sql\nBEGIN TRANSACTION;\n    -- SQL operations here\n    UPDATE accounts SET balance = balance - 100 WHERE id = 1;\n    UPDATE accounts SET balance = balance + 100 WHERE id = 2;\nCOMMIT; -- or ROLLBACK if there's an error\n```"
+            },
+            {
+              "title": "ACID Acronym",
+              "description": "**ACID** stands for **Atomicity** (all or nothing), **Consistency** (valid state transitions), **Isolation** (concurrent transactions don't interfere), and **Durability** (committed changes survive system failures)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Atomicity Detail",
+              "description": "**Atomicity** ensures that a transaction is treated as a single, indivisible unit which either succeeds completely or fails completely with no partial execution."
+            },
+            {
+              "title": "Consistency Detail",
+              "description": "**Consistency** ensures that a transaction can only transition the database from one valid state to another, preserving all defined rules, constraints, and triggers."
+            },
+            {
+              "title": "Isolation Detail",
+              "description": "**Isolation** prevents concurrent transactions from interfering with each other, typically managed through isolation levels that control phenomena like dirty reads, non-repeatable reads, and phantom reads."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Durability Detail",
+              "description": "**Durability** guarantees that once a transaction is committed, its changes remain permanent even in cases of system failure, typically implemented through techniques like write-ahead logging and database checkpoints."
+            },
+            {
+              "title": "Isolation Levels",
+              "description": "Common isolation levels include **Read Uncommitted** (lowest isolation, allows dirty reads), **Read Committed** (prevents dirty reads), **Repeatable Read** (prevents non-repeatable reads), and **Serializable** (highest isolation, prevents phantom reads)."
+            },
+            {
+              "title": "Transaction Performance",
+              "description": "Transaction performance involves trade-offs: higher isolation levels provide stronger consistency guarantees but reduce concurrency, potentially decreasing throughput. Transaction size and duration also impact performance and deadlock probability."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-transaction-isolation-levels-databases-sql-24"
+      ]
+    },
+    {
+      "id": "sql-views-databases-sql-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "SQL Views",
+      "question": "What are SQL views, and why would you use them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **view** is a virtual table derived from a query that acts as a stored SQL statement. It doesn't store data itself but presents data from underlying tables in a specific way."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "```sql\nCREATE VIEW employee_details AS\nSELECT e.id, e.name, d.department_name\nFROM employees e\nJOIN departments d ON e.department_id = d.id;\n```"
+            },
+            {
+              "title": "Basic Usage",
+              "description": "Views are queried like regular tables: `SELECT * FROM employee_details WHERE department_name = 'Sales';`"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Main Benefits",
+              "description": "Views provide **data abstraction** (hiding complexity), **security** (restricting access to specific columns or rows), **consistency** (standardizing complex queries), and **simplicity** (making complex queries reusable)."
+            },
+            {
+              "title": "Materialized vs. Regular Views",
+              "description": "A **regular view** executes its query each time it's accessed, while a **materialized view** stores the query results physically, updating them periodically for better performance."
+            },
+            {
+              "title": "Updateable Views",
+              "description": "Some views can be updated directly (INSERT, UPDATE, DELETE) if they meet certain conditions, such as involving only one base table and including primary key columns."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "View Limitations",
+              "description": "Views may have restrictions on ORDER BY clauses, may not allow temporary tables in their definitions, and might impact performance for complex queries since the database must process both the view query and the query against the view."
+            },
+            {
+              "title": "Indexed Views",
+              "description": "Some database systems (like SQL Server) support **indexed views** (materialized views with indexes), which can significantly improve performance for complex aggregations or joins at the cost of storage and maintenance overhead."
+            },
+            {
+              "title": "View Chaining and Recursion",
+              "description": "Views can reference other views, but excessive chaining can lead to performance issues and maintenance challenges. Some databases limit recursion depth or prohibit recursive view definitions."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-stored-procedures-functions-databases-sql-10"
+      ]
+    },
+    {
+      "id": "sql-stored-procedures-functions-databases-sql-10",
+      "skillLevel": "intermediate",
+      "shortTitle": "Stored Procedures vs. Functions",
+      "question": "What's the difference between stored procedures and functions in SQL?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Stored procedures** typically perform actions or operations and can modify data, while **functions** primarily compute and return values without modifying data."
+            },
+            {
+              "title": "Return Values",
+              "description": "Functions must return a value (scalar or table), while procedures can return multiple values using output parameters or may not return any value."
+            },
+            {
+              "title": "Invocation",
+              "description": "Functions are called within SQL expressions (SELECT, WHERE, etc.), while procedures are executed using CALL or EXECUTE statements."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Transaction Control",
+              "description": "Procedures can contain transaction control statements (BEGIN, COMMIT, ROLLBACK), while functions typically cannot control transactions."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Procedures often include error handling logic using TRY-CATCH or similar constructs, while functions are more limited in error handling capabilities."
+            },
+            {
+              "title": "Parameter Types",
+              "description": "Procedures support IN, OUT, and INOUT parameters, allowing bidirectional data flow, while functions typically only have input parameters (though some databases allow table-valued parameters)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Considerations",
+              "description": "Functions used in queries (especially in WHERE clauses) can prevent index usage if not deterministic or if they access data. This can lead to unexpected performance issues."
+            },
+            {
+              "title": "Nesting and Recursion",
+              "description": "Functions can be nested within other functions or expressions, while procedures typically have more limitations on nesting. Both can support recursion with varying limitations between database systems."
+            },
+            {
+              "title": "Security Context",
+              "description": "Procedures and functions can run with different security contexts (EXECUTE AS options), allowing operations that the calling user might not have direct permission to perform, which is useful for implementing security patterns."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-views-databases-sql-9",
+        "sql-triggers-databases-sql-19"
+      ]
+    },
+    {
+      "id": "sql-constraints-databases-sql-11",
+      "skillLevel": "beginner",
+      "shortTitle": "SQL Constraints",
+      "question": "What are the different types of constraints in SQL and why are they important?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Primary Purpose",
+              "description": "**Constraints** enforce rules and maintain data integrity by restricting what data can be stored in tables."
+            },
+            {
+              "title": "Common Constraint Types",
+              "description": "The most used constraints are **PRIMARY KEY** (unique identifier), **FOREIGN KEY** (references between tables), **UNIQUE** (no duplicate values), **NOT NULL** (requires a value), and **CHECK** (enforces conditions)."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "```sql\nCREATE TABLE employees (\n  id INT PRIMARY KEY,\n  email VARCHAR(100) UNIQUE,\n  name VARCHAR(100) NOT NULL,\n  salary DECIMAL(10,2) CHECK (salary > 0),\n  department_id INT,\n  FOREIGN KEY (department_id) REFERENCES departments(id)\n);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Constraint Naming",
+              "description": "Explicitly naming constraints allows for easier management and targeted alteration or disabling.\n\n```sql\nALTER TABLE employees ADD CONSTRAINT chk_positive_salary CHECK (salary > 0);\n```"
+            },
+            {
+              "title": "Foreign Key Options",
+              "description": "Foreign keys can include **ON DELETE** and **ON UPDATE** actions like CASCADE, SET NULL, SET DEFAULT, or RESTRICT to specify what happens when referenced data changes."
+            },
+            {
+              "title": "Table-Level vs. Column-Level",
+              "description": "Constraints can be defined at the column level (directly after the column definition) or at the table level (at the end of the table definition), with table-level constraints required for multi-column constraints."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Deferrable Constraints",
+              "description": "Some databases support **deferrable constraints** that can be temporarily disabled during a transaction and checked only at commit time, useful for complex updates that might temporarily violate constraints."
+            },
+            {
+              "title": "Performance Impact",
+              "description": "While constraints protect data integrity, they add overhead to data modification operations. Understanding this trade-off is important when designing high-performance systems."
+            },
+            {
+              "title": "Partial Indexes and Constraints",
+              "description": "Some databases support **partial unique constraints** or **conditional unique constraints** that enforce uniqueness only for rows meeting specific conditions, offering more flexible constraint options."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-database-keys-databases-sql-12"
+      ]
+    },
+    {
+      "id": "sql-database-keys-databases-sql-12",
+      "skillLevel": "beginner",
+      "shortTitle": "Database Keys",
+      "question": "Could you explain the different types of keys in database design?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Primary Key",
+              "description": "A **Primary Key** uniquely identifies each record in a table. It must contain unique values and cannot be NULL. Tables typically have only one primary key."
+            },
+            {
+              "title": "Foreign Key",
+              "description": "A **Foreign Key** establishes relationships between tables by referencing the primary key of another table. It enforces referential integrity between the related tables."
+            },
+            {
+              "title": "Unique Key",
+              "description": "A **Unique Key** ensures all values in a column or combination of columns are distinct. Unlike primary keys, unique keys can allow NULL values (typically only one NULL is allowed)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Composite Key",
+              "description": "A **Composite Key** (or compound key) consists of multiple columns that together uniquely identify a record. Both primary and unique keys can be composite."
+            },
+            {
+              "title": "Candidate Key",
+              "description": "A **Candidate Key** is a column or set of columns that could potentially serve as a primary key. Tables may have multiple candidate keys, from which one is selected as the primary key."
+            },
+            {
+              "title": "Surrogate vs. Natural Keys",
+              "description": "A **Natural Key** uses existing data attributes as the identifier (like email), while a **Surrogate Key** is an artificial identifier (like an auto-incrementing ID) with no business meaning."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Super Key",
+              "description": "A **Super Key** is any set of columns that uniquely identifies a record, potentially including unnecessary columns. Candidate keys are minimal super keys (no unnecessary columns)."
+            },
+            {
+              "title": "Alternate Key",
+              "description": "An **Alternate Key** is a candidate key that is not selected as the primary key but is still enforced as unique, typically via a unique constraint."
+            },
+            {
+              "title": "Key Selection Considerations",
+              "description": "When choosing between keys, consider factors like immutability (values shouldn't change), simplicity (fewer columns is better), indexing impact, and whether the key will be used in foreign key relationships."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-constraints-databases-sql-11"
+      ]
+    },
+    {
+      "id": "sql-query-optimization-databases-sql-13",
+      "skillLevel": "advanced",
+      "shortTitle": "Query Optimization",
+      "question": "What are some key techniques for optimizing SQL query performance?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Proper Indexing",
+              "description": "Create appropriate indexes on columns used in WHERE, JOIN, and ORDER BY clauses. This is often the most impactful optimization."
+            },
+            {
+              "title": "Limit Result Sets",
+              "description": "Use WHERE clauses to filter data early and LIMIT/TOP to return only necessary rows, reducing data transfer and processing time."
+            },
+            {
+              "title": "Query Analysis",
+              "description": "Use EXPLAIN (or equivalent) to analyze query execution plans and identify bottlenecks or missing indexes."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Join Optimization",
+              "description": "Place tables with the most restrictive filters first in JOIN operations, and ensure JOIN columns are properly indexed. Consider rewriting subqueries as joins when possible."
+            },
+            {
+              "title": "Avoid SELECT *",
+              "description": "Specify only needed columns instead of using SELECT *, reducing I/O, network traffic, and memory usage, especially for tables with many columns or BLOB/TEXT fields."
+            },
+            {
+              "title": "Optimize WHERE Clauses",
+              "description": "Ensure WHERE conditions are sargable (can use indexes): avoid functions on indexed columns, use appropriate operators, and be mindful of implicit conversions that prevent index usage."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Data Pre-aggregation",
+              "description": "For analytical queries, consider using materialized views, summary tables, or OLAP cubes to pre-compute aggregations rather than calculating them on-the-fly."
+            },
+            {
+              "title": "Partitioning",
+              "description": "For very large tables, consider table partitioning to divide data into smaller, more manageable segments, improving query performance by limiting scans to relevant partitions."
+            },
+            {
+              "title": "Query Rewriting",
+              "description": "Rewrite complex queries: break down complex logic, eliminate unnecessary self-joins, use EXISTS instead of IN for large subqueries, or use window functions instead of multiple self-joins for running totals."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-database-indexing-databases-sql-6"
+      ]
+    },
+    {
+      "id": "sql-window-functions-databases-sql-14",
+      "skillLevel": "advanced",
+      "shortTitle": "Window Functions",
+      "question": "Can you explain SQL window functions and their advantages?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Window functions** perform calculations across a set of table rows related to the current row, without collapsing groups like aggregate functions do."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "```sql\nSELECT \n    employee_name,\n    department,\n    salary,\n    AVG(salary) OVER (PARTITION BY department) as dept_avg_salary\nFROM employees;\n```"
+            },
+            {
+              "title": "Core Components",
+              "description": "The key components are the function (like SUM, AVG, ROW_NUMBER), the OVER clause, and optional PARTITION BY and ORDER BY specifications that define the window."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Common Window Functions",
+              "description": "Popular functions include **ROW_NUMBER()** (sequential numbers), **RANK()** (ranking with gaps), **DENSE_RANK()** (ranking without gaps), **NTILE()** (percentile groups), and **LAG()/LEAD()** (access to previous/next row values)."
+            },
+            {
+              "title": "Frame Specification",
+              "description": "The window frame defines which rows are included in calculations, using clauses like ROWS/RANGE BETWEEN with boundaries such as UNBOUNDED PRECEDING, CURRENT ROW, and UNBOUNDED FOLLOWING."
+            },
+            {
+              "title": "Practical Applications",
+              "description": "Window functions excel at calculating running totals, moving averages, ranking items within groups, finding gaps in sequences, and comparing values to previous periods, all without complex self-joins or subqueries."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Advantage",
+              "description": "Window functions often outperform equivalent queries using subqueries or self-joins because they scan the data fewer times. However, they can be memory-intensive as they may buffer results."
+            },
+            {
+              "title": "Combining Window Functions",
+              "description": "Multiple window functions can be used in the same query, even with different window definitions, enabling complex analysis in a single pass through the data."
+            },
+            {
+              "title": "Window Function Limitations",
+              "description": "Window functions cannot be used in WHERE, GROUP BY, or HAVING clauses directly (though they can be used in subqueries). Support varies across database systems, with some offering extended functionality."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-aggregate-functions-databases-sql-3"
+      ]
+    },
+    {
+      "id": "sql-common-table-expressions-databases-sql-15",
+      "skillLevel": "intermediate",
+      "shortTitle": "CTEs",
+      "question": "What are Common Table Expressions (CTEs) in SQL and how do they improve query writing?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **Common Table Expression (CTE)** is a named temporary result set that exists only within the scope of a single SQL statement and is defined using the WITH clause."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "```sql\nWITH employee_salaries AS (\n    SELECT department_id, AVG(salary) as avg_salary\n    FROM employees\n    GROUP BY department_id\n)\nSELECT d.name, es.avg_salary\nFROM departments d\nJOIN employee_salaries es ON d.id = es.department_id;\n```"
+            },
+            {
+              "title": "Main Benefits",
+              "description": "CTEs improve query readability, allow referencing the same subquery multiple times, and simplify complex queries by breaking them down into logical building blocks."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Multiple CTEs",
+              "description": "A single WITH clause can define multiple CTEs separated by commas, which can reference each other (if they appear in the correct order).\n\n```sql\nWITH dept_stats AS (...),\n     high_salary_depts AS (SELECT * FROM dept_stats WHERE avg_salary > 100000)\nSELECT * FROM high_salary_depts;\n```"
+            },
+            {
+              "title": "Recursive CTEs",
+              "description": "**Recursive CTEs** use a special form with a base case and a recursive step to handle hierarchical or graph-structured data like organization charts or bill-of-materials.\n\n```sql\nWITH RECURSIVE org_hierarchy AS (\n    SELECT id, name, manager_id, 1 as level\n    FROM employees\n    WHERE manager_id IS NULL  -- Base case: top managers\n    UNION ALL\n    SELECT e.id, e.name, e.manager_id, oh.level + 1\n    FROM employees e\n    JOIN org_hierarchy oh ON e.manager_id = oh.id  -- Recursive step\n)\nSELECT * FROM org_hierarchy ORDER BY level, name;\n```"
+            },
+            {
+              "title": "CTE vs. Derived Tables",
+              "description": "CTEs offer similar functionality to derived tables (subqueries in the FROM clause) but with better readability and the ability to reference them multiple times without duplication."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "CTE Materialization",
+              "description": "Database systems handle CTEs differently: some materialize (store) the results temporarily, while others might inline the CTE definition at each reference, affecting performance differently."
+            },
+            {
+              "title": "Recursive CTE Limitations",
+              "description": "Recursive CTEs typically require UNION ALL (not UNION) and have limitations like maximum recursion depth, restricted operations in the recursive part, and varying optimization support across database systems."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "While CTEs improve readability, they don't automatically improve performance. In some databases, CTEs might prevent certain optimizations that would be available with inline subqueries, requiring careful testing."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-subquery-vs-join-databases-sql-5"
+      ]
+    },
+    {
+      "id": "sql-injection-prevention-databases-sql-16",
+      "skillLevel": "intermediate",
+      "shortTitle": "SQL Injection Prevention",
+      "question": "How do you prevent SQL injection attacks in database applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Parameterized Queries",
+              "description": "Use **parameterized queries** (prepared statements) that separate SQL code from data, preventing attackers from injecting executable code.\n\n```java\n// Instead of this (vulnerable):\nString query = \"SELECT * FROM users WHERE username = '\" + username + \"'\";\n\n// Do this (safe):\nPreparedStatement stmt = conn.prepareStatement(\"SELECT * FROM users WHERE username = ?\");\nstmt.setString(1, username);\n```"
+            },
+            {
+              "title": "Input Validation",
+              "description": "Validate user inputs by checking data types, lengths, formats, and ranges before using them in database operations."
+            },
+            {
+              "title": "Stored Procedures",
+              "description": "Use stored procedures with parameterized inputs rather than building dynamic SQL strings in application code."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Principle of Least Privilege",
+              "description": "Use database accounts with minimal required permissions for application connections, limiting the potential impact of successful injection attacks."
+            },
+            {
+              "title": "ORM Frameworks",
+              "description": "Utilize Object-Relational Mapping (ORM) frameworks that implement parameterized queries automatically and provide additional injection protection layers."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Implement proper error handling that avoids exposing database details in error messages to users, as these can provide valuable information to attackers."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Dynamic SQL Considerations",
+              "description": "When dynamic SQL is unavoidable (e.g., for flexible search interfaces), use whitelisting approaches for allowed columns and operators rather than direct string concatenation."
+            },
+            {
+              "title": "Web Application Firewalls",
+              "description": "Implement Web Application Firewalls (WAFs) that can detect and block common SQL injection patterns before they reach your application."
+            },
+            {
+              "title": "Regular Security Testing",
+              "description": "Conduct regular security assessments including automated scanning and manual penetration testing to identify and remediate potential SQL injection vulnerabilities."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "sql-table-partitioning-databases-sql-17",
+      "skillLevel": "advanced",
+      "shortTitle": "Table Partitioning",
+      "question": "Could you explain database table partitioning and its benefits?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Table partitioning** divides a large table into smaller, more manageable pieces called partitions, while maintaining its appearance as a single logical table to queries."
+            },
+            {
+              "title": "Common Partitioning Types",
+              "description": "The main types are **range partitioning** (based on value ranges, like date ranges), **list partitioning** (based on discrete values, like regions), and **hash partitioning** (based on a hash function of the key)."
+            },
+            {
+              "title": "Basic Benefits",
+              "description": "Partitioning improves query performance, simplifies maintenance operations, and makes archiving historical data easier."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Partition Pruning",
+              "description": "A key performance benefit is **partition pruning**, where the database engine can skip scanning irrelevant partitions based on query conditions, significantly reducing I/O and processing time."
+            },
+            {
+              "title": "Maintenance Advantages",
+              "description": "Partitioning allows maintenance operations (index rebuilds, statistics updates) to be performed on individual partitions while other partitions remain available, reducing downtime."
+            },
+            {
+              "title": "Implementation Approaches",
+              "description": "Partitioning can be implemented through native database partitioning features or via application-level partitioning (separate tables with a unified view or query routing)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Composite Partitioning",
+              "description": "**Composite partitioning** (or subpartitioning) applies multiple partitioning methods hierarchically, such as partitioning by year and then subpartitioning by month for fine-grained control."
+            },
+            {
+              "title": "Partition-Wise Joins",
+              "description": "When joining partitioned tables with compatible partitioning schemes, **partition-wise joins** can process matching partitions independently, potentially enabling parallel processing and reduced memory usage."
+            },
+            {
+              "title": "Challenges and Limitations",
+              "description": "Partitioning introduces complexity in design and maintenance, may impact certain query types negatively, can affect constraint implementation, and often requires careful planning for partition key selection and boundary management."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-query-optimization-databases-sql-13"
+      ]
+    },
+    {
+      "id": "sql-database-design-principles-databases-sql-18",
+      "skillLevel": "intermediate",
+      "shortTitle": "Sql Design Principles",
+      "question": "What are the key principles of good relational database design?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Normalization",
+              "description": "Apply appropriate normalization (typically 3NF or BCNF) to eliminate redundancy and dependency issues, organizing data into logical, related tables."
+            },
+            {
+              "title": "Primary and Foreign Keys",
+              "description": "Establish proper relationships between tables using primary keys and foreign keys, ensuring referential integrity."
+            },
+            {
+              "title": "Data Integrity",
+              "description": "Enforce data integrity through constraints (CHECK, UNIQUE, NOT NULL) to maintain accurate and consistent data."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Appropriate Data Types",
+              "description": "Choose the most appropriate data types and lengths for columns, balancing storage efficiency with flexibility for future needs."
+            },
+            {
+              "title": "Indexing Strategy",
+              "description": "Develop a strategic indexing plan based on query patterns, considering both performance gains and maintenance overhead."
+            },
+            {
+              "title": "Naming Conventions",
+              "description": "Adopt consistent, descriptive naming conventions for tables, columns, constraints, and other database objects to improve maintainability."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance vs. Normalization",
+              "description": "Balance normalization principles with performance requirements, selectively denormalizing when necessary for read-heavy workloads while understanding the trade-offs."
+            },
+            {
+              "title": "Scalability Considerations",
+              "description": "Design with future growth in mind, considering partitioning strategies, distributed database options, and how the schema might evolve as requirements change."
+            },
+            {
+              "title": "Domain Model Alignment",
+              "description": "Ensure the database design accurately reflects the business domain model while appropriately translating object-oriented concepts to relational structures."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-normalization-denormalization-databases-sql-7"
+      ]
+    },
+    {
+      "id": "sql-triggers-databases-sql-19",
+      "skillLevel": "intermediate",
+      "shortTitle": "Database Triggers",
+      "question": "Could you explain what triggers are in SQL and when you might use them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **trigger** is a stored procedure that automatically executes in response to certain events on a particular table or view, such as INSERT, UPDATE, or DELETE operations."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "```sql\nCREATE TRIGGER update_modified_date\nAFTER UPDATE ON employees\nFOR EACH ROW\nBEGIN\n    UPDATE employees SET last_modified = CURRENT_TIMESTAMP\n    WHERE id = NEW.id;\nEND;\n```"
+            },
+            {
+              "title": "Common Use Cases",
+              "description": "Triggers are used for enforcing complex business rules, maintaining audit trails, automatically updating related data, and implementing event-driven architecture within the database."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Types of Triggers",
+              "description": "Triggers can be categorized as **BEFORE** or **AFTER** triggers (execution timing), **ROW** or **STATEMENT** level triggers (execution granularity), and can respond to **INSERT**, **UPDATE**, **DELETE**, or multiple events."
+            },
+            {
+              "title": "OLD and NEW References",
+              "description": "In row-level triggers, **OLD** and **NEW** references (or similar, depending on the database system) provide access to the row values before and after the triggering operation."
+            },
+            {
+              "title": "Transaction Context",
+              "description": "Triggers execute within the same transaction as the triggering statement, meaning they can cause the entire transaction to roll back if they fail or explicitly issue a rollback."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Implications",
+              "description": "Triggers add overhead to DML operations and can significantly impact performance, especially if they perform complex operations or cascade to trigger other triggers."
+            },
+            {
+              "title": "Trigger Chains and Recursion",
+              "description": "Triggers can cascade (one trigger activating another), potentially leading to complex execution paths or even infinite recursion if not carefully designed, with different database systems having different recursion limits."
+            },
+            {
+              "title": "Alternative Approaches",
+              "description": "For many trigger use cases, alternatives exist that may offer better maintainability, such as application-level logic, stored procedures, or constraints. Triggers should generally be used sparingly for scenarios where database-level enforcement is essential."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-stored-procedures-functions-databases-sql-10"
+      ]
+    },
+    {
+      "id": "sql-temp-tables-variables-databases-sql-20",
+      "skillLevel": "intermediate",
+      "shortTitle": "Temporary Tables",
+      "question": "What are the different types of temporary tables in SQL and when would you use them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Local Temporary Tables",
+              "description": "**Local temp tables** (typically prefixed with # in SQL Server or created with TEMPORARY keyword in MySQL/PostgreSQL) are visible only to the current session and are automatically dropped when the session ends."
+            },
+            {
+              "title": "Global Temporary Tables",
+              "description": "**Global temp tables** (typically prefixed with ## in SQL Server) are visible to all sessions but still temporary, with rows visible only to the creating session unless explicitly shared."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "Temporary tables are useful for storing intermediate results in complex queries, breaking down complex logic into steps, and improving performance by avoiding repeated subqueries."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Table Variables",
+              "description": "**Table variables** (declared with DECLARE @table TABLE in SQL Server) are memory-resident, have more limited scope than temp tables (typically just the batch or stored procedure), and have different optimization characteristics."
+            },
+            {
+              "title": "CTE vs. Temp Table",
+              "description": "While Common Table Expressions (CTEs) can sometimes serve similar purposes, temporary tables persist for the session and can be indexed, making them better for larger intermediate results or when referenced multiple times."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Temporary tables support indexes, statistics, and constraints like regular tables, allowing query optimization. Table variables typically have more simplified statistics, potentially affecting query plans."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Transaction Behavior",
+              "description": "Temporary tables and table variables have different transaction behavior: operations on temp tables can be rolled back, while table variables generally maintain their state after a rollback (though row inserts can be rolled back)."
+            },
+            {
+              "title": "Storage Location",
+              "description": "Most database systems store temporary tables in a special temporary tablespace or tempdb (in SQL Server), which has performance implications for large temp tables and can cause contention in busy systems."
+            },
+            {
+              "title": "Selection Guidelines",
+              "description": "Choose table variables for small datasets (under ~1000 rows) and simple operations. Use temporary tables for larger datasets, when you need indexes, or when performance tuning through statistics is important. Consider memory-optimized tables for high-concurrency scenarios in supported systems."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-common-table-expressions-databases-sql-15"
+      ]
+    },
+    {
+      "id": "sql-set-operations-databases-sql-21",
+      "skillLevel": "intermediate",
+      "shortTitle": "Set Operations",
+      "question": "Can you explain the set operations (UNION, INTERSECT, EXCEPT) in SQL and how they differ?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "UNION",
+              "description": "**UNION** combines the results of two or more queries into a single result set, removing duplicate rows. **UNION ALL** performs the same combination but retains all duplicate rows."
+            },
+            {
+              "title": "INTERSECT",
+              "description": "**INTERSECT** returns only the rows that appear in all the result sets, effectively finding the common rows across multiple queries."
+            },
+            {
+              "title": "EXCEPT/MINUS",
+              "description": "**EXCEPT** (or **MINUS** in some databases) returns rows from the first query that do not appear in the result of the second query, representing set difference."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Compatibility Requirements",
+              "description": "All set operations require result sets with the same number of columns, and corresponding columns must have compatible data types. Column names from the first query are used in the final result."
+            },
+            {
+              "title": "Performance Characteristics",
+              "description": "**UNION ALL** typically performs better than **UNION** because it doesn't need to check for duplicates. Similarly, **INTERSECT** and **EXCEPT** involve comparisons that can be resource-intensive for large datasets."
+            },
+            {
+              "title": "Combining Operations",
+              "description": "Set operations can be combined in complex queries using parentheses to control precedence, similar to how AND and OR can be combined in WHERE clauses."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Implementation Differences",
+              "description": "Support for set operations varies by database system. While **UNION** is universally supported, **INTERSECT** and **EXCEPT** might be implemented differently or not at all in some systems (requiring workarounds with JOIN or NOT EXISTS)."
+            },
+            {
+              "title": "ORDER BY Behavior",
+              "description": "When using set operations, the ORDER BY clause can only appear at the end of the entire statement and applies to the final combined result, not to individual queries within the operation."
+            },
+            {
+              "title": "Alternative Approaches",
+              "description": "Set operations can often be rewritten using JOIN, EXISTS, or IN/NOT IN constructs. While functionally equivalent, these alternatives may have different performance characteristics and might be necessary in systems with limited set operation support."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-query-optimization-databases-sql-13"
+      ]
+    },
+    {
+      "id": "sql-data-types-databases-sql-22",
+      "skillLevel": "beginner",
+      "shortTitle": "SQL Data Types",
+      "question": "What are the most common SQL data types and how do you choose the appropriate ones?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Numeric Types",
+              "description": "Common numeric types include **INTEGER** (whole numbers), **DECIMAL/NUMERIC** (fixed precision), **FLOAT/REAL** (approximate), and **BOOLEAN/BIT** (true/false values)."
+            },
+            {
+              "title": "String Types",
+              "description": "String types include **CHAR** (fixed length), **VARCHAR** (variable length), **TEXT** (large text), and in some databases **NVARCHAR/NCHAR** for Unicode storage."
+            },
+            {
+              "title": "Date and Time Types",
+              "description": "Common temporal types are **DATE** (date only), **TIME** (time only), **DATETIME/TIMESTAMP** (date and time), and specialized types like **INTERVAL** in some databases."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Binary Types",
+              "description": "**BINARY** (fixed length), **VARBINARY** (variable length), and **BLOB** (Binary Large Object) store binary data like images, files, or any non-textual data."
+            },
+            {
+              "title": "Special Types",
+              "description": "Specialized types include **JSON** (for JSON documents), **XML** (for XML data), **ARRAY** (collections), and **UUID/GUID** (universally unique identifiers)."
+            },
+            {
+              "title": "Selection Criteria",
+              "description": "Choose data types based on: storage efficiency (smallest possible for the data), domain appropriateness (semantic match), performance impact (indexing, comparison speed), and future requirements (allowing for growth)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Implications",
+              "description": "Data type choices affect: storage size, memory usage, CPU utilization, index efficiency, join performance, and network transfer speeds. For instance, variable-length types save space but may cause fragmentation."
+            },
+            {
+              "title": "Type Conversion Issues",
+              "description": "Implicit type conversions (casting) can lead to performance problems by preventing index usage or causing unexpected behavior. Explicit casts are preferable when mixing data types."
+            },
+            {
+              "title": "Database Variances",
+              "description": "Data type support, naming, and exact behavior varies significantly between database systems. For example, VARCHAR limitations, datetime precision, and special type support differ between MySQL, PostgreSQL, Oracle, and SQL Server."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "sql-null-handling-databases-sql-23",
+      "skillLevel": "intermediate",
+      "shortTitle": "NULL Handling",
+      "question": "How should NULL values be handled in SQL, and what are some common pitfalls?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "NULL Concept",
+              "description": "**NULL** represents unknown or missing data, not zero or an empty string. It requires special handling in queries and comparisons."
+            },
+            {
+              "title": "Comparison Operators",
+              "description": "Standard comparison operators (=, <, >) don't work with NULL. Instead, use **IS NULL** or **IS NOT NULL** to test for NULL values:\n\n```sql\nSELECT * FROM employees WHERE phone_number IS NULL;\n```"
+            },
+            {
+              "title": "Nullability Design",
+              "description": "When designing tables, use **NOT NULL** constraints for columns that must have values. Consider whether NULL is semantically appropriate for each column based on business requirements."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Three-Valued Logic",
+              "description": "SQL uses three-valued logic: TRUE, FALSE, and UNKNOWN. Comparisons with NULL result in UNKNOWN, and WHERE clauses only include rows where the condition evaluates to TRUE (not UNKNOWN)."
+            },
+            {
+              "title": "NULL in Functions",
+              "description": "Most SQL functions return NULL if any input is NULL. Aggregate functions like SUM, AVG, and COUNT (except COUNT(*)) ignore NULL values in their calculations."
+            },
+            {
+              "title": "COALESCE and NULLIF",
+              "description": "**COALESCE** returns the first non-NULL value in a list, useful for providing defaults.\n**NULLIF** returns NULL if two expressions are equal, otherwise the first expression.\n\n```sql\nSELECT name, COALESCE(phone, email, 'No Contact Info') as contact_info\nFROM customers;\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "NULL in Indexes and Constraints",
+              "description": "In most databases, NULL values in indexed columns require special handling. Multiple NULL values are not considered duplicates in UNIQUE constraints (except in MS SQL Server), and foreign keys with NULL values don't reference anything."
+            },
+            {
+              "title": "GROUP BY and NULL",
+              "description": "When grouping by a column, all NULL values are grouped together as a single group, which may lead to unexpected results if nulls represent different missing values conceptually."
+            },
+            {
+              "title": "Joins and NULL",
+              "description": "NULL values don't match in joins even with other NULLs. This affects results in INNER JOIN operations and requires careful handling in lookup tables with optional relationships. Special considerations are needed for OUTER JOINs when joining on nullable columns."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "sql-transaction-isolation-levels-databases-sql-24",
+      "skillLevel": "advanced",
+      "shortTitle": "Isolation Levels",
+      "question": "Could you explain the different transaction isolation levels in SQL and their implications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Transaction isolation levels** define how much one transaction is isolated from the effects of other concurrent transactions, balancing data consistency with concurrency."
+            },
+            {
+              "title": "Concurrency Phenomena",
+              "description": "The main phenomena that isolation levels address are **dirty reads** (reading uncommitted data), **non-repeatable reads** (data changing between reads), and **phantom reads** (new rows appearing between reads)."
+            },
+            {
+              "title": "Standard Levels",
+              "description": "The SQL standard defines four isolation levels, from least to most restrictive: **READ UNCOMMITTED**, **READ COMMITTED**, **REPEATABLE READ**, and **SERIALIZABLE**."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "READ UNCOMMITTED",
+              "description": "The lowest isolation level allows transactions to read data that has been modified but not yet committed by other transactions (dirty reads). It offers maximum concurrency but minimal consistency guarantees."
+            },
+            {
+              "title": "READ COMMITTED",
+              "description": "Prevents dirty reads by ensuring a transaction only sees committed data, but allows non-repeatable reads and phantom reads. This is the default isolation level in many database systems."
+            },
+            {
+              "title": "REPEATABLE READ",
+              "description": "Prevents both dirty reads and non-repeatable reads by ensuring that any data read during a transaction cannot change during that transaction, but may still allow phantom reads."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "SERIALIZABLE",
+              "description": "The highest isolation level prevents all concurrency phenomena (dirty reads, non-repeatable reads, and phantom reads) by essentially making transactions run one after another, as if they were serialized."
+            },
+            {
+              "title": "Implementation Differences",
+              "description": "Database systems implement isolation levels differently: some use **lock-based** approaches (locking rows or ranges), while others use **multiversion concurrency control (MVCC)** (maintaining multiple versions of data). For example, Oracle's default (READ COMMITTED) behaves differently from SQL Server's."
+            },
+            {
+              "title": "Performance Trade-offs",
+              "description": "Higher isolation levels provide stronger consistency guarantees but typically reduce concurrency and throughput. They may also increase the likelihood of deadlocks or serialization failures. The appropriate level depends on application requirements for data consistency versus performance."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-transactions-acid-databases-sql-8"
+      ]
+    },
+    {
+      "id": "sql-database-comparison-databases-sql-25",
+      "skillLevel": "intermediate",
+      "shortTitle": "Sql System Comparison",
+      "question": "What are the key differences between major SQL database systems like MySQL, PostgreSQL, SQL Server, and Oracle?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Licensing and Cost",
+              "description": "**MySQL** and **PostgreSQL** are open-source with free community editions (though MySQL has paid enterprise editions under Oracle). **SQL Server** and **Oracle Database** are commercial products with various editions at different price points, though both offer limited free versions."
+            },
+            {
+              "title": "Platform Support",
+              "description": "**PostgreSQL** and **MySQL** run on all major platforms. **SQL Server** historically ran only on Windows but now supports Linux. **Oracle Database** supports Windows, Linux, Unix, and its own Oracle Solaris."
+            },
+            {
+              "title": "Basic Feature Set",
+              "description": "All support core SQL functionality (queries, joins, stored procedures), but with syntax variations. Each has different strengths: MySQL for web applications, PostgreSQL for standards compliance and extensibility, SQL Server for Microsoft ecosystem integration, and Oracle for large enterprise features."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Data Types and Extensions",
+              "description": "**PostgreSQL** offers the richest set of data types (including arrays, JSON, geometric types) and custom types. **SQL Server** has unique types like HIERARCHYID. **Oracle** has specialized types for XML, spatial data, and media. **MySQL** has historically had more limited type support but has improved in recent versions."
+            },
+            {
+              "title": "Query Features",
+              "description": "**PostgreSQL** offers the most SQL standard compliance and advanced features like recursive CTEs and window functions. **Oracle** and **SQL Server** have powerful analytical functions. **MySQL** historically lacked some advanced features (improving in newer versions) but offers practical extensions like LIMIT."
+            },
+            {
+              "title": "Concurrency Models",
+              "description": "**Oracle** and **PostgreSQL** use multiversion concurrency control (MVCC). **SQL Server** primarily uses lock-based concurrency with snapshot isolation options. **MySQL** varies by storage engine: InnoDB uses MVCC-like row-level locking, while MyISAM uses table-level locking."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Scalability Approaches",
+              "description": "**Oracle** excels in vertical scalability (RAC for shared-disk clustering). **SQL Server** offers AlwaysOn Availability Groups. **PostgreSQL** has streaming replication but more limited built-in clustering. **MySQL** offers various replication options including group replication in newer versions."
+            },
+            {
+              "title": "Performance Optimization",
+              "description": "Each system has unique optimization features: **Oracle** has advanced partitioning and materialized views, **SQL Server** offers columnstore indexes and intelligent query processing, **PostgreSQL** has excellent indexing options (GIN, GiST) and table inheritance, while **MySQL** is optimized for read-heavy workloads with various storage engines."
+            },
+            {
+              "title": "Ecosystem and Integration",
+              "description": "**SQL Server** integrates tightly with Microsoft products (Azure, .NET, Power BI). **Oracle** has a vast enterprise ecosystem including middleware and applications. **PostgreSQL** has strong community extensions and cloud support. **MySQL** has widespread web hosting support and works well with PHP-based applications."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    }
+  ]
+}

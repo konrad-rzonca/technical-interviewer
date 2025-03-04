@@ -11,6 +11,16 @@ import collectionsQuestions from './questions/java/core-java/collections.json';
 import exceptionsQuestions from './questions/java/core-java/exceptions.json';
 import dataStructuresQuestions
   from './questions/java/data-structures-and-algorithms/data-structures.json';
+import springQuestions from './questions/java/framework/spring.json';
+import hibernateQuestions from './questions/java/framework/hibernate.json';
+import algorithmsQuestions1
+  from './questions/java/data-structures-and-algorithms/algorithms-1.json';
+import algorithmsQuestions2
+  from './questions/java/data-structures-and-algorithms/algorithms-2.json';
+import sqlQuestions from './questions/java/databases/SQL.json';
+import noSqlQuestions from './questions/java/databases/NoSQL.json';
+import transactionsQuestions
+  from './questions/java/databases/transactions.json';
 
 // Question sets with author information
 const questionSets = {
@@ -32,6 +42,34 @@ const questionSets = {
       name: 'Basic Set',
       files: {
         'Data Structures': dataStructuresQuestions,
+        'Algorithms': {
+          category: algorithmsQuestions1.category,
+          subcategory: algorithmsQuestions1.subcategory,
+          questions: [
+            ...algorithmsQuestions1.questions,
+            ...algorithmsQuestions2.questions],
+        },
+      },
+    },
+  ],
+  'databases': [
+    {
+      id: 'databases-basic-set',
+      name: 'Basic Set',
+      files: {
+        'SQL': sqlQuestions,
+        'NoSQL': noSqlQuestions,
+        'Transactions': transactionsQuestions,
+      },
+    },
+  ],
+  'frameworks': [
+    {
+      id: 'frameworks-basic-set',
+      name: 'Basic Set',
+      files: {
+        'Spring': springQuestions,
+        'Hibernate': hibernateQuestions,
       },
     },
   ],
@@ -51,21 +89,6 @@ const questionSets = {
       files: {},
     },
   ],
-  'databases': [
-    {
-      id: 'databases-basic-set',
-      name: 'Basic Set',
-      files: {},
-    },
-  ],
-  'frameworks': [
-    {
-      id: 'frameworks-basic-set',
-      name: 'Basic Set',
-      files: {},
-    },
-  ],
-
   'engineering-practices': [
     {
       id: 'engineering-basic-set',

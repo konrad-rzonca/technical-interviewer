@@ -1,0 +1,951 @@
+﻿{
+  "category": "Engineering Practices",
+  "subcategory": "Git",
+  "questions": [
+    {
+      "id": "git-fundamentals-engineering-practices-g-1",
+      "skillLevel": "beginner",
+      "shortTitle": "Git Basics",
+      "question": "Could you explain what Git is and what problems it solves?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Git** is a distributed version control system (DVCS) that tracks changes to files over time, allowing multiple developers to collaborate on projects efficiently."
+            },
+            {
+              "title": "Core Problem",
+              "description": "Git solves the problem of tracking file changes and coordinating work among team members, enabling them to work on the same codebase without constantly overwriting each other's changes."
+            },
+            {
+              "title": "Key Concepts",
+              "description": "Git uses a **repository** to store all files and their history, a **working directory** where you modify files, and a **staging area** (index) to prepare changes for committing."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Distributed Nature",
+              "description": "Unlike centralized VCS systems, Git gives each developer a complete copy of the repository (including history), allowing them to work offline and commit locally before pushing changes."
+            },
+            {
+              "title": "Data Integrity",
+              "description": "Git ensures data integrity by generating SHA-1 hashes for content. Every file, commit, and object in Git has a unique hash that changes if content is modified, making corruption or tampering detectable."
+            },
+            {
+              "title": "Branching Model",
+              "description": "Git's lightweight branching model enables developers to create isolated environments for new features or experiments without affecting the main codebase, supporting parallel development workflows."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Content-Addressable Storage",
+              "description": "Under the hood, Git is a content-addressable filesystem, storing content as objects referenced by their SHA-1 hash. This includes **blobs** (file contents), **trees** (directory structures), and **commits** (snapshots with metadata)."
+            },
+            {
+              "title": "Performance Optimizations",
+              "description": "Git employs various optimizations like delta compression, pack files, and garbage collection to efficiently manage repository size despite storing complete histories."
+            },
+            {
+              "title": "Historical Context",
+              "description": "Git was created by Linus Torvalds in 2005 to manage Linux kernel development after issues with BitKeeper. Its design priorities included speed, simple design, strong support for non-linear development, and full distributed operation."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-workflow-engineering-practices-g-3",
+        "git-branching-engineering-practices-g-2"
+      ]
+    },
+    {
+      "id": "git-branching-engineering-practices-g-2",
+      "skillLevel": "beginner",
+      "shortTitle": "Branching and Merging",
+      "question": "Can you explain Git's branching and merging model and how it supports collaborative development?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Branch Concept",
+              "description": "A **branch** in Git is a lightweight, movable pointer to a commit. The default branch is usually called `main` or `master`, and creating new branches allows for parallel development paths."
+            },
+            {
+              "title": "Creating and Switching",
+              "description": "You create branches with `git branch <name>` and switch to them with `git checkout <name>` or use the combined `git checkout -b <name>` to create and switch in one command. Since Git 2.23, `git switch <name>` is recommended for branch switching."
+            },
+            {
+              "title": "Basic Merging",
+              "description": "Merging combines changes from different branches. A **fast-forward merge** occurs when the target branch has no unique commits. Otherwise, Git performs a **three-way merge** creating a new merge commit."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Merge Conflicts",
+              "description": "When the same part of a file is modified differently in the branches being merged, Git cannot automatically resolve the difference, resulting in a **merge conflict**. Developers must manually resolve these conflicts before completing the merge."
+            },
+            {
+              "title": "Remote Branches",
+              "description": "**Remote-tracking branches** (like `origin/main`) reflect the state of branches on remote repositories. They update when you communicate with the remote, enabling collaboration across distributed repositories."
+            },
+            {
+              "title": "Branch Management",
+              "description": "Good practices include regularly cleaning up merged branches (`git branch -d <name>`), using descriptive branch names (e.g., `feature/user-authentication`), and keeping branches focused on specific tasks or features."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Merge Strategies",
+              "description": "Git offers different merge strategies beyond the default 'recursive' strategy, including 'ours', 'theirs', 'octopus' (for more than two branches), and 'subtree' (for nested repositories)."
+            },
+            {
+              "title": "Rebasing Alternative",
+              "description": "Instead of merging, **rebasing** (`git rebase <branch>`) rewrites history by replaying your branch's commits on top of another branch. This creates a linear history but should generally be avoided for branches that have been pushed publicly."
+            },
+            {
+              "title": "Branch References",
+              "description": "Git offers various ways to reference commits: `HEAD` (current commit), `HEAD~n` (nth ancestor), `branch@{yesterday}` (time-based specification), and reflog entries like `branch@{n}` (nth prior value of the branch)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-workflow-engineering-practices-g-3",
+        "git-advanced-operations-engineering-practices-g-4"
+      ]
+    },
+    {
+      "id": "git-workflow-engineering-practices-g-3",
+      "skillLevel": "intermediate",
+      "shortTitle": "Git Workflows",
+      "question": "What are the most common Git workflows, and how would you choose the right one for a project?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Common Workflows",
+              "description": "The most common Git workflows include **Centralized Workflow**, **Feature Branch Workflow**, **Gitflow Workflow**, and **Forking Workflow**. Each has different approaches to branching, merging, and collaboration."
+            },
+            {
+              "title": "Centralized Workflow",
+              "description": "Simplest model where everyone works on the main branch. Suitable for small teams or solo projects with sequential development. Similar to SVN but with Git's distributed advantages."
+            },
+            {
+              "title": "Feature Branch Workflow",
+              "description": "Developers create a new branch for each feature or task, merging back to main when complete. This isolates changes and enables parallel development while keeping the main branch stable."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Gitflow Workflow",
+              "description": "A structured branching model with dedicated branches: `main` (production code), `develop` (integration branch), `feature/*` (new features), `release/*` (release preparation), and `hotfix/*` (emergency fixes). Provides clear separation but adds complexity."
+            },
+            {
+              "title": "Trunk-Based Development",
+              "description": "Developers work on small changes and integrate frequently to the main branch (trunk). Focuses on continuous integration with short-lived feature branches or even direct commits to main. Popular in CI/CD environments."
+            },
+            {
+              "title": "Forking Workflow",
+              "description": "Common in open-source projects. Contributors fork the entire repository, make changes in their copy, and submit pull requests. Provides strong isolation and permission management but adds overhead for synchronization."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Workflow Selection Factors",
+              "description": "Choose a workflow based on team size, project complexity, release frequency, contributor trust level, and CI/CD requirements. Simpler workflows suit smaller teams, while more structured approaches help larger teams or complex projects."
+            },
+            {
+              "title": "Hybrid Approaches",
+              "description": "Many teams adopt hybrid workflows, combining elements from different models. For example, using trunk-based development with short-lived feature branches and release branches for stabilization periods."
+            },
+            {
+              "title": "Scaling Considerations",
+              "description": "As projects grow, workflow needs evolve. Consider using techniques like **branch by abstraction**, **feature flags**, and **monorepo strategies** to manage complexity while maintaining development velocity."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-branching-engineering-practices-g-2",
+        "git-collaboration-engineering-practices-g-7"
+      ]
+    },
+    {
+      "id": "git-advanced-operations-engineering-practices-g-4",
+      "skillLevel": "advanced",
+      "shortTitle": "Advanced Git Operations",
+      "question": "Could you explain advanced Git operations like rebasing, cherry-picking, and when to use them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Rebasing Concept",
+              "description": "**Rebasing** (`git rebase <branch>`) moves or combines a sequence of commits to a new base commit, effectively rewriting history by creating new commits with similar changes but different SHAs."
+            },
+            {
+              "title": "Cherry-picking",
+              "description": "**Cherry-picking** (`git cherry-pick <commit>`) applies the changes from specific commits to the current branch, creating new commits with the same message but different SHAs."
+            },
+            {
+              "title": "Interactive Rebase",
+              "description": "**Interactive rebasing** (`git rebase -i <commit>`) provides a powerful way to modify a series of commits, allowing you to reorder, edit, squash, or drop commits before applying them."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Rebase vs. Merge",
+              "description": "While **merging** preserves history and creates a merge commit, **rebasing** creates a linear history by replaying commits. Rebasing is generally better for cleaning up local history before sharing, while merging preserves the complete development context."
+            },
+            {
+              "title": "Golden Rule of Rebasing",
+              "description": "Never rebase commits that have been pushed to a shared repository unless you're certain no one has based work on them. Breaking this rule forces others to re-sync their work and can cause duplicate commits."
+            },
+            {
+              "title": "Cherry-pick Use Cases",
+              "description": "Cherry-picking is useful for selectively applying fixes to multiple branches (like backporting a bugfix from `main` to a maintenance branch), recovering lost commits, or implementing the same feature in different contexts."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Rebase onto",
+              "description": "**`git rebase --onto`** enables more complex rebasing scenarios, such as moving a range of commits from one branch to another or transplanting a feature branch from one base branch to another."
+            },
+            {
+              "title": "Conflict Resolution Strategies",
+              "description": "Advanced rebasing often requires conflict resolution. Strategies include using `--strategy=recursive` with options like `theirs` or `ours`, leveraging `git rerere` (Reuse Recorded Resolution) for repetitive conflicts, or using merge tools for complex cases."
+            },
+            {
+              "title": "History Rewriting Considerations",
+              "description": "Beyond rebasing, Git offers other history rewriting tools like `git filter-branch`, `git commit --amend`, and the newer `git filter-repo`. These powerful tools can remove sensitive data, split repositories, or restructure history, but require careful consideration of consequences."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-branching-engineering-practices-g-2",
+        "git-history-management-engineering-practices-g-5"
+      ]
+    },
+    {
+      "id": "git-history-management-engineering-practices-g-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "History Management",
+      "question": "How do you manage Git history to keep it clean and meaningful for a project?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Commit Best Practices",
+              "description": "Write clear, concise commit messages with a subject line (50 chars max) and detailed body if needed. Use present tense (\"Add feature\" not \"Added feature\") and explain why the change was made, not just what changed."
+            },
+            {
+              "title": "Atomic Commits",
+              "description": "Make **atomic commits** that contain a single logical change. This improves readability, simplifies rollbacks, and makes tools like `git bisect` more effective when debugging."
+            },
+            {
+              "title": "Commit Frequency",
+              "description": "Commit frequently while working locally to create checkpoints, then clean up history before sharing. This balances the need for granular history during development with readable history for the team."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Squashing Commits",
+              "description": "Use `git rebase -i` to **squash** related commits together before pushing or creating a pull request. This consolidates work-in-progress commits into meaningful units while preserving the logical separation between different features or fixes."
+            },
+            {
+              "title": "Conventional Commits",
+              "description": "Adopt a commit message convention like **Conventional Commits** (`type(scope): message`), which adds structure to commit messages (e.g., `fix(auth): prevent timing attack`) and enables automated versioning and changelog generation."
+            },
+            {
+              "title": "Branch Management",
+              "description": "Regularly delete merged branches to reduce clutter. Use descriptive, hierarchical branch names (e.g., `feature/user-auth`, `bugfix/login-timeout`) to organize work. Consider using branch naming conventions that integrate with issue trackers."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Rewriting History Techniques",
+              "description": "Beyond basic squashing, advanced history rewriting techniques include **fixup commits** (`git commit --fixup=<commit>`) followed by autosquashing, and **commit splitting** (extracting portions of changes into separate commits) for more precise history."
+            },
+            {
+              "title": "Enforcing Standards",
+              "description": "Implement **Git hooks** (especially pre-commit and pre-push) to enforce commit message formats, prevent large binary files, run linters, and maintain code quality. Use tools like Husky, Commitlint, or custom scripts."
+            },
+            {
+              "title": "Balancing History Clarity and Completeness",
+              "description": "Strike a balance between a clean, readable history and preserving enough detail for future understanding. A useful approach is to maintain detailed commits during review, then optionally squash when merging to the main branch using PR strategies like 'Squash and merge'."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-advanced-operations-engineering-practices-g-4",
+        "git-hook-customization-engineering-practices-g-6"
+      ]
+    },
+    {
+      "id": "git-hook-customization-engineering-practices-g-6",
+      "skillLevel": "advanced",
+      "shortTitle": "Git Hooks and Customization",
+      "question": "What are Git hooks and how can they be used to automate and enforce development workflows?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Hook Definition",
+              "description": "**Git hooks** are scripts that Git executes before or after events such as commit, push, and receive. They reside in the `.git/hooks` directory of a repository and can be written in any scripting language with proper shebang."
+            },
+            {
+              "title": "Common Client-side Hooks",
+              "description": "Frequently used client-side hooks include **pre-commit** (runs before a commit is created), **prepare-commit-msg** (edits default commit message), **commit-msg** (validates commit messages), and **pre-push** (runs before pushing to a remote)."
+            },
+            {
+              "title": "Basic Implementation",
+              "description": "To implement a hook, create an executable script with the hook name in the `.git/hooks` directory. For example, a simple pre-commit hook to prevent committing debugging statements:\n\n```bash\n#!/bin/sh\n\nif git diff --cached | grep -E 'console\\.log|debugger'; then\n  echo \"Error: Debug statements detected\"\n  exit 1\nfi\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Server-side Hooks",
+              "description": "Server-side hooks run on remote repositories and include **pre-receive** (runs before accepting pushes), **update** (similar but runs once per pushed branch), and **post-receive** (runs after push is completed, often used for deployment or notifications)."
+            },
+            {
+              "title": "Team-wide Hook Distribution",
+              "description": "Since `.git/hooks` isn't versioned, share hooks across a team by storing them in a versioned directory (e.g., `.hooks`) and configuring Git to use that location: `git config core.hooksPath .hooks`. Alternatively, use tools like Husky, Lefthook, or pre-commit."
+            },
+            {
+              "title": "Common Use Cases",
+              "description": "Popular uses include enforcing code style (running linters), preventing sensitive data commits (scanning for API keys), ensuring tests pass before pushing, automatically formatting code, and enforcing commit message standards."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "CI/CD Integration",
+              "description": "While hooks provide local checks, they should complement rather than replace CI/CD pipeline validations. Use pre-push hooks for quick checks and CI for comprehensive testing. This creates defense in depth while maintaining developer productivity."
+            },
+            {
+              "title": "Conditional Hook Execution",
+              "description": "Implement sophisticated logic in hooks to run only in certain conditions - for specific branches, file types, or developers. Also provide override mechanisms (`--no-verify`) for exceptional situations, but log these bypasses."
+            },
+            {
+              "title": "Advanced Customizations",
+              "description": "Beyond basic hooks, advanced Git customizations include custom Git commands (using `git config alias.*`), custom merge drivers for specific file types, custom diff visualization, and integrating Git with other development tools through its rich command interface."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-history-management-engineering-practices-g-5",
+        "git-workflow-engineering-practices-g-3"
+      ]
+    },
+    {
+      "id": "git-collaboration-engineering-practices-g-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Collaborative Git Practices",
+      "question": "What are the best practices for collaborating with others using Git in a team environment?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Pull Before Push",
+              "description": "Always fetch or pull changes from the remote repository before pushing your own changes to avoid conflicts and rejected pushes. Use `git pull --rebase` to maintain a cleaner history by placing your commits on top of remote changes."
+            },
+            {
+              "title": "Use Feature Branches",
+              "description": "Work on features or fixes in dedicated branches instead of directly on the main branch. This isolates changes, enables parallel work, and keeps the main branch stable and deployable at all times."
+            },
+            {
+              "title": "Clear Commit Messages",
+              "description": "Write descriptive commit messages that explain both what changed and why. Use a consistent format across the team, possibly with issue tracker references (e.g., `fix(auth): correct password validation logic (fixes #123)`)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Code Review Workflow",
+              "description": "Use pull/merge requests for code reviews before merging changes to primary branches. Keep PRs focused and reasonably sized to facilitate effective reviews. Respond to feedback constructively and address all comments."
+            },
+            {
+              "title": "Continuous Integration",
+              "description": "Integrate with CI systems to automatically test branches and pull requests. Ensure all tests pass before merging, and consider using status checks to prevent merging failing code."
+            },
+            {
+              "title": "Branch Protection",
+              "description": "Configure branch protection rules for important branches (like main and release branches) to prevent force pushes, require reviews, and enforce status checks. This maintains code quality and prevents accidental history rewrites."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Trunk-Based Collaboration",
+              "description": "Consider trunk-based development with feature flags for larger teams. This reduces merge conflicts by integrating changes frequently while controlling feature activation independently from code deployment."
+            },
+            {
+              "title": "Monorepo Strategies",
+              "description": "For projects with multiple components, consider monorepo approaches with tools like Git submodules, subtrees, or dedicated monorepo tools. Define clear ownership boundaries and implement appropriate code organization."
+            },
+            {
+              "title": "Documentation and Communication",
+              "description": "Document your team's Git workflow, conventions, and procedures. Include branch naming standards, merge strategies, and release processes. Ensure new team members understand the workflow and provide mentoring on Git best practices."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-workflow-engineering-practices-g-3",
+        "git-code-review-engineering-practices-g-8"
+      ]
+    },
+    {
+      "id": "git-code-review-engineering-practices-g-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Code Reviews with Git",
+      "question": "How do you approach code reviews with Git and pull requests to ensure code quality?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Pull Request Preparation",
+              "description": "Before creating a pull request, ensure your branch is focused on a single concern, includes appropriate tests, has descriptive commit messages, and is up-to-date with the target branch to avoid unnecessary merge conflicts."
+            },
+            {
+              "title": "PR Description",
+              "description": "Write a clear pull request description explaining what changes were made, why they were needed, how they were implemented, and any testing performed. Include links to relevant issues, documentation, or external resources."
+            },
+            {
+              "title": "Self-Review",
+              "description": "Review your own changes first using `git diff` or the platform's diff view. Look for obvious bugs, style issues, and incomplete changes. This catches simple mistakes before involving others and shows respect for reviewers' time."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Reviewing Process",
+              "description": "When reviewing others' code, examine logic correctness, test coverage, security implications, performance considerations, and adherence to project standards. Use the platform's line commenting feature for specific feedback."
+            },
+            {
+              "title": "Incremental PRs",
+              "description": "Prefer smaller, incremental pull requests (under 400 lines when possible) over massive changes. This makes reviews more thorough, speeds up the feedback cycle, and reduces the risk of large-scale integration issues."
+            },
+            {
+              "title": "Constructive Feedback",
+              "description": "Frame feedback constructively, focusing on the code rather than the author. Explain why changes are needed, suggest alternatives, and distinguish between required changes and preferences. Be specific in comments and avoid vague critiques."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Automated Checks",
+              "description": "Complement human reviews with automated checks (linters, formatters, static analysis) to handle style and basic quality issues. Configure these to run automatically on pull requests to focus human reviewers on logic and architecture."
+            },
+            {
+              "title": "Review Efficiency",
+              "description": "Use git features to improve review efficiency, such as creating focused commits that can be reviewed individually (`git add -p`), using `git blame` to understand the context of code, and leveraging `git bisect` to identify when issues were introduced."
+            },
+            {
+              "title": "Code Review Culture",
+              "description": "Cultivate a positive code review culture by recognizing good work, sharing knowledge rather than just finding issues, using reviews as teaching opportunities, and ensuring reviews happen promptly to maintain development velocity."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-collaboration-engineering-practices-g-7",
+        "git-workflow-engineering-practices-g-3"
+      ]
+    },
+    {
+      "id": "git-troubleshooting-engineering-practices-g-9",
+      "skillLevel": "advanced",
+      "shortTitle": "Git Troubleshooting",
+      "question": "How do you troubleshoot and recover from common Git issues and mistakes?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Viewing Repository State",
+              "description": "When problems occur, first understand your repository state using `git status`, `git log`, and `git reflog`. These commands show pending changes, commit history, and a record of all HEAD movements, respectively."
+            },
+            {
+              "title": "Undoing Working Directory Changes",
+              "description": "Discard uncommitted changes with `git checkout -- <file>` (or `git restore <file>` in newer Git versions). To discard all changes, use `git reset --hard`. Be careful as these operations cannot be undone."
+            },
+            {
+              "title": "Fixing the Last Commit",
+              "description": "For simple corrections to the last commit, use `git commit --amend` to add forgotten changes or fix the commit message. This replaces the previous commit with a new one."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Recovering Lost Commits",
+              "description": "If you've lost commits due to a reset or branch deletion, use `git reflog` to find the commit hash, then recover with `git checkout <hash>` followed by creating a new branch. Commits remain in Git for at least 30 days by default before garbage collection."
+            },
+            {
+              "title": "Resolving Merge Conflicts",
+              "description": "When facing merge conflicts, use `git status` to identify conflicted files, edit them to resolve conflicts (look for conflict markers), then `git add` the resolved files and complete the merge with `git commit`. For complex conflicts, consider using `git mergetool`."
+            },
+            {
+              "title": "Undoing Public Commits",
+              "description": "To undo commits already pushed to shared repositories, use `git revert <commit>` which creates a new commit that undoes the specified changes. Unlike reset, this preserves history and is safe for shared branches."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Recovering from Detached HEAD",
+              "description": "If you end up in a detached HEAD state (common after checking out a specific commit), your new commits will be orphaned unless you create a branch. Use `git branch <new-branch-name>` before switching away, or recover later using reflog."
+            },
+            {
+              "title": "Fixing Messy History",
+              "description": "Clean up complex history problems with interactive rebasing (`git rebase -i <commit>`). This allows reordering, squashing, editing, or dropping commits. For more extensive cleanup, consider `git filter-branch` (for older repositories) or `git filter-repo` (newer alternative)."
+            },
+            {
+              "title": "Repository Corruption Recovery",
+              "description": "For repository corruption issues, try `git fsck` to identify broken objects. Repair strategies include cloning from remotes, using `git gc --prune=now` to remove unreferenced objects, or extracting commits with `git format-patch` and applying them to a fresh repository. Always back up before attempted repairs."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-advanced-operations-engineering-practices-g-4",
+        "git-fundamentals-engineering-practices-g-1"
+      ]
+    },
+    {
+      "id": "git-continuous-integration-engineering-practices-g-10",
+      "skillLevel": "intermediate",
+      "shortTitle": "Git and CI/CD",
+      "question": "How do you integrate Git effectively with continuous integration and deployment pipelines?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Branch-Based Workflows",
+              "description": "Configure CI systems to automatically build and test code on all branches or pull requests. This provides immediate feedback on code quality before review and prevents breaking changes from reaching the main branch."
+            },
+            {
+              "title": "Status Checks",
+              "description": "Set up repository rules requiring CI checks to pass before merging pull requests. This enforces quality gates and prevents merging code that fails tests, has security vulnerabilities, or violates other quality standards."
+            },
+            {
+              "title": "Environment Deployments",
+              "description": "Automate deployments to different environments based on Git branches. Typically, feature branches deploy to development environments, the main branch deploys to staging/QA, and tags or release branches deploy to production."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Git-Based Versioning",
+              "description": "Implement semantic versioning using Git tags (`git tag v1.2.3`) or derive versions from commit history. Tools like GitVersion can automatically determine the next version number based on conventional commit messages and branch names."
+            },
+            {
+              "title": "Feature Flags with Git",
+              "description": "Combine feature branches with feature flags to separate code deployment from feature activation. This allows merging incomplete features into the main branch while keeping them disabled until ready, reducing long-lived branches and merge conflicts."
+            },
+            {
+              "title": "Build Artifacts and Git",
+              "description": "Associate build artifacts with the specific Git commit that produced them using commit hashes. This provides traceability between deployed code and source, facilitating troubleshooting and auditability."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "GitOps Workflows",
+              "description": "Implement GitOps principles where infrastructure and deployment configurations are stored in Git, and changes to these repositories automatically trigger infrastructure updates. This provides version control, audit trails, and peer review for infrastructure changes."
+            },
+            {
+              "title": "Monorepo CI Optimization",
+              "description": "For monorepos, optimize CI by only running tests and deployments for components affected by changes. Use Git tools to determine which files changed (`git diff`) and map those to specific components or services that need testing."
+            },
+            {
+              "title": "Security Scanning Integration",
+              "description": "Integrate automated security scanning into the Git workflow using pre-commit hooks locally and security scanners in CI pipelines. Configure these to detect secrets, vulnerable dependencies, and potential security issues before they reach production."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-workflow-engineering-practices-g-3",
+        "git-collaboration-engineering-practices-g-7"
+      ]
+    },
+    {
+      "id": "git-submodules-engineering-practices-g-11",
+      "skillLevel": "advanced",
+      "shortTitle": "Git Submodules and Subtrees",
+      "question": "How do Git submodules and subtrees work, and when should you use each approach?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Submodule Concept",
+              "description": "**Git submodules** allow you to include one Git repository within another as a subdirectory. The parent repository tracks the specific commit of the submodule that should be used, treating it as a separate entity."
+            },
+            {
+              "title": "Subtree Concept",
+              "description": "**Git subtrees** merge the history of one repository into a subdirectory of another repository. Unlike submodules, subtrees fully integrate the external code into your main repository."
+            },
+            {
+              "title": "Basic Operations",
+              "description": "Add a submodule with `git submodule add <url> <path>` and initialize it with `git submodule update --init`. Add a subtree with `git subtree add --prefix=<path> <repository> <ref>`."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Submodule Characteristics",
+              "description": "Submodules maintain a clear separation between codebases. Changes to submodules are tracked by recording commit references in the parent repo. This allows precise version control but requires team members to understand submodule operations."
+            },
+            {
+              "title": "Subtree Characteristics",
+              "description": "Subtrees copy code directly into your repository, simplifying usage for most team members who don't need to know about the subtree. However, this can make history more complex and bidirectional synchronization more challenging."
+            },
+            {
+              "title": "Updating External Code",
+              "description": "Update submodules with `git submodule update --remote` followed by committing the new reference. Update subtrees with `git subtree pull --prefix=<path> <repository> <ref>`, which creates a merge commit in your repository."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Choosing Between Approaches",
+              "description": "Choose **submodules** when you need precise version control, the external code changes infrequently, or you want to push changes back upstream easily. Choose **subtrees** when you need to modify the external code frequently, want simpler workflow for most team members, or need to work offline more easily."
+            },
+            {
+              "title": "Contributing Changes Upstream",
+              "description": "With submodules, contribute changes by working directly in the submodule directory, committing, and pushing. With subtrees, extract your changes using `git subtree push --prefix=<path> <repository> <branch>`, though this can be complex if many changes have been made."
+            },
+            {
+              "title": "Alternative Approaches",
+              "description": "Beyond submodules and subtrees, consider alternative approaches like package managers (npm, Maven), Git sparse-checkout (for monorepos), or using dedicated monorepo tools like Lerna, Nx, or Bazel for complex multi-project management."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-advanced-operations-engineering-practices-g-4",
+        "git-collaboration-engineering-practices-g-7"
+      ]
+    },
+    {
+      "id": "git-performance-engineering-practices-g-12",
+      "skillLevel": "advanced",
+      "shortTitle": "Git Performance Optimization",
+      "question": "What strategies do you use to optimize Git performance for large repositories?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Common Performance Issues",
+              "description": "Large repositories can suffer from slow cloning, fetching, and local operations due to history size, large binary files, or numerous files. Identifying specific bottlenecks is the first step in optimization."
+            },
+            {
+              "title": "Shallow Clones",
+              "description": "Use `git clone --depth=1` for shallow clones that fetch only the latest commit's history. This dramatically reduces initial clone time when full history isn't needed. Deepen later if necessary with `git fetch --unshallow`."
+            },
+            {
+              "title": "Partial Clones",
+              "description": "With Git 2.22+, use `git clone --filter=blob:none` for partial clones that fetch commit and tree objects but omit file contents until needed. This significantly reduces clone size for large repositories."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Git LFS",
+              "description": "Use **Git Large File Storage (LFS)** for managing binary files. LFS replaces large files with text pointers and stores the content separately, reducing repository size and improving performance for non-binary operations."
+            },
+            {
+              "title": "Sparse Checkout",
+              "description": "Use `git sparse-checkout` to check out only specific directories, reducing working directory size. This is particularly useful for monorepos where you only need to work on a subset of the codebase."
+            },
+            {
+              "title": "Repository Maintenance",
+              "description": "Regularly perform maintenance with `git gc` (garbage collection) to compress and optimize your repository. Configure `git config gc.auto` for automatic cleanup. For more aggressive optimization, use `git gc --aggressive`, though this is resource-intensive."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Submodules and Repository Splitting",
+              "description": "Consider splitting monolithic repositories into smaller, focused repositories using submodules or microrepos. This improves performance by limiting each repository to relevant content, though it adds complexity to cross-repository changes."
+            },
+            {
+              "title": "Server-Side Optimizations",
+              "description": "Configure server-side features like Git protocol version 2 for more efficient data transfer, repository repacking, and commit-graph generation. When self-hosting, ensure adequate CPU, memory, and disk I/O for Git operations."
+            },
+            {
+              "title": "Advanced Configuration Tuning",
+              "description": "Fine-tune Git with config options like `core.preloadIndex=true` (preload index for faster status), `core.fsmonitor=true` (use filesystem monitoring), `feature.manyFiles=true` (optimize for many files), and `pack.threads` (adjust parallelism for packing)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-fundamentals-engineering-practices-g-1",
+        "git-submodules-engineering-practices-g-11"
+      ]
+    },
+    {
+      "id": "git-enterprise-practices-engineering-practices-g-13",
+      "skillLevel": "advanced",
+      "shortTitle": "Git Enterprise Practices",
+      "question": "What Git practices and strategies are essential in enterprise environments with multiple teams?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Standardized Workflows",
+              "description": "Establish standardized Git workflows (like GitFlow or trunk-based development) across teams. Document these workflows clearly and ensure consistency to facilitate collaboration and engineer mobility between teams."
+            },
+            {
+              "title": "Access Control",
+              "description": "Implement appropriate repository access controls using features like protected branches, required reviewers, and role-based permissions. Balance security with productivity by granting sufficient but not excessive privileges."
+            },
+            {
+              "title": "Branch Policies",
+              "description": "Define organization-wide branch policies including naming conventions, protection rules, and lifecycle management. Automate enforcement where possible through platform settings and custom scripts."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Repository Organization",
+              "description": "Structure repositories logically, considering organization by product, team ownership, release cycle, or deployment unit. Evaluate monorepo vs. multiple repository approaches based on team size, coupling, and development workflow."
+            },
+            {
+              "title": "CI/CD Integration",
+              "description": "Integrate Git workflows with enterprise CI/CD pipelines. Standardize build triggers, deployment environments, and approval gates. Ensure traceability between Git commits and deployed artifacts for compliance and debugging."
+            },
+            {
+              "title": "Knowledge Sharing",
+              "description": "Establish practices that promote knowledge sharing through Git, including code review rotation, pair programming on complex changes, and Git training programs for new hires. Create internal documentation on Git best practices."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Compliance and Audit",
+              "description": "Implement mechanisms for compliance requirements, including signed commits (`git commit -S`), detailed commit messages with issue references, and audit logs of Git operations. Consider tools that provide deeper repository analytics and audit capabilities."
+            },
+            {
+              "title": "Dependency Management",
+              "description": "Establish strategies for managing internal dependencies between projects, using submodules, subtrees, or internal package repositories. Create clear guidelines for version pinning and updating shared components."
+            },
+            {
+              "title": "Disaster Recovery",
+              "description": "Implement robust backup strategies for Git repositories beyond the distributed nature of Git itself. This includes regular server backups, mirror repositories, and documented recovery procedures. Test these procedures periodically to ensure they work."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-workflow-engineering-practices-g-3",
+        "git-collaboration-engineering-practices-g-7"
+      ]
+    },
+    {
+      "id": "git-security-practices-engineering-practices-g-14",
+      "skillLevel": "intermediate",
+      "shortTitle": "Git Security",
+      "question": "What are the key security considerations and best practices when using Git?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Credential Management",
+              "description": "Use secure authentication methods like SSH keys or credential helpers instead of storing passwords in plain text. Never commit credentials to repositories, even temporarily."
+            },
+            {
+              "title": "Sensitive Data Prevention",
+              "description": "Prevent committing sensitive data by using `.gitignore` to exclude credential files, configuration with secrets, and generated content. Implement pre-commit hooks to scan for potential secrets or sensitive patterns."
+            },
+            {
+              "title": "Access Control",
+              "description": "Implement appropriate access controls for repositories, limiting write access to necessary team members. Use protected branches to prevent unauthorized changes to important branches like main and release branches."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Signed Commits",
+              "description": "Use GPG signed commits (`git commit -S`) and tags (`git tag -s`) to verify author identity and prevent commit spoofing. Configure Git platforms to display signature verification status and potentially enforce signing for critical branches."
+            },
+            {
+              "title": "History Protection",
+              "description": "Protect Git history from unauthorized rewrites by disabling force pushes on critical branches and using server-side receive hooks to validate incoming changes. This preserves audit trails and prevents tampering with the commit record."
+            },
+            {
+              "title": "Vulnerability Scanning",
+              "description": "Integrate automated security scanning tools with Git workflows to detect vulnerable dependencies, insecure code patterns, and potential security issues before they reach production. Run these checks at commit time and in CI pipelines."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Sensitive Data Removal",
+              "description": "If sensitive data is accidentally committed, use tools like `git filter-repo` (or the older `git filter-branch`) to permanently remove it from the repository history. Remember that previously cloned repositories will still contain the sensitive data."
+            },
+            {
+              "title": "Hook Security",
+              "description": "Be cautious with Git hooks from untrusted sources as they can execute arbitrary code. For shared hook configurations, review hooks carefully and use a trusted distribution mechanism. Consider using restricted environments for hook execution."
+            },
+            {
+              "title": "Server Hardening",
+              "description": "For self-hosted Git servers, implement proper server hardening including network access controls, regular security updates, monitoring for unusual activity, and secure configuration. Consider security implications of Git features like user-provided hooks."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-hook-customization-engineering-practices-g-6",
+        "git-enterprise-practices-engineering-practices-g-13"
+      ]
+    },
+    {
+      "id": "git-migration-engineering-practices-g-15",
+      "skillLevel": "advanced",
+      "shortTitle": "Git Migration Strategies",
+      "question": "How would you approach migrating a project from another version control system to Git?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Planning Phase",
+              "description": "Begin with thorough planning, including inventory of existing repositories, identifying dependencies, mapping users between systems, and developing a timeline with clear migration windows to minimize disruption."
+            },
+            {
+              "title": "Tool Selection",
+              "description": "Choose appropriate migration tools based on the source VCS. For SVN, consider `git-svn`; for Perforce, use `git-p4`; for Mercurial, use `hg-git`. For complex migrations, evaluate specialized tools like `svn-migration-scripts` or commercial migration solutions."
+            },
+            {
+              "title": "Test Migration",
+              "description": "Always perform test migrations to verify history preservation, branch conversion, tags, and metadata retention. Compare key metrics like commit count, file count, and repository size between source and migrated repositories."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "History Preservation",
+              "description": "Decide whether to preserve full history or perform a truncated migration. Full history provides complete traceability but may include obsolete code or sensitive information. Truncated migrations are cleaner but lose historical context."
+            },
+            {
+              "title": "Branch Strategy Conversion",
+              "description": "Map the branching model from the old system to Git branching strategies. This may involve converting branches to a GitFlow structure, mapping long-lived branches to Git branches, and deciding how to handle release branches."
+            },
+            {
+              "title": "Metadata Handling",
+              "description": "Plan for converting system-specific metadata like issue references, code reviews, and custom properties. Options include embedding metadata in commit messages, using Git notes, or maintaining cross-reference tables between systems."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Large Repository Solutions",
+              "description": "For large repositories, consider strategies like repository splitting, Git LFS for binary files, or shallow history. Evaluate Git's monorepo capabilities against your project's size and access patterns."
+            },
+            {
+              "title": "Workflow Transition",
+              "description": "Develop a transitional workflow that allows parallel operation in both systems if needed. Train teams on Git workflows and tools before full cutover, and provide extra support during the transition period."
+            },
+            {
+              "title": "Integration Ecosystem",
+              "description": "Reconfigure the entire development ecosystem including CI/CD pipelines, code review tools, issue trackers, and deployment systems to work with Git. Update documentation, scripts, and internal tools that reference the old VCS."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "git-fundamentals-engineering-practices-g-1",
+        "git-performance-engineering-practices-g-12"
+      ]
+    }
+  ]
+}
