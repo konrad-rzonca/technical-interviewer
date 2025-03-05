@@ -1,0 +1,950 @@
+﻿{
+  "category": "Software Design",
+  "subcategory": "REST API",
+  "questions": [
+    {
+      "id": "rest-fundamentals-software-design-r-1",
+      "skillLevel": "beginner",
+      "shortTitle": "REST Fundamentals",
+      "question": "Could you explain what REST is and its core principles?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**REST** (Representational State Transfer) is an architectural style for designing networked applications, typically using HTTP for communication."
+            },
+            {
+              "title": "Key Characteristics",
+              "description": "REST is **stateless**, **client-server** based, **cacheable**, uses a **uniform interface**, and has a **layered system** architecture."
+            },
+            {
+              "title": "Resources",
+              "description": "In REST, everything is a **resource** that is identified by a **unique URI**. Resources are manipulated using standard HTTP methods."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Uniform Interface",
+              "description": "REST APIs have a uniform interface that includes: resource identification in requests, resource manipulation through representations, self-descriptive messages, and hypermedia as the engine of application state (HATEOAS)."
+            },
+            {
+              "title": "Statelessness",
+              "description": "Each request from a client contains all information needed to process it. The server doesn't store client context between requests, improving scalability and simplifying server design."
+            },
+            {
+              "title": "Representation",
+              "description": "Resources can have multiple representations (JSON, XML, HTML, etc.). Clients can request specific representations through content negotiation."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Richardson Maturity Model",
+              "description": "This model defines four levels of REST API maturity: Level 0 (single URI, single method), Level 1 (multiple URIs, single method), Level 2 (multiple URIs, HTTP methods), and Level 3 (HATEOAS)."
+            },
+            {
+              "title": "REST vs RESTful",
+              "description": "A REST API strictly adheres to all architectural constraints, while a RESTful API may implement them to varying degrees. Many APIs called 'REST' are actually just HTTP APIs that don't fully implement REST principles."
+            },
+            {
+              "title": "Fielding's Constraints",
+              "description": "Roy Fielding, who defined REST in his 2000 doctoral dissertation, outlined specific constraints: client-server architecture, statelessness, cacheability, layered system, uniform interface, and code on demand (optional)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-http-methods-software-design-r-3",
+        "rest-vs-soap-software-design-r-8"
+      ]
+    },
+    {
+      "id": "rest-hateoas-software-design-r-2",
+      "skillLevel": "intermediate",
+      "shortTitle": "HATEOAS",
+      "question": "What is HATEOAS and how does it relate to REST API design?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**HATEOAS** (Hypermedia as the Engine of Application State) is a constraint of the REST application architecture that keeps the RESTful style architecture unique from other network application architectures."
+            },
+            {
+              "title": "Purpose",
+              "description": "HATEOAS enables a client to interact with a REST API entirely through hypermedia provided dynamically by the server, without prior knowledge of the API's structure."
+            },
+            {
+              "title": "Implementation",
+              "description": "In practice, HATEOAS means including links in API responses that guide clients on what they can do next or what related resources they can access."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Response Structure",
+              "description": "A HATEOAS-compliant response typically includes both data and a set of links for possible next actions. For example:\n```json\n{\n  \"account\": {\n    \"id\": \"12345\",\n    \"balance\": 100.00,\n    \"links\": [\n      {\"rel\": \"self\", \"href\": \"/accounts/12345\"},\n      {\"rel\": \"deposit\", \"href\": \"/accounts/12345/deposit\"},\n      {\"rel\": \"withdraw\", \"href\": \"/accounts/12345/withdraw\"},\n      {\"rel\": \"transfer\", \"href\": \"/accounts/12345/transfer\"}\n    ]\n  }\n}\n```"
+            },
+            {
+              "title": "Discoverability",
+              "description": "HATEOAS improves API discoverability by allowing clients to navigate APIs through links provided by the server, rather than having API paths hardcoded into client applications."
+            },
+            {
+              "title": "State Transitions",
+              "description": "With HATEOAS, the server controls what state transitions are possible. For instance, an order resource might only include a 'cancel' link if the order is in a cancellable state."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Media Type Standards",
+              "description": "Several standards exist for implementing HATEOAS, including **HAL** (Hypertext Application Language), **JSON-LD**, **Collection+JSON**, and **Siren**. Each provides conventions for embedding links in responses."
+            },
+            {
+              "title": "API Evolution",
+              "description": "HATEOAS facilitates API evolution, as clients rely on server-provided links rather than hardcoded endpoints. This allows servers to change URIs without breaking clients as long as relation names remain stable."
+            },
+            {
+              "title": "Practical Challenges",
+              "description": "Despite being a core REST principle, HATEOAS is often overlooked in practice due to increased response size, additional development effort, and the fact that many client frameworks are not designed to take advantage of hypermedia controls."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-fundamentals-software-design-r-1",
+        "rest-resource-modeling-software-design-r-4"
+      ]
+    },
+    {
+      "id": "rest-http-methods-software-design-r-3",
+      "skillLevel": "beginner",
+      "shortTitle": "HTTP Methods in REST",
+      "question": "How are HTTP methods used in RESTful API design?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "CRUD Operations",
+              "description": "HTTP methods map to Create, Read, Update, Delete operations: **GET** (read), **POST** (create), **PUT/PATCH** (update), and **DELETE** (delete)."
+            },
+            {
+              "title": "GET",
+              "description": "Used to retrieve resources. Should be idempotent (multiple identical requests have the same effect as a single request) and should not change server state."
+            },
+            {
+              "title": "POST",
+              "description": "Typically used to create new resources or submit data for processing. Not idempotent as repeated calls may create multiple resources."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "PUT vs PATCH",
+              "description": "**PUT** is used for complete resource updates (replacing the entire resource), while **PATCH** is used for partial updates (modifying specific fields). PUT is idempotent, while PATCH may not be, depending on implementation."
+            },
+            {
+              "title": "DELETE",
+              "description": "Used to remove resources. Idempotent because deleting a resource multiple times results in the same server state (the resource remains deleted)."
+            },
+            {
+              "title": "Less Common Methods",
+              "description": "**HEAD**: Like GET but returns only headers, not body content. **OPTIONS**: Returns supported HTTP methods for a resource. **TRACE**: Echoes back the received request for debugging."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Method Overriding",
+              "description": "Some clients/proxies only support GET and POST. Method overriding allows using POST with a special header (e.g., X-HTTP-Method-Override) or query parameter to indicate the intended method."
+            },
+            {
+              "title": "Safety and Idempotence",
+              "description": "**Safe** methods (GET, HEAD, OPTIONS) don't modify resources. **Idempotent** methods (GET, HEAD, OPTIONS, PUT, DELETE) produce the same result regardless of how many times they're called. Understanding these properties is crucial for building reliable distributed systems."
+            },
+            {
+              "title": "Batch Operations",
+              "description": "Standard HTTP methods operate on single resources. For batch operations, consider using POST with a collection resource, or explore standards like JSON Patch (RFC 6902) or extensions like the Batch API pattern."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-idempotence-software-design-r-7",
+        "rest-status-codes-software-design-r-10"
+      ]
+    },
+    {
+      "id": "rest-resource-modeling-software-design-r-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Resource Modeling",
+      "question": "What are best practices for modeling resources in a RESTful API?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Noun-Based Resources",
+              "description": "Use nouns, not verbs, to represent resources in URI paths. For example, use `/users` instead of `/getUsers` or `/createUser`."
+            },
+            {
+              "title": "Resource Collections",
+              "description": "Represent collections with plural nouns (e.g., `/articles`) and individual resources with their identifier (e.g., `/articles/123`)."
+            },
+            {
+              "title": "Consistency",
+              "description": "Maintain consistent naming conventions across your API (e.g., snake_case or camelCase, but not both)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Resource Relationships",
+              "description": "Model relationships through nested resources or links. For example, `/users/123/orders` to get orders belonging to user 123, or include order links in the user resource."
+            },
+            {
+              "title": "Resource Granularity",
+              "description": "Design resource granularity based on client needs. Consider both coarse-grained resources that reduce network calls and fine-grained resources that minimize data transfer."
+            },
+            {
+              "title": "Query Parameters",
+              "description": "Use query parameters for filtering, sorting, pagination, and field selection rather than creating new resource types. For example, `/articles?category=tech&sort=date` instead of `/techArticlesByDate`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Handling Complex Operations",
+              "description": "For operations that don't fit the CRUD model, consider:\n1. Modeling the operation as a resource (e.g., `/orders/123/refunds`)\n2. Using query parameters (e.g., `/search?q=term`)\n3. In limited cases, using custom action endpoints (e.g., `/users/123/reset-password`)"
+            },
+            {
+              "title": "Resource Expansion",
+              "description": "Allow clients to request related resources in a single request to reduce network calls. Implement with query parameters like `?expand=author,comments` to include expanded resources inline."
+            },
+            {
+              "title": "Projections and Views",
+              "description": "Provide different representations of the same resource for different use cases. Implement with query parameters like `?view=summary` or `?fields=id,name,email` to return only specific fields."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-best-practices-software-design-r-11",
+        "rest-uri-design-software-design-r-5"
+      ]
+    },
+    {
+      "id": "rest-uri-design-software-design-r-5",
+      "skillLevel": "beginner",
+      "shortTitle": "URI Design",
+      "question": "What principles should guide URI design in RESTful APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Resource Focus",
+              "description": "URIs should identify resources (nouns), not actions. Use HTTP methods to indicate actions on resources."
+            },
+            {
+              "title": "Hierarchy",
+              "description": "Use path segments to represent resource hierarchies or containment relationships (e.g., `/departments/42/employees`)."
+            },
+            {
+              "title": "Readability",
+              "description": "URIs should be human-readable and provide context about the resource being accessed."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Consistency",
+              "description": "Maintain consistent patterns across your API. For example, if you use plural nouns for collections in one place, use them everywhere."
+            },
+            {
+              "title": "Query Parameters Usage",
+              "description": "Use query parameters for:\n- Filtering: `/products?category=electronics`\n- Sorting: `/products?sort=price_desc`\n- Pagination: `/products?page=2&per_page=20`\n- Non-resource data: `/search?q=keyword`"
+            },
+            {
+              "title": "Avoid Verb-Based URIs",
+              "description": "Instead of `/api/getUser/123` or `/api/createOrder`, use proper HTTP methods with resource-focused URIs: `GET /api/users/123` or `POST /api/orders`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "URI Stability",
+              "description": "Design URIs to be stable and long-lived. Changing URIs breaks client applications. Use HATEOAS and content negotiation instead of embedding API version or format in URIs when possible."
+            },
+            {
+              "title": "URI Templates",
+              "description": "Consider using URI Templates (RFC 6570) in API documentation to clearly communicate URI structure and variable parts, e.g., `/users/{userId}/orders/{orderId}`."
+            },
+            {
+              "title": "Handling Complex Queries",
+              "description": "For complex search operations, consider:\n1. Using POST with a request body for complex filters\n2. Creating specialized search resources\n3. Implementing a query language parameter\n4. Using standardized query formats like OData or GraphQL for very complex cases"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-resource-modeling-software-design-r-4",
+        "rest-best-practices-software-design-r-11"
+      ]
+    },
+    {
+      "id": "rest-versioning-software-design-r-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "API Versioning",
+      "question": "What strategies exist for versioning REST APIs and what are their trade-offs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Need for Versioning",
+              "description": "API versioning allows introducing breaking changes while maintaining backward compatibility for existing clients."
+            },
+            {
+              "title": "Common Approaches",
+              "description": "The four main API versioning strategies are: URI path versioning, query parameter versioning, header-based versioning, and content negotiation."
+            },
+            {
+              "title": "URI Path Versioning",
+              "description": "Adding version to the URI path: `/api/v1/users`. Simple to implement and use, but violates the principle that URIs should identify resources, not their versions."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Query Parameter Versioning",
+              "description": "Using a query parameter: `/api/users?version=1`. Keeps the resource URI clean but still couples the API version to the resource identifier."
+            },
+            {
+              "title": "Header-Based Versioning",
+              "description": "Using custom headers: `X-API-Version: 1` or `Accept-Version: 1`. Keeps resource URIs clean and separates versioning concerns from resource identification."
+            },
+            {
+              "title": "Content Negotiation",
+              "description": "Using the `Accept` header with custom media types: `Accept: application/vnd.company.app-v1+json`. Most REST-compliant approach as it uses established HTTP content negotiation mechanisms."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Evaluation Criteria",
+              "description": "When choosing a versioning strategy, consider:\n- URI stability and bookmarkability\n- Cacheability (URI-based versions are easier to cache)\n- Client/server complexity\n- How well it fits with existing infrastructure\n- Documentation and discoverability"
+            },
+            {
+              "title": "Versioning Granularity",
+              "description": "Consider whether versioning should apply to the entire API or individual resources. Resource-level versioning can reduce the need for clients to migrate all at once but increases complexity."
+            },
+            {
+              "title": "Versioning Alternatives",
+              "description": "Rather than explicit versioning, consider:\n- Designing for backward compatibility from the start\n- Adding new fields without removing old ones\n- Using the Robustness Principle (\"be conservative in what you send, liberal in what you accept\")\n- Implementing feature toggles or capability negotiation"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-best-practices-software-design-r-11",
+        "rest-uri-design-software-design-r-5"
+      ]
+    },
+    {
+      "id": "rest-idempotence-software-design-r-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Idempotence",
+      "question": "What is idempotence in REST APIs and why is it important?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "An operation is **idempotent** if calling it multiple times has the same effect as calling it once. The server state remains the same after one call or multiple identical calls."
+            },
+            {
+              "title": "Idempotent HTTP Methods",
+              "description": "According to HTTP specifications, **GET**, **HEAD**, **PUT**, **DELETE**, **OPTIONS**, and **TRACE** are idempotent methods. **POST** is not idempotent by default."
+            },
+            {
+              "title": "Basic Examples",
+              "description": "- GET `/users/123`: Reading the same user multiple times doesn't change the user\n- PUT `/users/123`: Updating a user with the same data multiple times leaves the user in the same state\n- DELETE `/users/123`: Deleting a user multiple times leaves the system in the same state (user remains deleted)"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Benefits in Distributed Systems",
+              "description": "Idempotence enables safe retries in case of network failures or timeouts. Clients can simply retry failed requests without worrying about duplicating state changes."
+            },
+            {
+              "title": "POST and Idempotence",
+              "description": "While POST is not inherently idempotent, you can make POST operations idempotent by implementing idempotency keys/tokens. The client generates a unique token for each operation and sends it with each request, allowing the server to detect and ignore duplicates."
+            },
+            {
+              "title": "PATCH Considerations",
+              "description": "PATCH may or may not be idempotent, depending on the patch operations. Operations like \"replace value X with Y\" are idempotent, but operations like \"increment counter\" are not."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Implementation Patterns",
+              "description": "Common patterns for implementing idempotence include:\n1. **Idempotency Keys**: Client-generated unique IDs for each operation\n2. **Conditional Operations**: Using ETags and If-Match headers for conditional updates\n3. **Conflict Resolution**: Implementing strategies to handle conflicting parallel operations\n4. **Exactly-Once Delivery**: Using transaction IDs and maintaining operation logs"
+            },
+            {
+              "title": "Idempotence vs. Safety",
+              "description": "Don't confuse idempotence with safety. A **safe** operation doesn't modify resources (like GET), while an **idempotent** operation may modify resources but produces the same result regardless of how many times it's called (like PUT or DELETE)."
+            },
+            {
+              "title": "Practical Challenges",
+              "description": "Implementing true idempotence often requires:\n- Tracking previously processed requests\n- Detecting duplicates across distributed systems\n- Defining appropriate time windows for idempotence guarantees\n- Handling storage and cleanup of idempotency records\n- Managing race conditions in highly concurrent environments"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-http-methods-software-design-r-3",
+        "rest-best-practices-software-design-r-11"
+      ]
+    },
+    {
+      "id": "rest-vs-soap-software-design-r-8",
+      "skillLevel": "beginner",
+      "shortTitle": "REST vs. SOAP",
+      "question": "How does REST compare to SOAP for web service design?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Architectural Style vs. Protocol",
+              "description": "**REST** is an architectural style with principles and constraints, while **SOAP** (Simple Object Access Protocol) is a protocol with specific requirements and standards."
+            },
+            {
+              "title": "Message Format",
+              "description": "REST typically uses lightweight formats like JSON or XML, while SOAP exclusively uses XML with a strict envelope structure."
+            },
+            {
+              "title": "Transport",
+              "description": "REST primarily uses HTTP/HTTPS and leverages standard HTTP methods, while SOAP can work over various protocols (HTTP, SMTP, TCP, etc.)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Service Definition",
+              "description": "SOAP uses WSDL (Web Services Description Language) for formal service definition, while REST typically uses less formal descriptions like OpenAPI/Swagger or RAML."
+            },
+            {
+              "title": "Flexibility vs. Standardization",
+              "description": "REST offers greater flexibility in data format and implementation but fewer built-in standards. SOAP provides extensive standards for security, transactions, and reliability, but with more complexity and overhead."
+            },
+            {
+              "title": "Statelessness",
+              "description": "REST emphasizes stateless communication where each request contains all needed information. SOAP can be stateless but also supports stateful operations through its WS-* extensions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Considerations",
+              "description": "REST typically offers better performance due to:\n- Smaller message sizes (especially with JSON)\n- Less processing overhead\n- Better caching support\n- Lighter client implementations\nSOAP messages carry more overhead due to the XML envelope structure and processing requirements."
+            },
+            {
+              "title": "Use Case Alignment",
+              "description": "SOAP may be better suited for:\n- Enterprise environments with formal contracts\n- Operations requiring strict security or compliance\n- Complex transactions requiring coordination\n- Scenarios needing guaranteed delivery\n\nREST excels in:\n- Public APIs and wide accessibility\n- Mobile and web applications\n- Bandwidth-constrained environments\n- Microservices architectures"
+            },
+            {
+              "title": "Industry Trends",
+              "description": "The industry has largely shifted toward REST and other lightweight approaches (GraphQL, gRPC) for new development, with SOAP primarily maintained for legacy systems. However, SOAP remains relevant in sectors with stringent formal interface requirements like finance, healthcare, and telecommunications."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-fundamentals-software-design-r-1"
+      ]
+    },
+    {
+      "id": "rest-documentation-software-design-r-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "API Documentation",
+      "question": "What are the best practices for documenting REST APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Documentation Essentials",
+              "description": "Good API documentation should include:\n- Clear descriptions of resources and endpoints\n- Request/response formats with examples\n- Authentication methods\n- Error responses and status codes\n- Rate limiting policies"
+            },
+            {
+              "title": "Common Formats",
+              "description": "Popular API documentation formats include OpenAPI/Swagger, RAML, API Blueprint, and JSON Schema."
+            },
+            {
+              "title": "Documentation Tools",
+              "description": "Tools like Swagger UI, ReDoc, Postman, and Stoplight help create, maintain, and present API documentation."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Code-First vs. Design-First",
+              "description": "**Code-first** approaches generate documentation from code annotations, ensuring accuracy but potentially sacrificing design quality. **Design-first** approaches create specifications before implementation, ensuring better-designed APIs but requiring synchronization with code."
+            },
+            {
+              "title": "Interactive Documentation",
+              "description": "Interactive documentation allows developers to test API calls directly from the docs, significantly improving the developer experience. Tools like Swagger UI, ReDoc, and Postman provide this functionality."
+            },
+            {
+              "title": "Documentation as Code",
+              "description": "Treat documentation as code by:\n- Storing it in version control alongside application code\n- Reviewing documentation changes as part of code reviews\n- Automating documentation generation and validation in CI/CD pipelines\n- Testing documentation examples to ensure they work"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "OpenAPI Specification",
+              "description": "The OpenAPI Specification (formerly Swagger) has become the de facto standard for REST API documentation. It offers:\n- A structured, machine-readable format\n- Wide tool support for validation, UI generation, and code generation\n- The ability to serve as a contract between teams\n- Support for authentication, data models, and example responses"
+            },
+            {
+              "title": "Documentation Driven Development",
+              "description": "In Documentation Driven Development (DDD):\n1. Write API documentation first as a design artifact\n2. Get stakeholder feedback on the documentation\n3. Generate server stubs and client SDKs from the documentation\n4. Implement the API according to the documentation\n5. Validate implementation against the documentation"
+            },
+            {
+              "title": "Beyond Reference Documentation",
+              "description": "Complete API documentation includes more than just reference material:\n- **Getting started guides**: Onboarding new developers quickly\n- **Tutorials**: Walking through common scenarios step-by-step\n- **How-to guides**: Solving specific problems\n- **Conceptual documentation**: Explaining underlying concepts and architecture\n- **Changelogs**: Documenting API evolution and versioning\n- **SDKs and code samples**: Providing language-specific implementations"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-best-practices-software-design-r-11",
+        "rest-versioning-software-design-r-6"
+      ]
+    },
+    {
+      "id": "rest-status-codes-software-design-r-10",
+      "skillLevel": "beginner",
+      "shortTitle": "HTTP Status Codes",
+      "question": "How should HTTP status codes be used in RESTful APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Status Code Categories",
+              "description": "HTTP status codes are grouped into five categories:\n- **1xx**: Informational\n- **2xx**: Success\n- **3xx**: Redirection\n- **4xx**: Client errors\n- **5xx**: Server errors"
+            },
+            {
+              "title": "Common Success Codes",
+              "description": "- **200 OK**: General success\n- **201 Created**: Resource created successfully\n- **204 No Content**: Success with no response body"
+            },
+            {
+              "title": "Common Error Codes",
+              "description": "- **400 Bad Request**: Invalid request format or parameters\n- **401 Unauthorized**: Authentication required\n- **403 Forbidden**: Authentication succeeded but insufficient permissions\n- **404 Not Found**: Resource doesn't exist\n- **500 Internal Server Error**: Unexpected server error"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Method-Specific Status Codes",
+              "description": "- **GET**: 200 (OK), 404 (Not Found)\n- **POST**: 201 (Created), 400 (Bad Request)\n- **PUT**: 200 (OK) or 204 (No Content), 409 (Conflict)\n- **PATCH**: 200 (OK) or 204 (No Content), 422 (Unprocessable Entity)\n- **DELETE**: 204 (No Content), 404 (Not Found)"
+            },
+            {
+              "title": "Other Useful Status Codes",
+              "description": "- **202 Accepted**: Request accepted for processing but not completed\n- **206 Partial Content**: Partial resource returned (e.g., pagination or range requests)\n- **409 Conflict**: Request conflicts with current resource state\n- **412 Precondition Failed**: Condition in request header failed (e.g., If-Match)\n- **429 Too Many Requests**: Rate limiting applied"
+            },
+            {
+              "title": "Error Response Structure",
+              "description": "Include structured error information in response bodies:\n```json\n{\n  \"error\": {\n    \"code\": \"INVALID_PARAMETER\",\n    \"message\": \"The parameter 'email' is not a valid email address\",\n    \"details\": {\n      \"parameter\": \"email\",\n      \"value\": \"not-an-email\",\n      \"reason\": \"format\"\n    }\n  }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Status Code Selection Principles",
+              "description": "1. Use the **most specific** code that applies\n2. Consider the client's ability to **recover or retry**\n3. Be **consistent** across your API\n4. Don't invent custom status codes\n5. Use standard codes even if slightly stretching their definition"
+            },
+            {
+              "title": "Avoiding Common Mistakes",
+              "description": "- Don't return 200 OK with error details in the body\n- Don't use 404 for authorization failures (use 401 or 403)\n- Don't use 500 for validation errors (use 400 or 422)\n- Don't use client error codes (4xx) for server problems\n- Don't ignore the semantics of redirects (3xx)"
+            },
+            {
+              "title": "Special Considerations",
+              "description": "- **Asynchronous operations**: Use 202 Accepted with a location header or polling URL\n- **Bulk operations**: Consider using 207 Multi-Status to report success/failure for each item\n- **Optimistic concurrency**: Use 412 Precondition Failed with ETags\n- **CORS preflight**: Handle OPTIONS requests with appropriate headers\n- **API deprecation**: Use 299 or 499 custom codes (controversial) or standard codes with warning headers"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-http-methods-software-design-r-3",
+        "rest-best-practices-software-design-r-11"
+      ]
+    },
+    {
+      "id": "rest-best-practices-software-design-r-11",
+      "skillLevel": "intermediate",
+      "shortTitle": "API Best Practices",
+      "question": "What are some key best practices for designing RESTful APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Resource-Oriented Design",
+              "description": "Design around resources (nouns) rather than actions (verbs). Use HTTP methods to represent operations on resources."
+            },
+            {
+              "title": "Consistent Naming",
+              "description": "Use consistent naming conventions for resources, fields, and parameters. Prefer plural nouns for collection resources."
+            },
+            {
+              "title": "Use HTTP Properly",
+              "description": "Leverage HTTP methods, status codes, and headers according to their intended semantics. Don't reinvent what HTTP already provides."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Filtering, Sorting, Pagination",
+              "description": "Implement standardized query parameters for filtering (`?status=active`), sorting (`?sort=created_at:desc`), pagination (`?page=2&per_page=10` or `?offset=20&limit=10`), and field selection (`?fields=id,name,email`)."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Return appropriate HTTP status codes and provide error responses with:\n- Machine-readable error codes\n- Human-readable messages\n- Link to documentation (when applicable)\n- Enough detail to fix the problem without exposing sensitive information"
+            },
+            {
+              "title": "Security Best Practices",
+              "description": "- Use HTTPS for all endpoints\n- Implement proper authentication and authorization\n- Apply rate limiting to prevent abuse\n- Validate and sanitize all inputs\n- Don't expose sensitive information in URLs\n- Add appropriate security headers\n- Consider using API keys for anonymous access"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Optimization",
+              "description": "- Implement proper caching using ETags and Cache-Control headers\n- Support conditional requests with If-Modified-Since and If-None-Match\n- Compress responses using gzip or brotli\n- Support partial responses and resource expansion\n- Consider batching for multiple operations\n- Optimize payload size by allowing clients to request only needed fields"
+            },
+            {
+              "title": "Versioning and Evolution",
+              "description": "- Design for backward compatibility when possible\n- Add new fields without removing old ones\n- Make new fields optional with sensible defaults\n- Implement explicit versioning where needed\n- Provide deprecation notices and timelines\n- Consider using the Sunset HTTP header for endpoint deprecation"
+            },
+            {
+              "title": "Developer Experience",
+              "description": "- Create comprehensive, accurate documentation\n- Provide interactive API explorers\n- Include examples for all operations\n- Make error messages actionable\n- Establish consistent patterns across the API\n- Provide client libraries or SDKs for common languages\n- Implement CORS for browser access\n- Create a developer portal with onboarding resources"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-resource-modeling-software-design-r-4",
+        "rest-uri-design-software-design-r-5",
+        "rest-documentation-software-design-r-9"
+      ]
+    },
+    {
+      "id": "rest-security-software-design-r-12",
+      "skillLevel": "intermediate",
+      "shortTitle": "API Security",
+      "question": "What are important security considerations when designing and implementing REST APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Transport Security",
+              "description": "Always use HTTPS (TLS) to encrypt data in transit. Redirect HTTP requests to HTTPS and implement proper certificate management."
+            },
+            {
+              "title": "Authentication",
+              "description": "Implement robust authentication mechanisms: API keys, OAuth 2.0, JWT, or OpenID Connect depending on your security requirements."
+            },
+            {
+              "title": "Authorization",
+              "description": "Verify that authenticated users have appropriate permissions for the requested resources and operations. Implement role-based or attribute-based access control."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Input Validation",
+              "description": "Validate all input data for type, format, length, and range. Reject unexpected inputs rather than attempting to sanitize them. Use schema validation for request bodies."
+            },
+            {
+              "title": "Rate Limiting and Throttling",
+              "description": "Implement rate limiting to protect against denial-of-service attacks, brute force attempts, and API abuse. Return 429 Too Many Requests status code when limits are exceeded, with Retry-After headers."
+            },
+            {
+              "title": "Security Headers",
+              "description": "Implement appropriate HTTP security headers:\n- Content-Security-Policy\n- Strict-Transport-Security\n- X-Content-Type-Options: nosniff\n- X-Frame-Options: DENY\n- Cache-Control (for sensitive data)"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "API-Specific Vulnerabilities",
+              "description": "Protect against common API attacks:\n- **BOLA** (Broken Object Level Authorization): Ensure users can only access their own resources\n- **Mass Assignment**: Whitelist allowed properties for update operations\n- **Improper Assets Management**: Track and secure all API versions and endpoints\n- **Excessive Data Exposure**: Return only necessary data, especially for sensitive information\n- **BFLA** (Broken Function Level Authorization): Verify authorization for each function"
+            },
+            {
+              "title": "Token Management",
+              "description": "For token-based authentication:\n- Use short-lived access tokens with longer-lived refresh tokens\n- Implement proper token revocation mechanisms\n- Store tokens securely (HTTP-only, secure cookies or secure client storage)\n- Include just enough claims in JWTs and validate them properly\n- Consider token binding to prevent token theft"
+            },
+            {
+              "title": "Security Monitoring and Response",
+              "description": "- Implement comprehensive logging for security events\n- Monitor for unusual patterns or suspicious activities\n- Set up alerts for potential security incidents\n- Have an incident response plan for API security breaches\n- Conduct regular security testing including penetration testing\n- Follow the OWASP API Security Top 10 guidance"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-authentication-software-design-r-14",
+        "rest-best-practices-software-design-r-11"
+      ]
+    },
+    {
+      "id": "rest-caching-software-design-r-13",
+      "skillLevel": "intermediate",
+      "shortTitle": "API Caching",
+      "question": "How should caching be implemented in RESTful APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Caching Benefits",
+              "description": "Effective API caching reduces latency, decreases server load, improves scalability, and enhances the user experience."
+            },
+            {
+              "title": "Cache-Control Header",
+              "description": "Use the Cache-Control header to specify caching behavior:\n- `Cache-Control: no-cache` - Response can be cached but must be validated\n- `Cache-Control: no-store` - Response must not be cached\n- `Cache-Control: private, max-age=3600` - Cache for 1 hour in browser only\n- `Cache-Control: public, max-age=86400` - Cache for 24 hours anywhere"
+            },
+            {
+              "title": "Cacheable Methods",
+              "description": "GET and HEAD requests are cacheable by default. POST can be made cacheable with appropriate headers, while PUT, DELETE, and PATCH are typically not cached."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "ETag Mechanism",
+              "description": "ETag (Entity Tag) allows for efficient validation of cached responses:\n1. Server provides an ETag header with a response\n2. Client stores the response and ETag\n3. Client includes If-None-Match header with the ETag in subsequent requests\n4. Server returns 304 Not Modified (with empty body) if the resource hasn't changed"
+            },
+            {
+              "title": "Last-Modified Alternative",
+              "description": "Similar to ETag but uses dates:\n1. Server provides Last-Modified header with a timestamp\n2. Client includes If-Modified-Since in subsequent requests\n3. Server returns 304 Not Modified if the resource hasn't changed since that time"
+            },
+            {
+              "title": "Cache Invalidation",
+              "description": "Strategies for cache invalidation include:\n- Using appropriate Cache-Control headers on mutation responses\n- Implementing versioned resource URLs\n- Using cache purge mechanisms in your CDN or caching layer\n- Utilizing cache keys that incorporate relevant resource attributes"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Caching Layers",
+              "description": "Implement caching at multiple levels for maximum efficiency:\n- **Browser caches**: Controlled by HTTP headers\n- **CDN caching**: For globally distributed content delivery\n- **API gateway caching**: For frequently accessed endpoints\n- **Application caching**: Using Redis, Memcached, etc. for computed results\n- **Database caching**: For frequently accessed queries"
+            },
+            {
+              "title": "Surrogate-Control and Vary",
+              "description": "- **Surrogate-Control** header controls caching behavior in CDNs separately from browser caching\n- **Vary** header indicates which request headers affect the response content (e.g., `Vary: Accept, Accept-Language, Authorization`) to prevent serving incorrect cached content"
+            },
+            {
+              "title": "Cache Design Patterns",
+              "description": "Advanced caching patterns include:\n- **Cache Aside**: Application checks cache first, updates cache after database fetch\n- **Write Through**: Application updates cache and database together\n- **Write Behind**: Application updates cache immediately and database asynchronously\n- **Refresh Ahead**: Proactively refresh cache items before expiration\n- **Materialized Views**: Precompute and cache complex query results"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-best-practices-software-design-r-11",
+        "rest-performance-software-design-r-15"
+      ]
+    },
+    {
+      "id": "rest-authentication-software-design-r-14",
+      "skillLevel": "intermediate",
+      "shortTitle": "API Authentication",
+      "question": "What authentication methods are commonly used for REST APIs and when should each be used?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "API Keys",
+              "description": "Simple string tokens included in headers, query parameters, or request bodies. Good for public APIs with low security requirements or internal services."
+            },
+            {
+              "title": "Basic Authentication",
+              "description": "Base64 encoded username:password sent in the Authorization header. Simple to implement but should only be used over HTTPS and for scenarios with low security requirements."
+            },
+            {
+              "title": "Bearer Tokens",
+              "description": "Tokens (often JWTs) sent in the Authorization header with the Bearer scheme. Provides a foundation for more advanced authentication patterns."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "OAuth 2.0",
+              "description": "Authorization framework that enables third-party applications to obtain limited access to a user's account. Provides various grant types (authorization code, client credentials, etc.) for different scenarios. Good for APIs accessed by third-party applications."
+            },
+            {
+              "title": "JWT (JSON Web Tokens)",
+              "description": "Self-contained tokens containing claims about the authenticated user and signed to verify authenticity. Can be used as bearer tokens and enable stateless authentication. Good for microservices architectures and distributed systems."
+            },
+            {
+              "title": "OpenID Connect",
+              "description": "Authentication layer built on top of OAuth 2.0, providing standardized identity information. Good for scenarios requiring user identity information in addition to authorization."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Mutual TLS (mTLS)",
+              "description": "Both client and server authenticate each other using X.509 certificates. Provides strong security for server-to-server communication, especially in zero-trust environments. Good for internal APIs in highly secure environments."
+            },
+            {
+              "title": "API Gateway Authentication",
+              "description": "Authentication handled at the API gateway level, with internal services trusting gateway-validated requests. Centralizes authentication logic and reduces implementation burden on individual services. Good for microservices architectures."
+            },
+            {
+              "title": "Selecting the Right Method",
+              "description": "Choose based on:\n- **Security requirements**: Sensitivity of the protected resources\n- **Client type**: Browser, mobile app, server, IoT device\n- **User experience**: How authentication impacts the user journey\n- **Implementation complexity**: Development resources available\n- **Ecosystem compatibility**: Integration with existing authentication systems\n- **Scalability needs**: Stateless vs. stateful authentication"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-security-software-design-r-12"
+      ]
+    },
+    {
+      "id": "rest-performance-software-design-r-15",
+      "skillLevel": "advanced",
+      "shortTitle": "API Performance",
+      "question": "What techniques can improve the performance of REST APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Response Compression",
+              "description": "Enable gzip or brotli compression to reduce response size. This significantly reduces bandwidth usage and improves response times, especially for text-based formats like JSON and XML."
+            },
+            {
+              "title": "Effective Caching",
+              "description": "Implement HTTP caching with appropriate Cache-Control, ETag, and Last-Modified headers to reduce unnecessary processing and bandwidth usage."
+            },
+            {
+              "title": "Pagination",
+              "description": "Limit the amount of data returned in a single response by implementing pagination for collection resources. This reduces response size, processing time, and memory usage."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Efficient Data Formats",
+              "description": "Consider format efficiency:\n- JSON is readable but verbose\n- Protocol Buffers or MessagePack offer more compact binary formats\n- For very large datasets, consider streaming responses"
+            },
+            {
+              "title": "Partial Responses",
+              "description": "Allow clients to request only the fields they need using query parameters like `?fields=id,name,email`. This reduces response size and processing time for retrieving unused fields."
+            },
+            {
+              "title": "Connection Optimization",
+              "description": "- Use HTTP/2 to enable multiplexing of requests over a single connection\n- Implement connection pooling on the server side\n- Configure proper keep-alive settings\n- Consider HTTP/3 for high-latency networks"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Database Optimization",
+              "description": "- Optimize database queries with proper indexing\n- Use database connection pooling\n- Implement query caching\n- Consider denormalization for read-heavy workloads\n- Use database-specific optimization techniques (explain plans, etc.)\n- Consider read replicas for high-traffic APIs"
+            },
+            {
+              "title": "Asynchronous Processing",
+              "description": "For time-consuming operations:\n1. Accept the request and return 202 Accepted immediately\n2. Process the operation asynchronously\n3. Provide a status endpoint for the client to check completion\n4. Optionally implement webhooks or server-sent events for notification"
+            },
+            {
+              "title": "Advanced Architectural Patterns",
+              "description": "- Implement CQRS (Command Query Responsibility Segregation) to optimize read and write paths separately\n- Use event sourcing for complex state tracking with high performance\n- Consider GraphQL for clients needing complex, varied data requirements\n- Implement edge computing for latency-sensitive operations\n- Use distributed caching with careful invalidation strategies\n- Consider BFF (Backend For Frontend) pattern to optimize for specific clients"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "rest-caching-software-design-r-13",
+        "rest-best-practices-software-design-r-11"
+      ]
+    }
+  ]
+}

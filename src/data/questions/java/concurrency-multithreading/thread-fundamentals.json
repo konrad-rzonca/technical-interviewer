@@ -1,0 +1,633 @@
+{
+  "category": "Concurrency and Multithreading",
+  "subcategory": "Thread Fundamentals",
+  "questions": [
+    {
+      "id": "java-thread-creation-c-m-tf-1",
+      "skillLevel": "beginner",
+      "shortTitle": "Thread Creation",
+      "question": "What are the different ways to create and start a thread in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Extending Thread Class",
+              "description": "You can create a thread by **extending the Thread class** and overriding its `run()` method. The thread is started by calling the `start()` method.\n\n```java\nclass MyThread extends Thread {\n    public void run() {\n        System.out.println(\"Thread is running\");\n    }\n}\n\n// Usage\nMyThread thread = new MyThread();\nthread.start();\n```"
+            },
+            {
+              "title": "Implementing Runnable",
+              "description": "You can implement the **Runnable interface** and pass the implementation to a Thread constructor. This approach is generally preferred as it doesn't waste inheritance.\n\n```java\nclass MyRunnable implements Runnable {\n    public void run() {\n        System.out.println(\"Thread is running\");\n    }\n}\n\n// Usage\nThread thread = new Thread(new MyRunnable());\nthread.start();\n```"
+            },
+            {
+              "title": "Anonymous Classes and Lambda",
+              "description": "Since Java 8, you can use **lambda expressions** to create threads more concisely as Runnable is a functional interface.\n\n```java\n// Anonymous class\nThread thread1 = new Thread(new Runnable() {\n    public void run() {\n        System.out.println(\"Thread is running\");\n    }\n});\n\n// Lambda expression\nThread thread2 = new Thread(() -> System.out.println(\"Thread is running\"));\nthread2.start();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Thread Constructors",
+              "description": "The **Thread class** offers several constructors for customization, allowing you to specify a name, thread group, and stack size.\n\n```java\n// Thread with a name\nThread thread = new Thread(runnable, \"MyThread\");\n\n// Thread with a name and thread group\nThreadGroup group = new ThreadGroup(\"MyGroup\");\nThread thread = new Thread(group, runnable, \"MyThread\");\n```"
+            },
+            {
+              "title": "Thread Factory",
+              "description": "A **ThreadFactory** provides a structured way to create threads with consistent configuration, especially useful with executors.\n\n```java\npublic class CustomThreadFactory implements ThreadFactory {\n    public Thread newThread(Runnable r) {\n        Thread thread = new Thread(r);\n        thread.setDaemon(true);\n        thread.setPriority(Thread.MIN_PRIORITY);\n        return thread;\n    }\n}\n```"
+            },
+            {
+              "title": "Thread Pools",
+              "description": "Instead of creating threads directly, it's often better to use a **thread pool** via the Executors framework, which manages thread creation and reuse.\n\n```java\nExecutorService executor = Executors.newFixedThreadPool(5);\nexecutor.submit(() -> System.out.println(\"Task executed by thread pool\"));\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Callable Interface",
+              "description": "The **Callable interface** is similar to Runnable but can return results and throw exceptions. It's used with ExecutorService.\n\n```java\nCallable<Integer> task = () -> {\n    // Perform computation\n    return result;\n};\n\nExecutorService executor = Executors.newSingleThreadExecutor();\nFuture<Integer> future = executor.submit(task);\nInteger result = future.get(); // Blocks until result is available\n```"
+            },
+            {
+              "title": "CompletableFuture",
+              "description": "**CompletableFuture** (Java 8+) provides a more flexible way to create asynchronous computations, with support for chaining and combining operations.\n\n```java\nCompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {\n    // Asynchronous computation\n    return \"result\";\n});\n\nfuture.thenAccept(result -> System.out.println(\"Got: \" + result));\n```"
+            },
+            {
+              "title": "Virtual Threads",
+              "description": "**Virtual Threads** (introduced as a preview feature in Java 19 and standard in Java 21) are lightweight threads managed by the JVM rather than the OS, designed for high-throughput concurrent applications.\n\n```java\n// Java 21 virtual thread creation\nThread vThread = Thread.startVirtualThread(() -> {\n    System.out.println(\"Virtual thread is running\");\n});\n\n// Or using the builder pattern\nThread vThread = Thread.builder().virtual().task(() -> {\n    System.out.println(\"Virtual thread is running\");\n}).start();\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-vs-runnable-c-m-tf-2",
+        "java-thread-lifecycle-c-m-tf-3"
+      ]
+    },
+    {
+      "id": "java-thread-vs-runnable-c-m-tf-2",
+      "skillLevel": "beginner",
+      "shortTitle": "Thread vs Runnable",
+      "question": "Can you explain the differences between extending Thread and implementing Runnable in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Inheritance Flexibility",
+              "description": "Implementing **Runnable** allows your class to extend another class, while extending **Thread** consumes your single inheritance opportunity in Java."
+            },
+            {
+              "title": "Object Creation",
+              "description": "When extending **Thread**, each thread requires a new object, whereas with **Runnable**, multiple threads can share the same Runnable instance."
+            },
+            {
+              "title": "Separation of Concerns",
+              "description": "**Runnable** represents a task to be executed, while **Thread** represents the actual thread of execution, providing better separation of concerns."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Resource Efficiency",
+              "description": "Implementing **Runnable** is generally more efficient because creating Thread objects is more resource-intensive than creating lightweight Runnable objects."
+            },
+            {
+              "title": "Thread Pooling",
+              "description": "**Runnable** tasks work seamlessly with thread pools in the Executor framework, where threads are reused to execute multiple tasks."
+            },
+            {
+              "title": "Code Reusability",
+              "description": "The same **Runnable** task can be executed by different thread implementations or executors, making your code more reusable and adaptable."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "State Sharing",
+              "description": "With **Runnable**, you must be careful about thread safety if multiple threads share the same Runnable instance, as they'll access the same instance variables."
+            },
+            {
+              "title": "Functional Programming",
+              "description": "**Runnable** is a functional interface in Java 8+, enabling lambda expressions and method references for more concise and expressive code.\n\n```java\n// Without lambda\nThread t1 = new Thread(new Runnable() {\n    public void run() {\n        performTask();\n    }\n});\n\n// With lambda\nThread t2 = new Thread(() -> performTask());\n\n// Method reference\nThread t3 = new Thread(this::performTask);\n```"
+            },
+            {
+              "title": "Testing Considerations",
+              "description": "**Runnable** implementations are easier to test in isolation without actually spawning threads, as you can directly call the `run()` method for unit testing."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-creation-c-m-tf-1"
+      ]
+    },
+    {
+      "id": "java-thread-lifecycle-c-m-tf-3",
+      "skillLevel": "beginner",
+      "shortTitle": "Thread Lifecycle",
+      "question": "Could you describe the lifecycle of a thread in Java and its different states?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Thread States",
+              "description": "A Java thread can be in one of six states as defined in the `Thread.State` enum: **NEW**, **RUNNABLE**, **BLOCKED**, **WAITING**, **TIMED_WAITING**, and **TERMINATED**."
+            },
+            {
+              "title": "NEW State",
+              "description": "A thread is in the **NEW** state when it has been created but the `start()` method hasn't been called yet. The thread isn't alive and doesn't execute."
+            },
+            {
+              "title": "RUNNABLE State",
+              "description": "After calling `start()`, the thread enters the **RUNNABLE** state, which means it's eligible to run but may be waiting for CPU resources. This state encompasses both ready-to-run and currently running states from an OS perspective."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "BLOCKED State",
+              "description": "A thread enters the **BLOCKED** state when it's waiting to acquire a monitor lock to enter or re-enter a synchronized block/method that's held by another thread."
+            },
+            {
+              "title": "WAITING State",
+              "description": "A thread is in the **WAITING** state when it's waiting indefinitely for another thread to perform a particular action. Methods like `Object.wait()`, `Thread.join()`, or `LockSupport.park()` cause this state."
+            },
+            {
+              "title": "TIMED_WAITING State",
+              "description": "Similar to WAITING, but the thread is waiting for a specified time period. Methods like `Thread.sleep(time)`, `Object.wait(time)`, `Thread.join(time)`, or `LockSupport.parkNanos()/parkUntil()` cause this state."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "TERMINATED State",
+              "description": "A thread enters the **TERMINATED** state when it has completed execution or has been terminated abnormally (by an unhandled exception). Once terminated, a thread cannot be restarted."
+            },
+            {
+              "title": "State Transitions",
+              "description": "Understanding state transitions is crucial for debugging concurrency issues:\n- NEW → RUNNABLE: after `start()` is called\n- RUNNABLE → BLOCKED: when trying to enter a synchronized block\n- RUNNABLE → WAITING/TIMED_WAITING: when calling wait/sleep/join methods\n- BLOCKED/WAITING/TIMED_WAITING → RUNNABLE: when lock is acquired or wait/sleep time elapses\n- Any state → TERMINATED: when execution completes or exceptions occur"
+            },
+            {
+              "title": "Non-blocking Synchronization",
+              "description": "Modern Java concurrency utilities like `java.util.concurrent.atomic` package and `java.util.concurrent.locks` provide non-blocking algorithms that can avoid putting threads in BLOCKED state, improving performance in high-contention scenarios."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-creation-c-m-tf-1",
+        "java-thread-states-monitoring-c-m-tf-4"
+      ]
+    },
+    {
+      "id": "java-thread-states-monitoring-c-m-tf-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Thread State Monitoring",
+      "question": "How can you monitor and debug thread states in a Java application?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Thread.getState()",
+              "description": "The `getState()` method returns the current state of a thread as a `Thread.State` enum value, providing a basic way to check a thread's state programmatically.\n\n```java\nThread thread = new Thread(() -> {\n    // Some task\n});\nthread.start();\nSystem.out.println(thread.getState()); // Outputs: RUNNABLE\n```"
+            },
+            {
+              "title": "Thread Dumps",
+              "description": "A thread dump is a snapshot of all threads in a JVM, showing their states, stack traces, and lock information. You can generate a thread dump by pressing Ctrl+Break (Windows) or kill -3 <pid> (Unix/Linux) or by using jstack."
+            },
+            {
+              "title": "jstack Tool",
+              "description": "The `jstack` command-line tool (part of JDK) creates thread dumps for analysis:\n\n```\njstack <pid> > threaddump.txt\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "JConsole and VisualVM",
+              "description": "JDK tools like **JConsole** and **VisualVM** provide GUI interfaces to monitor threads, showing states, CPU usage, and detecting deadlocks. They connect to running JVMs locally or remotely."
+            },
+            {
+              "title": "ThreadMXBean",
+              "description": "Java Management Extensions (JMX) provides **ThreadMXBean** for programmatic thread monitoring, including detecting deadlocks and measuring CPU time.\n\n```java\nThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();\nlong[] threadIds = threadMXBean.getAllThreadIds();\nfor (long id : threadIds) {\n    ThreadInfo info = threadMXBean.getThreadInfo(id);\n    System.out.println(info.getThreadName() + \": \" + info.getThreadState());\n}\n```"
+            },
+            {
+              "title": "Debugging with IDE",
+              "description": "Modern IDEs like IntelliJ IDEA and Eclipse offer thread visualization, allowing you to see thread states, monitor locks, and detect deadlocks during debugging sessions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Profiling Tools",
+              "description": "Advanced profilers like **Java Flight Recorder (JFR)**, **YourKit**, or **Async-profiler** can capture detailed thread activity over time, helping identify performance bottlenecks and concurrency issues."
+            },
+            {
+              "title": "Custom Thread Monitoring",
+              "description": "Implementing custom monitoring solutions using ThreadMXBean and scheduled tasks can provide application-specific thread insights:\n\n```java\nScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);\nscheduler.scheduleAtFixedRate(() -> {\n    ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();\n    long[] threadIds = threadBean.findDeadlockedThreads(); // Detect deadlocks\n    if (threadIds != null) {\n        ThreadInfo[] threadInfos = threadBean.getThreadInfo(threadIds, true, true);\n        // Log or alert about the deadlock\n    }\n}, 0, 1, TimeUnit.MINUTES);\n```"
+            },
+            {
+              "title": "Thread Dumps Analysis",
+              "description": "Tools like **FastThread**, **TDA (Thread Dump Analyzer)**, or **IBM Thread and Monitor Dump Analyzer** help analyze complex thread dumps, identifying patterns, bottlenecks, and deadlocks that might not be obvious from raw dumps."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-lifecycle-c-m-tf-3",
+        "java-thread-deadlock-c-m-tf-8"
+      ]
+    },
+    {
+      "id": "java-thread-methods-c-m-tf-5",
+      "skillLevel": "beginner",
+      "shortTitle": "Thread Methods",
+      "question": "Could you explain the purpose and proper use of common Thread methods like sleep(), join(), and yield()?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "sleep() Method",
+              "description": "**Thread.sleep(milliseconds)** causes the current thread to suspend execution for the specified duration. It's commonly used for introducing delays or simulating processing time.\n\n```java\ntry {\n    // Pause for 2 seconds\n    Thread.sleep(2000);\n} catch (InterruptedException e) {\n    // Handle interruption\n    Thread.currentThread().interrupt();\n}\n```"
+            },
+            {
+              "title": "join() Method",
+              "description": "**thread.join()** causes the current thread to wait until the specified thread completes. It's used when one thread depends on the results of another thread.\n\n```java\nThread worker = new Thread(() -> performTask());\nworker.start();\n\ntry {\n    // Wait for worker to finish before continuing\n    worker.join();\n    System.out.println(\"Worker completed\");\n} catch (InterruptedException e) {\n    Thread.currentThread().interrupt();\n}\n```"
+            },
+            {
+              "title": "yield() Method",
+              "description": "**Thread.yield()** hints to the scheduler that the current thread is willing to yield its current use of the CPU, allowing other threads to execute. However, the scheduler is free to ignore this hint."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Timed join()",
+              "description": "**thread.join(milliseconds)** allows waiting for a thread to complete with a timeout, preventing indefinite waiting.\n\n```java\ntry {\n    // Wait up to 5 seconds for thread to complete\n    thread.join(5000);\n    if (thread.isAlive()) {\n        // Thread is still running after timeout\n        System.out.println(\"Thread did not complete in time\");\n    }\n} catch (InterruptedException e) {\n    Thread.currentThread().interrupt();\n}\n```"
+            },
+            {
+              "title": "Handling InterruptedException",
+              "description": "Both `sleep()` and `join()` throw **InterruptedException** if another thread interrupts the current thread. Proper handling typically involves either propagating the exception or restoring the interrupted status.\n\n```java\ntry {\n    Thread.sleep(1000);\n} catch (InterruptedException e) {\n    // Option 1: Propagate the exception\n    throw new RuntimeException(\"Thread interrupted\", e);\n    \n    // Option 2: Restore interrupted status\n    // Thread.currentThread().interrupt();\n}\n```"
+            },
+            {
+              "title": "Limitations of yield()",
+              "description": "The behavior of `yield()` is platform-dependent and not guaranteed. It should not be relied upon for thread coordination or timing. Modern applications rarely need to use `yield()` directly."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Sleep Precision",
+              "description": "**Thread.sleep()** doesn't guarantee exact timing due to OS scheduling and timer resolution. For high-precision timing, alternatives like **System.nanoTime()** with busy waiting or specialized libraries may be needed. Java 9+ offers `Thread.onSpinWait()` to optimize busy waits."
+            },
+            {
+              "title": "Alternatives to join()",
+              "description": "Modern concurrency utilities provide more flexible alternatives to `join()`:\n\n```java\n// Using CountDownLatch\nCountDownLatch latch = new CountDownLatch(1);\nThread thread = new Thread(() -> {\n    performTask();\n    latch.countDown();\n});\nthread.start();\n\n// Wait with timeout\nboolean completed = latch.await(5, TimeUnit.SECONDS);\n\n// Using CompletableFuture\nCompletableFuture<Void> future = CompletableFuture.runAsync(() -> performTask());\nfuture.get(5, TimeUnit.SECONDS); // With timeout\n```"
+            },
+            {
+              "title": "Virtual Threads Considerations",
+              "description": "With Java 21 **Virtual Threads**, the impact of blocking operations like `sleep()` and `join()` is reduced as they don't waste OS thread resources. This means using these methods has less performance impact in virtual thread-based applications compared to traditional platform threads."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-interruption-c-m-tf-6",
+        "java-thread-lifecycle-c-m-tf-3"
+      ]
+    },
+    {
+      "id": "java-thread-interruption-c-m-tf-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "Thread Interruption",
+      "question": "How does thread interruption work in Java, and what's the proper way to handle it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Interruption Mechanism",
+              "description": "Thread interruption in Java is a cooperative mechanism where one thread requests another thread to stop what it's doing. It does not forcibly terminate the thread."
+            },
+            {
+              "title": "Interrupt() Method",
+              "description": "The `interrupt()` method sets the interrupted status flag of the target thread. If the thread is blocked in certain operations (like `sleep()`, `wait()`, or `join()`), it will throw an **InterruptedException**.\n\n```java\nThread thread = new Thread(() -> {\n    // Some long-running task\n});\nthread.start();\n\n// Later, request the thread to stop\nthread.interrupt();\n```"
+            },
+            {
+              "title": "Checking Interruption Status",
+              "description": "A thread can check if it has been interrupted using `Thread.interrupted()` (static method) or `thread.isInterrupted()` (instance method). The former also clears the interrupted status.\n\n```java\n// Inside the thread's run method\nwhile (!Thread.interrupted()) {\n    // Continue working\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Handling InterruptedException",
+              "description": "When a blocking method throws **InterruptedException**, there are three common ways to handle it:\n\n```java\ntry {\n    Thread.sleep(1000);\n} catch (InterruptedException e) {\n    // Option 1: Propagate the exception\n    throw new RuntimeException(e);\n    \n    // Option 2: Restore interrupted status and exit loop/method\n    // Thread.currentThread().interrupt();\n    // return;\n    \n    // Option 3: Log and ignore (rarely appropriate)\n    // logger.warn(\"Interrupted, but continuing\");\n}\n```"
+            },
+            {
+              "title": "Non-interruptible Operations",
+              "description": "Some operations (like I/O or regular synchronization) don't respond to interruption by throwing exceptions. In these cases, periodic checks of the interrupted status are necessary.\n\n```java\nvolatile boolean running = true;\nThread thread = new Thread(() -> {\n    while (running && !Thread.interrupted()) {\n        // Check interrupted status regularly during long operations\n        performChunkOfWork();\n    }\n});\n```"
+            },
+            {
+              "title": "Interruption Propagation",
+              "description": "When a thread catches an **InterruptedException** but can't immediately respond to it, best practice is to restore the interrupted flag for higher-level code to handle.\n\n```java\npublic void performTask() {\n    try {\n        // Task implementation\n        Thread.sleep(1000);\n    } catch (InterruptedException e) {\n        // Restore the interrupted status\n        Thread.currentThread().interrupt();\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Cancellation Policies",
+              "description": "Well-designed interruptible methods should define clear cancellation policies, including:\n- Which operations are cancellation points\n- How resources are cleaned up when interrupted\n- Whether state is restored to maintain consistency\n- How interruption is propagated to nested calls"
+            },
+            {
+              "title": "Interruption during I/O",
+              "description": "Standard I/O operations don't respond to interruption, but Java NIO (channels) supports interruptible I/O via the `InterruptibleChannel` interface. When a thread is interrupted while blocked on an interruptible channel, it receives an **ClosedByInterruptException**.\n\n```java\ntry {\n    ByteBuffer buffer = ByteBuffer.allocate(1024);\n    // This channel read is interruptible\n    SocketChannel channel = SocketChannel.open(address);\n    channel.read(buffer);\n} catch (ClosedByInterruptException e) {\n    // Channel was closed because thread was interrupted\n    System.out.println(\"I/O interrupted\");\n}\n```"
+            },
+            {
+              "title": "Thread Interruption in Executors",
+              "description": "The Executor framework provides structured support for interruption via `Future.cancel(true)`, which attempts to interrupt the thread executing the task.\n\n```java\nExecutorService executor = Executors.newSingleThreadExecutor();\nFuture<?> future = executor.submit(() -> {\n    while (!Thread.interrupted()) {\n        // Work that checks for interruption\n    }\n});\n\n// Later, cancel the task with interruption\nfuture.cancel(true);\n\n// Shutdown with interruption\nexecutor.shutdownNow(); // Interrupts all running tasks\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-methods-c-m-tf-5",
+        "java-thread-cancellation-c-m-tf-10"
+      ]
+    },
+    {
+      "id": "java-daemon-threads-c-m-tf-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Daemon Threads",
+      "question": "What are daemon threads in Java and when would you use them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Daemon threads** are background threads that don't prevent the JVM from exiting when all non-daemon threads have terminated. They're typically used for service tasks that should run only while the application is active."
+            },
+            {
+              "title": "Setting Daemon Status",
+              "description": "A thread's daemon status is set before starting it using the `setDaemon(boolean)` method.\n\n```java\nThread thread = new Thread(() -> {\n    while (true) {\n        // Background task\n    }\n});\nthread.setDaemon(true); // Must be called before thread.start()\nthread.start();\n```"
+            },
+            {
+              "title": "Checking Daemon Status",
+              "description": "You can check if a thread is a daemon thread using the `isDaemon()` method.\n\n```java\nboolean isDaemon = thread.isDaemon();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Common Use Cases",
+              "description": "Daemon threads are commonly used for:\n- Cleanup or maintenance operations\n- Background cache management\n- Monitoring tasks\n- Resource management\n- Any task that should automatically terminate when the application exits"
+            },
+            {
+              "title": "Inheritance of Daemon Status",
+              "description": "New threads inherit the daemon status of their creator thread. Threads created by daemon threads are also daemon threads by default."
+            },
+            {
+              "title": "Limitations",
+              "description": "Daemon threads are abruptly terminated when the JVM exits, without executing finally blocks or completing cleanup operations. This makes them unsuitable for tasks that require proper resource release."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Daemon Thread Shutdown",
+              "description": "Since daemon threads may be terminated without warning, critical resources should not be managed exclusively by daemon threads. For resources requiring proper cleanup, consider:\n\n```java\n// Using shutdown hooks instead of daemon threads\nRuntime.getRuntime().addShutdownHook(new Thread(() -> {\n    // Clean up resources safely\n    closeConnections();\n    flushBuffers();\n}));\n```"
+            },
+            {
+              "title": "JVM System Threads",
+              "description": "The JVM itself uses daemon threads for garbage collection, reference handling, signal dispatching, and other internal tasks. These system threads are automatically created and managed by the JVM."
+            },
+            {
+              "title": "Modern Alternatives",
+              "description": "Modern Java applications often use more structured approaches instead of raw daemon threads:\n\n```java\n// Using scheduled executor service with shutdown handling\nScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);\nscheduler.scheduleAtFixedRate(monitorTask, 0, 1, TimeUnit.MINUTES);\n\n// Register shutdown action\nRuntime.getRuntime().addShutdownHook(new Thread(() -> {\n    scheduler.shutdown();\n    try {\n        if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {\n            scheduler.shutdownNow();\n        }\n    } catch (InterruptedException e) {\n        scheduler.shutdownNow();\n    }\n}));\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-creation-c-m-tf-1",
+        "java-thread-lifecycle-c-m-tf-3"
+      ]
+    },
+    {
+      "id": "java-thread-deadlock-c-m-tf-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Thread Deadlocks",
+      "question": "How do deadlocks occur in multi-threaded Java applications, and how can you detect and prevent them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Deadlock Definition",
+              "description": "A **deadlock** occurs when two or more threads are blocked forever, each waiting for resources held by the other threads. It's a situation where none of the threads can proceed."
+            },
+            {
+              "title": "Deadlock Example",
+              "description": "A classic example involves two threads acquiring two locks in different orders:\n\n```java\nObject lock1 = new Object();\nObject lock2 = new Object();\n\n// Thread 1\nnew Thread(() -> {\n    synchronized(lock1) {\n        // Some processing\n        synchronized(lock2) {\n            // More processing\n        }\n    }\n}).start();\n\n// Thread 2\nnew Thread(() -> {\n    synchronized(lock2) {\n        // Some processing\n        synchronized(lock1) {\n            // More processing\n        }\n    }\n}).start();\n```"
+            },
+            {
+              "title": "Conditions for Deadlock",
+              "description": "Four conditions must hold for a deadlock to occur:\n1. **Mutual Exclusion**: Resources cannot be shared\n2. **Hold and Wait**: Threads hold resources while waiting for others\n3. **No Preemption**: Resources cannot be forcibly taken away\n4. **Circular Wait**: A circular chain of threads waiting for resources held by the next thread"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Deadlock Detection",
+              "description": "You can detect deadlocks using:\n- Thread dumps (jstack or Kill -3 signal)\n- JVisualVM or JConsole with the \"Detect Deadlock\" button\n- ThreadMXBean's findDeadlockedThreads() method\n\n```java\nThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();\nlong[] deadlockedThreads = threadMXBean.findDeadlockedThreads();\nif (deadlockedThreads != null) {\n    ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(deadlockedThreads, true, true);\n    for (ThreadInfo info : threadInfos) {\n        System.out.println(info);\n    }\n}\n```"
+            },
+            {
+              "title": "Deadlock Prevention",
+              "description": "Common prevention techniques include:\n1. **Lock Ordering**: Always acquire locks in a consistent order\n2. **Lock Timeouts**: Use tryLock with timeout instead of blocking indefinitely\n3. **Deadlock Detection**: Implement deadlock detection and recovery mechanisms\n4. **Resource Allocation Graph**: Model and analyze resource allocations to prevent cycles"
+            },
+            {
+              "title": "Using Lock Hierarchy",
+              "description": "Establishing a global ordering for locks can prevent deadlocks:\n\n```java\npublic class ResourceManager {\n    private static final Object LOCK_A = new Object();\n    private static final Object LOCK_B = new Object();\n    private static final Object LOCK_C = new Object();\n    \n    // Always acquire locks in order: A, then B, then C\n    public void performOperation() {\n        synchronized(LOCK_A) {\n            synchronized(LOCK_B) {\n                synchronized(LOCK_C) {\n                    // Safe from deadlocks\n                }\n            }\n        }\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Explicit Locks with Timeouts",
+              "description": "Using `java.util.concurrent.locks` with timeouts can help avoid permanent deadlocks:\n\n```java\nReentrantLock lock1 = new ReentrantLock();\nReentrantLock lock2 = new ReentrantLock();\n\npublic void operationWithTimeout() throws InterruptedException {\n    boolean gotFirstLock = false;\n    boolean gotSecondLock = false;\n    \n    try {\n        gotFirstLock = lock1.tryLock(1, TimeUnit.SECONDS);\n        if (gotFirstLock) {\n            gotSecondLock = lock2.tryLock(1, TimeUnit.SECONDS);\n            if (gotSecondLock) {\n                // Perform operation with both locks\n            }\n        }\n    } finally {\n        if (gotSecondLock) lock2.unlock();\n        if (gotFirstLock) lock1.unlock();\n    }\n}\n```"
+            },
+            {
+              "title": "Higher-Level Concurrency Constructs",
+              "description": "Using higher-level concurrency utilities can help avoid explicit lock management:\n\n```java\n// Using StampedLock for read-write operations\nStampedLock lock = new StampedLock();\n\n// Optimistic read - doesn't block writers\nlong stamp = lock.tryOptimisticRead();\nValue value = currentValue;\nif (!lock.validate(stamp)) {\n    // Lock was acquired by a writer, switch to pessimistic read\n    stamp = lock.readLock();\n    try {\n        value = currentValue;\n    } finally {\n        lock.unlockRead(stamp);\n    }\n}\n\n// Using CompletableFuture to avoid explicit threading\nCompletableFuture<Result> future1 = CompletableFuture.supplyAsync(this::computeFirstPart);\nCompletableFuture<Result> future2 = CompletableFuture.supplyAsync(this::computeSecondPart);\n\nCompletableFuture<FinalResult> combined = future1.thenCombine(future2, this::combineResults);\n```"
+            },
+            {
+              "title": "Thread Starvation Deadlocks",
+              "description": "A special type of deadlock called **thread starvation deadlock** can occur in thread pools when:\n1. All active threads are waiting for results from tasks in the queue\n2. These tasks can't execute because all threads are occupied\n\n```java\n// Starvation deadlock example\nExecutorService executor = Executors.newFixedThreadPool(2);\n\nFuture<String> future1 = executor.submit(() -> {\n    // This task submits another task and waits for its result\n    Future<String> subtask = executor.submit(() -> {\n        return \"Subtask result\";\n    });\n    \n    // Deadlock if all threads are blocked waiting\n    return subtask.get();\n});\n\nFuture<String> future2 = executor.submit(() -> {\n    // Similar pattern\n    Future<String> subtask = executor.submit(() -> {\n        return \"Another subtask\";\n    });\n    return subtask.get();\n});\n\n// Prevention: use a larger thread pool or avoid blocking on tasks submitted to the same executor\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-states-monitoring-c-m-tf-4"
+      ]
+    },
+    {
+      "id": "java-thread-priority-c-m-tf-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Thread Priorities",
+      "question": "How do thread priorities work in Java, and what impact do they have on thread scheduling?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Priority Levels",
+              "description": "Java thread priorities range from 1 (lowest) to 10 (highest), with 5 being the default. The Thread class provides constants: **MIN_PRIORITY (1)**, **NORM_PRIORITY (5)**, and **MAX_PRIORITY (10)**."
+            },
+            {
+              "title": "Setting Priorities",
+              "description": "Thread priorities are set using the `setPriority(int)` method before starting the thread:\n\n```java\nThread thread = new Thread(() -> {\n    // Task implementation\n});\nthread.setPriority(Thread.MAX_PRIORITY);\nthread.start();\n```"
+            },
+            {
+              "title": "Priority Inheritance",
+              "description": "New threads inherit the priority of their creator thread unless explicitly changed."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Platform Dependence",
+              "description": "The actual effect of thread priorities is platform-dependent. Some operating systems may ignore or map Java priorities to a smaller set of native priorities."
+            },
+            {
+              "title": "Scheduling Impact",
+              "description": "Priorities influence scheduling decisions but do not guarantee execution order. Higher-priority threads are generally given preference when the scheduler makes decisions, but other factors also affect scheduling."
+            },
+            {
+              "title": "Priority Inversion",
+              "description": "**Priority inversion** occurs when a high-priority thread waits for a resource held by a low-priority thread, which in turn can't run because medium-priority threads are consuming CPU time. This can lead to performance issues."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Priority Boost",
+              "description": "Some platforms implement a **priority boost** mechanism where threads that have waited for I/O or other resources temporarily receive higher priorities to ensure responsiveness."
+            },
+            {
+              "title": "Time Slicing",
+              "description": "Modern operating systems typically use time slicing to ensure all threads get CPU time, regardless of priority. This means even low-priority threads will eventually execute, though possibly less frequently than high-priority ones."
+            },
+            {
+              "title": "Best Practices",
+              "description": "Relying on thread priorities for application correctness is generally discouraged because:\n\n1. Their effect is platform-dependent and often not what developers expect\n2. They can mask design problems that should be solved with proper synchronization\n3. They can lead to hard-to-diagnose issues like priority inversion\n\nInstead of manipulating priorities, prefer structured concurrency approaches:\n\n```java\n// Instead of priority-based threading\nExecutorService criticalTasks = Executors.newSingleThreadExecutor();\nExecutorService backgroundTasks = Executors.newFixedThreadPool(4);\n\n// Submit tasks to appropriate executors based on importance\ncriticalTasks.submit(importantTask);\nbackgroundTasks.submit(lessImportantTask);\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-creation-c-m-tf-1",
+        "java-thread-lifecycle-c-m-tf-3"
+      ]
+    },
+    {
+      "id": "java-thread-cancellation-c-m-tf-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Thread Cancellation",
+      "question": "What techniques can be used to safely cancel or stop a thread in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Thread.stop() Deprecation",
+              "description": "The `Thread.stop()` method is deprecated because it's unsafe. It forcibly terminates a thread without allowing proper cleanup, potentially leaving shared data structures in an inconsistent state."
+            },
+            {
+              "title": "Flag-based Cancellation",
+              "description": "The most common approach is using a cancellation flag that the thread checks periodically:\n\n```java\npublic class CancellableTask implements Runnable {\n    private volatile boolean cancelled = false;\n    \n    public void run() {\n        while (!cancelled) {\n            // Perform task\n        }\n    }\n    \n    public void cancel() {\n        cancelled = true;\n    }\n}\n```"
+            },
+            {
+              "title": "Interruption",
+              "description": "Thread interruption provides a standard mechanism for requesting cancellation:\n\n```java\nThread thread = new Thread(() -> {\n    while (!Thread.interrupted()) {\n        // Perform task\n    }\n});\nthread.start();\n\n// Later, request cancellation\nthread.interrupt();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Handling Blocking Operations",
+              "description": "For threads blocked in operations like `sleep()`, `wait()`, or `join()`, interruption is effective as these methods throw InterruptedException:\n\n```java\ntry {\n    while (!Thread.interrupted()) {\n        // Work phase\n        processNextItem();\n        \n        // Sleep phase - will throw if interrupted\n        Thread.sleep(1000);\n    }\n} catch (InterruptedException e) {\n    // Exit due to cancellation\n    System.out.println(\"Task cancelled during sleep\");\n}\n```"
+            },
+            {
+              "title": "Cancellation Points",
+              "description": "Well-designed tasks should have frequent **cancellation points** where they check for interruption or the cancellation flag:\n\n```java\npublic void processLargeFile(File file) throws InterruptedException {\n    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {\n        String line;\n        while ((line = reader.readLine()) != null) {\n            // Cancellation point before processing each line\n            if (Thread.interrupted()) {\n                throw new InterruptedException();\n            }\n            processLine(line);\n        }\n    } catch (IOException e) {\n        // Handle I/O error\n    }\n}\n```"
+            },
+            {
+              "title": "Timeout-Based Cancellation",
+              "description": "For operations that don't support interruption, timeouts can be used as a cancellation mechanism:\n\n```java\nExecutorService executor = Executors.newSingleThreadExecutor();\nFuture<Result> future = executor.submit(task);\n\ntry {\n    // Wait only for a specified time\n    Result result = future.get(10, TimeUnit.SECONDS);\n} catch (TimeoutException e) {\n    // Cancel the task if it times out\n    future.cancel(true);\n    // Handle timeout\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Non-Interruptible Operations",
+              "description": "Some operations like standard I/O or blocking synchronization can't be interrupted directly. Strategies for these cases include:\n\n1. **Closing resources**: For I/O operations, closing the underlying stream/channel can unblock a thread\n2. **Timeout versions**: Use alternative APIs with timeout support\n3. **NIO channels**: Use interruptible channels from java.nio\n\n```java\n// Example for socket operations\nSocketChannel channel = null;\ntry {\n    channel = SocketChannel.open(new InetSocketAddress(host, port));\n    channel.configureBlocking(true);\n    \n    ByteBuffer buffer = ByteBuffer.allocate(1024);\n    while (channel.read(buffer) != -1) {\n        // Process data\n        buffer.clear();\n    }\n} catch (ClosedByInterruptException e) {\n    // Channel was closed due to thread interruption\n    System.out.println(\"I/O operation cancelled\");\n} finally {\n    if (channel != null) {\n        try {\n            channel.close();\n        } catch (IOException e) {\n            // Handle close error\n        }\n    }\n}\n```"
+            },
+            {
+              "title": "Resource Cleanup on Cancellation",
+              "description": "Proper cancellation should include resource cleanup to prevent leaks:\n\n```java\npublic class ResourceManager implements Runnable {\n    private final AtomicBoolean running = new AtomicBoolean(true);\n    private Connection connection;\n    private ScheduledExecutorService scheduler;\n    \n    public void run() {\n        try {\n            connection = createConnection();\n            scheduler = Executors.newScheduledThreadPool(1);\n            \n            while (running.get() && !Thread.interrupted()) {\n                // Perform work\n            }\n        } catch (Exception e) {\n            // Log error\n        } finally {\n            cleanup();\n        }\n    }\n    \n    public void cancel() {\n        running.set(false);\n    }\n    \n    private void cleanup() {\n        // Ensure all resources are released\n        if (scheduler != null) {\n            scheduler.shutdownNow();\n        }\n        if (connection != null) {\n            try {\n                connection.close();\n            } catch (Exception e) {\n                // Log error\n            }\n        }\n    }\n}\n```"
+            },
+            {
+              "title": "Shutdown-Hook Approaches",
+              "description": "For critical tasks that must complete even if the application is shutting down, consider using shutdown hooks or completion services:\n\n```java\n// Register important tasks to run during JVM shutdown\nRuntime.getRuntime().addShutdownHook(new Thread(() -> {\n    System.out.println(\"Performing final cleanup...\");\n    saveCheckpoint();\n    flushBuffers();\n}));\n\n// Using CompletionService to ensure tasks finish or are explicitly cancelled\nExecutorService executor = Executors.newFixedThreadPool(4);\nCompletionService<Result> completionService = \n    new ExecutorCompletionService<>(executor);\n\n// Submit tasks\nfor (Task task : tasks) {\n    completionService.submit(task);\n}\n\n// During shutdown, either complete all tasks or cancel them\nvoid shutdown(boolean waitForTasks) {\n    if (waitForTasks) {\n        executor.shutdown();\n        executor.awaitTermination(5, TimeUnit.MINUTES);\n    } else {\n        List<Runnable> pendingTasks = executor.shutdownNow();\n        System.out.println(\"Cancelled \" + pendingTasks.size() + \" tasks\");\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-interruption-c-m-tf-6"
+      ]
+    }
+  ]
+}

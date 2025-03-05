@@ -1,0 +1,1091 @@
+﻿{
+  "category": "Engineering Practices",
+  "subcategory": "Security",
+  "questions": [
+    {
+      "id": "owasp-top-ten-engineering-practices-security-1",
+      "skillLevel": "beginner",
+      "shortTitle": "OWASP Top 10",
+      "question": "Could you explain what the OWASP Top 10 is and why it's important for secure development?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "The **OWASP Top 10** is a standard awareness document published by the Open Web Application Security Project that represents the most critical security risks to web applications."
+            },
+            {
+              "title": "Purpose",
+              "description": "It serves as a prioritized checklist for developers and security professionals to focus on the most dangerous vulnerabilities first."
+            },
+            {
+              "title": "Update Cycle",
+              "description": "The list is updated every few years to reflect changes in the threat landscape, with the most recent version published in 2021."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Current Top Risks (2021)",
+              "description": "The current list includes: A01-Broken Access Control, A02-Cryptographic Failures, A03-Injection, A04-Insecure Design, A05-Security Misconfiguration, A06-Vulnerable Components, A07-Authentication Failures, A08-Software/Data Integrity Failures, A09-Logging Failures, and A10-Server-Side Request Forgery."
+            },
+            {
+              "title": "Risk Assessment Framework",
+              "description": "OWASP ranks vulnerabilities based on exploitability, prevalence, detectability, and potential technical and business impacts."
+            },
+            {
+              "title": "Integration with Development",
+              "description": "Organizations often integrate OWASP Top 10 checks into their SDLC through automated security scanning, code reviews, and developer training."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Beyond Compliance",
+              "description": "While addressing the Top 10 is necessary, it should be considered a minimum baseline rather than a comprehensive security program."
+            },
+            {
+              "title": "Industry-Specific Considerations",
+              "description": "Different industries may need to prioritize certain vulnerabilities differently based on their specific threat models and regulatory requirements."
+            },
+            {
+              "title": "Proactive Application",
+              "description": "Advanced organizations use the OWASP Top 10 proactively in threat modeling, security architecture reviews, and to define security requirements before development begins."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "secure-coding-practices-engineering-practices-security-3"
+      ]
+    },
+    {
+      "id": "authentication-authorization-engineering-practices-security-2",
+      "skillLevel": "beginner",
+      "shortTitle": "Authentication vs Authorization",
+      "question": "Can you explain the difference between authentication and authorization in security?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Authentication Definition",
+              "description": "**Authentication** is the process of verifying the identity of a user, system, or entity. It answers the question: \"Who are you?\""
+            },
+            {
+              "title": "Authorization Definition",
+              "description": "**Authorization** is the process of determining what actions an authenticated entity is permitted to perform. It answers the question: \"What are you allowed to do?\""
+            },
+            {
+              "title": "Sequential Relationship",
+              "description": "Authentication typically precedes authorization; a system first verifies identity before determining permitted actions."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Authentication Methods",
+              "description": "Common authentication methods include password-based authentication, multi-factor authentication (MFA), biometrics, certificates, and token-based systems (like OAuth, JWT)."
+            },
+            {
+              "title": "Authorization Models",
+              "description": "Common authorization models include Role-Based Access Control (RBAC), Attribute-Based Access Control (ABAC), Discretionary Access Control (DAC), and Mandatory Access Control (MAC)."
+            },
+            {
+              "title": "Implementation Separation",
+              "description": "Best practices often involve separating authentication and authorization concerns into distinct services or components, especially in microservices architectures."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Contextual Authorization",
+              "description": "Advanced authorization systems consider contextual factors beyond identity, such as time of access, location, device security posture, and risk scores."
+            },
+            {
+              "title": "Continuous Authentication",
+              "description": "Modern security models are moving toward continuous authentication, where user behavior is constantly monitored for anomalies rather than relying solely on point-in-time verification."
+            },
+            {
+              "title": "Zero Trust Architecture",
+              "description": "Zero Trust models assume no user or system should be trusted by default, requiring continuous verification of both authentication and authorization for all resources, regardless of location."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "jwt-security-engineering-practices-security-5"
+      ]
+    },
+    {
+      "id": "secure-coding-practices-engineering-practices-security-3",
+      "skillLevel": "intermediate",
+      "shortTitle": "Secure Coding Practices",
+      "question": "What are some essential secure coding practices developers should follow?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Input Validation",
+              "description": "Always validate all input from users, APIs, and other systems. Use whitelist validation approaches (defining what's allowed) rather than blacklist approaches (defining what's disallowed)."
+            },
+            {
+              "title": "Output Encoding",
+              "description": "Encode output data appropriately for its context (HTML, JavaScript, SQL, etc.) to prevent injection attacks like XSS and SQL injection."
+            },
+            {
+              "title": "Authentication & Authorization",
+              "description": "Implement strong authentication mechanisms and proper authorization checks. Never rely on client-side security controls alone."
+            },
+            {
+              "title": "Security by Default",
+              "description": "Use secure defaults, fail securely, and apply the principle of least privilege by default to minimize the impact of security oversights."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Data Protection",
+              "description": "Protect sensitive data in transit and at rest using appropriate encryption. Minimize data retention and implement proper key management."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Implement proper error handling that doesn't leak sensitive information. Use generic error messages for users while logging detailed errors securely for developers."
+            },
+            {
+              "title": "Dependency Management",
+              "description": "Regularly update and audit third-party dependencies for security vulnerabilities. Implement processes to quickly address vulnerable components."
+            },
+            {
+              "title": "Secure Communications",
+              "description": "Use secure protocols (HTTPS, TLS), configure them correctly, and validate certificates properly. Implement proper CORS, CSP, and other security headers."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Threat Modeling",
+              "description": "Conduct threat modeling during design phases to identify potential security issues early. Use methodologies like STRIDE or DREAD to systematically analyze threats."
+            },
+            {
+              "title": "Code Review for Security",
+              "description": "Implement security-focused code reviews with checklists tailored to your technology stack and common vulnerability patterns."
+            },
+            {
+              "title": "Defense in Depth",
+              "description": "Apply multiple layers of security controls so that if one fails, others still provide protection. Never rely on a single security control for critical functions."
+            },
+            {
+              "title": "Time-of-check to time-of-use",
+              "description": "Be aware of TOCTOU (Time-of-check to time-of-use) vulnerabilities where conditions may change between validation and usage. Implement proper synchronization and atomic operations where needed."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "xss-csrf-prevention-engineering-practices-security-6",
+        "api-security-engineering-practices-security-4"
+      ]
+    },
+    {
+      "id": "api-security-engineering-practices-security-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "API Security",
+      "question": "What are the key security considerations when designing and implementing APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Authentication",
+              "description": "Implement robust API authentication using industry standards like OAuth 2.0, API keys, or JWT. Never rely on Basic Authentication without TLS."
+            },
+            {
+              "title": "Authorization",
+              "description": "Enforce proper authorization for all API endpoints. Implement fine-grained access controls and validate permissions server-side for every request."
+            },
+            {
+              "title": "HTTPS Implementation",
+              "description": "Always use HTTPS/TLS for all API communications to ensure data confidentiality and integrity. Configure TLS properly with secure ciphers and protocols."
+            },
+            {
+              "title": "Input Validation",
+              "description": "Thoroughly validate all API inputs for type, length, format, and range. Reject unexpected or malformed inputs rather than attempting to fix them."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Rate Limiting",
+              "description": "Implement rate limiting to protect against abuse, DoS attacks, and brute force attempts. Use techniques like token bucket algorithms with appropriate retry policies."
+            },
+            {
+              "title": "API Gateway Security",
+              "description": "Utilize API gateways to centralize authentication, authorization, logging, monitoring, and other security controls for consistent enforcement."
+            },
+            {
+              "title": "Sensitive Data Handling",
+              "description": "Minimize exposure of sensitive data in API responses. Implement data filtering, masking, or pagination where appropriate. Never expose internal implementation details or error stack traces."
+            },
+            {
+              "title": "CORS Configuration",
+              "description": "Configure Cross-Origin Resource Sharing (CORS) headers correctly to prevent unauthorized cross-domain requests while allowing legitimate clients access."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "API Versioning for Security",
+              "description": "Implement proper API versioning to securely deprecate vulnerable endpoints and smoothly transition to more secure implementations."
+            },
+            {
+              "title": "Security Headers",
+              "description": "Implement security headers like Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, and others to enhance API security posture."
+            },
+            {
+              "title": "Request Signing",
+              "description": "For high-security APIs, implement request signing to verify message integrity and authenticity beyond standard authentication."
+            },
+            {
+              "title": "API Specification Security",
+              "description": "Use OpenAPI/Swagger specifications with security schemes properly defined. Hide or sanitize specifications in production environments to avoid information leakage."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "jwt-security-engineering-practices-security-5"
+      ]
+    },
+    {
+      "id": "jwt-security-engineering-practices-security-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "JWT Security",
+      "question": "What security considerations should be kept in mind when working with JSON Web Tokens (JWT)?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "JWT Overview",
+              "description": "**JSON Web Tokens (JWT)** are an open standard (RFC 7519) for securely transmitting information as a JSON object that can be verified with signatures."
+            },
+            {
+              "title": "Token Structure",
+              "description": "JWTs consist of three parts: header (algorithm and token type), payload (claims), and signature. Each part is Base64Url encoded and separated by dots."
+            },
+            {
+              "title": "Common Use Cases",
+              "description": "JWTs are commonly used for authentication, authorization, and information exchange in distributed systems, single sign-on, and API security."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Signature Verification",
+              "description": "Always verify JWT signatures before trusting any token. Use strong algorithms like RS256 (RSA + SHA-256) instead of weaker ones like HS256 for sensitive applications."
+            },
+            {
+              "title": "Algorithm Selection",
+              "description": "Beware of the \"alg:none\" attack - explicitly validate the algorithm in the token header and reject unsupported or insecure algorithms."
+            },
+            {
+              "title": "Sensitive Data in Claims",
+              "description": "Never store sensitive information in JWT payloads as they are easily decoded. JWTs are signed but typically not encrypted, making all claims visible to token holders."
+            },
+            {
+              "title": "Expiration and Validity",
+              "description": "Always include and verify expiration (\"exp\") and issuance time (\"iat\") claims. Keep token lifetimes short, especially for high-privilege tokens."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Key Management",
+              "description": "Implement proper key rotation and management practices. For asymmetric algorithms, protect private keys diligently and have procedures for key compromise."
+            },
+            {
+              "title": "Token Revocation",
+              "description": "JWTs are stateless by design and cannot be directly revoked. Implement a revocation strategy using techniques like token blacklisting, short lifetimes with refresh tokens, or a stateful check on critical operations."
+            },
+            {
+              "title": "Audience Validation",
+              "description": "Use and validate the \"aud\" (audience) claim to ensure tokens are used only by intended recipients, preventing token reuse across different services."
+            },
+            {
+              "title": "JWE for Encryption",
+              "description": "Consider using JSON Web Encryption (JWE) when payloads contain truly sensitive data that must be protected from all parties except the intended recipient."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "authentication-authorization-engineering-practices-security-2"
+      ]
+    },
+    {
+      "id": "xss-csrf-prevention-engineering-practices-security-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "XSS & CSRF Prevention",
+      "question": "How would you prevent Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF) attacks in web applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "XSS Definition",
+              "description": "**Cross-Site Scripting (XSS)** is a vulnerability that allows attackers to inject malicious client-side scripts into web pages viewed by other users."
+            },
+            {
+              "title": "CSRF Definition",
+              "description": "**Cross-Site Request Forgery (CSRF)** is an attack that forces authenticated users to execute unwanted actions on web applications they're currently logged into."
+            },
+            {
+              "title": "Basic XSS Prevention",
+              "description": "Prevent XSS by encoding or escaping output based on context (HTML, JavaScript, CSS, URL) and validating all input data."
+            },
+            {
+              "title": "Basic CSRF Prevention",
+              "description": "Prevent CSRF by including anti-CSRF tokens in forms and requiring them for state-changing operations."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Content Security Policy",
+              "description": "Implement Content Security Policy (CSP) headers to restrict sources of executable scripts, reducing XSS impact even if vulnerabilities exist."
+            },
+            {
+              "title": "SameSite Cookies",
+              "description": "Use SameSite cookie attribute (Strict or Lax) to prevent cookies from being sent in cross-site requests, mitigating CSRF attacks."
+            },
+            {
+              "title": "XSS Prevention Libraries",
+              "description": "Utilize security-focused libraries and frameworks that automatically handle output encoding, such as React's JSX escaping, DOMPurify for HTML sanitization, or server-side template engines with auto-escaping."
+            },
+            {
+              "title": "CSRF Protection Frameworks",
+              "description": "Leverage built-in CSRF protections in web frameworks (like Spring Security, Django, or Rails) that handle token generation, storage, and validation."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "XSS Defense in Depth",
+              "description": "Implement multiple layers of XSS defense including input sanitization, output encoding, CSP, X-XSS-Protection header, and framework-specific protections."
+            },
+            {
+              "title": "Modern CSRF Defenses",
+              "description": "Beyond tokens, implement additional CSRF protections like custom request headers for AJAX calls, checking the Origin/Referer header, and requiring user re-authentication for sensitive operations."
+            },
+            {
+              "title": "Subresource Integrity",
+              "description": "Use Subresource Integrity (SRI) for external scripts and stylesheets to ensure they haven't been tampered with, preventing certain XSS attack vectors."
+            },
+            {
+              "title": "Security Headers",
+              "description": "Implement a comprehensive set of security headers including Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options, and Referrer-Policy to create multiple layers of protection against XSS and CSRF."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "secure-coding-practices-engineering-practices-security-3"
+      ]
+    },
+    {
+      "id": "secrets-management-engineering-practices-security-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Secrets Management",
+      "question": "What approaches would you recommend for securely managing secrets and credentials in applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Avoid Hardcoding",
+              "description": "Never hardcode secrets (passwords, API keys, tokens) directly in source code, configuration files that are committed to repositories, or client-side code."
+            },
+            {
+              "title": "Environment Variables",
+              "description": "Use environment variables as a basic method to inject secrets into applications, especially in containerized environments."
+            },
+            {
+              "title": "Secret Storage Solutions",
+              "description": "Use dedicated secret management tools like HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, or Google Secret Manager to securely store and access secrets."
+            },
+            {
+              "title": "Principle of Least Privilege",
+              "description": "Grant minimal required permissions to secrets and limit access to only the services and personnel that absolutely need them."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Secret Rotation",
+              "description": "Implement automatic periodic rotation of secrets to minimize the impact of potential leaks. Design systems to handle seamless credential rotation without downtime."
+            },
+            {
+              "title": "Encryption in Transit and at Rest",
+              "description": "Ensure secrets are encrypted both when stored (at rest) and when being transmitted between services (in transit) using strong, modern encryption standards."
+            },
+            {
+              "title": "Audit and Monitoring",
+              "description": "Implement comprehensive logging and monitoring of secret access, with alerts for unusual patterns that might indicate compromise."
+            },
+            {
+              "title": "CI/CD Security",
+              "description": "Secure secrets in CI/CD pipelines using features like GitHub Secrets, GitLab Protected Variables, or Jenkins Credentials Plugin, never exposing them in build logs."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Dynamic Secrets",
+              "description": "Implement dynamic, short-lived secrets that are generated on-demand and automatically revoked after use or a short period, significantly reducing the risk of leaked credentials."
+            },
+            {
+              "title": "Infrastructure as Code Practices",
+              "description": "When using Infrastructure as Code (IaC), use tools like AWS CloudFormation dynamic references, Terraform Vault provider, or SOPS to securely manage secrets in your infrastructure definitions."
+            },
+            {
+              "title": "Defense in Depth for Secrets",
+              "description": "Implement multiple layers of protection including network segmentation, access controls, encryption, monitoring, and automatic revocation to protect your most sensitive secrets."
+            },
+            {
+              "title": "Automated Secret Detection",
+              "description": "Use tools like git-secrets, TruffleHog, or commercial solutions to automatically scan code repositories, preventing accidental secret commits and detecting leaked credentials."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "security-cicd-engineering-practices-security-12"
+      ]
+    },
+    {
+      "id": "devsecops-engineering-practices-security-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "DevSecOps",
+      "question": "How would you explain the concept of DevSecOps and its implementation in an organization?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**DevSecOps** integrates security practices within the DevOps process, making security a shared responsibility throughout the entire IT lifecycle."
+            },
+            {
+              "title": "Core Principle",
+              "description": "The fundamental principle is \"shift left\" security - moving security considerations earlier in the development lifecycle, rather than treating it as a final gate."
+            },
+            {
+              "title": "Key Objectives",
+              "description": "DevSecOps aims to deliver secure software faster by automating security testing, creating feedback loops, and building security as code."
+            },
+            {
+              "title": "Cultural Aspect",
+              "description": "Beyond tools and processes, DevSecOps requires cultural change where security becomes everyone's responsibility, not just the security team's."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Implementation Components",
+              "description": "Successful implementation includes automated security testing in CI/CD pipelines, infrastructure as code security policies, threat modeling, and security monitoring and response."
+            },
+            {
+              "title": "Security as Code",
+              "description": "Security requirements, configurations, and policies are defined in code, versioned, tested, and deployed alongside application code and infrastructure."
+            },
+            {
+              "title": "Tooling Integration",
+              "description": "Integrate security tools across the SDLC: SAST (Static Analysis), DAST (Dynamic Analysis), SCA (Software Composition Analysis), IAST (Interactive Analysis), and container/infrastructure scanning."
+            },
+            {
+              "title": "Continuous Compliance",
+              "description": "Implement automated compliance checks and evidence collection to maintain continuous compliance with relevant standards and regulations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Maturity Model",
+              "description": "Organizations typically progress through maturity levels: from manual security reviews, to automated testing, to fully integrated security as code and continuous assurance."
+            },
+            {
+              "title": "Security Champions",
+              "description": "Establish a network of security champions within development teams who have additional security training and serve as the bridge between security expertise and daily development activities."
+            },
+            {
+              "title": "Chaos Security Engineering",
+              "description": "Advanced organizations implement security chaos engineering - deliberately introducing security failures in controlled environments to test detection and response capabilities."
+            },
+            {
+              "title": "Metrics and Feedback Loops",
+              "description": "Measure security outcomes with metrics like mean time to remediate vulnerabilities, security debt, and risk reduction. Create feedback loops to continuously improve security posture."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "security-cicd-engineering-practices-security-12"
+      ]
+    },
+    {
+      "id": "encryption-types-engineering-practices-security-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Encryption Types",
+      "question": "Could you explain the different types of encryption and when each should be used?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Symmetric Encryption",
+              "description": "Uses the same key for encryption and decryption. Examples include AES, 3DES, and ChaCha20. Best for encrypting large amounts of data efficiently where secure key exchange is possible."
+            },
+            {
+              "title": "Asymmetric Encryption",
+              "description": "Uses public-private key pairs - data encrypted with the public key can only be decrypted with the private key. Examples include RSA, ECC, and DSA. Used for secure communication without prior key exchange."
+            },
+            {
+              "title": "Hashing",
+              "description": "One-way functions that convert data into fixed-length strings. Not encryption per se, but used for integrity verification and password storage. Examples include SHA-256, SHA-3, and BLAKE2."
+            },
+            {
+              "title": "Common Use Cases",
+              "description": "Symmetric for data at rest and bulk encryption, asymmetric for secure key exchange and digital signatures, hashing for password storage and integrity verification."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Hybrid Encryption",
+              "description": "Combines asymmetric and symmetric encryption - using asymmetric to securely exchange a symmetric key, then using that symmetric key for bulk data encryption. Common in TLS, PGP, and secure messaging."
+            },
+            {
+              "title": "Authenticated Encryption",
+              "description": "Provides confidentiality, integrity, and authenticity guarantees. Examples include AES-GCM, ChaCha20-Poly1305. Essential for most modern encryption needs to prevent tampering."
+            },
+            {
+              "title": "Key Derivation",
+              "description": "Processes that derive cryptographic keys from passwords or shared secrets. Examples include PBKDF2, Argon2, and bcrypt. Critical for securely storing passwords and deriving keys from user input."
+            },
+            {
+              "title": "Transport vs. Storage Encryption",
+              "description": "Transport encryption (TLS, SSH) protects data in transit, while storage encryption (disk encryption, encrypted databases) protects data at rest. Different solutions are optimized for each scenario."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Forward Secrecy",
+              "description": "Property where compromise of long-term keys doesn't compromise past session keys. Implemented using ephemeral keys in protocols like TLS. Essential for long-running or high-security communications."
+            },
+            {
+              "title": "Homomorphic Encryption",
+              "description": "Allows computation on encrypted data without decrypting it. Useful for privacy-preserving computation and secure multi-party analytics on sensitive data."
+            },
+            {
+              "title": "Post-Quantum Cryptography",
+              "description": "Cryptographic algorithms resistant to attacks by quantum computers. Examples include lattice-based, hash-based, and multivariate cryptography. Important for long-term data protection."
+            },
+            {
+              "title": "Key Management Lifecycle",
+              "description": "Advanced systems implement complete key management lifecycles including generation, distribution, storage, rotation, backup, and destruction, often using hardware security modules (HSMs) for critical keys."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "https-tls-engineering-practices-security-11",
+        "secrets-management-engineering-practices-security-7"
+      ]
+    },
+    {
+      "id": "security-headers-engineering-practices-security-10",
+      "skillLevel": "intermediate",
+      "shortTitle": "Security Headers",
+      "question": "What are the most important HTTP security headers and how do they enhance web application security?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Content-Security-Policy (CSP)",
+              "description": "Controls which resources (scripts, styles, images, etc.) can be loaded and executed by the browser. Mitigates XSS attacks by specifying trusted content sources."
+            },
+            {
+              "title": "Strict-Transport-Security (HSTS)",
+              "description": "Forces browsers to use HTTPS instead of HTTP for the domain, protecting against protocol downgrade attacks and cookie hijacking."
+            },
+            {
+              "title": "X-Content-Type-Options",
+              "description": "Prevents browsers from MIME-sniffing a response away from the declared content type, reducing the risk of drive-by downloads and MIME confusion attacks."
+            },
+            {
+              "title": "X-Frame-Options",
+              "description": "Controls whether a page can be embedded in frames, iframes, or objects, protecting against clickjacking attacks."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "X-XSS-Protection",
+              "description": "Enables browsers' built-in XSS filters to block or sanitize detected XSS attacks. Though modern browsers rely more on CSP, it provides an additional layer of defense for older browsers."
+            },
+            {
+              "title": "Referrer-Policy",
+              "description": "Controls how much referrer information should be included with requests, helping to protect user privacy and prevent information leakage."
+            },
+            {
+              "title": "Permissions-Policy",
+              "description": "Allows developers to selectively enable, disable, or modify the behavior of browser features and APIs (formerly Feature-Policy). Controls access to features like geolocation, camera, and microphone."
+            },
+            {
+              "title": "Cache-Control and Pragma",
+              "description": "Directs browsers and proxies how to cache responses, preventing sensitive information from being stored in browser caches and shared between users."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "CSP Nonces and Hashes",
+              "description": "Advanced CSP configurations use unique nonces or hashes to authorize specific inline scripts while blocking others, providing more granular control than source-based policies."
+            },
+            {
+              "title": "Expect-CT",
+              "description": "Allows sites to opt-in to Certificate Transparency enforcement, detecting and preventing the use of misissued certificates for the domain."
+            },
+            {
+              "title": "Clear-Site-Data",
+              "description": "Instructs browsers to clear browsing data (cookies, storage, cache) associated with the website, useful for sign-out functionality and privacy protection."
+            },
+            {
+              "title": "Cross-Origin Headers",
+              "description": "Headers like Cross-Origin-Resource-Policy, Cross-Origin-Embedder-Policy, and Cross-Origin-Opener-Policy control cross-origin interactions, protecting against Spectre-style attacks and strengthening site isolation."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "https-tls-engineering-practices-security-11",
+        "xss-csrf-prevention-engineering-practices-security-6"
+      ]
+    },
+    {
+      "id": "https-tls-engineering-practices-security-11",
+      "skillLevel": "beginner",
+      "shortTitle": "HTTPS & TLS",
+      "question": "Why is HTTPS important, and what are best practices for implementing TLS in web applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "HTTPS Purpose",
+              "description": "**HTTPS** (HTTP over TLS/SSL) encrypts communications between clients and servers, providing confidentiality, integrity, and authentication of web communications."
+            },
+            {
+              "title": "Key Benefits",
+              "description": "HTTPS prevents eavesdropping, tampering with transmitted data, and ensures users are connecting to the authentic website rather than an impostor."
+            },
+            {
+              "title": "Browser Requirements",
+              "description": "Modern browsers mark HTTP sites as \"Not Secure\" and require HTTPS for many features including service workers, geolocation, and progressive web apps."
+            },
+            {
+              "title": "SEO Impact",
+              "description": "HTTPS is a ranking signal for search engines, giving secure sites preference in search results."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "TLS Version Selection",
+              "description": "Use TLS 1.2 or 1.3 (preferred), and disable older versions (SSL 3.0, TLS 1.0, TLS 1.1) which have known vulnerabilities."
+            },
+            {
+              "title": "Cipher Suite Configuration",
+              "description": "Configure servers to use strong, modern cipher suites that provide forward secrecy (e.g., those using ECDHE or DHE for key exchange) and authenticated encryption."
+            },
+            {
+              "title": "HSTS Implementation",
+              "description": "Implement HTTP Strict Transport Security (HSTS) to instruct browsers to always use HTTPS, and consider preloading your domain in browser HSTS lists."
+            },
+            {
+              "title": "Certificate Management",
+              "description": "Use valid certificates from trusted Certificate Authorities, implement proper certificate renewal processes, and consider automated solutions like Let's Encrypt and ACME."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Certificate Transparency",
+              "description": "Ensure certificates are logged in Certificate Transparency logs and consider implementing Expect-CT headers to enforce verification."
+            },
+            {
+              "title": "OCSP Stapling",
+              "description": "Implement OCSP stapling to improve performance and privacy of certificate revocation checks."
+            },
+            {
+              "title": "Certificate Pinning",
+              "description": "For high-security applications, consider certificate or public key pinning to prevent compromised or rogue CAs from issuing certificates for your domain."
+            },
+            {
+              "title": "TLS Testing and Monitoring",
+              "description": "Regularly test TLS configuration using tools like SSL Labs' Server Test, and implement monitoring to detect certificate expiration or configuration weaknesses."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "security-headers-engineering-practices-security-10"
+      ]
+    },
+    {
+      "id": "security-cicd-engineering-practices-security-12",
+      "skillLevel": "intermediate",
+      "shortTitle": "Security in CI/CD",
+      "question": "How would you integrate security into a CI/CD pipeline?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Security Scanning Tools",
+              "description": "Integrate automated security scanning tools into the pipeline, including SAST (Static Application Security Testing), DAST (Dynamic Application Security Testing), and SCA (Software Composition Analysis)."
+            },
+            {
+              "title": "Secrets Management",
+              "description": "Implement secure handling of secrets and credentials using dedicated secrets management tools or CI/CD platform features, never storing secrets in code repositories."
+            },
+            {
+              "title": "Infrastructure as Code Scanning",
+              "description": "Scan infrastructure definitions (Terraform, CloudFormation, etc.) for security issues and misconfigurations before deployment."
+            },
+            {
+              "title": "Automated Policy Enforcement",
+              "description": "Establish security gates that prevent deployment of code that violates security policies or contains high-severity vulnerabilities."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Container Security",
+              "description": "Scan container images for vulnerabilities, enforce minimal base images, implement least privilege principles, and validate image signatures before deployment."
+            },
+            {
+              "title": "Compliance Validation",
+              "description": "Automate compliance checks against relevant standards (GDPR, PCI DSS, HIPAA, etc.) and generate compliance evidence as part of the pipeline."
+            },
+            {
+              "title": "Security Testing",
+              "description": "Implement security-focused test suites including authentication tests, authorization tests, input validation tests, and API security tests as part of the automated testing phase."
+            },
+            {
+              "title": "Dependency Management",
+              "description": "Automatically detect and address vulnerable dependencies, implement dependency approval workflows, and maintain a software bill of materials (SBOM)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Dynamic Security Profiles",
+              "description": "Adapt security testing based on risk profile, with more intensive security validation for high-risk changes or components handling sensitive data."
+            },
+            {
+              "title": "Post-Deployment Validation",
+              "description": "Implement post-deployment security validation including automated penetration testing, security monitoring for anomalies, and canary deployments with security checks."
+            },
+            {
+              "title": "Security as Code",
+              "description": "Define security requirements, controls, and policies as code that can be versioned, tested, and automatically applied across environments."
+            },
+            {
+              "title": "Security Metrics & Feedback",
+              "description": "Measure and report on security metrics from the pipeline (vulnerability trends, mean time to remediation, compliance status) to drive continuous security improvement."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "devsecops-engineering-practices-security-8"
+      ]
+    },
+    {
+      "id": "dependency-management-engineering-practices-security-13",
+      "skillLevel": "beginner",
+      "shortTitle": "Dependency Vulnerabilities",
+      "question": "How do you handle security vulnerabilities in third-party dependencies?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Vulnerability Scanning",
+              "description": "Regularly scan dependencies using tools like OWASP Dependency-Check, Snyk, WhiteSource, or GitHub's Dependabot to identify known vulnerabilities in third-party components."
+            },
+            {
+              "title": "Update Strategy",
+              "description": "Maintain a proactive update strategy for dependencies, prioritizing security patches and establishing a process for regular dependency reviews and updates."
+            },
+            {
+              "title": "Minimizing Dependencies",
+              "description": "Follow the principle of least dependency by only including necessary dependencies and removing unused ones to reduce the potential attack surface."
+            },
+            {
+              "title": "Vulnerability Databases",
+              "description": "Stay informed about new vulnerabilities through sources like the National Vulnerability Database (NVD), security mailing lists, and vendor security advisories."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Risk Assessment",
+              "description": "Assess the risk of identified vulnerabilities based on severity, exploitability, and the specific usage context in your application before determining the appropriate response."
+            },
+            {
+              "title": "CI/CD Integration",
+              "description": "Integrate dependency scanning into CI/CD pipelines with appropriate policies - blocking builds for critical vulnerabilities while flagging lower-severity issues for review."
+            },
+            {
+              "title": "Patch Management",
+              "description": "Establish a formal patch management process with clear SLAs for addressing different severity levels of vulnerabilities, including emergency procedures for critical flaws."
+            },
+            {
+              "title": "Dependency Lockfiles",
+              "description": "Use dependency lockfiles (like package-lock.json, Pipfile.lock, etc.) to ensure consistent, predictable installations and prevent unexpected dependency changes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Software Bill of Materials",
+              "description": "Maintain a complete Software Bill of Materials (SBOM) that inventories all dependencies, their versions, licenses, and known vulnerabilities to support security audits and incident response."
+            },
+            {
+              "title": "Transitive Dependency Analysis",
+              "description": "Analyze and monitor the complete dependency tree, including transitive dependencies, as vulnerabilities often exist in components not directly imported."
+            },
+            {
+              "title": "Dependency Isolation",
+              "description": "Use techniques like code sandboxing, container isolation, or privilege separation to limit the potential impact of vulnerable dependencies that cannot be immediately updated."
+            },
+            {
+              "title": "Vendor Security Assessment",
+              "description": "For critical dependencies, assess the security practices of the maintainers/vendors, including their vulnerability disclosure policies, patch timeliness, and security track record."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "security-cicd-engineering-practices-security-12"
+      ]
+    },
+    {
+      "id": "security-testing-engineering-practices-security-14",
+      "skillLevel": "intermediate",
+      "shortTitle": "Security Testing",
+      "question": "What different types of security testing should be implemented in a comprehensive application security program?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Static Application Security Testing (SAST)",
+              "description": "Analyzes source code, bytecode, or binary code for security vulnerabilities without executing the application. Identifies issues like SQL injection, XSS, and other coding flaws early in development."
+            },
+            {
+              "title": "Dynamic Application Security Testing (DAST)",
+              "description": "Tests running applications by simulating attacks from the outside, identifying runtime vulnerabilities such as authentication issues, session management problems, and server misconfigurations."
+            },
+            {
+              "title": "Software Composition Analysis (SCA)",
+              "description": "Identifies and analyzes open-source components, their versions, and known vulnerabilities in the application's dependencies."
+            },
+            {
+              "title": "Penetration Testing",
+              "description": "Manual or semi-automated testing conducted by security professionals who attempt to exploit vulnerabilities in the application to assess its security posture realistically."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Interactive Application Security Testing (IAST)",
+              "description": "Combines elements of SAST and DAST by instrumenting the application to monitor code execution and identify vulnerabilities during manual or automated testing."
+            },
+            {
+              "title": "Security API Testing",
+              "description": "Specifically tests API endpoints for security issues like improper authentication, authorization bypass, injection flaws, and data exposure."
+            },
+            {
+              "title": "Infrastructure Security Testing",
+              "description": "Evaluates the security of the underlying infrastructure including network configurations, cloud services, containers, and server settings that support the application."
+            },
+            {
+              "title": "Compliance Testing",
+              "description": "Validates that applications meet specific security standards and regulatory requirements such as PCI DSS, HIPAA, GDPR, or industry-specific regulations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Fuzz Testing",
+              "description": "Provides invalid, unexpected, or random data as inputs to find crashes, memory leaks, assertion failures, and other abnormal behaviors that could indicate security vulnerabilities."
+            },
+            {
+              "title": "Runtime Application Self-Protection (RASP)",
+              "description": "Integrates security into the application runtime environment to detect and block attacks in real-time while providing detailed attack telemetry."
+            },
+            {
+              "title": "Threat Modeling",
+              "description": "Structured approach to identifying potential threats and vulnerabilities in application design before implementation, using methodologies like STRIDE, DREAD, or PASTA."
+            },
+            {
+              "title": "Red Team Exercises",
+              "description": "Simulated attacks by a team of security professionals (red team) that test not just technical vulnerabilities but also people, processes, and detection/response capabilities."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "devsecops-engineering-practices-security-8"
+      ]
+    },
+    {
+      "id": "container-security-engineering-practices-security-15",
+      "skillLevel": "advanced",
+      "shortTitle": "Container Security",
+      "question": "What are the key security considerations when working with containers and container orchestration platforms?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Image Security",
+              "description": "Use minimal, official base images; scan images for vulnerabilities; and implement image signing to ensure integrity and authenticity of deployed containers."
+            },
+            {
+              "title": "Container Configuration",
+              "description": "Run containers with non-root users, set appropriate resource limits, make filesystems read-only where possible, and remove unnecessary capabilities."
+            },
+            {
+              "title": "Secrets Management",
+              "description": "Use dedicated secrets management solutions (like Kubernetes Secrets, HashiCorp Vault, or cloud provider services) rather than embedding secrets in images or environment variables."
+            },
+            {
+              "title": "Network Security",
+              "description": "Implement network policies to restrict container-to-container communication based on the principle of least privilege, and encrypt network traffic between containers."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Runtime Protection",
+              "description": "Implement container runtime security monitoring to detect and prevent suspicious activities, file system changes, or unusual process behavior within containers."
+            },
+            {
+              "title": "Host Security",
+              "description": "Secure the host operating system by minimizing the attack surface, applying security patches promptly, and implementing host-based intrusion detection."
+            },
+            {
+              "title": "Orchestration Platform Security",
+              "description": "Secure the control plane (especially in Kubernetes) with proper authentication, authorization (RBAC), audit logging, and encryption of sensitive data like etcd."
+            },
+            {
+              "title": "CI/CD Pipeline Integration",
+              "description": "Integrate container security scanning, policy enforcement, and compliance checks into CI/CD pipelines to prevent insecure containers from being deployed."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Supply Chain Security",
+              "description": "Implement end-to-end container supply chain security with image signing, verification, and trusted registries to prevent tampering from build to runtime."
+            },
+            {
+              "title": "Advanced Isolation Techniques",
+              "description": "Explore enhanced isolation technologies like gVisor, Kata Containers, or Firecracker for stronger security boundaries between containers, especially for multi-tenant environments."
+            },
+            {
+              "title": "Security Context Constraints",
+              "description": "Use advanced security controls like SecurityContextConstraints (OpenShift), Pod Security Policies/Standards (Kubernetes), or AppArmor/SELinux profiles to enforce fine-grained security policies."
+            },
+            {
+              "title": "Runtime Threat Detection",
+              "description": "Implement behavioral analysis and anomaly detection to identify suspicious activities in containerized environments, with automated response capabilities for potential breaches."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "security-cicd-engineering-practices-security-12"
+      ]
+    }
+  ]
+}

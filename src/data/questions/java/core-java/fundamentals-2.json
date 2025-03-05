@@ -1,0 +1,868 @@
+{
+  "category": "Core Java",
+  "subcategory": "Fundamentals",
+  "questions": [
+    {
+      "id": "java-interfaces-abstract-classes-core-java-f-21",
+      "skillLevel": "beginner",
+      "shortTitle": "Interfaces vs Abstract Classes",
+      "question": "What are the key differences between interfaces and abstract classes in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Abstract classes** provide a partial implementation for subclasses to extend and complete. **Interfaces** define a contract of methods that implementing classes must fulfill."
+            },
+            {
+              "title": "Implementation",
+              "description": "A class **extends** an abstract class but **implements** an interface. Abstract classes use the `abstract` keyword, while interfaces use the `interface` keyword."
+            },
+            {
+              "title": "Multiple Inheritance",
+              "description": "A class can implement multiple interfaces but can extend only one abstract class, as Java doesn't support multiple inheritance of classes."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Method Implementation",
+              "description": "Abstract classes can have both abstract methods (without implementation) and concrete methods (with implementation). Before Java 8, interfaces could only have abstract methods; since Java 8, they can also have default and static methods."
+            },
+            {
+              "title": "Fields",
+              "description": "Abstract classes can have instance variables, constructors, and can maintain state. Interface fields are implicitly `public`, `static`, and `final` (constants), and they cannot have instance variables or constructors."
+            },
+            {
+              "title": "Access Modifiers",
+              "description": "Abstract class methods can have any access modifier (`public`, `protected`, `private`, or default). Interface methods are implicitly `public` (before Java 9) or can be explicitly `public` or `private` (since Java 9)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Design Considerations",
+              "description": "Choose an **abstract class** when:\n- You want to share code among closely related classes\n- You need to access and maintain state\n- You want to declare non-public members\n- You need a base class that provides a partial implementation\n\nChoose an **interface** when:\n- You want to define a contract that can be implemented by unrelated classes\n- You need to support multiple inheritance of type\n- You want to specify behavior without forcing an inheritance hierarchy"
+            },
+            {
+              "title": "Evolution",
+              "description": "Interfaces have evolved significantly over Java versions:\n- Java 8: Added default and static methods\n- Java 9: Added private methods to enable code reuse within interfaces\n- Java 14: Added records, which can implement interfaces but not extend abstract classes\n\nThese changes have blurred some of the traditional distinctions between interfaces and abstract classes."
+            },
+            {
+              "title": "Functional Interface Pattern",
+              "description": "Since Java 8, interfaces with exactly one abstract method can be annotated with `@FunctionalInterface` and used with lambda expressions. This pattern is not possible with abstract classes and has made interfaces central to Java's functional programming support."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-default-methods-core-java-f-22"
+      ]
+    },
+    {
+      "id": "java-default-methods-core-java-f-22",
+      "skillLevel": "intermediate",
+      "shortTitle": "Default Methods",
+      "question": "How do default methods in interfaces work, and what problems do they solve?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Default methods** are methods defined in an interface with the `default` keyword that provide a concrete implementation. They allow interfaces to evolve without breaking existing implementations: \n```java\npublic interface MyInterface {\n    void abstractMethod(); // Regular abstract method\n    \n    default void defaultMethod() {\n        System.out.println(\"Default implementation\");\n    }\n}\n```"
+            },
+            {
+              "title": "Basic Purpose",
+              "description": "The primary purpose of default methods is to enable interface evolution. New methods can be added to interfaces without forcing all implementing classes to provide implementations, maintaining backward compatibility."
+            },
+            {
+              "title": "Usage",
+              "description": "Implementing classes can use the default implementation as-is, override it to provide custom behavior, or explicitly call the interface's default implementation using `InterfaceName.super.methodName()`."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Diamond Problem",
+              "description": "When a class implements multiple interfaces with the same default method, the **diamond problem** arises. Java resolves this by requiring the implementing class to override the conflicting method: \n```java\npublic interface A { default void method() { /* impl A */ } }\npublic interface B { default void method() { /* impl B */ } }\n\npublic class C implements A, B {\n    @Override\n    public void method() {\n        A.super.method(); // Choose implementation from A\n        // Or B.super.method(); // Or from B\n        // Or custom implementation\n    }\n}\n```"
+            },
+            {
+              "title": "Method Precedence",
+              "description": "Java follows a method precedence order to resolve conflicts:\n1. Class or superclass methods take precedence over interface default methods\n2. More specific interface methods take precedence over less specific ones (if one interface extends another)\n3. If there's still ambiguity, the implementing class must override the method"
+            },
+            {
+              "title": "Interface Evolution",
+              "description": "Default methods enable adding new functionality to core Java interfaces. For example, Java 8 added the `forEach` method to the `Iterable` interface, allowing all collection classes to use the new method without changing their implementation."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Limitations",
+              "description": "Despite their usefulness, default methods have limitations:\n- They cannot access instance state (fields) since interfaces don't have instance variables\n- They cannot override methods from `Object` like `equals()`, `hashCode()`, or `toString()`\n- They cannot be marked as `final`, `synchronized`, or `static` (though interfaces can have separate static methods)"
+            },
+            {
+              "title": "Design Patterns with Default Methods",
+              "description": "Default methods enable new design patterns, such as the **Trait pattern**, where interfaces with default methods act like **traits** (reusable chunks of behavior) that can be mixed into classes without inheritance: \n```java\npublic interface Loggable {\n    default Logger getLogger() {\n        return LoggerFactory.getLogger(getClass());\n    }\n    \n    default void logInfo(String message) {\n        getLogger().info(message);\n    }\n}\n\n// Any class can now become loggable\npublic class MyService implements Loggable {\n    public void process() {\n        logInfo(\"Processing started\"); // Uses the trait method\n        // ...\n    }\n}\n```"
+            },
+            {
+              "title": "Private Methods in Interfaces",
+              "description": "Since Java 9, interfaces can also have **private methods** (both instance and static), which enable code reuse within the interface itself: \n```java\npublic interface Validator {\n    default boolean validateWithLogging(String input) {\n        log(\"Validating: \" + input);\n        return validate(input);\n    }\n    \n    default boolean validate(String input) {\n        return !isNullOrEmpty(input);\n    }\n    \n    private boolean isNullOrEmpty(String text) { // Helper method\n        return text == null || text.isEmpty();\n    }\n    \n    private static void log(String message) { // Private static helper\n        System.out.println(message);\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-interfaces-abstract-classes-core-java-f-21"
+      ]
+    },
+    {
+      "id": "java-functional-interfaces-core-java-f-23",
+      "skillLevel": "intermediate",
+      "shortTitle": "Functional Interfaces",
+      "question": "What are functional interfaces in Java, and how are they used with lambda expressions?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **functional interface** is an interface that has exactly one abstract method (SAM - Single Abstract Method). It can be annotated with `@FunctionalInterface`, though this is optional: \n```java\n@FunctionalInterface\npublic interface Runnable {\n    void run();\n}\n```"
+            },
+            {
+              "title": "Lambda Expression Usage",
+              "description": "Functional interfaces enable **lambda expressions**, which provide a concise way to represent an anonymous function that can be passed around: \n```java\n// Traditional anonymous class\nRunnable runnable1 = new Runnable() {\n    @Override\n    public void run() {\n        System.out.println(\"Hello\");\n    }\n};\n\n// Lambda expression\nRunnable runnable2 = () -> System.out.println(\"Hello\");\n```"
+            },
+            {
+              "title": "Common Built-in Interfaces",
+              "description": "Java provides several built-in functional interfaces in the `java.util.function` package, including:\n- `Function<T, R>`: Takes a parameter of type T and returns a result of type R\n- `Predicate<T>`: Takes a parameter of type T and returns a boolean\n- `Consumer<T>`: Takes a parameter of type T and returns no result (void)\n- `Supplier<T>`: Takes no parameters and returns a result of type T"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Method References",
+              "description": "**Method references** provide a shorthand syntax for lambda expressions that call a single existing method: \n```java\n// Lambda expression\nFunction<String, Integer> strLength = s -> s.length();\n\n// Method reference equivalent\nFunction<String, Integer> strLength = String::length;\n```\nThere are four types of method references:\n1. Reference to a static method: `ClassName::staticMethod`\n2. Reference to an instance method of a particular object: `object::instanceMethod`\n3. Reference to an instance method of an arbitrary object of a particular type: `ClassName::instanceMethod`\n4. Reference to a constructor: `ClassName::new`"
+            },
+            {
+              "title": "Functional Composition",
+              "description": "Many functional interfaces provide default methods for combining functions: \n```java\n// Combining Predicates\nPredicate<String> isNotEmpty = s -> !s.isEmpty();\nPredicate<String> isNotTooLong = s -> s.length() <= 10;\nPredicate<String> isValid = isNotEmpty.and(isNotTooLong);\n\n// Chaining Functions\nFunction<String, String> trim = String::trim;\nFunction<String, String> toUpperCase = String::toUpperCase;\nFunction<String, String> trimAndUpperCase = trim.andThen(toUpperCase);\n```"
+            },
+            {
+              "title": "Type Inference",
+              "description": "The Java compiler can often infer the types in lambda expressions from the context, making code more concise: \n```java\n// Explicit parameter types\nComparator<String> comp = (String s1, String s2) -> s1.length() - s2.length();\n\n// Inferred parameter types\nComparator<String> comp = (s1, s2) -> s1.length() - s2.length();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Creating Custom Functional Interfaces",
+              "description": "While the standard library covers many common cases, you can create custom functional interfaces for specific needs: \n```java\n@FunctionalInterface\npublic interface TriFunction<T, U, V, R> {\n    R apply(T t, U u, V v);\n    \n    default <S> TriFunction<T, U, V, S> andThen(Function<? super R, ? extends S> after) {\n        Objects.requireNonNull(after);\n        return (T t, U u, V v) -> after.apply(apply(t, u, v));\n    }\n}\n```"
+            },
+            {
+              "title": "Effectively Final Variables",
+              "description": "Lambda expressions can access variables from their enclosing scope if they are final or effectively final (not modified after initialization): \n```java\nString prefix = \"User: \";\n\n// Works because prefix is effectively final\nFunction<String, String> addPrefix = name -> prefix + name;\n\n// Would cause compilation error if you tried to modify prefix after this:\n// prefix = \"Customer: \";\n```"
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Lambda expressions are implemented using **invokedynamic** instructions and method handles, avoiding the creation of additional class files at compile time. However, each lambda instantiation typically creates a new object, which can have memory implications in high-frequency code.\n\nFor performance-critical code, consider these optimizations:\n- Reuse lambda instances when possible\n- Use method references instead of lambdas when applicable\n- For very hot paths, traditional implementations might still outperform lambdas in some cases\n\nThe JVM can sometimes optimize lambda allocations through **lambda hoisting**, but this varies by JVM implementation and version."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-lambda-expressions-core-java-f-24"
+      ]
+    },
+    {
+      "id": "java-lambda-expressions-core-java-f-24",
+      "skillLevel": "intermediate",
+      "shortTitle": "Lambda Expressions",
+      "question": "How do lambda expressions work in Java, and what are the best practices for using them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **lambda expression** is an anonymous function that provides a concise way to implement functional interfaces (interfaces with a single abstract method). The basic syntax is: `(parameters) -> expression` or `(parameters) -> { statements; }`"
+            },
+            {
+              "title": "Syntax Examples",
+              "description": "Lambda expressions can take various forms:\n```java\n// No parameters\nRunnable r = () -> System.out.println(\"Hello\");\n\n// One parameter (parentheses optional)\nConsumer<String> c = s -> System.out.println(s);\n\n// Multiple parameters\nBiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;\n\n// Multiple statements\nComparator<String> comp = (s1, s2) -> {\n    int result = s1.length() - s2.length();\n    return result != 0 ? result : s1.compareTo(s2);\n};\n```"
+            },
+            {
+              "title": "Type Inference",
+              "description": "The Java compiler can infer parameter types from the functional interface. However, you can explicitly declare types if needed:\n```java\nPredicate<String> p1 = s -> s.isEmpty(); // Inferred type\nPredicate<String> p2 = (String s) -> s.isEmpty(); // Explicit type\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Variable Capture",
+              "description": "Lambdas can capture variables from their enclosing scope (closure), but these variables must be effectively final (not modified after initialization):\n```java\nint threshold = 10;\n// This works because threshold is effectively final\nPredicate<Integer> isGreaterThanThreshold = n -> n > threshold;\n\n// This would cause a compilation error:\n// threshold = 20;\n```"
+            },
+            {
+              "title": "Method References",
+              "description": "**Method references** provide a shorthand for lambdas that simply call a single method:\n```java\n// Lambda form\nFunction<String, Integer> strLength = s -> s.length();\n\n// Method reference form\nFunction<String, Integer> strLength = String::length;\n```\n\nFour types of method references:\n1. Static method: `ClassName::staticMethod`\n2. Instance method of specific object: `object::instanceMethod`\n3. Instance method of arbitrary object: `ClassName::instanceMethod`\n4. Constructor: `ClassName::new`"
+            },
+            {
+              "title": "Common Usage Patterns",
+              "description": "Lambdas are commonly used with:\n\n- **Streams API**: `list.stream().filter(n -> n > 0).map(n -> n * 2).collect(Collectors.toList())`\n- **Collection operations**: `list.forEach(item -> System.out.println(item))`\n- **Event handling**: `button.addActionListener(e -> System.out.println(\"Clicked\"))`\n- **Concurrent programming**: `executor.submit(() -> performTask())`"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Best Practices",
+              "description": "When working with lambda expressions:\n1. Keep lambdas small and focused (ideally one line)\n2. Extract complex lambdas to named methods\n3. Use method references when possible\n4. Avoid side effects and mutations in lambdas\n5. Leverage standard functional interfaces from `java.util.function` before creating custom ones"
+            },
+            {
+              "title": "Exception Handling",
+              "description": "Lambda expressions can be challenging with checked exceptions:\n```java\n// Won't compile - FileReader throws checked exceptions\n// and Function doesn't declare them\n// Function<String, BufferedReader> readerFn = \n//     s -> new BufferedReader(new FileReader(s));\n\n// Options for handling checked exceptions in lambdas:\n\n// 1. Use a try-catch inside the lambda\nFunction<String, BufferedReader> readerFn1 = s -> {\n    try {\n        return new BufferedReader(new FileReader(s));\n    } catch (FileNotFoundException e) {\n        throw new RuntimeException(e);\n    }\n};\n\n// 2. Create a wrapper that converts checked exceptions to unchecked\n@FunctionalInterface\ninterface CheckedFunction<T, R> {\n    R apply(T t) throws Exception;\n    \n    static <T, R> Function<T, R> unchecked(CheckedFunction<T, R> f) {\n        return t -> {\n            try {\n                return f.apply(t);\n            } catch (Exception e) {\n                throw new RuntimeException(e);\n            }\n        };\n    }\n}\n\n// Now we can write:\nFunction<String, BufferedReader> readerFn2 = \n    CheckedFunction.unchecked(s -> new BufferedReader(new FileReader(s)));\n```"
+            },
+            {
+              "title": "Implementation Details",
+              "description": "Under the hood:\n1. Lambda expressions are compiled into private static methods in the enclosing class\n2. The JVM uses **invokedynamic** instructions and method handles to implement lambdas, avoiding the creation of additional class files at runtime\n3. Each lambda instantiation typically creates a new object unless optimized by the JVM\n4. The JVM can sometimes optimize lambda allocations through **lambda hoisting** (reusing lambda instances)\n5. Capturing lambdas (those that access variables from the enclosing scope) have different performance characteristics than non-capturing ones"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-functional-interfaces-core-java-f-23"
+      ]
+    },
+    {
+      "id": "java-method-references-core-java-f-25",
+      "skillLevel": "intermediate",
+      "shortTitle": "Method References",
+      "question": "Could you explain method references in Java and how they relate to lambda expressions?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Method references** are a shorthand notation for lambda expressions that call a single existing method. They use the `::` operator syntax and provide a more readable alternative when a lambda simply forwards its parameters."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "The basic syntax is `ContainingClass::methodName` or `object::methodName`. For example: \n```java\n// Lambda expression\nConsumer<String> printer = s -> System.out.println(s);\n\n// Equivalent method reference\nConsumer<String> printer = System.out::println;\n```"
+            },
+            {
+              "title": "Context",
+              "description": "Like lambdas, method references are used in contexts that expect a functional interface (an interface with a single abstract method). The method reference must match the signature of the abstract method in the functional interface."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Types of Method References",
+              "description": "There are four types of method references:\n\n1. **Static method reference**: `ClassName::staticMethod`\n   ```java\n   Function<String, Integer> parser = Integer::parseInt;\n   ```\n\n2. **Instance method reference of a particular object**: `object::instanceMethod`\n   ```java\n   String greeting = \"Hello\";\n   Supplier<String> greeter = greeting::toUpperCase;\n   ```\n\n3. **Instance method reference of an arbitrary object of a particular type**: `ClassName::instanceMethod`\n   ```java\n   Function<String, Integer> lengthFinder = String::length;\n   ```\n\n4. **Constructor reference**: `ClassName::new`\n   ```java\n   Supplier<List<String>> listFactory = ArrayList::new;\n   ```"
+            },
+            {
+              "title": "Parameter Matching",
+              "description": "The JVM automatically matches parameters between the functional interface method and the referenced method. This can sometimes be non-intuitive, especially with instance methods:\n\n```java\n// For a static method or constructor, parameters map directly:\nBiFunction<Integer, Integer, Integer> min = Math::min;\n// Equivalent to: (a, b) -> Math.min(a, b)\n\n// For an instance method of an arbitrary object,\n// the first parameter becomes the receiver of the method call:\nBiFunction<String, String, Boolean> contains = String::contains;\n// Equivalent to: (s1, s2) -> s1.contains(s2)\n```"
+            },
+            {
+              "title": "Varargs Support",
+              "description": "Method references work with varargs methods as well:\n\n```java\n// Method with varargs\nstatic void printAll(String... messages) {\n    for (String message : messages) {\n        System.out.println(message);\n    }\n}\n\n// Method reference to varargs method\nConsumer<String[]> printer = YourClass::printAll;\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Overloaded Methods",
+              "description": "When referencing overloaded methods, the compiler determines which overloaded method to use based on the functional interface's method signature:\n\n```java\nclass Processor {\n    static String process(String s) { return s.toUpperCase(); }\n    static Integer process(Integer i) { return i * 2; }\n}\n\n// This works because the compiler knows which overload to use\n// based on the Function<String, String> context\nFunction<String, String> stringProcessor = Processor::process;\n\n// Similarly, this uses the Integer overload\nFunction<Integer, Integer> intProcessor = Processor::process;\n```"
+            },
+            {
+              "title": "Generic Methods",
+              "description": "Method references can refer to generic methods, with appropriate type inference:\n\n```java\nclass Utilities {\n    public static <T> T getFirst(List<T> list) {\n        return list.isEmpty() ? null : list.get(0);\n    }\n}\n\n// The compiler infers the appropriate type\nFunction<List<String>, String> firstGetter = Utilities::getFirst;\n```"
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Method references and lambdas have similar runtime performance characteristics since they share the same underlying implementation. However, method references can sometimes be more efficient because:\n\n1. They directly invoke an existing method without creating an intermediate anonymous function\n2. The JVM can more easily identify and optimize direct method calls\n3. They potentially avoid capturing variables from the enclosing scope\n\nIn performance-critical code, method references should be preferred over equivalent lambdas where possible. However, both are subject to JVM optimizations, and the practical difference is often negligible in typical applications."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-lambda-expressions-core-java-f-24"
+      ]
+    },
+    {
+      "id": "java-stream-api-core-java-f-26",
+      "skillLevel": "intermediate",
+      "shortTitle": "Stream API",
+      "question": "How does the Stream API work in Java, and what are its key operations?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "The **Stream API** (introduced in Java 8) provides a functional approach to processing collections of objects. A stream is a sequence of elements that supports sequential and parallel aggregate operations."
+            },
+            {
+              "title": "Stream Creation",
+              "description": "Streams can be created from various sources:\n```java\n// From collections\nList<String> list = Arrays.asList(\"a\", \"b\", \"c\");\nStream<String> fromList = list.stream();\n\n// From arrays\nString[] array = {\"a\", \"b\", \"c\"};\nStream<String> fromArray = Arrays.stream(array);\n\n// From values\nStream<String> fromValues = Stream.of(\"a\", \"b\", \"c\");\n\n// Empty stream\nStream<String> empty = Stream.empty();\n```"
+            },
+            {
+              "title": "Stream Operations Categories",
+              "description": "Stream operations are divided into two categories:\n1. **Intermediate operations** (like `filter`, `map`) return a new stream and can be chained together\n2. **Terminal operations** (like `forEach`, `collect`) produce a result or side-effect and end the stream processing"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Common Intermediate Operations",
+              "description": "Key intermediate operations include:\n- `filter(Predicate)`: Filters elements based on a predicate\n- `map(Function)`: Transforms elements using a function\n- `flatMap(Function)`: Transforms and flattens elements\n- `distinct()`: Removes duplicates\n- `sorted()`: Sorts elements\n- `peek(Consumer)`: Performs an action on each element while retaining the elements\n- `limit(n)`: Limits the stream to n elements\n- `skip(n)`: Skips the first n elements"
+            },
+            {
+              "title": "Common Terminal Operations",
+              "description": "Key terminal operations include:\n- `forEach(Consumer)`: Performs an action for each element\n- `collect(Collector)`: Accumulates elements into a collection\n- `reduce(identity, BinaryOperator)`: Reduces elements to a single value\n- `count()`: Returns the count of elements\n- `findFirst()`, `findAny()`: Returns an Optional with the first/any element\n- `anyMatch(Predicate)`, `allMatch(Predicate)`, `noneMatch(Predicate)`: Returns boolean based on predicates\n- `min(Comparator)`, `max(Comparator)`: Returns the min/max element as an Optional"
+            },
+            {
+              "title": "Stream Characteristics",
+              "description": "Key stream characteristics:\n1. **Laziness**: Intermediate operations are lazy and only executed when a terminal operation is invoked\n2. **One-time use**: Streams cannot be reused after a terminal operation\n3. **Non-interference**: Source data should not be modified during stream operations\n4. **Stateless vs. Stateful**: Some operations (like `filter`) are stateless, while others (like `sorted`) are stateful and may require processing the entire stream before producing results"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Specialized Stream Types",
+              "description": "Java provides specialized streams for primitives to avoid boxing/unboxing overhead:\n- `IntStream`, `LongStream`, `DoubleStream` with specialized operations\n- Conversion methods like `mapToInt()`, `boxed()`, etc.\n\n```java\n// Example: Calculate sum of even numbers\nint sum = IntStream.rangeClosed(1, 100)\n                 .filter(n -> n % 2 == 0)\n                 .sum(); // Specialized sum() method\n```"
+            },
+            {
+              "title": "Parallel Streams",
+              "description": "Streams can be processed in parallel for potential performance improvements on multi-core systems:\n```java\n// Convert a sequential stream to parallel\nlist.stream().parallel().forEach(System.out::println);\n\n// Create a parallel stream directly\nlist.parallelStream().forEach(System.out::println);\n```\n\nConsiderations for parallel streams:\n1. Operations should be stateless and non-interfering\n2. The data source should be efficiently splittable (like ArrayList, not LinkedList)\n3. The operations should be computationally intensive to offset parallelization overhead\n4. The order of processing is not guaranteed unless specifically ordered"
+            },
+            {
+              "title": "Advanced Collectors",
+              "description": "The `Collectors` utility class provides sophisticated reduction operations:\n```java\n// Grouping by a property\nMap<Department, List<Employee>> byDept = employees.stream()\n    .collect(Collectors.groupingBy(Employee::getDepartment));\n\n// Multi-level grouping\nMap<Department, Map<EmployeeStatus, List<Employee>>> byDeptAndStatus = employees.stream()\n    .collect(Collectors.groupingBy(Employee::getDepartment,\n        Collectors.groupingBy(Employee::getStatus)));\n\n// Partitioning (special case of grouping with boolean predicate)\nMap<Boolean, List<Employee>> partitioned = employees.stream()\n    .collect(Collectors.partitioningBy(e -> e.getSalary() > 50000));\n\n// Custom statistics\nMap<Department, DoubleSummaryStatistics> salaryStatsByDept = employees.stream()\n    .collect(Collectors.groupingBy(Employee::getDepartment,\n        Collectors.summarizingDouble(Employee::getSalary)));\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-lambda-expressions-core-java-f-24"
+      ]
+    },
+    {
+      "id": "java-optional-core-java-f-27",
+      "skillLevel": "intermediate",
+      "shortTitle": "Optional",
+      "question": "How should the Optional class be used in Java, and what are its benefits?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Optional<T>** (introduced in Java 8) is a container object that may or may not contain a non-null value. It's designed to reduce null pointer exceptions by explicitly forcing developers to handle both presence and absence of values."
+            },
+            {
+              "title": "Creating Optionals",
+              "description": "There are several ways to create an Optional:\n```java\n// Empty Optional\nOptional<String> empty = Optional.empty();\n\n// Optional with non-null value\nOptional<String> withValue = Optional.of(\"Hello\"); // Throws NPE if argument is null\n\n// Optional that may contain null\nOptional<String> nullable = Optional.ofNullable(possiblyNullString); // Returns empty if argument is null\n```"
+            },
+            {
+              "title": "Basic Operations",
+              "description": "Common Operations with Optional:\n```java\n// Check if value is present\nif (optional.isPresent()) {\n    // Use the value\n    String value = optional.get();\n}\n\n// Modern approach (avoiding get())\noptional.ifPresent(value -> System.out.println(value));\n\n// Get value or default\nString result = optional.orElse(\"Default\");\n\n// Get value or compute default\nString result = optional.orElseGet(() -> computeDefault());\n\n// Get value or throw exception\nString result = optional.orElseThrow(() -> new NoSuchElementException());\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Transforming Values",
+              "description": "Optional provides methods to transform values:\n```java\n// Map value if present\nOptional<Integer> length = optional.map(String::length);\n\n// FlatMap for operations that return Optional\nOptional<User> user = findUserById(id);\nOptional<String> email = user.flatMap(User::getEmailOptional);\n\n// Filter values\nOptional<String> longName = optional.filter(s -> s.length() > 5);\n```"
+            },
+            {
+              "title": "Chaining Operations",
+              "description": "Optional shines when chaining operations that might return null:\n```java\n// Without Optional (prone to NPE)\nString streetName = null;\nif (user != null) {\n    Address address = user.getAddress();\n    if (address != null) {\n        Street street = address.getStreet();\n        if (street != null) {\n            streetName = street.getName();\n        }\n    }\n}\n\n// With Optional\nString streetName = Optional.ofNullable(user)\n                           .flatMap(User::getAddressOptional)\n                           .flatMap(Address::getStreetOptional)\n                           .map(Street::getName)\n                           .orElse(\"Unknown\");\n```"
+            },
+            {
+              "title": "Java 9+ Enhancements",
+              "description": "Java 9 added more Optional methods:\n```java\n// If value present, return it; otherwise return other Optional\nOptional<String> result = optional.or(() -> Optional.of(\"alternative\"));\n\n// Convert Optional to Stream (empty or singleton)\nStream<String> stream = optional.stream();\n\n// If present, perform action; otherwise perform other action\noptional.ifPresentOrElse(\n    value -> System.out.println(\"Found: \" + value),\n    () -> System.out.println(\"Not found\")\n);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Best Practices",
+              "description": "Guidelines for using Optional effectively:\n\n1. **Avoid Optional.get() without checking isPresent()** - this defeats the purpose of Optional\n2. **Don't use Optional as a field type** - Optional isn't Serializable; use it for return values, not for fields\n3. **Don't use Optional in method parameters** - it makes APIs confusing; use overloading instead\n4. **Don't create Optional just to get a value out of it** - use it when returning potentially absent values\n5. **Prefer higher-level methods** like `map()`, `flatMap()`, `orElse()` over `isPresent()` and `get()`"
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Optional introduces some overhead:\n\n1. **Memory usage** - Each Optional is an object with memory overhead\n2. **Object creation** - Creating Optionals has allocation costs\n3. **Method invocation** - Accessing values through Optional adds method call overhead\n\nIn performance-critical code, especially tight loops, consider whether Optional is necessary. For internal implementation details, null checks might be more efficient, while Optional shines in APIs."
+            },
+            {
+              "title": "Design Patterns with Optional",
+              "description": "Optional enables several design patterns:\n\n1. **Null Object Pattern** - Optional.empty() serves as a type-safe null object\n2. **Builder Pattern Enhancement** - Builders can return Optional for properties that might not be set\n3. **Functional Error Handling** - Using Optional with flatMap for composable error handling:\n\n```java\npublic interface UserService {\n    Optional<User> findById(String id);  // May not find user\n}\n\npublic interface OrderService {\n    Optional<Order> createOrder(User user, Product product);  // Order creation might fail\n}\n\n// Usage with functional composition\npublic Optional<Order> processOrder(String userId, String productId) {\n    return userService.findById(userId)\n        .flatMap(user -> productService.findById(productId)\n            .flatMap(product -> orderService.createOrder(user, product)));\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-stream-api-core-java-f-26"
+      ]
+    },
+    {
+      "id": "java-date-time-api-core-java-f-28",
+      "skillLevel": "intermediate",
+      "shortTitle": "Date and Time API",
+      "question": "How does the Java 8 Date and Time API improve upon the legacy date handling in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Key Classes",
+              "description": "The Java 8 Date and Time API (java.time package) introduces several core classes:\n- **LocalDate**: Represents a date without time or timezone (e.g., 2023-05-15)\n- **LocalTime**: Represents a time without date or timezone (e.g., 14:30:00)\n- **LocalDateTime**: Combines date and time without timezone\n- **ZonedDateTime**: Combines date, time, and timezone\n- **Instant**: Represents a point in time (timestamp) in UTC"
+            },
+            {
+              "title": "Creating Date-Time Objects",
+              "description": "Creating objects with the new API:\n```java\n// Current date/time\nLocalDate today = LocalDate.now();\nLocalTime now = LocalTime.now();\nLocalDateTime dateTime = LocalDateTime.now();\nZonedDateTime zonedDateTime = ZonedDateTime.now();\nInstant timestamp = Instant.now();\n\n// From specific values\nLocalDate date = LocalDate.of(2023, Month.MAY, 15);\nLocalTime time = LocalTime.of(14, 30, 0);\nLocalDateTime dateTime = LocalDateTime.of(2023, Month.MAY, 15, 14, 30);\nZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, ZoneId.of(\"America/New_York\"));\n```"
+            },
+            {
+              "title": "Basic Operations",
+              "description": "Performing basic operations:\n```java\n// Adding/subtracting time\nLocalDate tomorrow = today.plusDays(1);\nLocalDate lastMonth = today.minusMonths(1);\n\n// Extracting components\nint year = today.getYear();\nMonth month = today.getMonth();\nint day = today.getDayOfMonth();\nDayOfWeek dayOfWeek = today.getDayOfWeek();\n\n// Comparing dates\nboolean isBefore = date1.isBefore(date2);\nboolean isAfter = date1.isAfter(date2);\nboolean isEqual = date1.isEqual(date2);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Periods and Durations",
+              "description": "Measuring time intervals:\n- **Period**: Time-based amount of time (years, months, days)\n- **Duration**: Time-based amount of time in seconds and nanoseconds\n\n```java\n// Creating periods/durations\nPeriod period = Period.between(date1, date2);\nDuration duration = Duration.between(time1, time2);\n\n// Manual creation\nPeriod period = Period.of(1, 2, 3); // 1 year, 2 months, 3 days\nDuration duration = Duration.ofHours(2); // 2 hours\n\n// Using periods/durations\nLocalDate future = today.plus(period);\nLocalTime later = now.plus(duration);\n```"
+            },
+            {
+              "title": "Parsing and Formatting",
+              "description": "Converting between strings and date-time objects:\n```java\n// Using predefined formatters\nLocalDate date = LocalDate.parse(\"2023-05-15\");\nLocalTime time = LocalTime.parse(\"14:30:00\");\n\n// Using custom formatters\nDateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"dd/MM/yyyy\");\nLocalDate date = LocalDate.parse(\"15/05/2023\", formatter);\nString formattedDate = date.format(formatter);\n\n// Localized formatting\nDateTimeFormatter italianFormatter = DateTimeFormatter\n    .ofPattern(\"d MMMM yyyy\")\n    .withLocale(Locale.ITALIAN);\nString formattedDate = date.format(italianFormatter); // 15 maggio 2023\n```"
+            },
+            {
+              "title": "Time Zones",
+              "description": "Working with time zones and offsets:\n```java\n// Getting available zones\nSet<String> zoneIds = ZoneId.getAvailableZoneIds();\n\n// Converting between time zones\nZonedDateTime nyTime = ZonedDateTime.now(ZoneId.of(\"America/New_York\"));\nZonedDateTime tokyoTime = nyTime.withZoneSameInstant(ZoneId.of(\"Asia/Tokyo\"));\n\n// Working with offsets\nOffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);\nOffsetDateTime newYorkTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.of(\"-04:00\"));\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Temporal Adjusters",
+              "description": "Making complex date adjustments:\n```java\n// Built-in adjusters\nLocalDate firstDayOfMonth = date.with(TemporalAdjusters.firstDayOfMonth());\nLocalDate lastDayOfYear = date.with(TemporalAdjusters.lastDayOfYear());\nLocalDate nextMonday = date.with(TemporalAdjusters.next(DayOfWeek.MONDAY));\n\n// Custom adjuster\nTemporalAdjuster nextPayday = temporal -> {\n    LocalDate date = LocalDate.from(temporal);\n    int day = date.getDayOfMonth();\n    // Payday is on the 15th and last day of the month\n    if (day < 15) {\n        return date.withDayOfMonth(15);\n    }\n    return date.with(TemporalAdjusters.lastDayOfMonth());\n};\nLocalDate nextPay = date.with(nextPayday);\n```"
+            },
+            {
+              "title": "Clock and Testing",
+              "description": "The API provides a **Clock** class for better testability:\n```java\n// Using system clock (default behavior)\nLocalDate today = LocalDate.now();\n\n// Using a specific clock\nClock clock = Clock.fixed(Instant.parse(\"2023-05-15T10:00:00Z\"), ZoneId.of(\"UTC\"));\nLocalDate fixedDate = LocalDate.now(clock); // Always 2023-05-15\n\n// This makes unit tests deterministic\n```"
+            },
+            {
+              "title": "Year-Month and Month-Day",
+              "description": "Specialized classes for partial dates:\n```java\n// YearMonth for credit card expiration, etc.\nYearMonth yearMonth = YearMonth.of(2023, Month.MAY);\nint lengthOfMonth = yearMonth.lengthOfMonth(); // 31\nYearMonth nextMonth = yearMonth.plusMonths(1); // 2023-06\n\n// MonthDay for recurring dates like birthdays, holidays\nMonthDay monthDay = MonthDay.of(Month.DECEMBER, 25); // Christmas\nboolean isChristmas = MonthDay.from(date).equals(monthDay);\n```\n\nAdvantages over legacy classes:\n1. **Immutability**: All classes are immutable and thread-safe\n2. **Clarity**: Methods have clear, consistent naming\n3. **Precision**: Clear distinction between instants, local dates/times, and zoned times\n4. **Fluent API**: Method chaining for operations\n5. **Extensibility**: Custom adjusters, queries, and formatters"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-io-streams-core-java-f-29",
+      "skillLevel": "intermediate",
+      "shortTitle": "I/O Streams",
+      "question": "Could you explain the Java I/O streams hierarchy and common patterns for file operations?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Stream Types",
+              "description": "Java I/O streams are divided into two main categories:\n1. **Byte Streams**: Work with binary data (8-bit bytes)\n   - Base classes: `InputStream` and `OutputStream`\n2. **Character Streams**: Work with character data (16-bit Unicode)\n   - Base classes: `Reader` and `Writer`"
+            },
+            {
+              "title": "Basic File Operations",
+              "description": "Reading and writing text files:\n```java\n// Reading a text file line by line\ntry (BufferedReader reader = new BufferedReader(new FileReader(\"input.txt\"))) {\n    String line;\n    while ((line = reader.readLine()) != null) {\n        System.out.println(line);\n    }\n}\n\n// Writing to a text file\ntry (BufferedWriter writer = new BufferedWriter(new FileWriter(\"output.txt\"))) {\n    writer.write(\"Hello, World!\");\n    writer.newLine();\n    writer.write(\"Another line\");\n}\n```"
+            },
+            {
+              "title": "Stream Chaining",
+              "description": "Streams are often chained together to add functionality:\n```java\n// Reading with buffering for efficiency\nInputStream fileIn = new FileInputStream(\"data.bin\");\nBufferedInputStream bufferedIn = new BufferedInputStream(fileIn);\n\n// Adding data processing\nInputStream fileIn = new FileInputStream(\"data.zip\");\nBufferedInputStream bufferedIn = new BufferedInputStream(fileIn);\nZipInputStream zipIn = new ZipInputStream(bufferedIn);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Stream Hierarchy",
+              "description": "Key classes in the hierarchy:\n\n**Byte Streams**:\n- `InputStream`: Abstract base class for all byte input streams\n  - `FileInputStream`: Reads bytes from files\n  - `ByteArrayInputStream`: Reads bytes from byte arrays\n  - `FilterInputStream`: Base class for filtered input streams\n    - `BufferedInputStream`: Adds buffering for efficiency\n    - `DataInputStream`: Reads primitive data types\n\n**Character Streams**:\n- `Reader`: Abstract base class for all character input streams\n  - `InputStreamReader`: Bridge from byte streams to character streams\n    - `FileReader`: Convenience class for reading character files\n  - `BufferedReader`: Adds buffering and readLine() method\n  - `StringReader`: Reads from String sources\n\nSimilar hierarchies exist for `OutputStream` and `Writer`."
+            },
+            {
+              "title": "Binary File Operations",
+              "description": "Working with binary data:\n```java\n// Reading binary data\ntry (DataInputStream in = new DataInputStream(\n        new BufferedInputStream(\n            new FileInputStream(\"data.bin\")))) {\n    int intValue = in.readInt();\n    double doubleValue = in.readDouble();\n    boolean boolValue = in.readBoolean();\n}\n\n// Writing binary data\ntry (DataOutputStream out = new DataOutputStream(\n        new BufferedOutputStream(\n            new FileOutputStream(\"data.bin\")))) {\n    out.writeInt(42);\n    out.writeDouble(3.14159);\n    out.writeBoolean(true);\n}\n```"
+            },
+            {
+              "title": "Character Encoding",
+              "description": "Handling different character encodings:\n```java\n// Specifying character encoding\ntry (Reader reader = new InputStreamReader(\n        new FileInputStream(\"text.txt\"), StandardCharsets.UTF_8)) {\n    // Read UTF-8 encoded text\n}\n\ntry (Writer writer = new OutputStreamWriter(\n        new FileOutputStream(\"text.txt\"), StandardCharsets.UTF_16)) {\n    // Write text in UTF-16 encoding\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "NIO File Operations",
+              "description": "Java NIO.2 (java.nio.file) provides more modern file operations:\n```java\n// Reading a file with Files utility class\nList<String> lines = Files.readAllLines(Paths.get(\"input.txt\"), StandardCharsets.UTF_8);\n\n// Writing lines to a file\nFiles.write(Paths.get(\"output.txt\"), Arrays.asList(\"Line 1\", \"Line 2\"), StandardCharsets.UTF_8);\n\n// Reading/writing large files more efficiently with streams\ntry (Stream<String> stream = Files.lines(Paths.get(\"large.txt\"))) {\n    stream.filter(line -> line.contains(\"important\"))\n          .forEach(System.out::println);\n}\n\n// File copy with one line\nFiles.copy(Paths.get(\"source.txt\"), Paths.get(\"destination.txt\"), \n           StandardCopyOption.REPLACE_EXISTING);\n```"
+            },
+            {
+              "title": "Memory Mapped Files",
+              "description": "Using memory mapped files for extremely large files:\n```java\ntry (RandomAccessFile file = new RandomAccessFile(\"hugefile.data\", \"rw\")) {\n    FileChannel channel = file.getChannel();\n    \n    // Map part of the file into memory\n    MappedByteBuffer buffer = channel.map(\n        FileChannel.MapMode.READ_WRITE, 0, channel.size());\n    \n    // Work with the buffer like any other ByteBuffer\n    while (buffer.hasRemaining()) {\n        buffer.put((byte) (buffer.get() * 2)); // Double each byte value\n    }\n}\n```"
+            },
+            {
+              "title": "Design Patterns and Best Practices",
+              "description": "Key patterns and practices:\n\n1. **Always use try-with-resources** to ensure streams are closed\n\n2. **Decorator Pattern**: I/O streams implementation is a classic example of the Decorator pattern, allowing functionality to be layered dynamically\n\n3. **Buffering**: Almost always wrap basic streams with buffered streams for performance\n\n4. **Character vs. Byte**: Use character streams for text and byte streams for binary data\n\n5. **NIO.2 for modern code**: Prefer java.nio.file over legacy I/O when possible for more concise, feature-rich code\n\n6. **Scanner for parsing**: Use Scanner for parsing formatted text input:\n```java\ntry (Scanner scanner = new Scanner(new File(\"data.txt\"))) {\n    scanner.useDelimiter(\",\");\n    while (scanner.hasNext()) {\n        String value = scanner.next();\n        // Process value\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-exceptions-hierarchy-core-java-f-30",
+      "skillLevel": "beginner",
+      "shortTitle": "Exceptions Hierarchy",
+      "question": "Could you explain the Java exceptions hierarchy and the difference between checked and unchecked exceptions?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Exception Hierarchy",
+              "description": "Java's exception hierarchy:\n- `Throwable` (root class)\n  - `Error`: Serious problems the application shouldn't try to handle (e.g., `OutOfMemoryError`)\n  - `Exception`: Conditions applications might want to handle\n    - **Checked exceptions**: Must be declared or caught (e.g., `IOException`)\n    - **Unchecked exceptions** (`RuntimeException` and its subclasses): Not required to be declared or caught (e.g., `NullPointerException`)"
+            },
+            {
+              "title": "Checked vs. Unchecked",
+              "description": "The key differences:\n- **Checked exceptions**: Must be either caught in a try-catch block or declared in the method's `throws` clause. Represent recoverable conditions.\n- **Unchecked exceptions**: Do not need to be declared or caught. Represent programming errors or unrecoverable states."
+            },
+            {
+              "title": "Common Exceptions",
+              "description": "Commonly encountered exceptions:\n- **Checked**: `IOException`, `SQLException`, `ClassNotFoundException`, `InterruptedException`\n- **Unchecked**: `NullPointerException`, `ArrayIndexOutOfBoundsException`, `IllegalArgumentException`, `ArithmeticException`"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Handling Exceptions",
+              "description": "Exception handling patterns:\n```java\n// Basic try-catch-finally\ntry {\n    // Code that might throw exceptions\n    FileReader file = new FileReader(\"file.txt\");\n    // Process file...\n} catch (FileNotFoundException e) {\n    // Handle the specific exception\n    System.err.println(\"File not found: \" + e.getMessage());\n} catch (IOException e) {\n    // Handle a broader exception\n    System.err.println(\"IO error: \" + e.getMessage());\n} finally {\n    // Always executed, regardless of exception\n    // Close resources, clean up, etc.\n}\n\n// Try-with-resources (Java 7+)\ntry (FileReader reader = new FileReader(\"file.txt\");\n     BufferedReader buffered = new BufferedReader(reader)) {\n    String line;\n    while ((line = buffered.readLine()) != null) {\n        System.out.println(line);\n    }\n} catch (IOException e) {\n    System.err.println(\"Error reading file: \" + e.getMessage());\n}\n// Resources automatically closed, even with exceptions\n```"
+            },
+            {
+              "title": "Throwing Exceptions",
+              "description": "Throwing exceptions:\n```java\n// Declaring checked exceptions\npublic void readFile(String path) throws IOException {\n    // Method code...\n}\n\n// Throwing an exception\npublic void validateAge(int age) {\n    if (age < 0) {\n        throw new IllegalArgumentException(\"Age cannot be negative\");\n    }\n}\n\n// Rethrowing exceptions\npublic void processFile(String path) throws IOException {\n    try {\n        // Code that might throw IOException\n    } catch (IOException e) {\n        // Log the exception\n        logger.log(\"Error processing file\", e);\n        // Rethrow it\n        throw e;\n    }\n}\n```"
+            },
+            {
+              "title": "Exception Chaining",
+              "description": "Exception chaining preserves the original cause:\n```java\npublic void processData() throws ServiceException {\n    try {\n        // Code that might throw various exceptions\n        repository.fetchData();\n    } catch (SQLException e) {\n        // Wrap in an application-specific exception\n        throw new ServiceException(\"Data processing failed\", e);\n    }\n}\n\n// Later, both exceptions are available\ntry {\n    service.processData();\n} catch (ServiceException e) {\n    System.err.println(\"Service error: \" + e.getMessage());\n    Throwable cause = e.getCause();\n    if (cause != null) {\n        System.err.println(\"Caused by: \" + cause.getMessage());\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Exceptions",
+              "description": "Creating custom exceptions:\n```java\n// Checked custom exception\npublic class ResourceNotFoundException extends Exception {\n    private String resourceId;\n    \n    public ResourceNotFoundException(String resourceId) {\n        super(\"Resource not found: \" + resourceId);\n        this.resourceId = resourceId;\n    }\n    \n    public ResourceNotFoundException(String resourceId, Throwable cause) {\n        super(\"Resource not found: \" + resourceId, cause);\n        this.resourceId = resourceId;\n    }\n    \n    public String getResourceId() {\n        return resourceId;\n    }\n}\n\n// Unchecked custom exception\npublic class BusinessRuleViolationException extends RuntimeException {\n    private String rule;\n    \n    public BusinessRuleViolationException(String rule, String message) {\n        super(message);\n        this.rule = rule;\n    }\n    \n    public String getRule() {\n        return rule;\n    }\n}\n```"
+            },
+            {
+              "title": "Exception Design Patterns",
+              "description": "Exception handling patterns and best practices:\n\n1. **Exception Translation**: Convert lower-level exceptions to ones that make sense in your API\n```java\ntry {\n    // Low-level database code\n} catch (SQLException e) {\n    throw new DataAccessException(\"Failed to fetch user\", e);\n}\n```\n\n2. **Exception Enrichment**: Add context to exceptions as they propagate up the stack\n```java\ntry {\n    processOrder(order);\n} catch (ValidationException e) {\n    throw new OrderProcessingException(\"Order #\" + order.getId() + \": \" + e.getMessage(), e);\n}\n```\n\n3. **Selective Catching**: Catch only exceptions you can handle meaningfully\n```java\n// Bad practice\ntry {\n    // Code\n} catch (Exception e) { // Too broad\n    // Generic handling that might miss important distinctions\n}\n\n// Good practice\ntry {\n    // Code\n} catch (FileNotFoundException e) {\n    // Specific handling\n} catch (IOException e) {\n    // More general handling\n}\n```"
+            },
+            {
+              "title": "Java 7+ Features",
+              "description": "Modern exception handling features:\n\n1. **Multi-catch**: Catch multiple exception types in one clause\n```java\ntry {\n    // Code\n} catch (IOException | SQLException e) {\n    // Handle both types the same way\n}\n```\n\n2. **Try-with-resources**: Automatically close resources that implement `AutoCloseable`\n```java\ntry (InputStream in = new FileInputStream(src);\n     OutputStream out = new FileOutputStream(dest)) {\n    // Use resources\n} // Resources automatically closed\n```\n\n3. **Suppressed Exceptions**: When an exception occurs in try and another in try-with-resources close\n```java\ntry (Resource res = new Resource()) {\n    throw new FirstException();\n} // If res.close() throws SecondException, it's suppressed\n\n// Access suppressed exceptions\ncatch (FirstException e) {\n    Throwable[] suppressed = e.getSuppressed();\n    // Process suppressed exceptions\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-try-catch-finally-core-java-f-31"
+      ]
+    },
+    {
+      "id": "java-try-catch-finally-core-java-f-31",
+      "skillLevel": "beginner",
+      "shortTitle": "Try-Catch-Finally",
+      "question": "Can you explain how try-catch-finally blocks work in Java and the execution flow when exceptions occur?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Basic Structure",
+              "description": "The try-catch-finally structure consists of three blocks:\n```java\ntry {\n    // Code that might throw exceptions\n} catch (ExceptionType1 e1) {\n    // Handler for ExceptionType1\n} catch (ExceptionType2 e2) {\n    // Handler for ExceptionType2\n} finally {\n    // Code that always executes, whether an exception occurred or not\n}\n```"
+            },
+            {
+              "title": "Execution Flow",
+              "description": "The normal execution flow is:\n1. Code in the `try` block is executed until completion or until an exception occurs\n2. If an exception occurs, the JVM looks for a matching `catch` block\n3. If a matching `catch` is found, that block executes\n4. The `finally` block always executes, regardless of whether an exception occurred or was caught\n5. After the `finally` block, execution continues after the entire try-catch-finally structure, unless an exception was thrown but not caught"
+            },
+            {
+              "title": "Exception Matching",
+              "description": "When an exception occurs, catch blocks are examined in order. The first catch block that can handle the exception (the exception is an instance of the declared exception type) will execute. More specific exception types should be caught before more general ones."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Multiple Catch Blocks",
+              "description": "Using multiple catch blocks:\n```java\ntry {\n    int result = divide(10, 0);\n    System.out.println(\"Result: \" + result);\n} catch (ArithmeticException e) {\n    System.err.println(\"Arithmetic error: \" + e.getMessage());\n} catch (Exception e) {\n    System.err.println(\"General error: \" + e.getMessage());\n}\n```\nOnly one catch block executes for a given exception. If `ArithmeticException` occurs, only the first catch block runs."
+            },
+            {
+              "title": "Multi-Catch Syntax",
+              "description": "Java 7 introduced multi-catch syntax for handling multiple exception types in the same way:\n```java\ntry {\n    // Code that might throw different exceptions\n} catch (IOException | SQLException e) {\n    // Handle both exception types the same way\n    logger.log(e);\n    showErrorMessage(e.getMessage());\n}\n```"
+            },
+            {
+              "title": "Finally Block Details",
+              "description": "The `finally` block executes even if:\n1. The try block completes normally\n2. The try block exits with an exception that's caught\n3. The try block exits with an exception that's not caught\n4. A catch block executes and completes normally\n5. A catch block executes and throws an exception\n\nThe only situations where `finally` won't execute are:\n1. The JVM exits during try/catch execution (e.g., `System.exit(0)` is called)\n2. The thread executing the try/catch is interrupted or killed\n3. A fatal error occurs that crashes the JVM"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Return Statements and Finally",
+              "description": "Return statements in try/catch/finally blocks have special behavior:\n```java\npublic int complexReturn() {\n    try {\n        return 1;  // This value will be remembered\n    } catch (Exception e) {\n        return 2;  // This would be remembered if an exception occurred\n    } finally {\n        // The finally block still executes before the method returns\n        System.out.println(\"Finally executing\");\n        // CAREFUL: This would override the remembered return value!\n        // return 3;  \n    }\n}\n```\nThe finally block executes before the method returns, but the return value from try or catch is remembered unless finally also has a return statement (which overrides the previous return value)."
+            },
+            {
+              "title": "Try-With-Resources",
+              "description": "Java 7 introduced try-with-resources as a cleaner way to handle resource cleanup:\n```java\n// Traditional approach\nBufferedReader br = null;\ntry {\n    br = new BufferedReader(new FileReader(\"file.txt\"));\n    // Use the resource\n} catch (IOException e) {\n    // Handle exception\n} finally {\n    if (br != null) {\n        try {\n            br.close();\n        } catch (IOException e) {\n            // Handle close exception\n        }\n    }\n}\n\n// Try-with-resources approach\ntry (BufferedReader br = new BufferedReader(new FileReader(\"file.txt\"))) {\n    // Use the resource\n} catch (IOException e) {\n    // Handle exception\n}\n// Resource automatically closed\n```\nAll resources declared in the try-with-resources statement must implement `AutoCloseable` or `Closeable` interface."
+            },
+            {
+              "title": "Suppressed Exceptions",
+              "description": "In try-with-resources, exceptions from the resource's `close()` method are suppressed if there's already an exception from the try block:\n```java\ntry (AutoCloseableResource res = new AutoCloseableResource()) {\n    throw new FirstException(); // Primary exception\n} // If res.close() throws SecondException, it gets suppressed\n\n// Access suppressed exceptions\ncatch (FirstException e) {\n    System.err.println(\"Primary: \" + e.getMessage());\n    \n    Throwable[] suppressed = e.getSuppressed();\n    for (Throwable t : suppressed) {\n        System.err.println(\"Suppressed: \" + t.getMessage());\n    }\n}\n```\nThis prevents the original exception from being lost, which was a common problem with traditional try-finally blocks.\n\nJava 9 enhanced try-with-resources to allow using effectively final variables:\n```java\n// Java 8\nBufferedReader reader = new BufferedReader(new FileReader(\"file.txt\"));\ntry (BufferedReader r = reader) { // Need to create a new variable\n    // Use reader\n}\n\n// Java 9+\nBufferedReader reader = new BufferedReader(new FileReader(\"file.txt\"));\ntry (reader) { // Can use the existing variable directly\n    // Use reader\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-exceptions-hierarchy-core-java-f-30"
+      ]
+    },
+    {
+      "id": "java-generics-core-java-f-32",
+      "skillLevel": "intermediate",
+      "shortTitle": "Generics",
+      "question": "How do generics work in Java, and what problems do they solve?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Generics** enable classes, interfaces, and methods to operate on objects of various types while providing compile-time type safety. They were introduced in Java 5 to eliminate the need for casting and to catch type errors at compile time rather than runtime."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "Defining and using generic classes:\n```java\n// Generic class definition\npublic class Box<T> {\n    private T content;\n    \n    public void put(T content) {\n        this.content = content;\n    }\n    \n    public T get() {\n        return content;\n    }\n}\n\n// Using generics\nBox<String> stringBox = new Box<>(); // Diamond operator since Java 7\nstringBox.put(\"Hello\");\nString content = stringBox.get(); // No casting needed\n\n// Without generics, we'd need casting:\n// Box stringBox = new Box();\n// stringBox.put(\"Hello\");\n// String content = (String) stringBox.get(); // Unsafe cast\n```"
+            },
+            {
+              "title": "Generic Methods",
+              "description": "Methods can also use generics independent of their class:\n```java\npublic class Utilities {\n    // Generic method\n    public static <T> T getFirst(List<T> list) {\n        if (list.isEmpty()) {\n            return null;\n        }\n        return list.get(0);\n    }\n}\n\n// Usage\nList<String> names = Arrays.asList(\"Alice\", \"Bob\", \"Charlie\");\nString firstName = Utilities.getFirst(names); // Type inference works here\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Type Bounds",
+              "description": "Constraining generic types with bounds:\n```java\n// Upper bound - T must be Number or a subclass of Number\npublic class MathBox<T extends Number> {\n    private T value;\n    \n    public MathBox(T value) {\n        this.value = value;\n    }\n    \n    public double sqrt() {\n        return Math.sqrt(value.doubleValue()); // Can use Number methods\n    }\n}\n\n// Multiple bounds - T must implement Comparable and Serializable\npublic <T extends Comparable<T> & Serializable> T findMax(List<T> list) {\n    // Implementation\n}\n```"
+            },
+            {
+              "title": "Wildcards",
+              "description": "Using wildcards for flexible generic code:\n```java\n// Unbounded wildcard - accept any type of list\npublic static void printList(List<?> list) {\n    for (Object o : list) {\n        System.out.println(o);\n    }\n}\n\n// Upper bounded wildcard - accept list of Number or its subtypes\npublic static double sumOfList(List<? extends Number> list) {\n    double sum = 0.0;\n    for (Number n : list) {\n        sum += n.doubleValue();\n    }\n    return sum;\n}\n\n// Lower bounded wildcard - accept list of Integer or its supertypes\npublic static void addIntegers(List<? super Integer> list) {\n    list.add(1);\n    list.add(2);\n    // list.add(\"string\"); // Compile error\n}\n```"
+            },
+            {
+              "title": "Type Erasure",
+              "description": "Java generics use **type erasure** during compilation, meaning generic type information is removed at runtime:\n\n1. Replace all type parameters with their bounds or Object if unbounded\n2. Insert casts where necessary\n3. Generate bridge methods to preserve polymorphism\n\nThis means:\n- `List<String>` and `List<Integer>` are the same type at runtime\n- You cannot do: `if (list instanceof List<String>)` or `new T()`\n- You cannot create arrays of generic types directly: `new T[]` is illegal"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "PECS Principle",
+              "description": "Producer Extends, Consumer Super (PECS) is a guideline for using bounded wildcards:\n\n- Use **extends** when you only read from a data structure (producer)\n- Use **super** when you only write to a data structure (consumer)\n- Use no wildcard when you both read and write\n\n```java\n// Producer - only reads from source list\npublic <T> void copy(List<? extends T> source, List<T> destination) {\n    for (T item : source) { // Reading from source\n        destination.add(item); // Writing to destination\n    }\n}\n\n// Consumer - only writes to destination list\npublic <T> void addAll(List<T> source, List<? super T> destination) {\n    for (T item : source) {\n        destination.add(item); // Writing to destination\n    }\n}\n```"
+            },
+            {
+              "title": "Reifiable and Non-Reifiable Types",
+              "description": "A **reifiable type** is a type whose runtime representation contains all information available at compile time. Due to type erasure, generic types are usually non-reifiable.\n\n- **Reifiable types**: primitives, non-generic types, raw types, unbounded wildcard types\n- **Non-reifiable types**: generic types with type arguments\n\nThis limitation causes restrictions:\n```java\n// Not allowed because T[] is non-reifiable\npublic <T> T[] createArray(int size) {\n    return new T[size]; // Compile error\n}\n\n// Workaround using Class<T>\npublic <T> T[] createArray(Class<T> clazz, int size) {\n    @SuppressWarnings(\"unchecked\")\n    T[] array = (T[]) Array.newInstance(clazz, size);\n    return array;\n}\n```"
+            },
+            {
+              "title": "Generics in Collection Design",
+              "description": "Collections API design patterns with generics:\n\n1. **Recursive Type Parameter** (self-bounding):\n```java\npublic interface Comparable<T> {\n    int compareTo(T o);\n}\n\npublic class Node<T extends Node<T>> {\n    // Self-bounding generic\n}\n```\n\n2. **Static Utility Methods**: Generic static methods in non-generic classes\n```java\npublic class Collections {\n    public static <T> void sort(List<T> list, Comparator<? super T> c) {\n        // Implementation\n    }\n}\n```\n\n3. **Type Tokens**: Using `Class<T>` to work around type erasure\n```java\npublic class TypeSafeMap {\n    private Map<Class<?>, Object> map = new HashMap<>();\n    \n    public <T> void put(Class<T> type, T value) {\n        map.put(type, value);\n    }\n    \n    public <T> T get(Class<T> type) {\n        return type.cast(map.get(type));\n    }\n}\n```\n\nDesign Considerations:\n- Prefer generic methods over generic classes when possible\n- Use bounded wildcards to increase API flexibility\n- Design for generics from the start rather than retrofitting"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-type-erasure-core-java-f-33"
+      ]
+    },
+    {
+      "id": "java-type-erasure-core-java-f-33",
+      "skillLevel": "advanced",
+      "shortTitle": "Type Erasure",
+      "question": "What is type erasure in Java generics, and what limitations does it impose?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Type erasure** is the process by which the Java compiler removes all generic type information during compilation. The generic type parameters are replaced with their bounds or with `Object` if unbounded, and appropriate casts are inserted where needed."
+            },
+            {
+              "title": "Basic Example",
+              "description": "Consider this generic class:\n```java\npublic class Box<T> {\n    private T value;\n    \n    public void setValue(T value) {\n        this.value = value;\n    }\n    \n    public T getValue() {\n        return value;\n    }\n}\n```\n\nAfter type erasure, it essentially becomes:\n```java\npublic class Box {\n    private Object value;\n    \n    public void setValue(Object value) {\n        this.value = value;\n    }\n    \n    public Object getValue() {\n        return value;\n    }\n}\n```\nWith appropriate casts inserted at the call sites."
+            },
+            {
+              "title": "Purpose",
+              "description": "Type erasure was implemented to maintain backward compatibility with pre-generic Java code (before Java 5). It allows generic and non-generic code to interoperate and ensures that no new types are created for parameterized types."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Erasure with Bounds",
+              "description": "For bounded type parameters, the parameter is replaced with its bound:\n```java\npublic class NumberBox<T extends Number> {\n    private T value;\n    \n    public T getValue() {\n        return value;\n    }\n    \n    public void setValue(T value) {\n        this.value = value;\n    }\n}\n```\n\nAfter erasure:\n```java\npublic class NumberBox {\n    private Number value;\n    \n    public Number getValue() {\n        return value;\n    }\n    \n    public void setValue(Number value) {\n        this.value = value;\n    }\n}\n```"
+            },
+            {
+              "title": "Bridge Methods",
+              "description": "The compiler generates **bridge methods** to preserve polymorphism in generic code. Consider:\n```java\npublic class StringBox extends Box<String> {\n    @Override\n    public void setValue(String value) {\n        super.setValue(value);\n    }\n}\n```\n\nAfter erasure, the compiler generates a bridge method in StringBox:\n```java\n// Bridge method generated by compiler\npublic void setValue(Object value) {\n    setValue((String) value); // Calls the actual method\n}\n```\nThis ensures that `StringBox` overrides `Box`'s erased `setValue(Object)` method."
+            },
+            {
+              "title": "Common Limitations",
+              "description": "Type erasure imposes several limitations on generic code:\n\n1. **Cannot create instances of generic types**:\n```java\npublic <T> T create() {\n    return new T(); // Error: Cannot instantiate type parameter\n}\n```\n\n2. **Cannot create arrays of generic types**:\n```java\npublic <T> T[] createArray(int size) {\n    return new T[size]; // Error: Cannot create generic array\n}\n```\n\n3. **Cannot use instanceof with generic types**:\n```java\nif (obj instanceof List<String>) { // Error: Cannot use generic type in instanceof\n    // ...\n}\n// Must use raw type instead\nif (obj instanceof List) { // OK but unchecked\n    // ...\n}\n```\n\n4. **Cannot overload methods that would have the same erasure**:\n```java\npublic void process(List<String> strings) { /* ... */ }\npublic void process(List<Integer> integers) { /* ... */ }\n// Error: Both methods have same erasure: process(List)\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Working Around Type Erasure",
+              "description": "Common workarounds for type erasure limitations:\n\n1. **Using Class objects (type tokens)**:\n```java\npublic <T> T create(Class<T> clazz) throws Exception {\n    return clazz.getDeclaredConstructor().newInstance();\n}\n\npublic <T> T[] createArray(Class<T> clazz, int size) {\n    @SuppressWarnings(\"unchecked\")\n    T[] array = (T[]) Array.newInstance(clazz, size);\n    return array;\n}\n```\n\n2. **Using super type tokens** (capturing generic type information):\n```java\npublic abstract class TypeReference<T> {\n    private final Type type;\n    \n    protected TypeReference() {\n        Type superclass = getClass().getGenericSuperclass();\n        type = ((ParameterizedType) superclass).getActualTypeArguments()[0];\n    }\n    \n    public Type getType() {\n        return type;\n    }\n}\n\n// Usage\nTypeReference<List<String>> typeRef = new TypeReference<List<String>>() {};\nType listStringType = typeRef.getType(); // Captures List<String>\n```\nThis approach is used by libraries like Jackson and Guava."
+            },
+            {
+              "title": "Comparison with Other Languages",
+              "description": "Java's approach to generics differs from some other languages:\n\n1. **C#**: Uses **reification** - generic type information is preserved at runtime\n   - Can create instances of type parameters: `new T()`\n   - Can check generic types with `instanceof` equivalent\n   - Requires different implementation for different generic instantiations\n\n2. **C++**: Uses **templates** - code generation approach\n   - Compiler generates separate code for each specific type used\n   - No type erasure, but can lead to code bloat\n   - More powerful but more complex type system\n\nJava's approach has pros and cons:\n- **Pros**: Backward compatibility, smaller code size, simpler implementation\n- **Cons**: Runtime type information loss, various limitations, more complex workarounds needed"
+            },
+            {
+              "title": "Implications for API Design",
+              "description": "Guidelines for designing APIs that account for type erasure:\n\n1. **Prefer bounded wildcards** for maximum flexibility:\n```java\n// Producer: use extends\npublic void copyFrom(List<? extends E> source) { /* ... */ }\n\n// Consumer: use super\npublic void addAll(Collection<? super E> destination) { /* ... */ }\n```\n\n2. **Consider type tokens for type-safe heterogeneous containers**:\n```java\npublic class TypeSafeMap {\n    private Map<Class<?>, Object> map = new HashMap<>();\n    \n    public <T> void put(Class<T> type, T value) {\n        map.put(type, value);\n    }\n    \n    public <T> T get(Class<T> type) {\n        return type.cast(map.get(type));\n    }\n}\n```\n\n3. **Provide raw type fallbacks when necessary**:\n```java\n// Method that works with generic type\npublic <T> void processTyped(List<T> list) { /* ... */ }\n\n// Fallback for when type information is not available\npublic void process(List<?> list) {\n    processTyped(list); // Works due to capture conversion\n}\n```\n\n4. **Document limitations clearly**:\n- Clearly state when methods require runtime type information\n- Provide examples for proper API usage\n- Warn about potential unchecked casts or type safety concerns\n\n5. **Use runtime checks when necessary**:\n```java\npublic <T> void ensureType(Object obj, Class<T> clazz) {\n    if (!clazz.isInstance(obj)) {\n        throw new ClassCastException(\"Object is not of type \" + clazz.getName());\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-generics-core-java-f-32"
+      ]
+    },
+    {
+      "id": "java-serialization-core-java-f-34",
+      "skillLevel": "intermediate",
+      "shortTitle": "Serialization",
+      "question": "How does serialization work in Java, and what precautions should you take when using it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Serialization** is the process of converting Java objects into a byte stream that can be saved to a file, sent over a network, or stored in a database. **Deserialization** is the reverse process of reconstructing objects from the byte stream."
+            },
+            {
+              "title": "Basic Implementation",
+              "description": "To make a class serializable:\n```java\npublic class Employee implements Serializable {\n    // Must have a serialVersionUID for version control\n    private static final long serialVersionUID = 1L;\n    \n    private String name;\n    private int id;\n    private transient String tempPassword; // Won't be serialized\n    \n    // Constructor, getters, setters, etc.\n}\n```\n\nBasic serialization and deserialization:\n```java\n// Serializing\nEmployee emp = new Employee(\"John Doe\", 1001);\ntry (ObjectOutputStream out = new ObjectOutputStream(\n        new FileOutputStream(\"employee.ser\"))) {\n    out.writeObject(emp);\n}\n\n// Deserializing\ntry (ObjectInputStream in = new ObjectInputStream(\n        new FileInputStream(\"employee.ser\"))) {\n    Employee emp = (Employee) in.readObject();\n}\n```"
+            },
+            {
+              "title": "The Serializable Interface",
+              "description": "The `Serializable` interface is a marker interface (has no methods) that indicates a class can be serialized. All non-transient, non-static fields are automatically serialized. Superclass fields are included if the superclass is also Serializable."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "SerialVersionUID",
+              "description": "The `serialVersionUID` is used during deserialization to verify that the loaded class and the serialized object are compatible:\n```java\nprivate static final long serialVersionUID = 1L;\n```\nIf not explicitly defined, the JVM will calculate one based on class details, which can change if the class is modified. This can cause `InvalidClassException` during deserialization if the class has changed."
+            },
+            {
+              "title": "Customizing Serialization",
+              "description": "For custom serialization behavior, implement these methods:\n```java\nprivate void writeObject(ObjectOutputStream out) throws IOException {\n    // Custom serialization logic\n    out.defaultWriteObject(); // Write regular fields\n    out.writeObject(encryptPassword(password)); // Custom field handling\n}\n\nprivate void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {\n    // Custom deserialization logic\n    in.defaultReadObject(); // Read regular fields\n    this.password = decryptPassword((String) in.readObject()); // Custom logic\n}\n```"
+            },
+            {
+              "title": "Dealing with Object Graphs",
+              "description": "Serialization recursively processes the entire object graph. All objects referenced by the serialized object must also implement `Serializable`. Non-serializable objects in the graph must be:\n- Marked `transient`\n- Reconstructed during deserialization\n\nExample handling non-serializable fields:\n```java\npublic class Report implements Serializable {\n    private static final long serialVersionUID = 1L;\n    private String name;\n    private transient Connection dbConnection; // Cannot be serialized\n    \n    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {\n        in.defaultReadObject();\n        // Reconnect to the database after deserialization\n        this.dbConnection = DatabaseManager.getConnection();\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Security Concerns",
+              "description": "Serialization can introduce security vulnerabilities:\n\n1. **Deserialization attacks**: Malicious data can exploit deserialization to execute code\n2. **Data exposure**: Sensitive data might be accidentally serialized\n\nSecurity best practices:\n- Never deserialize untrusted data without validation\n- Use `SerializationFilter` (Java 9+) to restrict classes that can be deserialized\n- Mark sensitive fields as `transient`\n- Consider encryption for sensitive serialized data\n- Consider alternatives to Java's built-in serialization (JSON, Protocol Buffers, etc.)"
+            },
+            {
+              "title": "Advanced Serialization Control",
+              "description": "Beyond basic methods, Java offers more control mechanisms:\n\n1. **Externalizable interface**: Complete control over serialization process\n```java\npublic class ExternalizableEmployee implements Externalizable {\n    private String name;\n    private int id;\n    \n    // No-arg constructor REQUIRED for Externalizable\n    public ExternalizableEmployee() {}\n    \n    @Override\n    public void writeExternal(ObjectOutput out) throws IOException {\n        // Complete control over what gets written\n        out.writeUTF(name);\n        out.writeInt(id);\n    }\n    \n    @Override\n    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {\n        // Must read in same order as written\n        name = in.readUTF();\n        id = in.readInt();\n    }\n}\n```\n\n2. **Serialization proxies pattern**: Safer alternative to direct serialization\n```java\npublic class Period implements Serializable {\n    private final Date start;\n    private final Date end;\n    \n    // Private constructor for safe creation\n    private Period(Date start, Date end) {\n        this.start = new Date(start.getTime()); // Defensive copy\n        this.end = new Date(end.getTime());     // Defensive copy\n        if (this.start.compareTo(this.end) > 0)\n            throw new IllegalArgumentException();\n    }\n    \n    // Serialization proxy\n    private static class SerializationProxy implements Serializable {\n        private static final long serialVersionUID = 1L;\n        private final Date start;\n        private final Date end;\n        \n        SerializationProxy(Period p) {\n            this.start = p.start;\n            this.end = p.end;\n        }\n        \n        // Automatically invoked during deserialization\n        private Object readResolve() {\n            return new Period(start, end); // Uses validation constructor\n        }\n    }\n    \n    // This method is invoked by serialization system\n    private Object writeReplace() {\n        return new SerializationProxy(this);\n    }\n    \n    // Prevent attacker from creating invalid instance\n    private void readObject(ObjectInputStream in) throws InvalidObjectException {\n        throw new InvalidObjectException(\"Proxy required\");\n    }\n}\n```"
+            },
+            {
+              "title": "Compatibility and Migration",
+              "description": "Maintaining serialization compatibility across versions:\n\n1. **Class Evolution**: Adding/removing fields without breaking compatibility\n   - New fields: Provide default values for old objects that don't have them\n   - Removed fields: Handle them gracefully in `readObject`\n\n2. **Cross-Platform Considerations**:\n   - Binary serialization is Java-specific and not human-readable\n   - For cross-platform needs, consider JSON, XML, Protocol Buffers, or other formats\n\n3. **Modern Alternatives**:\n   - For persistence: JPA/Hibernate, document databases\n   - For transfer: JSON/XML with libraries like Jackson, GSON\n   - For RPC: gRPC, Apache Thrift\n   - For caching: Specialized frameworks with custom serialization\n\nThese alternatives often provide better performance, interoperability, and security than Java's native serialization."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    }
+  ]
+}

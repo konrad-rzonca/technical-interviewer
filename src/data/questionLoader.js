@@ -2,11 +2,11 @@ import {ANSWER_LEVELS, LEVEL_ORDER} from '../utils/answerConstants';
 
 // Import question files
 import fundamentalsQuestions
-  from './questions/java/core-java/fundamentals.json';
+  from './questions/java/core-java/fundamentals-1.json';
 import memoryManagementQuestions
   from './questions/java/core-java/memory-management.json';
 import concurrencyQuestions
-  from './questions/java/concurrency-multithreading/concurrency-basics.json';
+  from './questions/java/concurrency-multithreading/thread-fundamentals.json';
 import collectionsQuestions from './questions/java/core-java/collections.json';
 import exceptionsQuestions from './questions/java/core-java/exceptions.json';
 import dataStructuresQuestions
