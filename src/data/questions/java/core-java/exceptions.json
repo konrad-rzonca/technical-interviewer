@@ -6,22 +6,22 @@
       "id": "java-exception-hierarchy-core-java-e-1",
       "skillLevel": "beginner",
       "shortTitle": "Exception Hierarchy",
-      "question": "Could you explain the Java exception hierarchy and the key classes within it?",
+      "question": "Could you explain the Java exception hierarchy and the difference between checked and unchecked exceptions?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Base Classes",
-              "description": "The exception hierarchy starts with Throwable as the parent class, which has two direct subclasses: Error and Exception."
+              "title": "Hierarchy Structure",
+              "description": "The **Throwable** class is the root of the exception hierarchy, with two main subclasses: **Error** (for serious JVM problems) and **Exception** (for recoverable conditions)."
             },
             {
-              "title": "Checked vs Unchecked",
-              "description": "Exception is further divided into checked exceptions (which must be explicitly handled) and unchecked exceptions (RuntimeException and its subclasses)."
+              "title": "Checked Exceptions",
+              "description": "Checked exceptions (subclasses of **Exception** excluding **RuntimeException**) must be handled or declared in the method signature using **throws**. They represent conditions that a reasonable application might want to catch."
             },
             {
-              "title": "Error Class",
-              "description": "Error represents serious problems that a reasonable application should not try to catch, such as OutOfMemoryError or StackOverflowError."
+              "title": "Unchecked Exceptions",
+              "description": "Unchecked exceptions include **RuntimeException** and its subclasses plus **Error** and its subclasses. They don't require explicit handling or declaration and typically represent programming errors."
             }
           ]
         },
@@ -29,16 +29,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "RuntimeException",
-              "description": "RuntimeException is a special subclass of Exception that indicates exceptions which can occur during normal program execution but don't need explicit handling (unchecked)."
-            },
-            {
               "title": "Common Checked Exceptions",
-              "description": "Common checked exceptions include IOException, SQLException, and ClassNotFoundException, which represent conditions that a reasonable application might want to catch."
+              "description": "Common checked exceptions include **IOException**, **SQLException**, and **ClassNotFoundException**, which often represent external factors like I/O problems or database connectivity issues."
             },
             {
               "title": "Common Unchecked Exceptions",
-              "description": "Common unchecked exceptions include NullPointerException, IllegalArgumentException, and IndexOutOfBoundsException, usually indicating programming errors."
+              "description": "Common unchecked exceptions include **NullPointerException**, **ArrayIndexOutOfBoundsException**, **IllegalArgumentException**, and **ClassCastException**, typically indicating programming or logic errors."
+            },
+            {
+              "title": "Compiler Enforcement",
+              "description": "The Java compiler enforces handling of checked exceptions, requiring either a try-catch block or a throws clause, while it doesn't enforce handling of unchecked exceptions."
             }
           ]
         },
@@ -46,108 +46,45 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Design Philosophy",
-              "description": "The distinction between checked and unchecked exceptions reflects a design philosophy: checked exceptions represent conditions from which the program might reasonably recover, while unchecked exceptions often indicate bugs."
+              "title": "Design Considerations",
+              "description": "When designing APIs, choose checked exceptions for recoverable conditions where the caller should handle the exception, and unchecked for programming errors that should typically be fixed rather than caught."
             },
             {
-              "title": "JVM Handling",
-              "description": "At the JVM level, all exceptions use the same mechanism regardless of being checked or unchecked. The distinction is enforced by the compiler, not the runtime."
+              "title": "Exception Evolution",
+              "description": "Java's exception design has evolved over time. Modern Java practices tend to favor unchecked exceptions for most cases to reduce boilerplate code, with libraries like Spring primarily using unchecked exceptions."
             },
             {
-              "title": "Custom Exception Hierarchy",
-              "description": "When designing custom exceptions, it's important to decide whether they should be checked or unchecked based on whether client code should be forced to handle them explicitly."
+              "title": "Performance Impact",
+              "description": "The Java exception mechanism involves significant overhead including stack trace creation. For performance-critical code, consider alternatives to exceptions for normal control flow or expected conditions."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-checked-vs-unchecked-core-java-e-2",
-        "java-custom-exceptions-core-java-e-7"
+        "java-try-catch-block-core-java-e-2",
+        "java-errors-vs-exceptions-core-java-e-3"
       ]
     },
     {
-      "id": "java-checked-vs-unchecked-core-java-e-2",
+      "id": "java-try-catch-block-core-java-e-2",
       "skillLevel": "beginner",
-      "shortTitle": "Checked vs Unchecked",
-      "question": "What's the difference between checked and unchecked exceptions in Java, and when would you use each?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Definition",
-              "description": "Checked exceptions are exceptions that must be either caught or declared in the method signature using the throws clause. Unchecked exceptions (RuntimeException and its subclasses) don't require explicit handling."
-            },
-            {
-              "title": "Compile-time Enforcement",
-              "description": "Checked exceptions are enforced by the compiler, which ensures they are handled. Unchecked exceptions are not checked by the compiler."
-            },
-            {
-              "title": "Examples",
-              "description": "Checked exceptions include IOException, SQLException, and ClassNotFoundException. Unchecked exceptions include NullPointerException, ArrayIndexOutOfBoundsException, and IllegalArgumentException."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Usage Guidelines",
-              "description": "Use checked exceptions for recoverable conditions that the calling code should handle (like network issues or file access problems). Use unchecked exceptions for programming errors that shouldn't happen if code is correct."
-            },
-            {
-              "title": "Method Declaration",
-              "description": "Methods that throw checked exceptions must declare them in their signature with the throws keyword, creating a contract that callers must address these potential exceptions."
-            },
-            {
-              "title": "Propagation Behavior",
-              "description": "Checked exceptions must be explicitly propagated up the call stack using the throws clause, while unchecked exceptions automatically propagate without declaration."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Design Tradeoffs",
-              "description": "The choice between checked and unchecked exceptions involves trade-offs: checked exceptions provide compile-time safety but can lead to cluttered code and tight coupling, while unchecked exceptions are cleaner but may hide potential failures."
-            },
-            {
-              "title": "Modern Trends",
-              "description": "Modern Java libraries and frameworks tend to favor unchecked exceptions over checked exceptions to reduce boilerplate and improve API flexibility. For example, Spring's DataAccessException wraps checked SQLException as unchecked."
-            },
-            {
-              "title": "Converting Between Types",
-              "description": "It's a common pattern to wrap checked exceptions in unchecked ones when they cross architectural boundaries, preserving the original cause using exception chaining but freeing client code from mandatory handling."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-exception-hierarchy-core-java-e-1",
-        "java-exception-propagation-core-java-e-6"
-      ]
-    },
-    {
-      "id": "java-try-catch-finally-core-java-e-3",
-      "skillLevel": "beginner",
-      "shortTitle": "try-catch-finally",
-      "question": "Can you explain the try-catch-finally construct in Java and how execution flows through it?",
+      "shortTitle": "Try-Catch-Finally",
+      "question": "Can you explain how try-catch-finally blocks work in Java and their execution flow?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Basic Structure",
-              "description": "The try block contains code that might throw exceptions, catch blocks handle specific exceptions that may be thrown, and the finally block contains code that always executes, regardless of whether an exception occurred."
+              "description": "A **try** block contains code that might throw exceptions, **catch** blocks handle specific exceptions that may occur, and the optional **finally** block contains code that always executes regardless of whether an exception occurs."
+            },
+            {
+              "title": "Execution Flow",
+              "description": "When an exception occurs in the try block, execution immediately jumps to the first matching catch block. After the catch block completes (or if no exception occurs), the finally block executes."
             },
             {
               "title": "Multiple Catch Blocks",
-              "description": "A try block can have multiple catch blocks to handle different types of exceptions. They are evaluated in order, and the first matching catch block handles the exception."
-            },
-            {
-              "title": "Finally Block",
-              "description": "The finally block is used for cleanup code like closing resources, and it executes even if an exception occurs or if the try or catch blocks use return, continue, or break statements."
+              "description": "Multiple catch blocks can be defined to handle different types of exceptions, with the most specific exception types listed first and more general ones later."
             }
           ]
         },
@@ -155,16 +92,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Exception Hierarchy in Catches",
-              "description": "When using multiple catch blocks, they should be ordered from most specific to most general exception types. Placing a parent exception type before its children will make the child catches unreachable."
+              "title": "Finally Block Guarantees",
+              "description": "The finally block executes even if the try or catch block executes a return statement, throw statement, or completes normally. The only scenarios where finally won't execute are if the JVM exits or the thread executing the try block is interrupted or killed."
             },
             {
-              "title": "Return Behavior",
-              "description": "If both a catch block and the finally block contain return statements, the value returned by the finally block will override the value returned by the catch block."
+              "title": "Multi-catch (Java 7+)",
+              "description": "Java 7 introduced multi-catch syntax, allowing a single catch block to handle multiple exception types using the pipe symbol (|): `catch (IOException | SQLException ex)`."
             },
             {
-              "title": "Exception During Finally",
-              "description": "If the finally block throws an exception, it will override any exception thrown in the try or catch blocks, potentially masking the original problem."
+              "title": "Return Value Behavior",
+              "description": "If both a catch block and finally block include return statements, the value returned by the finally block overrides the value returned by the catch block, which can lead to subtle bugs."
             }
           ]
         },
@@ -172,29 +109,92 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Nested try-catch",
-              "description": "Try blocks can be nested within other try, catch, or finally blocks, creating complex exception handling structures. Each level can catch exceptions thrown by inner blocks."
+              "title": "Exception Masking",
+              "description": "If an exception occurs in a try block and another exception occurs in the finally block, the original exception is lost (masked by the finally exception). Java 7's try-with-resources helps address this issue through suppressed exceptions."
             },
             {
-              "title": "Try-Finally Without Catch",
-              "description": "It's valid to have a try-finally without catch blocks, which ensures cleanup code runs but propagates any exceptions to the caller. This pattern was common before try-with-resources for resource cleanup."
+              "title": "Execution Order in Complex Scenarios",
+              "description": "In nested try-catch-finally structures, inner finally blocks execute before outer ones. When exceptions propagate up through multiple levels, each finally block in the chain executes in order from innermost to outermost."
             },
             {
-              "title": "Exception Suppression",
-              "description": "Prior to Java 7, if both the try/catch and finally blocks threw exceptions, the finally exception would completely replace the original one. Java 7+ adds the suppressed exception mechanism to preserve both using Throwable.addSuppressed()."
+              "title": "Control Flow Impact",
+              "description": "Exception handling affects the JVM's ability to optimize code. Extensive use of try-catch blocks, especially in performance-critical loops, can impact performance due to the JVM's inability to fully optimize such code."
             }
           ]
         }
       ],
       "relatedQuestions": [
         "java-try-with-resources-core-java-e-4",
-        "java-multi-catch-core-java-e-5"
+        "java-exception-hierarchy-core-java-e-1"
+      ]
+    },
+    {
+      "id": "java-errors-vs-exceptions-core-java-e-3",
+      "skillLevel": "beginner",
+      "shortTitle": "Errors vs Exceptions",
+      "question": "What's the difference between Error and Exception in Java, and how should each be handled?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Class Hierarchy",
+              "description": "Both **Error** and **Exception** are subclasses of **Throwable**, but they represent fundamentally different types of problems. **Error** indicates serious problems that reasonable applications shouldn't try to catch, while **Exception** indicates conditions that applications might want to handle."
+            },
+            {
+              "title": "Error Characteristics",
+              "description": "**Errors** typically represent external, unrecoverable conditions such as **OutOfMemoryError**, **StackOverflowError**, or **VirtualMachineError** that often require JVM or application restart."
+            },
+            {
+              "title": "Exception Types",
+              "description": "**Exceptions** can be either checked (must be caught or declared) or unchecked (subclasses of **RuntimeException**), and represent potentially recoverable conditions or programming mistakes."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Handling Strategy",
+              "description": "Generally, **Errors** should not be caught except in specific cases like logging or graceful application shutdown. **Exceptions** should be handled appropriately based on whether they are checked or unchecked."
+            },
+            {
+              "title": "Common Errors",
+              "description": "Common **Error** subclasses include **OutOfMemoryError** (insufficient heap space), **StackOverflowError** (excessive recursion), **NoClassDefFoundError** (class was available at compile time but not at runtime), and **ExceptionInInitializerError** (exception during static initialization)."
+            },
+            {
+              "title": "Prevention vs Recovery",
+              "description": "For **Errors**, focus on prevention through proper application design (e.g., memory leak prevention, recursion limits) rather than recovery. For **Exceptions**, implement proper handling and recovery mechanisms."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "ThreadDeath Error",
+              "description": "**ThreadDeath** is a special Error that was traditionally thrown when `Thread.stop()` was called. Unlike most Errors, it was designed to be caught. However, `Thread.stop()` is now deprecated due to its unsafety."
+            },
+            {
+              "title": "Resource Exhaustion",
+              "description": "Some **Errors** like **OutOfMemoryError** can sometimes be managed with careful resource handling. For instance, implementing soft references or caching strategies can help prevent or recover from memory issues in specific scenarios."
+            },
+            {
+              "title": "JVM Flags for Error Handling",
+              "description": "JVM flags can influence Error behavior and provide valuable diagnostic information. Examples include `-XX:+HeapDumpOnOutOfMemoryError` (creates heap dump when OOM occurs) and `-XX:OnOutOfMemoryError=\"<cmd>\"` (executes a command when OOM occurs)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-exception-hierarchy-core-java-e-1",
+        "java-try-catch-block-core-java-e-2"
       ]
     },
     {
       "id": "java-try-with-resources-core-java-e-4",
       "skillLevel": "intermediate",
-      "shortTitle": "try-with-resources",
+      "shortTitle": "Try-With-Resources",
       "question": "How does try-with-resources work in Java, and what advantages does it offer over traditional resource management?",
       "answerInsights": [
         {
@@ -202,15 +202,15 @@
           "points": [
             {
               "title": "Basic Concept",
-              "description": "Introduced in Java 7, try-with-resources automatically closes resources that implement the AutoCloseable interface at the end of the block, eliminating the need for explicit finally blocks for resource cleanup."
+              "description": "**Try-with-resources** (introduced in Java 7) automatically closes resources that implement the **AutoCloseable** interface, eliminating the need for explicit finally blocks to handle resource cleanup."
             },
             {
               "title": "Syntax",
-              "description": "Resources are declared in parentheses after the try keyword: try (Resource res = new Resource()) { ... }. Multiple resources can be declared, separated by semicolons."
+              "description": "Resources are declared in parentheses after the try keyword: `try (Resource resource = new Resource()) { ... }`. Multiple resources can be declared, separated by semicolons."
             },
             {
               "title": "AutoCloseable Interface",
-              "description": "Resources used in try-with-resources must implement the AutoCloseable or Closeable interface, which defines a close() method that gets called automatically when the try block exits."
+              "description": "For a resource to be used with try-with-resources, it must implement the **AutoCloseable** or **Closeable** interface, which defines the `close()` method that's automatically called when the try block exits."
             }
           ]
         },
@@ -218,16 +218,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Resource Closing Order",
-              "description": "When multiple resources are declared, they are closed in reverse order of their creation to respect potential dependencies between resources."
+              "title": "Closing Order",
+              "description": "Resources are closed in the reverse order of their creation, which helps manage dependencies between resources (e.g., closing a writer before its underlying stream)."
             },
             {
               "title": "Exception Handling",
-              "description": "If both the try block and the automatic close() method throw exceptions, the exceptions from close() are suppressed and attached to the primary exception from the try block, which is then propagated."
+              "description": "If both the try block throws an exception and one or more resources throw exceptions during closing, the exceptions from `close()` methods are **suppressed** and attached to the primary exception thrown from the try block."
             },
             {
               "title": "Java 9 Enhancements",
-              "description": "Java 9 improved try-with-resources by allowing the use of effectively final variables as resources: try (resource) { ... }, eliminating the need to declare resources within the try statement."
+              "description": "Java 9 improved try-with-resources with the ability to use **final** or **effectively final** variables in the resource specification without redeclaring them: `try (resource) { ... }`."
             }
           ]
         },
@@ -236,44 +236,44 @@
           "points": [
             {
               "title": "Suppressed Exceptions",
-              "description": "The suppressed exception mechanism preserves close() exceptions that would otherwise be lost. These can be accessed using the getSuppressed() method on the primary exception."
+              "description": "Suppressed exceptions can be accessed using the `getSuppressed()` method of the primary exception. This preserves the complete exception history without losing information about resource closing failures."
             },
             {
-              "title": "Custom Resources",
-              "description": "When creating custom classes that manage resources, implementing AutoCloseable makes them compatible with try-with-resources, improving their usability and safety."
+              "title": "Custom AutoCloseable Resources",
+              "description": "Creating custom **AutoCloseable** resources allows for automatic cleanup of any resource, not just I/O resources. This pattern can be used for database connections, network resources, or acquiring and releasing locks."
             },
             {
               "title": "Performance Considerations",
-              "description": "The try-with-resources construct is not just cleaner but can be more efficient, as the compiler generates optimized bytecode compared to equivalent manually-written try-finally blocks."
+              "description": "Try-with-resources can be more performant than traditional try-finally blocks because it generates more efficient bytecode. Additionally, it results in clearer stack traces since it avoids exception masking that can occur in try-finally blocks."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-try-catch-finally-core-java-e-3",
-        "java-exception-best-practices-core-java-e-9"
+        "java-try-catch-block-core-java-e-2",
+        "java-suppressed-exceptions-core-java-e-10"
       ]
     },
     {
-      "id": "java-multi-catch-core-java-e-5",
+      "id": "java-custom-exceptions-core-java-e-5",
       "skillLevel": "intermediate",
-      "shortTitle": "Multi-catch Exceptions",
-      "question": "Could you explain how multi-catch exception handling works in Java and when it's useful?",
+      "shortTitle": "Custom Exceptions",
+      "question": "When and how should you create custom exceptions in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Basic Syntax",
-              "description": "Introduced in Java 7, multi-catch allows catching multiple exception types in a single catch block using the pipe symbol (|): catch (ExceptionType1 | ExceptionType2 | ExceptionType3 e) { ... }"
+              "title": "Creation Approach",
+              "description": "Custom exceptions are created by extending either **Exception** (for checked exceptions) or **RuntimeException** (for unchecked exceptions). The most basic implementation requires only constructors that call the parent class constructors."
             },
             {
-              "title": "Purpose",
-              "description": "Multi-catch reduces code duplication when multiple exception types need to be handled in the same way, making the code more concise and readable."
+              "title": "When to Create",
+              "description": "Create custom exceptions when standard exceptions don't adequately describe your specific error condition, when you need to add domain-specific information to exceptions, or when you want to group related exception types."
             },
             {
-              "title": "Exception Variable",
-              "description": "The exception variable in a multi-catch block is implicitly final, meaning it cannot be reassigned within the catch block."
+              "title": "Basic Implementation",
+              "description": "A minimal custom exception typically includes constructors for: no arguments, a message string, a cause (throwable), and a message with a cause.\n\n```java\npublic class CustomException extends Exception {\n    public CustomException() { super(); }\n    public CustomException(String message) { super(message); }\n    public CustomException(Throwable cause) { super(cause); }\n    public CustomException(String message, Throwable cause) { super(message, cause); }\n}\n```"
             }
           ]
         },
@@ -281,16 +281,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Type Relationship Constraints",
-              "description": "Exception types in a multi-catch must not have a subclass relationship with each other. For example, catching IOException | FileNotFoundException would be invalid because FileNotFoundException is a subclass of IOException."
+              "title": "Checked vs Unchecked Decision",
+              "description": "Choose checked exceptions (extend **Exception**) for conditions that calling code can reasonably be expected to recover from. Choose unchecked exceptions (extend **RuntimeException**) for programming errors, invariant violations, or cases where recovery is unlikely."
             },
             {
-              "title": "Effective Type",
-              "description": "The type of the exception parameter in a multi-catch is the least specific common supertype of all the caught exception types, unified by the compiler."
+              "title": "Adding Context",
+              "description": "Custom exceptions can include additional fields and methods to provide more context about the error, such as error codes, timestamps, affected entities, or recovery suggestions."
             },
             {
-              "title": "Error Message Precision",
-              "description": "Multi-catch preserves the exact exception type for error reporting purposes, so you still get precise information about which exception occurred despite handling them together."
+              "title": "Hierarchy Design",
+              "description": "Consider creating a hierarchy of related exceptions with a common base exception class for your application or library, which allows callers to catch groups of related exceptions if needed."
             }
           ]
         },
@@ -298,45 +298,45 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Compiler Optimization",
-              "description": "The compiler optimizes multi-catch to generate more efficient bytecode than equivalent multiple catch blocks, with better type checking and less code duplication."
+              "title": "Serialization Considerations",
+              "description": "If your exceptions need to be serialized (e.g., in distributed applications), include a `serialVersionUID` and ensure any additional fields are serializable. Override `readObject()` and `writeObject()` methods if custom serialization is needed."
             },
             {
-              "title": "Pattern Matching (Future)",
-              "description": "Java's ongoing pattern matching features (introduced in Java 16 and evolving) are extending exception handling capabilities further, potentially allowing more sophisticated type checks and destructuring in catch blocks."
+              "title": "Maintaining Stack Traces",
+              "description": "When wrapping other exceptions, use constructors or methods that preserve the original stack trace. Avoid creating new exceptions without setting the cause, as this loses valuable debugging information."
             },
             {
-              "title": "Design Considerations",
-              "description": "While multi-catch can reduce boilerplate, it should be used thoughtfully. If different exception types conceptually represent different error conditions, handling them separately with specific recovery logic might be more appropriate."
+              "title": "Exception Translation",
+              "description": "Use custom exceptions to translate between different layers of an application, converting low-level technical exceptions into higher-level, more meaningful business exceptions while preserving the original cause through chaining."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-try-catch-finally-core-java-e-3",
+        "java-exception-chaining-core-java-e-6",
         "java-exception-best-practices-core-java-e-9"
       ]
     },
     {
-      "id": "java-exception-propagation-core-java-e-6",
+      "id": "java-exception-chaining-core-java-e-6",
       "skillLevel": "intermediate",
-      "shortTitle": "Exception Propagation",
-      "question": "In your experience, how does exception propagation work in Java, and what are the rules that govern it?",
+      "shortTitle": "Exception Chaining",
+      "question": "Can you explain exception chaining in Java and when it should be used?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Basic Concept",
-              "description": "Exception propagation is the process by which an exception travels up the call stack if not handled by the current method, moving from the method where it was thrown to its caller, and so on."
+              "description": "**Exception chaining** (also called exception wrapping) is the practice of throwing a new exception while preserving information about the original exception that caused the problem."
             },
             {
-              "title": "Default Behavior",
-              "description": "If a method doesn't handle an exception, it automatically propagates to the calling method. This continues until the exception is either caught or reaches the top of the call stack."
+              "title": "Implementation",
+              "description": "Achieved using constructors or `initCause()` method that accept a Throwable parameter to set the cause: `throw new BusinessException(\"Operation failed\", originalException);`"
             },
             {
-              "title": "Call Stack Unwinding",
-              "description": "During propagation, the call stack unwinds - local variables are destroyed, finally blocks are executed, and control returns to each calling method in reverse order of the calls."
+              "title": "Stack Trace Behavior",
+              "description": "When an exception is chained, the stack trace shows both the point where the new exception was thrown and the complete stack trace of the original cause."
             }
           ]
         },
@@ -344,16 +344,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Checked vs Unchecked Propagation",
-              "description": "Unchecked exceptions (RuntimeException and Error) propagate automatically without requiring throws declarations. Checked exceptions must be either caught or declared in the throws clause of each method in the propagation path."
+              "title": "Use Cases",
+              "description": "Exception chaining is valuable for: 1) translating low-level exceptions to higher-level ones that better represent business logic, 2) adding context to exceptions, and 3) converting checked exceptions to unchecked ones while preserving information."
             },
             {
-              "title": "Exception Transformation",
-              "description": "During propagation, exceptions can be caught, handled, and new exceptions can be thrown, either completely replacing the original or preserving it as the cause of a new exception (exception chaining)."
+              "title": "Accessing the Cause",
+              "description": "The original exception can be retrieved using the `getCause()` method, which returns a Throwable representing the original cause, or null if no cause was set."
             },
             {
-              "title": "Method Override Rules",
-              "description": "When overriding methods, subclass methods cannot declare more checked exceptions than the superclass method, but they can declare fewer or none at all."
+              "title": "Best Practices",
+              "description": "Always include the original exception as the cause when wrapping exceptions to preserve diagnostic information. Include meaningful messages that add context rather than repeating the cause's message."
             }
           ]
         },
@@ -361,45 +361,45 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Stack Trace Construction",
-              "description": "During propagation, each method adds its call information to the exception's stack trace, building a complete record of the execution path that led to the exception."
+              "title": "Multi-level Chaining",
+              "description": "Exceptions can form chains of arbitrary length as they propagate through layers of an application. Each layer can add context while preserving the complete chain of causes."
             },
             {
-              "title": "JVM Implementation",
-              "description": "At the JVM level, exception handling uses special exception tables in the method metadata that map code regions to exception handlers, enabling efficient lookup of the appropriate handler when an exception occurs."
+              "title": "Exception Translation Strategy",
+              "description": "Develop a consistent strategy for exception translation across application layers. Typically, lower layers throw technical exceptions, middle layers translate to domain exceptions, and upper layers handle or translate to user-facing errors."
             },
             {
-              "title": "Performance Implications",
-              "description": "Exception propagation is relatively expensive in Java because it involves capturing the stack trace, which requires walking the entire stack. This is one reason why exceptions should not be used for normal control flow."
+              "title": "Avoiding Information Loss",
+              "description": "Be careful when using `initCause()` since it can only be called once per exception instance. If a cause is already set (e.g., in a constructor), `initCause()` will throw an `IllegalStateException`."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-checked-vs-unchecked-core-java-e-2",
-        "java-exception-chaining-core-java-e-8"
+        "java-custom-exceptions-core-java-e-5",
+        "java-exception-best-practices-core-java-e-9"
       ]
     },
     {
-      "id": "java-custom-exceptions-core-java-e-7",
-      "skillLevel": "intermediate",
-      "shortTitle": "Custom Exceptions",
-      "question": "How would you design and implement custom exceptions in Java, and when should you create them?",
+      "id": "java-catch-or-throws-core-java-e-7",
+      "skillLevel": "beginner",
+      "shortTitle": "Catch vs Throws",
+      "question": "When should you catch an exception versus declaring it with the throws clause in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Creation Basics",
-              "description": "Custom exceptions are created by extending existing exception classes, typically Exception for checked exceptions or RuntimeException for unchecked exceptions."
+              "title": "Fundamental Difference",
+              "description": "**Catching** an exception (`try-catch`) handles the exception at the current level, while **declaring** it (`throws`) passes the responsibility of handling to the calling method."
             },
             {
-              "title": "Common Constructors",
-              "description": "Custom exceptions should provide multiple constructors: a no-arg constructor, one accepting a message string, one accepting a cause (Throwable), and one accepting both message and cause."
+              "title": "Catch Approach",
+              "description": "Use `try-catch` when you have the appropriate context to handle the exception, can take meaningful recovery actions, or want to translate the exception to a different type."
             },
             {
-              "title": "Naming Convention",
-              "description": "By convention, custom exception class names should end with 'Exception' (e.g., InsufficientFundsException) to clearly identify them as exceptions."
+              "title": "Throws Approach",
+              "description": "Use `throws` when the current method cannot handle the exception appropriately, when the calling method has better context for handling, or when implementing an interface that declares the exception."
             }
           ]
         },
@@ -407,16 +407,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "When to Create Custom Exceptions",
-              "description": "Create custom exceptions when: 1) standard exceptions don't adequately describe your error, 2) you need to add domain-specific information, 3) you want to group related exceptions, or 4) you need different exception handling for specific error types."
+              "title": "Responsibility Consideration",
+              "description": "Consider which layer of your application has the responsibility and context to properly handle each exception. Lower layers often declare exceptions for higher layers to handle."
             },
             {
-              "title": "Additional Information",
-              "description": "Custom exceptions can include additional fields and methods to provide more context about the error, such as error codes, timestamps, or specific data values related to the failure."
+              "title": "Exception Transformation",
+              "description": "When catching exceptions, consider whether to handle them completely, partially handle and rethrow, or transform them into a different exception type that's more meaningful to upstream code."
             },
             {
-              "title": "Checked vs Unchecked Decision",
-              "description": "Choose to extend Exception (checked) if the error is recoverable and clients should be forced to handle it. Extend RuntimeException (unchecked) if the error represents a programming mistake or is unrecoverable at runtime."
+              "title": "Checked vs Unchecked",
+              "description": "For checked exceptions, you must either catch them or declare them. For unchecked exceptions (RuntimeException, Error), declaration with `throws` is optional but can be useful as documentation."
             }
           ]
         },
@@ -424,158 +424,28 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Exception Hierarchy",
-              "description": "For complex applications, consider creating an exception hierarchy with a base application exception and more specific subclasses. This allows catching exceptions at different levels of specificity."
+              "title": "API Design Impact",
+              "description": "Using `throws` makes checked exceptions part of your method's contract. This increases the coupling between caller and callee, as the caller must be aware of and handle these exceptions."
             },
             {
-              "title": "Serialization Considerations",
-              "description": "Custom exceptions should be serializable (implement Serializable) for distributed applications, ensuring proper handling when exceptions cross JVM boundaries in RMI or similar technologies."
+              "title": "Middle-ground Approaches",
+              "description": "Sometimes a hybrid approach works best: catch specific exceptions, handle what you can, and rethrow or wrap remaining exceptions. This allows partial recovery while still propagating serious issues."
             },
             {
-              "title": "Documentation",
-              "description": "Thoroughly document custom exceptions with Javadoc, explaining when they're thrown, what they mean, and how to recover from them. This documentation becomes part of your API contract."
+              "title": "Testing Considerations",
+              "description": "Methods that declare exceptions are often easier to test for error conditions than those that catch and handle exceptions internally, as the test can directly verify the exception's propagation."
             }
           ]
         }
       ],
       "relatedQuestions": [
         "java-exception-hierarchy-core-java-e-1",
-        "java-exception-chaining-core-java-e-8"
+        "java-try-catch-block-core-java-e-2"
       ]
     },
     {
-      "id": "java-exception-chaining-core-java-e-8",
+      "id": "java-common-exceptions-core-java-e-8",
       "skillLevel": "intermediate",
-      "shortTitle": "Exception Chaining",
-      "question": "Could you explain the concept of exception chaining in Java and why it's important?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Basic Concept",
-              "description": "Exception chaining (or exception wrapping) is the practice of catching an exception and then throwing a new exception that includes the original exception as its cause."
-            },
-            {
-              "title": "Implementation",
-              "description": "Java supports exception chaining through constructors that accept a Throwable cause parameter or through the initCause() method on Throwable."
-            },
-            {
-              "title": "Purpose",
-              "description": "The main purpose is to preserve the original error information while translating the exception into one that's more appropriate for the current abstraction level or that provides more context."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Accessing the Cause",
-              "description": "The original exception (cause) can be accessed using the getCause() method on the wrapper exception, allowing error handlers to examine the full chain of exceptions."
-            },
-            {
-              "title": "Stack Trace Preservation",
-              "description": "When an exception is chained, the complete stack trace includes both the point where the new exception was thrown and the original exception's stack trace, providing a comprehensive error trail."
-            },
-            {
-              "title": "Common Use Case",
-              "description": "A common pattern is to wrap checked exceptions in unchecked ones at architectural boundaries, preserving the cause but freeing higher-level code from mandatory exception handling while maintaining error information."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Multiple Levels of Chaining",
-              "description": "Exception chains can have multiple levels, creating a linked list of causes that trace the complete evolution of an error through various layers of abstraction."
-            },
-            {
-              "title": "Exception Translation Strategy",
-              "description": "When implementing exception chaining, consider a consistent strategy: either wrap all exceptions of a certain type or at specific abstraction boundaries to provide meaningful layering of error information."
-            },
-            {
-              "title": "Performance Considerations",
-              "description": "While exception chaining preserves valuable debugging information, it increases the size of the exception object and the time needed to generate and process stack traces. For extremely performance-critical code, consider selective chaining."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-exception-propagation-core-java-e-6",
-        "java-custom-exceptions-core-java-e-7"
-      ]
-    },
-    {
-      "id": "java-exception-best-practices-core-java-e-9",
-      "skillLevel": "intermediate",
-      "shortTitle": "Exception Best Practices",
-      "question": "What are some best practices for exception handling in Java applications?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Handle Exceptions Appropriately",
-              "description": "Catch exceptions at the level where you can handle them meaningfully rather than simply suppressing them. Empty catch blocks should be avoided or at least commented explaining why no action is taken."
-            },
-            {
-              "title": "Include Context Information",
-              "description": "When rethrowing or logging exceptions, include context information about what the code was trying to do, with relevant variable values to make troubleshooting easier."
-            },
-            {
-              "title": "Use Specific Exception Types",
-              "description": "Catch specific exception types rather than broadly catching Exception or Throwable, which might mask unexpected problems. Similarly, throw specific exceptions that accurately describe the error condition."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Clean Up Resources",
-              "description": "Always clean up resources in finally blocks or, preferably, use try-with-resources for AutoCloseable resources to ensure proper cleanup even when exceptions occur."
-            },
-            {
-              "title": "Log Exceptions Properly",
-              "description": "Use appropriate logging levels for exceptions: ERROR for unexpected failures, WARN for potentially harmful situations, INFO for expected exceptions handled as part of normal flow."
-            },
-            {
-              "title": "Don't Use Exceptions for Flow Control",
-              "description": "Exceptions should represent exceptional conditions, not expected program flow. Using exceptions for normal control flow leads to code that's harder to understand and less efficient."
-            },
-            {
-              "title": "Document Exceptions",
-              "description": "Document all checked exceptions in method Javadoc using @throws tags, explaining when they occur and how to handle them. For unchecked exceptions, document those that are likely to be thrown."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Exception Translation",
-              "description": "Translate lower-level exceptions to higher-level ones that match your abstraction layer while preserving the original cause through exception chaining."
-            },
-            {
-              "title": "Fail Fast",
-              "description": "Detect and report errors as early as possible, preferably at compile time or during initialization rather than during normal operation, making problems easier to diagnose and fix."
-            },
-            {
-              "title": "Centralized Exception Handling",
-              "description": "In larger applications, implement centralized exception handling mechanisms like global exception handlers in frameworks or custom exception handling frameworks to ensure consistent error handling, logging, and reporting."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-try-with-resources-core-java-e-4",
-        "java-exception-handling-performance-core-java-e-12"
-      ]
-    },
-    {
-      "id": "java-common-runtime-exceptions-core-java-e-10",
-      "skillLevel": "beginner",
       "shortTitle": "Common Runtime Exceptions",
       "question": "What are the most common RuntimeExceptions in Java, and how can you prevent them?",
       "answerInsights": [
@@ -584,15 +454,15 @@
           "points": [
             {
               "title": "NullPointerException",
-              "description": "Occurs when attempting to access or modify a null object reference. Prevent by checking for null before accessing objects or using null-safe methods like Objects.requireNonNull() or the Optional class."
+              "description": "Thrown when attempting to access methods or fields on a null reference. Prevent by checking for null before accessing objects, using Objects.requireNonNull(), or using the Optional class for values that might be null."
             },
             {
               "title": "ArrayIndexOutOfBoundsException",
-              "description": "Thrown when accessing an array index outside its valid range. Prevent by validating indices before access or using tools like Collections that manage bounds automatically."
+              "description": "Thrown when accessing an array with an invalid index. Prevent by validating array indices before access and using data structures that handle dynamic sizing (like ArrayList)."
             },
             {
               "title": "IllegalArgumentException",
-              "description": "Indicates that a method received an argument that is invalid. Prevent by validating method parameters at the entry points and throwing descriptive IllegalArgumentExceptions for invalid inputs."
+              "description": "Thrown when a method receives an argument that's inappropriate. Prevent by validating method parameters and documenting acceptable parameter ranges."
             }
           ]
         },
@@ -601,15 +471,15 @@
           "points": [
             {
               "title": "ClassCastException",
-              "description": "Occurs when attempting to cast an object to an incompatible type. Prevent by checking with instanceof before casting or using generics to enforce type safety at compile time."
+              "description": "Thrown when attempting to cast an object to an incompatible type. Prevent by using instanceof checks before casting or using generics to ensure type safety at compile time."
             },
             {
               "title": "ConcurrentModificationException",
-              "description": "Thrown when a collection is modified during iteration outside of the iterator's own methods. Prevent by using concurrent collections, creating a copy before iteration, or using proper iterator methods for modifications."
+              "description": "Thrown when a collection is modified while being iterated. Prevent by using concurrent collections, creating copies before iteration, or using Iterator's remove() method."
             },
             {
-              "title": "NumberFormatException",
-              "description": "A subclass of IllegalArgumentException thrown when attempting to convert a string to a numeric type but the string doesn't have the appropriate format. Prevent by validating input format or using try-catch for expected conversion errors."
+              "title": "UnsupportedOperationException",
+              "description": "Thrown when an operation is not supported. Common with immutable collections or when methods are not implemented. Prevent by checking documentation and using appropriate collection implementations."
             }
           ]
         },
@@ -617,108 +487,45 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "UnsupportedOperationException",
-              "description": "Thrown when an operation is not supported, typically by optional operations on collections. Prevent by checking documentation for support status or testing for specific capabilities before operations."
+              "title": "NumberFormatException",
+              "description": "A subclass of IllegalArgumentException thrown when attempting to convert a string to a numeric type and the string doesn't have the appropriate format. Prevent with input validation and proper error handling for user inputs."
             },
             {
               "title": "IllegalStateException",
-              "description": "Indicates that a method was invoked at an inappropriate time or that the object is in an inappropriate state. Prevent by implementing proper state validation and clear state transition rules in your classes."
+              "description": "Thrown when a method is invoked at an inappropriate time or if the object is in an inappropriate state. Prevent by implementing proper state validation and clear documentation about method call sequencing."
             },
             {
               "title": "ArithmeticException",
-              "description": "Thrown for arithmetic errors like division by zero. Prevent by checking denominators before division or using safe arithmetic methods like Math.floorDiv() that handle edge cases properly."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-exception-best-practices-core-java-e-9",
-        "java-checked-vs-unchecked-core-java-e-2"
-      ]
-    },
-    {
-      "id": "java-error-vs-exception-core-java-e-11",
-      "skillLevel": "beginner",
-      "shortTitle": "Error vs Exception",
-      "question": "Can you explain the difference between Error and Exception in Java, with examples of each?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Base Classification",
-              "description": "Both Error and Exception are subclasses of Throwable, but they represent fundamentally different types of problems. Errors indicate serious problems that applications should not typically try to handle."
-            },
-            {
-              "title": "Exception Examples",
-              "description": "Common exceptions include IOException (file not found), SQLException (database access issues), ClassNotFoundException (class loading problems), and RuntimeException subclasses like NullPointerException or IllegalArgumentException."
-            },
-            {
-              "title": "Error Examples",
-              "description": "Common errors include OutOfMemoryError (insufficient heap space), StackOverflowError (excessive recursion), LinkageError (class dependency problems), and ExceptionInInitializerError (failure in static initialization)."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Recovery Potential",
-              "description": "Exceptions often represent conditions from which an application might reasonably recover, while Errors typically represent unrecoverable conditions like resource exhaustion or serious JVM problems."
-            },
-            {
-              "title": "Handling Approach",
-              "description": "Applications should generally attempt to handle exceptions through appropriate try-catch mechanisms, while errors are typically allowed to propagate and terminate the application or thread."
-            },
-            {
-              "title": "Checked vs Unchecked",
-              "description": "All subclasses of Error are unchecked (don't require explicit handling), while Exception has both checked subclasses (direct subclasses) and unchecked subclasses (RuntimeException hierarchy)."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "JVM vs Application Origins",
-              "description": "Errors are typically thrown by the JVM itself due to critical resource or environment problems, while exceptions can originate from both the JVM and application code, depending on the specific type."
-            },
-            {
-              "title": "Recovery Strategies",
-              "description": "For certain types of Error, specialized recovery strategies can be implemented, such as handling OutOfMemoryError by releasing caches and retrying operations, though such approaches should be used cautiously."
-            },
-            {
-              "title": "Custom Error Classes",
-              "description": "While creating custom Exception classes is common practice, creating custom Error subclasses is rare and generally discouraged unless you're implementing a language runtime or framework that needs to signal unrecoverable conditions."
+              "description": "Thrown for arithmetic errors like division by zero. Prevent by checking denominators before division operations and handling boundary cases in mathematical operations."
             }
           ]
         }
       ],
       "relatedQuestions": [
         "java-exception-hierarchy-core-java-e-1",
-        "java-checked-vs-unchecked-core-java-e-2"
+        "java-exception-best-practices-core-java-e-9"
       ]
     },
     {
-      "id": "java-exception-handling-performance-core-java-e-12",
-      "skillLevel": "advanced",
-      "shortTitle": "Exception Performance",
-      "question": "How do exceptions impact performance in Java, and what strategies can minimize this impact?",
+      "id": "java-exception-best-practices-core-java-e-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Exception Best Practices",
+      "question": "What are the best practices for exception handling in Java?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Creation Cost",
-              "description": "Creating exception objects is expensive because they capture the entire stack trace, which requires walking the stack and creating a snapshot of all stack frames."
+              "title": "Be Specific",
+              "description": "Catch specific exceptions rather than general ones (`Exception` or `Throwable`). This allows for more precise error handling and prevents accidentally catching and handling errors that should propagate."
             },
             {
-              "title": "Normal vs Exceptional Path",
-              "description": "The 'happy path' (no exceptions) is highly optimized by the JVM, while the exceptional path is significantly slower since it's designed for diagnostic value rather than performance."
+              "title": "Meaningful Messages",
+              "description": "Include descriptive, actionable error messages that explain what happened, why it happened, and possibly how to fix it. Good messages help with debugging and troubleshooting."
             },
             {
-              "title": "Common Mistake",
-              "description": "Using exceptions for normal control flow (like using IndexOutOfBoundsException to detect the end of an array) is a major performance anti-pattern that should be avoided."
+              "title": "Log Properly",
+              "description": "Log exceptions with appropriate detail and at the right level (e.g., fatal, error, warn). Include context information, but be mindful of logging sensitive data."
             }
           ]
         },
@@ -726,16 +533,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Try-Catch Overhead",
-              "description": "Modern JVMs optimize try-catch blocks with zero performance impact if no exception occurs, but there's still a cost if exceptions are actually thrown due to stack walking and handler lookup."
+              "title": "Clean Resources",
+              "description": "Always clean up resources in finally blocks or, preferably, use try-with-resources for AutoCloseable resources. This ensures resources are released even if exceptions occur."
             },
             {
-              "title": "Reusing Exceptions",
-              "description": "For expected exceptions in performance-critical code, consider pre-creating and reusing exception objects instead of creating new ones each time, though this sacrifices stack trace accuracy."
+              "title": "Don't Swallow Exceptions",
+              "description": "Avoid empty catch blocks that silently ignore exceptions. If you catch an exception, either handle it meaningfully, log it, or rethrow it with additional context."
             },
             {
-              "title": "Exception Handling Design",
-              "description": "Design exception handling boundaries carefully. Handle exceptions at coarse-grained boundaries rather than in fine-grained, frequently called methods to reduce the performance impact."
+              "title": "Exception Translation",
+              "description": "Convert low-level technical exceptions to higher-level business or domain exceptions that make sense in the current context, while preserving the original cause through exception chaining."
             }
           ]
         },
@@ -743,23 +550,287 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Stack Trace Manipulation",
-              "description": "For very high-performance applications, consider using the fillInStackTrace() method to control when stack traces are captured, or use custom exception types that override this method to reduce the cost."
+              "title": "Checked vs. Unchecked Strategy",
+              "description": "Use checked exceptions for recoverable conditions and unchecked exceptions for programming errors. Many modern frameworks favor unchecked exceptions to reduce boilerplate code."
             },
             {
-              "title": "JVM Optimization Techniques",
-              "description": "JVM's like HotSpot use techniques such as exception handler tables and bytecode rewriting to optimize exception handling, but these optimizations primarily benefit the non-exceptional path."
+              "title": "Fail Fast",
+              "description": "Detect and report errors as early as possible, ideally at compile time or during initialization. This helps identify problems before they affect users or downstream systems."
             },
             {
-              "title": "Checked vs Unchecked Performance",
-              "description": "There's no runtime performance difference between checked and unchecked exceptions; the distinction is purely a compile-time mechanism. Choose between them based on API design principles, not performance concerns."
+              "title": "Exception Design",
+              "description": "Design exception hierarchies thoughtfully for your application. Create custom exceptions when standard ones don't convey the right meaning, and structure them to allow for appropriate catch grouping."
+            },
+            {
+              "title": "Performance Awareness",
+              "description": "Understand the performance implications of exceptions. Creating exceptions is expensive due to stack trace capture, so don't use them for normal control flow or expected conditions in performance-critical code."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-exception-chaining-core-java-e-6",
+        "java-custom-exceptions-core-java-e-5"
+      ]
+    },
+    {
+      "id": "java-suppressed-exceptions-core-java-e-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Suppressed Exceptions",
+      "question": "How does Java handle suppressed exceptions, and when are they useful?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Basic Concept",
+              "description": "Suppressed exceptions are secondary exceptions that occur during exception handling, particularly during resource cleanup. Instead of losing these exceptions, Java allows them to be attached to the primary exception."
+            },
+            {
+              "title": "Try-With-Resources",
+              "description": "The primary use case for suppressed exceptions is in try-with-resources blocks, where exceptions thrown during the `close()` method are automatically suppressed if a primary exception exists in the try block."
+            },
+            {
+              "title": "Accessing Suppressed Exceptions",
+              "description": "Suppressed exceptions can be retrieved from the primary exception using the `getSuppressed()` method, which returns an array of Throwable objects representing all suppressed exceptions."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Manual Suppression",
+              "description": "In addition to automatic suppression in try-with-resources, exceptions can be manually suppressed using the `addSuppressed(Throwable)` method available on all Throwable objects."
+            },
+            {
+              "title": "Multiple Resource Handling",
+              "description": "When multiple resources are closed in a try-with-resources statement, exceptions from each resource's `close()` method can be suppressed, preserving information about all failures."
+            },
+            {
+              "title": "Stack Trace Representation",
+              "description": "When a suppressed exception exists, the stack trace output includes a \"Suppressed:\" section showing the stack traces of all suppressed exceptions, maintaining complete diagnostic information."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Handling Priority",
+              "description": "Understanding exception handling priority is crucial: 1) Primary exceptions from the try block take precedence, 2) Exceptions from resource closing are suppressed if a primary exception exists, 3) If no primary exception exists, the first exception from resource closing becomes the primary exception."
+            },
+            {
+              "title": "Custom Resource Cleanup",
+              "description": "For custom cleanup logic that doesn't use AutoCloseable, manually implement suppressed exception handling by catching secondary exceptions and adding them to the primary exception using `addSuppressed()`."
+            },
+            {
+              "title": "Implementation Example",
+              "description": "```java\nThrowable primaryException = null;\ntry {\n    // main operation\n} catch (Throwable t) {\n    primaryException = t;\n    throw t;\n} finally {\n    try {\n        // cleanup operation\n    } catch (Throwable t) {\n        if (primaryException != null) {\n            primaryException.addSuppressed(t);\n        } else {\n            throw t;\n        }\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-try-with-resources-core-java-e-4",
+        "java-exception-best-practices-core-java-e-9"
+      ]
+    },
+    {
+      "id": "java-exception-handling-streams-core-java-e-11",
+      "skillLevel": "advanced",
+      "shortTitle": "Exceptions in Streams",
+      "question": "How should you handle exceptions in Java Streams and lambda expressions?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Lambda Limitations",
+              "description": "Functional interfaces used in Stream operations (like `Function`, `Consumer`, `Predicate`) don't declare checked exceptions, making it challenging to use methods that throw checked exceptions directly in stream pipelines."
+            },
+            {
+              "title": "Unchecked Exceptions",
+              "description": "Unchecked exceptions in stream operations propagate normally and terminate stream processing. They can be caught outside the stream pipeline using standard try-catch blocks."
+            },
+            {
+              "title": "Wrapper Approach",
+              "description": "A common pattern is to wrap checked exceptions in unchecked exceptions within lambda expressions, allowing them to propagate through the stream pipeline."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Exception Handling Utilities",
+              "description": "Create utility methods to wrap functions that throw checked exceptions in versions that throw unchecked exceptions instead:\n\n```java\npublic static <T, R, E extends Exception> Function<T, R> wrapper(CheckedFunction<T, R, E> checkedFunction) {\n    return t -> {\n        try {\n            return checkedFunction.apply(t);\n        } catch (Exception e) {\n            throw new RuntimeException(e);\n        }\n    };\n}\n\n// Usage\nlist.stream()\n    .map(wrapper(s -> Files.readAllLines(Paths.get(s)))) // readAllLines throws IOException\n    .forEach(System.out::println);\n```"
+            },
+            {
+              "title": "Try Monad Pattern",
+              "description": "Implement or use libraries that provide a Try monad to encapsulate the result of an operation that might throw an exception, allowing for more functional error handling in streams."
+            },
+            {
+              "title": "Filter-Based Recovery",
+              "description": "For some scenarios, you can use `flatMap` with Optional to filter out elements that would cause exceptions:\n\n```java\nlist.stream()\n    .map(s -> {\n        try {\n            return Optional.of(riskyOperation(s));\n        } catch (Exception e) {\n            return Optional.empty();\n        }\n    })\n    .flatMap(Optional::stream) // Java 9+ or use filter+map in earlier versions\n    .forEach(System.out::println);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Result Encapsulation",
+              "description": "Create a custom result wrapper that can hold either a successful result or an exception, allowing stream processing to continue while capturing errors for later analysis:\n\n```java\nclass Result<T> {\n    private final T value;\n    private final Exception exception;\n    \n    private Result(T value, Exception exception) {\n        this.value = value;\n        this.exception = exception;\n    }\n    \n    public static <T> Result<T> success(T value) {\n        return new Result<>(value, null);\n    }\n    \n    public static <T> Result<T> failure(Exception e) {\n        return new Result<>(null, e);\n    }\n    \n    public boolean isSuccess() { return exception == null; }\n    public T getValue() { return value; }\n    public Exception getException() { return exception; }\n}\n\n// Usage\nList<Result<Data>> results = items.stream()\n    .map(item -> {\n        try {\n            return Result.success(processItem(item));\n        } catch (Exception e) {\n            return Result.failure(e);\n        }\n    })\n    .collect(Collectors.toList());\n\n// Process successful results\nList<Data> successfulData = results.stream()\n    .filter(Result::isSuccess)\n    .map(Result::getValue)\n    .collect(Collectors.toList());\n\n// Handle failures\nresults.stream()\n    .filter(r -> !r.isSuccess())\n    .forEach(r -> log.error(\"Processing failed\", r.getException()));\n```"
+            },
+            {
+              "title": "Library Solutions",
+              "description": "Consider using libraries like Vavr, Reactor, or RxJava that provide better support for functional exception handling in streaming operations, with built-in constructs like Try, Either, or error channels."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Exception handling in streams can impact performance, especially with parallel streams. For performance-critical code, benchmark different approaches and consider whether a traditional imperative approach with explicit exception handling might be more efficient."
             }
           ]
         }
       ],
       "relatedQuestions": [
         "java-exception-best-practices-core-java-e-9",
-        "java-try-catch-finally-core-java-e-3"
+        "java-exception-performance-core-java-e-12"
+      ]
+    },
+    {
+      "id": "java-exception-performance-core-java-e-12",
+      "skillLevel": "advanced",
+      "shortTitle": "Exception Performance",
+      "question": "What is the performance impact of using exceptions in Java, and how can you minimize it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Cost Components",
+              "description": "Exception creation is expensive primarily due to the generation of stack traces, which involves walking the entire stack and capturing information about each frame."
+            },
+            {
+              "title": "Performance Scale",
+              "description": "Creating and throwing an exception can be hundreds to thousands of times slower than a normal method return, making exceptions particularly costly in performance-critical or high-frequency operations."
+            },
+            {
+              "title": "Basic Optimization",
+              "description": "The simplest optimization is to avoid using exceptions for normal control flow or expected conditions. Use conditional checks, return codes, or other mechanisms for non-exceptional situations."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Exception Reuse",
+              "description": "For expected exceptions in performance-critical code, consider pre-creating exception instances instead of creating new ones each time. This works only for exceptions where the stack trace isn't important."
+            },
+            {
+              "title": "Lazy Stack Traces",
+              "description": "In custom exceptions, you can override `fillInStackTrace()` to return `this` or use methods like `setStackTrace(new StackTraceElement[0])` to eliminate stack trace collection cost."
+            },
+            {
+              "title": "Checked vs Unchecked",
+              "description": "There's generally no performance difference between checked and unchecked exceptions at runtime; the distinction is purely a compile-time construct affecting how exceptions must be handled in code."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "JVM Optimizations",
+              "description": "Modern JVMs use techniques like Exception Handling Analysis (EHA) to optimize exception handling in hot code paths, but these optimizations have limitations and can't eliminate all overhead."
+            },
+            {
+              "title": "Exception Hierarchies",
+              "description": "Deeper exception hierarchies can increase the cost of catch blocks with instanceof checks. Keep exception hierarchies reasonably flat for performance-critical code."
+            },
+            {
+              "title": "Measurement-Based Approach",
+              "description": "Always measure the actual impact of exception handling in your specific application using profiling tools. The relative cost varies significantly based on JVM implementation, application characteristics, and the specific exception usage patterns."
+            },
+            {
+              "title": "Alternative Patterns",
+              "description": "Consider alternative patterns for error handling in performance-critical code:\n1. Return nullable values or Optional<T>\n2. Result objects that contain success/failure information\n3. Error codes or enums for expected error conditions\n4. State validation before operations rather than exception catching\n5. Special sentinel values to indicate errors where appropriate"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-exception-best-practices-core-java-e-9",
+        "java-exception-handling-streams-core-java-e-11"
+      ]
+    },
+    {
+      "id": "java-multicatch-rethrow-core-java-e-13",
+      "skillLevel": "intermediate",
+      "shortTitle": "Multi-catch and Rethrowing",
+      "question": "How do multi-catch blocks and exception rethrowing work in Java, and what are their limitations?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Multi-catch Syntax",
+              "description": "Introduced in Java 7, multi-catch allows catching multiple exception types in a single catch block using the pipe symbol (|): `catch (IOException | SQLException e)`."
+            },
+            {
+              "title": "Basic Rethrowing",
+              "description": "Rethrowing means catching an exception and then throwing it again, potentially after logging, cleanup, or adding context: `try { ... } catch (Exception e) { log.error(\"Operation failed\", e); throw e; }`"
+            },
+            {
+              "title": "Type Relationship",
+              "description": "In multi-catch, exception types must not have a subclass relationship with each other. For example, `catch (IOException | Exception e)` is invalid because IOException is a subclass of Exception."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Improved Type Inference",
+              "description": "Java 7 also improved exception type inference for rethrown exceptions, allowing more precise throws declarations. Before Java 7, rethrowing a caught exception required declaring the general catch type in the throws clause."
+            },
+            {
+              "title": "Final Parameter",
+              "description": "The exception parameter in a multi-catch block is implicitly final, meaning you cannot assign a new value to it within the catch block. This prevents issues with the ambiguous type of the caught exception."
+            },
+            {
+              "title": "Exception Type Preservation",
+              "description": "When using improved type inference with rethrown exceptions, the compiler tracks which exception types could actually be thrown in the try block, allowing for more specific throws declarations even when catching a broader type."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Type Inference Limitations",
+              "description": "Improved type inference for rethrown exceptions works only if the exception variable is not modified or reassigned. Any manipulation of the exception object requires the method to declare the catch clause's exception type in its throws clause."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Multi-catch blocks compile to multiple individual catch blocks in bytecode, so there's no performance advantage compared to separate catch blocks. The benefit is purely in code readability and maintainability."
+            },
+            {
+              "title": "Wrapper Gotchas",
+              "description": "Be careful when wrapping and rethrowing exceptions in chained form. If you both log and rethrow in the same catch block, you might see duplicate entries in logs if upstream code also logs the same exception. Consider using logging frameworks that detect this situation."
+            },
+            {
+              "title": "Advanced Example",
+              "description": "```java\n// Pre-Java 7\nvoid processFile() throws IOException { // Must declare IOException even if only FileNotFoundException is possible\n    try {\n        // Code that only throws FileNotFoundException\n    } catch (IOException e) {\n        logger.error(\"Error\", e);\n        throw e; // Compiler sees potential for any IOException\n    }\n}\n\n// Java 7+\nvoid processFile() throws FileNotFoundException { // More precise declaration\n    try {\n        // Code that only throws FileNotFoundException\n    } catch (IOException e) {\n        logger.error(\"Error\", e);\n        throw e; // Compiler knows only FileNotFoundException is possible\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-try-catch-block-core-java-e-2",
+        "java-exception-best-practices-core-java-e-9"
       ]
     }
   ]

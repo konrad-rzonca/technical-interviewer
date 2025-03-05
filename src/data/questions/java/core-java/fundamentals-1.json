@@ -1,0 +1,1240 @@
+{
+  "category": "Core Java",
+  "subcategory": "Fundamentals",
+  "questions": [
+    {
+      "id": "java-jvm-architecture-core-java-f-1",
+      "skillLevel": "beginner",
+      "shortTitle": "JVM Architecture",
+      "question": "Could you explain the JVM architecture and its role in Java's platform independence?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "The **Java Virtual Machine (JVM)** is an abstract computing machine that enables a computer to run Java programs as well as programs written in other languages that are compiled to Java bytecode."
+            },
+            {
+              "title": "Platform Independence",
+              "description": "JVM provides the '**Write Once, Run Anywhere**' capability by acting as an intermediary between Java bytecode and the underlying hardware/operating system."
+            },
+            {
+              "title": "Execution Process",
+              "description": "Java source code (.java files) is compiled into bytecode (.class files) by the Java compiler. The JVM then loads, verifies, and executes this bytecode."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "JVM Components",
+              "description": "The JVM consists of three main components: **Class Loader Subsystem** (loads classes into memory), **Runtime Data Areas** (memory areas like heap, stack, method area), and **Execution Engine** (executes bytecode)."
+            },
+            {
+              "title": "JIT Compiler",
+              "description": "The **Just-In-Time (JIT) compiler** improves performance by compiling frequently executed bytecode to native machine code at runtime."
+            },
+            {
+              "title": "Garbage Collection",
+              "description": "The JVM includes an automatic **Garbage Collector** that identifies and removes objects that are no longer needed, freeing up memory."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Memory Management",
+              "description": "The JVM manages memory through various generations (Young, Old, and Metaspace) and employs different GC algorithms (Serial, Parallel, CMS, G1, ZGC) depending on application needs."
+            },
+            {
+              "title": "JVM Tuning",
+              "description": "JVM performance can be optimized through parameters like `-Xms` (initial heap size), `-Xmx` (maximum heap size), and garbage collection strategy selection."
+            },
+            {
+              "title": "JVM Languages",
+              "description": "Beyond Java, several languages run on the JVM, including Kotlin, Scala, Groovy, and Clojure, leveraging its platform independence and performance optimizations."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-jre-jdk-difference-core-java-f-2"
+      ]
+    },
+    {
+      "id": "java-jre-jdk-difference-core-java-f-2",
+      "skillLevel": "beginner",
+      "shortTitle": "JRE vs JDK",
+      "question": "What's the difference between JRE and JDK in the Java ecosystem?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "JRE Definition",
+              "description": "The **Java Runtime Environment (JRE)** is the runtime environment that provides the minimum requirements for executing Java applications. It contains the JVM, core classes, and supporting files."
+            },
+            {
+              "title": "JDK Definition",
+              "description": "The **Java Development Kit (JDK)** is a superset of the JRE that contains everything the JRE has plus development tools like compiler (javac), debuggers, and other tools needed for application development."
+            },
+            {
+              "title": "Usage Context",
+              "description": "End-users who only want to run Java applications need just the JRE, while developers who want to create Java applications need the JDK."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Key Components",
+              "description": "The JDK includes development tools like `javac` (compiler), `java` (launcher), `javadoc` (documentation generator), `jar` (archiver), and `javap` (class file disassembler)."
+            },
+            {
+              "title": "Directory Structure",
+              "description": "The JDK has a more complex directory structure that includes the `/bin` directory (containing development tools), `/lib` (runtime libraries), and `/include` (header files for native code development)."
+            },
+            {
+              "title": "JDK Evolution",
+              "description": "Since Java 11, Oracle no longer provides standalone JRE distributions. The JDK can now be used to create custom runtime images with just the modules an application needs using `jlink`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Module System",
+              "description": "With Java 9's introduction of the module system (Project Jigsaw), both JRE and JDK were reorganized into modules, making the platform more scalable for different devices and application sizes."
+            },
+            {
+              "title": "Distribution Variants",
+              "description": "Multiple JDK distributions exist, including Oracle JDK, OpenJDK, AdoptOpenJDK, Amazon Corretto, and Azul Zulu, each with slightly different features, support policies, and licensing terms."
+            },
+            {
+              "title": "Custom Runtime Images",
+              "description": "Using the `jlink` tool, developers can create custom runtime images that contain only the modules required by an application, significantly reducing deployment size compared to distributing a full JRE."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-jvm-architecture-core-java-f-1"
+      ]
+    },
+    {
+      "id": "java-datatypes-core-java-f-3",
+      "skillLevel": "beginner",
+      "shortTitle": "Data Types",
+      "question": "Can you explain the different data types in Java and how they're categorized?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Main Categories",
+              "description": "Java data types are divided into two main categories: **primitive types** (simple, predefined value types) and **reference types** (object references)."
+            },
+            {
+              "title": "Primitive Types",
+              "description": "Java has eight primitive data types: `byte` (8-bit), `short` (16-bit), `int` (32-bit), `long` (64-bit), `float` (32-bit), `double` (64-bit), `char` (16-bit), and `boolean`."
+            },
+            {
+              "title": "Reference Types",
+              "description": "Reference types include **classes**, **interfaces**, **arrays**, and **enum** types. They store references to objects rather than the actual data."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Default Values",
+              "description": "Primitive instance variables are automatically initialized with default values (`0` for numeric types, `false` for boolean, `\\u0000` for char), while reference types default to `null`."
+            },
+            {
+              "title": "Memory Allocation",
+              "description": "Primitives are stored on the stack (except when part of an object), providing better performance. Reference types' objects are stored in the heap with their references on the stack."
+            },
+            {
+              "title": "Type Conversion",
+              "description": "Java supports **implicit conversion** (widening) between compatible primitive types (e.g., `int` to `long`) and **explicit conversion** (narrowing) using casting (e.g., `long` to `int`)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Wrapper Classes",
+              "description": "Each primitive type has a corresponding wrapper class (`Integer`, `Boolean`, etc.) that enables using primitives in contexts requiring objects, like collections."
+            },
+            {
+              "title": "Autoboxing & Unboxing",
+              "description": "Java automatically converts between primitives and their wrapper objects through **autoboxing** (primitive to wrapper) and **unboxing** (wrapper to primitive), though this has performance implications."
+            },
+            {
+              "title": "Value Types Future",
+              "description": "Project Valhalla aims to introduce **value types** to Java, combining the memory efficiency of primitives with the expressiveness of objects, addressing pain points in current type system."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-wrapper-classes-core-java-f-16"
+      ]
+    },
+    {
+      "id": "java-variable-scope-core-java-f-4",
+      "skillLevel": "beginner",
+      "shortTitle": "Variable Scope",
+      "question": "How would you describe the different variable scopes in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Class Variables (Static)",
+              "description": "**Class variables** are declared with the `static` keyword at the class level. They're shared across all instances of the class and exist for the lifetime of the class."
+            },
+            {
+              "title": "Instance Variables",
+              "description": "**Instance variables** are declared at the class level without the `static` keyword. Each object instance has its own copy of these variables."
+            },
+            {
+              "title": "Local Variables",
+              "description": "**Local variables** are declared within methods, constructors, or blocks. They exist only within the method, constructor, or block in which they are declared."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Method Parameters",
+              "description": "**Method parameters** are a special type of local variable that provides input to a method. Their scope is limited to the method body."
+            },
+            {
+              "title": "Block Scope",
+              "description": "Variables declared within blocks (enclosed between `{}`) are only accessible within that block and any nested blocks, and cease to exist once the block execution ends."
+            },
+            {
+              "title": "Variable Shadowing",
+              "description": "If a local variable has the same name as an instance variable, the local variable **shadows** the instance variable. To access the instance variable, use `this.variableName`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Loop Variables",
+              "description": "Variables declared in the initialization part of a `for` loop have a scope limited to the loop body and update section, while those declared in the iteration part of a `for-each` loop are limited to the loop body."
+            },
+            {
+              "title": "Effectively Final",
+              "description": "Local variables that are not modified after initialization are considered **effectively final** and can be referenced from lambda expressions or anonymous classes defined in their scope."
+            },
+            {
+              "title": "Static Block Variables",
+              "description": "Variables declared within `static` initialization blocks are scoped to that block, useful for complex static initialization logic that can't be expressed in a single line."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-access-modifiers-core-java-f-9"
+      ]
+    },
+    {
+      "id": "java-operators-precedence-core-java-f-5",
+      "skillLevel": "beginner",
+      "shortTitle": "Operators and Precedence",
+      "question": "Could you explain the different operators in Java and their precedence rules?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Operator Types",
+              "description": "Java provides several types of operators: **arithmetic** (`+`, `-`, `*`, `/`, `%`), **relational** (`<`, `>`, `<=`, `>=`, `==`, `!=`), **logical** (`&&`, `||`, `!`), **assignment** (`=`, `+=`, etc.), and **bitwise** (`&`, `|`, `^`, `~`, `<<`, `>>`, `>>>`)."
+            },
+            {
+              "title": "Unary Operators",
+              "description": "**Unary operators** work on a single operand, including increment/decrement (`++`, `--`), unary plus/minus (`+`, `-`), logical complement (`!`), and bitwise complement (`~`)."
+            },
+            {
+              "title": "Binary Operators",
+              "description": "**Binary operators** work on two operands, including arithmetic, relational, logical, bitwise, and assignment operators."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Operator Precedence",
+              "description": "Java follows a strict operator precedence order. From highest to lowest: postfix (`expr++`), unary (`++expr`), multiplicative (`*`, `/`, `%`), additive (`+`, `-`), shift (`<<`, `>>`, `>>>`), relational (`<`, `>`, `<=`, `>=`), equality (`==`, `!=`), bitwise AND (`&`), bitwise XOR (`^`), bitwise OR (`|`), logical AND (`&&`), logical OR (`||`), ternary (`?:`), assignment (`=`, `+=`, etc.)."
+            },
+            {
+              "title": "Short-Circuit Evaluation",
+              "description": "Logical operators `&&` and `||` perform **short-circuit evaluation**. With `&&`, if the first operand is `false`, the second is not evaluated; with `||`, if the first operand is `true`, the second is not evaluated."
+            },
+            {
+              "title": "Compound Assignment",
+              "description": "**Compound assignment operators** (`+=`, `-=`, `*=`, etc.) perform the operation and assignment in one step and handle type conversion automatically."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Bitwise vs Logical Operators",
+              "description": "Bitwise operators (`&`, `|`) evaluate both operands regardless of the first operand's value, while logical operators (`&&`, `||`) use short-circuit evaluation. Additionally, bitwise operators can be used with integer types, whereas logical operators work only with boolean values."
+            },
+            {
+              "title": "String Concatenation",
+              "description": "The `+` operator is overloaded for **String concatenation**. When one operand is a String, the other is automatically converted to a String, which can lead to unexpected results in complex expressions."
+            },
+            {
+              "title": "Instance Operators",
+              "description": "The **instanceof** operator checks if an object is an instance of a specific type. Java 16+ introduced **pattern matching for instanceof** with a binding variable: `if (obj instanceof String s) { /* use s directly */ }`."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-control-flow-core-java-f-6",
+      "skillLevel": "beginner",
+      "shortTitle": "Control Flow",
+      "question": "How do control flow statements work in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Conditional Statements",
+              "description": "**Conditional statements** include `if`, `if-else`, `if-else-if`, and `switch`, which execute code blocks based on evaluated conditions."
+            },
+            {
+              "title": "Loop Statements",
+              "description": "**Loop statements** include `for`, `while`, and `do-while`, which repeatedly execute code blocks as long as a condition is true."
+            },
+            {
+              "title": "Branching Statements",
+              "description": "**Branching statements** include `break` (exits a loop or switch), `continue` (skips the current iteration), and `return` (exits a method, optionally with a value)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Enhanced For Loop",
+              "description": "The **enhanced for loop** (`for-each`) simplifies iteration over collections and arrays: `for (ElementType element : collection) { /* use element */ }`."
+            },
+            {
+              "title": "Switch Statement Evolution",
+              "description": "Traditional `switch` statements use `case` labels for different execution paths. Java 12 introduced **switch expressions** with a more concise syntax and the ability to return values."
+            },
+            {
+              "title": "Labeled Statements",
+              "description": "**Labels** can be used with `break` and `continue` to control which loop is affected when dealing with nested loops: `outerLoop: for(...) { innerLoop: for(...) { break outerLoop; } }`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Pattern Matching in Switch",
+              "description": "Java 17+ supports **pattern matching in switch**, allowing type testing and destructuring in one operation: \n```java\nswitch (obj) {\n    case Integer i -> System.out.println(\"Integer: \" + i);\n    case String s -> System.out.println(\"String: \" + s);\n    default -> System.out.println(\"Unknown type\");\n}\n```"
+            },
+            {
+              "title": "Guard Patterns",
+              "description": "Java 17+ introduced **pattern guards** with `when` clauses in `switch` expressions, adding additional conditions to case patterns: \n```java\nswitch (obj) {\n    case String s when s.length() > 5 -> System.out.println(\"Long string\");\n    case String s -> System.out.println(\"Short string\");\n    default -> System.out.println(\"Not a string\");\n}\n```"
+            },
+            {
+              "title": "Yield Statement",
+              "description": "The `yield` statement is used in switch expressions to return a value from a multi-statement case block: \n```java\nint result = switch (day) {\n    case MONDAY, FRIDAY -> 6;\n    case TUESDAY -> {\n        System.out.println(\"Tuesday\");\n        yield 7;\n    }\n    default -> 0;\n};\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "java-oop-principles-core-java-f-7",
+      "skillLevel": "beginner",
+      "shortTitle": "OOP Principles",
+      "question": "What are the main Object-Oriented Programming principles in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Encapsulation",
+              "description": "**Encapsulation** is the bundling of data (fields) and methods that operate on the data within a single unit (class), and restricting direct access to some of the object's components. It's implemented using access modifiers and getter/setter methods."
+            },
+            {
+              "title": "Inheritance",
+              "description": "**Inheritance** allows a class (subclass/child) to inherit fields and methods from another class (superclass/parent) using the `extends` keyword. It promotes code reuse and establishes an 'is-a' relationship."
+            },
+            {
+              "title": "Polymorphism",
+              "description": "**Polymorphism** allows objects to be treated as instances of their parent class rather than their actual class. It includes method overriding (runtime polymorphism) and method overloading (compile-time polymorphism)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Abstraction",
+              "description": "**Abstraction** means hiding complex implementation details while showing only the necessary features of an object. It's achieved through abstract classes and interfaces in Java."
+            },
+            {
+              "title": "Association",
+              "description": "**Association** represents a relationship between two or more classes where objects have their own lifecycle and there's no ownership. It can be one-to-one, one-to-many, many-to-one, or many-to-many."
+            },
+            {
+              "title": "Aggregation & Composition",
+              "description": "**Aggregation** is a special form of association representing a 'has-a' relationship where one object contains a reference to another independent object. **Composition** is a stronger form where the contained object cannot exist independently of the container."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "SOLID Principles",
+              "description": "Java supports **SOLID** principles: **S**ingle Responsibility, **O**pen/Closed, **L**iskov Substitution, **I**nterface Segregation, and **D**ependency Inversion. These principles help create more maintainable, flexible, and scalable code."
+            },
+            {
+              "title": "Cohesion and Coupling",
+              "description": "Good OO design aims for **high cohesion** (class elements are strongly related) and **loose coupling** (classes are minimally dependent on each other), promoting modularity and easier maintenance."
+            },
+            {
+              "title": "Dependency Injection",
+              "description": "**Dependency Injection** is a design pattern implementing Inversion of Control, where object dependencies are 'injected' rather than created internally. It can be done through constructors, setters, or interfaces, reducing coupling between classes."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-inheritance-vs-composition-core-java-f-8"
+      ]
+    },
+    {
+      "id": "java-inheritance-vs-composition-core-java-f-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Inheritance vs Composition",
+      "question": "In Java, when would you use inheritance versus composition?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Inheritance Definition",
+              "description": "**Inheritance** creates an 'is-a' relationship between classes, where a subclass inherits fields and methods from a superclass using the `extends` keyword."
+            },
+            {
+              "title": "Composition Definition",
+              "description": "**Composition** creates a 'has-a' relationship, where a class contains an instance of another class as a field, using that object's functionality rather than inheriting it."
+            },
+            {
+              "title": "Basic Decision Factor",
+              "description": "Use inheritance when a subclass truly 'is a' specialized version of the superclass. Use composition when a class 'has a' or 'uses a' relationship with another class's functionality."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Advantages of Composition",
+              "description": "Composition offers greater flexibility as you can change behavior at runtime (by swapping component objects), reduces coupling, avoids the fragile base class problem, and doesn't break encapsulation."
+            },
+            {
+              "title": "Inheritance Limitations",
+              "description": "Inheritance can lead to tight coupling, makes the code less flexible to change, may violate encapsulation, and is vulnerable to the fragile base class problem (changes in the superclass may unexpectedly break subclasses)."
+            },
+            {
+              "title": "Multiple Inheritance",
+              "description": "Java doesn't support multiple inheritance of classes but does support multiple interface implementation. Composition can simulate multiple inheritance by including instances of multiple classes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Design Principles",
+              "description": "The principle \"**favor composition over inheritance**\" from the Gang of Four Design Patterns book suggests preferring composition in most cases, as it leads to more flexible and maintainable designs."
+            },
+            {
+              "title": "Testability",
+              "description": "Composition generally improves testability since dependencies can be mocked or replaced with test doubles. Inherited behavior is harder to isolate for testing."
+            },
+            {
+              "title": "Hybrid Approach",
+              "description": "Often, the best designs use a combination of inheritance and composition. For example, using abstract classes or interfaces to define types and contract (inheritance), while using composition to implement behaviors and manage relationships between components."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-oop-principles-core-java-f-7"
+      ]
+    },
+    {
+      "id": "java-access-modifiers-core-java-f-9",
+      "skillLevel": "beginner",
+      "shortTitle": "Access Modifiers",
+      "question": "Can you explain the different access modifiers in Java and their scope of visibility?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Public",
+              "description": "The **public** modifier makes a class, method, or field accessible from any other class, regardless of package location."
+            },
+            {
+              "title": "Private",
+              "description": "The **private** modifier restricts access to the declaring class only. Private members cannot be accessed from outside the class, including subclasses."
+            },
+            {
+              "title": "Default (Package-Private)",
+              "description": "When no access modifier is specified (**default** or **package-private**), the member is accessible only within its own package."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Protected",
+              "description": "The **protected** modifier allows access within the same package and by subclasses (even if they're in different packages)."
+            },
+            {
+              "title": "Class-level Modifiers",
+              "description": "Top-level classes can only be declared as **public** or **package-private** (default). Nested classes can use all four access modifiers."
+            },
+            {
+              "title": "Access Hierarchy",
+              "description": "The access levels from most restrictive to least restrictive are: **private** → **default** → **protected** → **public**."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Method Overriding Rules",
+              "description": "When overriding a method, you cannot reduce its accessibility. You can, however, increase it (e.g., a protected method in a superclass can be made public in a subclass)."
+            },
+            {
+              "title": "Interface Members",
+              "description": "All methods in an interface are implicitly **public** (if not explicitly marked as private in Java 9+). Fields in interfaces are implicitly **public**, **static**, and **final**."
+            },
+            {
+              "title": "Encapsulation Strategy",
+              "description": "For proper encapsulation, instance variables should typically be declared **private**, with access provided through **public** getter and setter methods, allowing controlled access and validation."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-variable-scope-core-java-f-4"
+      ]
+    },
+    {
+      "id": "java-constructors-core-java-f-10",
+      "skillLevel": "beginner",
+      "shortTitle": "Constructors",
+      "question": "How do constructors work in Java, and what are their special characteristics?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **constructor** is a special method that is called when an object is created using the `new` keyword. It has the same name as the class and no return type (not even void)."
+            },
+            {
+              "title": "Default Constructor",
+              "description": "If no constructor is explicitly defined, Java provides a **default constructor** with no parameters that calls the superclass constructor."
+            },
+            {
+              "title": "Constructor Overloading",
+              "description": "Like methods, constructors can be **overloaded** by defining multiple constructors with different parameter lists, allowing objects to be created in various ways."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Constructor Chaining",
+              "description": "Constructors can call other constructors in the same class using `this()` or the parent class constructor using `super()`. These calls must be the first statement in the constructor."
+            },
+            {
+              "title": "Superclass Constructor Invocation",
+              "description": "Every constructor implicitly calls its superclass's constructor as its first action. If you don't explicitly call a superclass constructor using `super()`, the compiler inserts a call to the superclass's no-argument constructor."
+            },
+            {
+              "title": "Access Modifiers",
+              "description": "Constructors can have any access modifier (public, private, protected, or default). A private constructor prevents instantiation from outside the class, often used in singleton patterns or utility classes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Initialization Blocks",
+              "description": "Java provides **instance initialization blocks** `{}` and **static initialization blocks** `static {}` that run before constructors. Static blocks run once when the class is loaded, while instance blocks run for each object creation before constructors."
+            },
+            {
+              "title": "Constructor Exceptions",
+              "description": "Constructors can throw exceptions, including checked exceptions. If a constructor throws a checked exception, it must be declared in the constructor's `throws` clause, and calling code must handle or propagate it."
+            },
+            {
+              "title": "Copy Constructors",
+              "description": "A **copy constructor** takes an object of the same class as a parameter and creates a new object by copying the parameter's values. Unlike some languages, Java doesn't provide automatic copy constructors, so they must be implemented manually when needed."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-object-creation-core-java-f-11"
+      ]
+    },
+    {
+      "id": "java-object-creation-core-java-f-11",
+      "skillLevel": "intermediate",
+      "shortTitle": "Object Creation",
+      "question": "What are the different ways to create objects in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Using new Keyword",
+              "description": "The most common way to create an object is using the **new** keyword, which allocates memory for the object and invokes a constructor: `ClassName object = new ClassName()`."
+            },
+            {
+              "title": "Using Factory Methods",
+              "description": "**Factory methods** are static methods that return an instance of the class. They provide an alternative to constructors, often with more meaningful names and flexibility: `Integer value = Integer.valueOf(42)`."
+            },
+            {
+              "title": "Using Constructors with Arguments",
+              "description": "Objects can be created with initial state by passing arguments to constructors: `Person person = new Person(\"John\", 30)`."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Using clone() Method",
+              "description": "The **clone()** method creates a copy of an existing object. The class must implement the `Cloneable` interface and override the `clone()` method: `Person clonedPerson = (Person) originalPerson.clone()`."
+            },
+            {
+              "title": "Using Deserialization",
+              "description": "**Deserialization** recreates objects from their serialized form, useful for persisting objects or transferring them over a network: \n```java\nObjectInputStream in = new ObjectInputStream(new FileInputStream(\"object.ser\"));\nPerson person = (Person) in.readObject();\n```"
+            },
+            {
+              "title": "Using newInstance() Method",
+              "description": "The **Class.newInstance()** method (deprecated in Java 9) or **Constructor.newInstance()** creates an object by dynamically loading a class and invoking its no-arg constructor: \n```java\nClass<?> clazz = Class.forName(\"com.example.Person\");\nPerson person = (Person) clazz.getDeclaredConstructor().newInstance();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Using Builder Pattern",
+              "description": "The **Builder Pattern** creates objects step by step, especially useful for objects with many optional parameters: \n```java\nPerson person = new Person.Builder()\n    .withName(\"John\")\n    .withAge(30)\n    .withAddress(\"123 Main St\")\n    .build();\n```"
+            },
+            {
+              "title": "Using Object Serialization Framework",
+              "description": "**Object serialization frameworks** like Jackson or Gson can create objects from JSON, XML, or other formats: \n```java\nObjectMapper mapper = new ObjectMapper();\nPerson person = mapper.readValue(jsonString, Person.class);\n```"
+            },
+            {
+              "title": "Using Dependency Injection",
+              "description": "**Dependency Injection frameworks** like Spring can create and manage objects for you, handling their lifecycles and dependencies: \n```java\n@Component\nclass PersonService { ... }\n\n// In another class:\n@Autowired\nprivate PersonService personService; // Spring creates and injects the object\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-constructors-core-java-f-10"
+      ]
+    },
+    {
+      "id": "java-method-overloading-overriding-core-java-f-12",
+      "skillLevel": "beginner",
+      "shortTitle": "Overloading vs Overriding",
+      "question": "Could you explain the difference between method overloading and method overriding in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Method Overloading",
+              "description": "**Method overloading** occurs when multiple methods in the same class have the same name but different parameter lists (different number or types of parameters). It's a compile-time polymorphism feature."
+            },
+            {
+              "title": "Method Overriding",
+              "description": "**Method overriding** occurs when a subclass provides a specific implementation of a method that is already defined in its superclass. The method must have the same name, return type (or covariant return type), and parameter list."
+            },
+            {
+              "title": "Basic Difference",
+              "description": "Overloading is about multiple methods with the same name in the same class, while overriding is about replacing a superclass method in a subclass."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Overloading Rules",
+              "description": "For overloading, methods must differ in the number, type, or order of parameters. Changing only the return type or access modifier does not constitute overloading."
+            },
+            {
+              "title": "Overriding Rules",
+              "description": "For overriding, the method signature must be the same. The overriding method cannot have a more restrictive access modifier, but it can have a less restrictive one. It can throw fewer or narrower checked exceptions."
+            },
+            {
+              "title": "@Override Annotation",
+              "description": "The `@Override` annotation is used to mark methods that override a superclass method. It's optional but recommended as it helps the compiler catch errors if the method doesn't actually override anything."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Covariant Return Types",
+              "description": "Since Java 5, an overriding method can return a subtype of the return type declared in the superclass method (covariant return type).\n```java\nclass Animal { Animal getOffspring() { ... } }\nclass Dog extends Animal { @Override Dog getOffspring() { ... } } // Dog is a subtype of Animal\n```"
+            },
+            {
+              "title": "Static Method Behavior",
+              "description": "Static methods can be overloaded but cannot be overridden. If a subclass defines a static method with the same signature as a static method in the superclass, it **hides** rather than overrides the superclass method."
+            },
+            {
+              "title": "Bridge Methods",
+              "description": "When working with generics and covariant return types, the Java compiler sometimes creates **bridge methods** to maintain binary compatibility. These are synthetic methods that handle the method dispatch correctly."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-polymorphism-core-java-f-13"
+      ]
+    },
+    {
+      "id": "java-polymorphism-core-java-f-13",
+      "skillLevel": "intermediate",
+      "shortTitle": "Polymorphism",
+      "question": "How does polymorphism work in Java, and what are its different types?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Polymorphism** is the ability of an object to take many forms. In Java, it allows objects of different classes to be treated as objects of a common superclass or interface."
+            },
+            {
+              "title": "Compile-Time Polymorphism",
+              "description": "**Compile-time polymorphism** (static binding) is achieved through method overloading, where multiple methods have the same name but different parameters."
+            },
+            {
+              "title": "Runtime Polymorphism",
+              "description": "**Runtime polymorphism** (dynamic binding) is achieved through method overriding, where a subclass provides a specific implementation of a method defined in its superclass."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Polymorphic References",
+              "description": "A reference variable of a superclass type can refer to an object of any subclass type. This enables flexible coding:\n```java\nAnimal animal = new Dog(); // Animal is the superclass, Dog is the subclass\nanimal.makeSound(); // Calls Dog's implementation of makeSound()\n```"
+            },
+            {
+              "title": "Interface Polymorphism",
+              "description": "Interfaces provide a powerful form of polymorphism, allowing unrelated classes to be treated uniformly if they implement the same interface:\n```java\nList<String> list = new ArrayList<>(); // List is an interface, ArrayList is an implementation\nlist = new LinkedList<>(); // Can easily switch implementations\n```"
+            },
+            {
+              "title": "Virtual Method Invocation",
+              "description": "In runtime polymorphism, the JVM determines which method to call based on the actual object type, not the reference type. This is called **virtual method invocation** and is core to object-oriented programming."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Double Dispatch",
+              "description": "Java doesn't natively support **double dispatch** (selecting a method based on types of multiple objects), but it can be implemented using the Visitor pattern or multiple if-instanceof checks."
+            },
+            {
+              "title": "Parametric Polymorphism",
+              "description": "**Generics** provide a form of parametric polymorphism, allowing code to be written without specifying concrete types, enhancing reusability:\n```java\npublic <T> void printArray(T[] array) {\n    for (T element : array) {\n        System.out.println(element);\n    }\n}\n```"
+            },
+            {
+              "title": "Performance Implications",
+              "description": "The JVM optimizes virtual method calls through techniques like **inline caching** and **monomorphic dispatch**. In modern JVMs, the performance difference between static and virtual method calls is often negligible due to these optimizations."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-method-overloading-overriding-core-java-f-12"
+      ]
+    },
+    {
+      "id": "java-static-keyword-core-java-f-14",
+      "skillLevel": "beginner",
+      "shortTitle": "Static Keyword",
+      "question": "What are the various uses of the 'static' keyword in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Static Variables",
+              "description": "**Static variables** (class variables) are shared among all instances of a class. They're created when the class is loaded and exist until the program ends. They're accessed using the class name: `ClassName.variableName`."
+            },
+            {
+              "title": "Static Methods",
+              "description": "**Static methods** belong to the class rather than any instance. They can be called without creating an object, using the class name: `ClassName.methodName()`. They cannot access instance variables or methods directly."
+            },
+            {
+              "title": "Static Blocks",
+              "description": "**Static initialization blocks** are executed when the class is loaded, before any static methods are called or static variables are accessed. They're used for complex static initialization: \n```java\nstatic {\n    // Initialization code\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Static Import",
+              "description": "**Static import** allows you to access static members of a class without class qualification. It can be used for individual members or all static members: \n```java\nimport static java.lang.Math.PI; // Import a specific static field\nimport static java.lang.Math.*; // Import all static members\n\ndouble area = PI * radius * radius; // Use PI directly without Math.\n```"
+            },
+            {
+              "title": "Static Nested Classes",
+              "description": "A **static nested class** is a nested class that is a static member of the outer class. Unlike inner classes, it doesn't have access to the instance members of the outer class, and it can be instantiated without an outer class instance: \n```java\nclass Outer {\n    static class Nested { ... }\n}\nOuter.Nested instance = new Outer.Nested();\n```"
+            },
+            {
+              "title": "Static Constants",
+              "description": "**Static final** variables are constants that are the same for all instances. They're often declared as `public static final` to make them accessible from outside the class while ensuring they cannot be changed: \n```java\npublic static final double PI = 3.14159265359;\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Static Factory Methods",
+              "description": "**Static factory methods** are static methods that return an instance of the class. They provide alternatives to constructors with benefits such as more descriptive names, caching, and subtype returns: \n```java\npublic static Integer valueOf(int i) { ... }\n```"
+            },
+            {
+              "title": "Memory Management",
+              "description": "Static members are stored in the method area of JVM memory, not the heap where objects are stored. This means they persist for the entire program execution, which can be a memory concern if large static data structures are used."
+            },
+            {
+              "title": "Static Context Limitations",
+              "description": "The **static context** has important limitations: you cannot use `this` or `super` keywords, cannot access instance variables or methods directly, and cannot override static methods (though they can be hidden by a subclass method with the same signature)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-final-keyword-core-java-f-15"
+      ]
+    },
+    {
+      "id": "java-final-keyword-core-java-f-15",
+      "skillLevel": "intermediate",
+      "shortTitle": "Final Keyword",
+      "question": "What are the different uses of the 'final' keyword in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Final Variables",
+              "description": "A **final variable** can only be assigned once. Once initialized, its value cannot be changed. It can be a compile-time constant or assigned at runtime: \n```java\nfinal int MAX_SPEED = 120; // Compile-time constant\nfinal int id; // Can be assigned later, but only once\n```"
+            },
+            {
+              "title": "Final Methods",
+              "description": "A **final method** cannot be overridden by subclasses. This ensures that the method's behavior remains the same throughout all subclasses: \n```java\npublic final void processPayment() { ... }\n```"
+            },
+            {
+              "title": "Final Classes",
+              "description": "A **final class** cannot be subclassed (extended). This is used when a class's implementation should not be changed or extended, such as the `String` and `Math` classes in Java's standard library: \n```java\npublic final class ImmutableValue { ... }\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Final Method Parameters",
+              "description": "Method parameters declared as **final** cannot be modified within the method body, providing an additional level of safety: \n```java\npublic void process(final int value) {\n    // value = 10; // This would cause a compilation error\n}\n```"
+            },
+            {
+              "title": "Final Object References",
+              "description": "When a reference variable is declared as **final**, it means the reference cannot be changed to point to another object, but the object's internal state can still be modified if it's mutable: \n```java\nfinal List<String> list = new ArrayList<>();\nlist.add(\"Item\"); // Valid - changing the object's state\n// list = new ArrayList<>(); // Invalid - changing the reference\n```"
+            },
+            {
+              "title": "Blank Final Variables",
+              "description": "A **blank final variable** is a final variable that is not initialized at the time of declaration. It must be initialized in all constructors (for instance variables) or before it's first used (for local variables): \n```java\nclass Circle {\n    final double PI;\n    Circle() {\n        PI = 3.14159; // Must initialize in constructor\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Final in Immutable Classes",
+              "description": "**Immutable classes** are typically declared as final to prevent subclassing. All fields are declared private and final, and no mutator methods are provided. The `String` class is a prime example of an immutable class in Java."
+            },
+            {
+              "title": "Final and Performance",
+              "description": "The JVM can make certain optimizations with **final** methods and variables. Final methods can be inlined by the compiler, potentially improving performance. Final variables can be safely cached by the JVM."
+            },
+            {
+              "title": "Effectively Final",
+              "description": "Since Java 8, variables that are not explicitly declared as final but whose value never changes after initialization are considered **effectively final**. These can be used in lambda expressions or anonymous classes: \n```java\nString name = \"John\"; // Effectively final\nButtom button = new Button();\nbutton.setOnAction(event -> System.out.println(name)); // Valid because name is effectively final\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-static-keyword-core-java-f-14"
+      ]
+    },
+    {
+      "id": "java-wrapper-classes-core-java-f-16",
+      "skillLevel": "beginner",
+      "shortTitle": "Wrapper Classes",
+      "question": "What are wrapper classes in Java, and why are they needed?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Wrapper classes** provide object representations of primitive data types in Java. Each primitive type has a corresponding wrapper class: `Byte`, `Short`, `Integer`, `Long`, `Float`, `Double`, `Character`, and `Boolean`."
+            },
+            {
+              "title": "Purpose",
+              "description": "Wrapper classes allow primitive values to be used in contexts that require objects, such as collections (like `ArrayList<Integer>` instead of `ArrayList<int>`), generics, and methods expecting object parameters."
+            },
+            {
+              "title": "Creating Wrapper Objects",
+              "description": "Wrapper objects can be created using constructors (deprecated in Java 9) or factory methods: \n```java\nInteger num1 = new Integer(42); // Deprecated\nInteger num2 = Integer.valueOf(42); // Preferred\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Autoboxing and Unboxing",
+              "description": "**Autoboxing** automatically converts primitives to their wrapper objects, while **unboxing** converts wrapper objects back to primitives: \n```java\nInteger wrappedInt = 42; // Autoboxing\nint primitive = wrappedInt; // Unboxing\n```"
+            },
+            {
+              "title": "Utility Methods",
+              "description": "Wrapper classes provide utility methods for parsing strings, converting between types, and working with values: \n```java\nInteger.parseInt(\"123\"); // String to int\nInteger.toString(123); // int to String\nInteger.toBinaryString(123); // int to binary string\n```"
+            },
+            {
+              "title": "Caching",
+              "description": "For efficiency, some wrapper classes cache commonly used values. For example, `Integer.valueOf()` caches values from -128 to 127, so multiple calls with the same value may return the same object."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Considerations",
+              "description": "Frequent autoboxing and unboxing can impact performance, especially in tight loops or memory-constrained environments. Each wrapper object allocates memory on the heap, unlike primitives which are stored on the stack when used locally."
+            },
+            {
+              "title": "Null Handling",
+              "description": "Wrapper objects can be `null`, unlike primitives. This requires careful handling to avoid `NullPointerException` during unboxing: \n```java\nInteger nullInteger = null;\nint primitive = nullInteger; // Throws NullPointerException at runtime\n```"
+            },
+            {
+              "title": "Immutability",
+              "description": "All wrapper objects are **immutable**, meaning their state cannot be changed after creation. This allows safe sharing of common instances (like cached values) and makes them suitable for use as keys in hash-based collections."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-autoboxing-unboxing-core-java-f-17"
+      ]
+    },
+    {
+      "id": "java-autoboxing-unboxing-core-java-f-17",
+      "skillLevel": "beginner",
+      "shortTitle": "Autoboxing and Unboxing",
+      "question": "Can you explain autoboxing and unboxing in Java and potential pitfalls?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Autoboxing",
+              "description": "**Autoboxing** is the automatic conversion of primitive data types to their corresponding wrapper classes. For example, `int` to `Integer` or `boolean` to `Boolean`: \n```java\nInteger number = 42; // Autoboxing: int → Integer\n```"
+            },
+            {
+              "title": "Unboxing",
+              "description": "**Unboxing** is the automatic conversion of wrapper objects back to their primitive types: \n```java\nInteger wrapper = Integer.valueOf(42);\nint primitive = wrapper; // Unboxing: Integer → int\n```"
+            },
+            {
+              "title": "Common Usage",
+              "description": "Autoboxing and unboxing occur automatically in assignments, method calls, and expressions, making code more readable and reducing the need for explicit conversions: \n```java\nList<Integer> numbers = new ArrayList<>();\nnumbers.add(10); // Autoboxing in method argument\nint sum = numbers.get(0) + 5; // Unboxing in expression\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "NullPointerException Risk",
+              "description": "Unboxing a `null` wrapper object will cause a `NullPointerException`. This is a common runtime error when working with collections or databases that may contain null values: \n```java\nInteger nullValue = null;\nint primitive = nullValue; // Throws NullPointerException\n```"
+            },
+            {
+              "title": "Performance Overhead",
+              "description": "Autoboxing and unboxing introduce performance overhead, especially in tight loops or large collections, as they involve object creation and method calls: \n```java\nint sum = 0;\nfor (int i = 0; i < 1000000; i++) {\n    sum += Integer.valueOf(i); // Creates many objects unnecessarily\n}\n```"
+            },
+            {
+              "title": "Collection Context",
+              "description": "Since Java collections can only store objects, autoboxing enables primitive values to be easily added to collections: \n```java\nList<Integer> numbers = new ArrayList<>();\nnumbers.add(42); // Autoboxing happens here\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Equality Operator Pitfalls",
+              "description": "The `==` operator compares object references for wrapper types, not their values, which can lead to unexpected results: \n```java\nInteger a = 127;\nInteger b = 127;\nSystem.out.println(a == b); // true (due to caching)\n\nInteger c = 128;\nInteger d = 128;\nSystem.out.println(c == d); // false (outside cache range)\n\n// Always use equals() for comparing wrapper objects\nSystem.out.println(c.equals(d)); // true\n```"
+            },
+            {
+              "title": "Caching Behavior",
+              "description": "Most wrapper classes cache common values to improve performance. For example, `Integer` caches values from -128 to 127, `Boolean` caches `TRUE` and `FALSE`, and `Character` caches values from 0 to 127. This behavior affects identity comparisons and can lead to subtle bugs."
+            },
+            {
+              "title": "Generics and Type Erasure",
+              "description": "Due to type erasure in generics, primitive types cannot be used as type parameters. Autoboxing enables working with generics while conceptually using primitive types: \n```java\n// Not possible: List<int> numbers = new ArrayList<>();\nList<Integer> numbers = new ArrayList<>(); // Works with autoboxing\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-wrapper-classes-core-java-f-16"
+      ]
+    },
+    {
+      "id": "java-string-pool-core-java-f-18",
+      "skillLevel": "intermediate",
+      "shortTitle": "String Pool",
+      "question": "How does the String pool work in Java, and what are the implications for String comparison?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "String Pool Definition",
+              "description": "The **String pool** (also called String constant pool or String intern pool) is a special area in Java's memory that stores unique string literals. It helps conserve memory by reusing string objects."
+            },
+            {
+              "title": "String Literal Behavior",
+              "description": "When a string literal is created (e.g., `String s = \"hello\"`), Java first checks if an identical string exists in the pool. If it does, the reference to that existing string is returned; otherwise, a new string is added to the pool."
+            },
+            {
+              "title": "String Creation Methods",
+              "description": "Strings created with the `new` keyword (e.g., `String s = new String(\"hello\")`) are always created as new objects in the heap, not in the String pool, even if an identical string exists in the pool."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "intern() Method",
+              "description": "The `intern()` method can be used to add a string to the pool if it doesn't exist there yet, or to get a reference to the pooled instance if it does: \n```java\nString s1 = new String(\"hello\"); // Creates in heap\nString s2 = s1.intern(); // Returns reference from pool (or adds it)\nString s3 = \"hello\"; // From pool\nSystem.out.println(s2 == s3); // true\n```"
+            },
+            {
+              "title": "String Comparison",
+              "description": "Using `==` compares object references, not string content. For strings from the pool, identical content means identical references, but this isn't true for strings created with `new`. Always use `equals()` for content comparison: \n```java\nString s1 = \"hello\";\nString s2 = \"hello\";\nString s3 = new String(\"hello\");\n\nSystem.out.println(s1 == s2); // true, same reference from pool\nSystem.out.println(s1 == s3); // false, different references\nSystem.out.println(s1.equals(s3)); // true, same content\n```"
+            },
+            {
+              "title": "String Concatenation",
+              "description": "When strings are concatenated with the `+` operator, the result depends on whether the values are known at compile-time: \n```java\nString s1 = \"hello\" + \"world\"; // Compile-time constant, goes into pool\nString s2 = \"hello\";\nString s3 = s2 + \"world\"; // Runtime concatenation, not pooled\nString s4 = \"helloworld\";\nSystem.out.println(s1 == s4); // true\nSystem.out.println(s3 == s4); // false\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Memory Location Changes",
+              "description": "Before Java 7, the String pool was in the PermGen space, which had a fixed size. Since Java 7, it's located in the heap, allowing it to grow dynamically and benefit from garbage collection."
+            },
+            {
+              "title": "Performance Implications",
+              "description": "Using pooled strings reduces memory usage but can increase lookup time. The `intern()` method can be expensive for large strings or when called frequently. In high-performance applications, consider the trade-off between memory usage and CPU time."
+            },
+            {
+              "title": "Security Considerations",
+              "description": "String pooling can potentially lead to denial-of-service attacks if untrusted input is interned, filling the pool with many unique strings. Applications that handle large volumes of user-generated strings should be careful about using `intern()`."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-string-vs-stringbuilder-core-java-f-19"
+      ]
+    },
+    {
+      "id": "java-string-vs-stringbuilder-core-java-f-19",
+      "skillLevel": "beginner",
+      "shortTitle": "StringBuilder vs StringBuffer",
+      "question": "Could you compare String, StringBuilder, and StringBuffer in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Mutability",
+              "description": "**String** is immutable, meaning once created, its content cannot be changed. **StringBuilder** and **StringBuffer** are mutable, allowing character sequences to be modified without creating new objects."
+            },
+            {
+              "title": "Thread Safety",
+              "description": "**String** is immutable and thus thread-safe. **StringBuffer** is thread-safe due to synchronized methods, while **StringBuilder** is not thread-safe but offers better performance in single-threaded scenarios."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "Use **String** for simple string values that won't change. Use **StringBuilder** for string manipulation in a single thread, and **StringBuffer** when multiple threads might modify the same string."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Performance",
+              "description": "For concatenation operations, **String** performs poorly because each concatenation creates a new object. **StringBuilder** is much faster for multiple modifications, and **StringBuffer** is slower than StringBuilder due to synchronization overhead."
+            },
+            {
+              "title": "Common Methods",
+              "description": "Both **StringBuilder** and **StringBuffer** offer methods like `append()`, `insert()`, `delete()`, `reverse()`, and `replace()` for string manipulation. The API is virtually identical, but StringBuffer methods are synchronized."
+            },
+            {
+              "title": "String Concatenation in Loops",
+              "description": "Using **String** concatenation in loops is a common performance anti-pattern: \n```java\n// Inefficient\nString result = \"\";\nfor (int i = 0; i < 10000; i++) {\n    result += i; // Creates many intermediate String objects\n}\n\n// Efficient\nStringBuilder result = new StringBuilder();\nfor (int i = 0; i < 10000; i++) {\n    result.append(i); // Modifies the same StringBuilder object\n}\nString finalResult = result.toString();\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Memory Management",
+              "description": "**StringBuilder** and **StringBuffer** manage an internal character array that grows as needed. The initial capacity can be specified to reduce reallocations. Both double their capacity when the buffer overflows, which can lead to memory inefficiency if the final size is much smaller than the capacity."
+            },
+            {
+              "title": "Compiler Optimization",
+              "description": "The Java compiler automatically optimizes **String** concatenation using **StringBuilder** in some cases, such as concatenation in a single statement: \n```java\nString s = \"a\" + \"b\" + \"c\"; // Compiler may optimize this to use StringBuilder\n```\nHowever, this optimization doesn't apply to concatenation across multiple statements or in loops."
+            },
+            {
+              "title": "Performance Comparison",
+              "description": "Performance benchmarks typically show:\n- **String** concatenation: Slowest for multiple operations due to immutability\n- **StringBuilder**: 5-10% faster than StringBuffer in single-threaded code\n- **StringBuffer**: Necessary when thread safety is required, despite the performance penalty\n\nThe choice should be based on the specific use case, considering thread safety requirements and the frequency of string modifications."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-string-pool-core-java-f-18"
+      ]
+    },
+    {
+      "id": "java-enums-core-java-f-20",
+      "skillLevel": "intermediate",
+      "shortTitle": "Enums",
+      "question": "How do enums work in Java, and what advanced features do they offer?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "An **enum** (enumeration) is a special type that represents a group of constants (unchangeable variables). It's declared using the `enum` keyword: \n```java\nenum Season { WINTER, SPRING, SUMMER, FALL }\n```"
+            },
+            {
+              "title": "Basic Usage",
+              "description": "Enum constants are accessed using the enum name: `Season.WINTER`. They can be used in switch statements, compared with `==`, and iterated over using `values()`: \n```java\nSeason current = Season.SUMMER;\nswitch (current) {\n    case WINTER: System.out.println(\"It's cold\"); break;\n    case SUMMER: System.out.println(\"It's hot\"); break;\n    // ...\n}\n```"
+            },
+            {
+              "title": "Built-in Methods",
+              "description": "All enums inherit methods from `java.lang.Enum`, including `name()` (returns the constant's name), `ordinal()` (returns the constant's position), and `valueOf()` (converts a string to the enum constant)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Enums with Properties",
+              "description": "Enums can have fields, constructors, and methods, making them more powerful than simple constants: \n```java\nenum Planet {\n    MERCURY(3.303e+23, 2.4397e6),\n    VENUS(4.869e+24, 6.0518e6),\n    EARTH(5.976e+24, 6.37814e6);\n    \n    private final double mass;\n    private final double radius;\n    \n    Planet(double mass, double radius) {\n        this.mass = mass;\n        this.radius = radius;\n    }\n    \n    public double getMass() { return mass; }\n    public double getRadius() { return radius; }\n}\n```"
+            },
+            {
+              "title": "Enum Methods",
+              "description": "Enums can have instance and static methods. You can even override methods for specific constants: \n```java\nenum Operation {\n    PLUS { \n        public double apply(double x, double y) { return x + y; } \n    },\n    MINUS { \n        public double apply(double x, double y) { return x - y; } \n    };\n    \n    public abstract double apply(double x, double y);\n}\n```"
+            },
+            {
+              "title": "Implementing Interfaces",
+              "description": "Enums can implement interfaces, providing a way to ensure that a group of constants all implement certain behaviors: \n```java\npublic interface Describable {\n    String getDescription();\n}\n\nenum Status implements Describable {\n    PENDING { \n        public String getDescription() { return \"Waiting for processing\"; } \n    },\n    PROCESSING { \n        public String getDescription() { return \"Currently being processed\"; } \n    },\n    COMPLETED { \n        public String getDescription() { return \"Processing finished\"; } \n    };\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "EnumSet and EnumMap",
+              "description": "Java provides specialized collections for enums: **EnumSet** and **EnumMap**, which are more efficient than general-purpose collections when working with enums: \n```java\nEnumSet<Season> warmSeasons = EnumSet.of(Season.SPRING, Season.SUMMER);\nEnumMap<Season, String> seasonDescriptions = new EnumMap<>(Season.class);\n```"
+            },
+            {
+              "title": "Singleton and Strategy Patterns",
+              "description": "Enums make excellent singletons and can implement the strategy pattern elegantly due to their built-in singleton nature and ability to override methods: \n```java\nenum ConnectionManager { // Singleton pattern\n    INSTANCE;\n    \n    private Connection connection;\n    \n    public Connection getConnection() {\n        if (connection == null) {\n            connection = createConnection();\n        }\n        return connection;\n    }\n    \n    private Connection createConnection() { /* ... */ }\n}\n```"
+            },
+            {
+              "title": "Serialization and Thread Safety",
+              "description": "Enums have built-in serialization support, and the JVM guarantees that enum values are instantiated only once, making them inherently thread-safe. This makes them ideal for implementing thread-safe singletons and constants that need to be serialized."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    }
+  ]
+}

@@ -1,0 +1,754 @@
+﻿{
+  "category": "Concurrency and Multithreading",
+  "subcategory": "Synchronization",
+  "questions": [
+    {
+      "id": "java-synchronized-keyword-concurrency-multithreading-s-1",
+      "skillLevel": "beginner",
+      "shortTitle": "Synchronized Keyword",
+      "question": "Could you explain the synchronized keyword and its purpose in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "The **synchronized** keyword in Java is used to control access to critical sections of code and prevent thread interference and memory consistency errors in multithreaded programs."
+            },
+            {
+              "title": "Intrinsic Locking",
+              "description": "It uses Java's intrinsic locking mechanism (monitor locks) to ensure that only one thread at a time can execute a synchronized method or block for a given object."
+            },
+            {
+              "title": "Usage Forms",
+              "description": "The synchronized keyword can be applied to methods (instance or static) or as synchronized blocks around specific code sections."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Method vs. Block Synchronization",
+              "description": "Synchronized methods lock the entire method, while synchronized blocks provide finer granularity by locking only critical sections, which can improve performance."
+            },
+            {
+              "title": "Instance vs. Static Method Synchronization",
+              "description": "Synchronized instance methods lock on the current object (`this`), while synchronized static methods lock on the Class object, creating separate lock domains."
+            },
+            {
+              "title": "Lock Objects",
+              "description": "In synchronized blocks, any object can serve as a lock (monitor), allowing for flexible locking strategies: `synchronized(lockObject) { // critical section }`."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Memory Visibility",
+              "description": "Synchronized provides both mutual exclusion and memory visibility guarantees. When a thread exits a synchronized block, all changes to memory are visible to other threads that subsequently enter synchronized blocks protected by the same lock."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Synchronization introduces overhead due to lock acquisition, contention, and potential blocking. Overuse can lead to performance degradation or deadlocks in high-concurrency scenarios."
+            },
+            {
+              "title": "Limitations",
+              "description": "Synchronized locks are reentrant but not interruptible, cannot be acquired conditionally, and don't support timeouts. For these advanced scenarios, the explicit Lock interfaces (java.util.concurrent.locks) are more appropriate."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-intrinsic-lock-concurrency-multithreading-s-2",
+        "java-lock-interface-concurrency-multithreading-s-6"
+      ]
+    },
+    {
+      "id": "java-intrinsic-lock-concurrency-multithreading-s-2",
+      "skillLevel": "intermediate",
+      "shortTitle": "Intrinsic Locks",
+      "question": "What are intrinsic locks in Java and how do they work?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Intrinsic locks** (also known as monitor locks) are built-in synchronization mechanisms that every Java object inherently possesses."
+            },
+            {
+              "title": "Acquisition Process",
+              "description": "When a thread enters a synchronized block or method, it attempts to acquire the intrinsic lock associated with the specified object. If the lock is unavailable, the thread blocks until it can acquire the lock."
+            },
+            {
+              "title": "Release Process",
+              "description": "The intrinsic lock is automatically released when the thread exits the synchronized block or method, including if an exception is thrown within the synchronized section."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Lock Ownership",
+              "description": "Intrinsic locks in Java are mutually exclusive and can only be owned by one thread at a time, enforcing exclusive access to the protected code section."
+            },
+            {
+              "title": "Reentrancy Property",
+              "description": "Intrinsic locks are **reentrant**, meaning a thread that holds a lock can acquire the same lock again without deadlocking itself. The lock is only fully released when the outermost synchronized block exits."
+            },
+            {
+              "title": "Wait/Notify Mechanism",
+              "description": "Intrinsic locks are integrated with Java's object wait/notify mechanism, allowing threads to temporarily release locks and wait for specific conditions while other threads can acquire the lock."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Monitor Pattern Implementation",
+              "description": "Intrinsic locks implement the Monitor design pattern, a concurrency construct that combines mutual exclusion with the ability for threads to wait for specific conditions."
+            },
+            {
+              "title": "Happens-Before Relationship",
+              "description": "The Java Memory Model defines a happens-before relationship for intrinsic locks: releasing a lock happens-before acquiring the same lock, ensuring memory visibility across threads."
+            },
+            {
+              "title": "Biased Locking Optimization",
+              "description": "Modern JVMs implement optimizations like **biased locking**, where an intrinsic lock prefers a specific thread to reduce overhead when the same thread repeatedly acquires and releases the lock without contention from other threads."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-synchronized-keyword-concurrency-multithreading-s-1",
+        "java-lock-interface-concurrency-multithreading-s-6"
+      ]
+    },
+    {
+      "id": "java-volatile-keyword-concurrency-multithreading-s-3",
+      "skillLevel": "intermediate",
+      "shortTitle": "Volatile Keyword",
+      "question": "How does the volatile keyword work in Java, and when should you use it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "The **volatile** keyword in Java is used to indicate that a variable's value may be modified by different threads simultaneously, ensuring visibility of changes across threads."
+            },
+            {
+              "title": "Memory Visibility",
+              "description": "When a variable is declared as volatile, any write to it will be immediately visible to other threads, preventing threads from using cached values instead of the most up-to-date value."
+            },
+            {
+              "title": "Use Cases",
+              "description": "Volatile is typically used for flags that can terminate loops, status indicators, or single variables that don't require compound operations but need thread visibility."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "No Atomicity Guarantee",
+              "description": "Volatile ensures visibility but doesn't guarantee atomicity for compound operations like increment (`i++`). For these cases, atomic classes or synchronization should be used instead."
+            },
+            {
+              "title": "Happens-Before Relationship",
+              "description": "A write to a volatile variable establishes a happens-before relationship with subsequent reads of that variable, ensuring changes made before the write are visible to threads after they read the variable."
+            },
+            {
+              "title": "Cache Coherence",
+              "description": "Volatile forces the variable to be read and written directly to main memory rather than CPU caches, ensuring all threads see the latest value despite cache hierarchies."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Memory Barrier Effects",
+              "description": "Volatile creates a memory barrier that prevents instruction reordering around reads and writes to the volatile variable, maintaining program order visibility across threads."
+            },
+            {
+              "title": "Double-Checked Locking Pattern",
+              "description": "Volatile is essential in the double-checked locking pattern for lazy initialization in concurrent environments:\n\n```java\npublic class Singleton {\n    private static volatile Singleton instance;\n    \n    public static Singleton getInstance() {\n        if (instance == null) { // First check (no locking)\n            synchronized (Singleton.class) {\n                if (instance == null) { // Second check (with locking)\n                    instance = new Singleton();\n                }\n            }\n        }\n        return instance;\n    }\n}\n```"
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "While volatile has less overhead than synchronized blocks, it still incurs a cost due to memory barriers and cache coherence protocols. Benchmark in performance-critical applications to ensure it doesn't become a bottleneck."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-atomic-variables-concurrency-multithreading-s-7"
+      ]
+    },
+    {
+      "id": "java-thread-communication-concurrency-multithreading-s-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Thread Communication",
+      "question": "Can you explain how wait(), notify(), and notifyAll() methods work for thread communication in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "The `wait()`, `notify()`, and `notifyAll()` methods, defined in the Object class, facilitate communication between threads that synchronize on the same object."
+            },
+            {
+              "title": "wait() Method",
+              "description": "When a thread calls `wait()` on an object, it releases the lock on that object and enters a waiting state until another thread notifies it."
+            },
+            {
+              "title": "notify() and notifyAll()",
+              "description": "`notify()` wakes up a single waiting thread (chosen arbitrarily), while `notifyAll()` wakes up all threads waiting on the object. The awakened threads compete for the lock."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Synchronized Context Requirement",
+              "description": "These methods must be called within a synchronized context (block or method) where the current thread owns the object's intrinsic lock, otherwise `IllegalMonitorStateException` is thrown."
+            },
+            {
+              "title": "Spurious Wakeups",
+              "description": "Threads can wake up without being notified, called \"spurious wakeups.\" Therefore, `wait()` should always be used in a loop that checks the condition that should cause waiting."
+            },
+            {
+              "title": "Implementation Pattern",
+              "description": "The standard pattern for using wait/notify is:\n\n```java\nsynchronized (sharedObject) {\n    while (!condition) {\n        sharedObject.wait(); // Release lock and wait\n    }\n    // Process when condition is true\n    // ...\n    sharedObject.notifyAll(); // Notify waiting threads\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Timed wait",
+              "description": "`wait(long timeout)` and `wait(long timeout, int nanos)` allow a thread to wait for notification or until the specified timeout elapses, whichever comes first."
+            },
+            {
+              "title": "notify() vs notifyAll() Trade-offs",
+              "description": "`notify()` is more efficient when only one waiting thread can proceed (e.g., in producer-consumer with a single item), while `notifyAll()` is safer to ensure progress when multiple types of waiting threads exist with different conditions."
+            },
+            {
+              "title": "Alternatives in java.util.concurrent",
+              "description": "Modern concurrent programming often prefers higher-level abstractions like **Semaphore**, **CountDownLatch**, **CyclicBarrier**, and **Condition** objects over raw wait/notify mechanisms, as they're less error-prone and offer more flexibility."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-condition-interface-concurrency-multithreading-s-10"
+      ]
+    },
+    {
+      "id": "java-deadlocks-concurrency-multithreading-s-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Deadlocks",
+      "question": "What is a deadlock in Java? How can you detect, prevent, and resolve deadlocks?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **deadlock** occurs when two or more threads are blocked forever, each waiting for the other to release a lock. This results in a standstill where none of the threads can proceed."
+            },
+            {
+              "title": "Necessary Conditions",
+              "description": "Four conditions must be present for a deadlock: (1) Mutual Exclusion, (2) Hold and Wait, (3) No Preemption, and (4) Circular Wait."
+            },
+            {
+              "title": "Classic Example",
+              "description": "A classic deadlock scenario where two threads acquire locks in opposite order:\n\n```java\n// Thread 1\nsynchronized(resourceA) {\n    // Do something\n    synchronized(resourceB) {\n        // Do something\n    }\n}\n\n// Thread 2\nsynchronized(resourceB) {\n    // Do something\n    synchronized(resourceA) {\n        // Do something\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Deadlock Detection",
+              "description": "Detect deadlocks using tools like **jstack** to generate thread dumps, **JConsole** or **VisualVM** for visual detection, or programmatically using **ThreadMXBean**'s `findDeadlockedThreads()` method."
+            },
+            {
+              "title": "Prevention Strategies",
+              "description": "Prevent deadlocks by: (1) Using consistent lock ordering, (2) Using lock timeouts with explicit Lock classes, (3) Using thread interruption, or (4) Avoiding nested locks when possible."
+            },
+            {
+              "title": "Lock Hierarchy",
+              "description": "Implementing a lock hierarchy where locks are always acquired in a specific order can prevent circular wait conditions and thus deadlocks."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Deadlock Avoidance with Lock Classes",
+              "description": "Use `tryLock()` with timeouts from the **Lock** interface to avoid indefinite waiting:\n\n```java\nboolean lockAcquired = false;\ntry {\n    lockAcquired = lock.tryLock(1, TimeUnit.SECONDS);\n    if (lockAcquired) {\n        // Protected code\n    } else {\n        // Handle failure to acquire lock\n    }\n} catch (InterruptedException e) {\n    // Handle interruption\n} finally {\n    if (lockAcquired) {\n        lock.unlock();\n    }\n}\n```"
+            },
+            {
+              "title": "Detecting Programmatically",
+              "description": "Use the ThreadMXBean API to detect deadlocks in a running application:\n\n```java\nThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();\nlong[] deadlockedThreads = threadMXBean.findDeadlockedThreads();\nif (deadlockedThreads != null) {\n    ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(deadlockedThreads);\n    // Process thread info\n}\n```"
+            },
+            {
+              "title": "Resource Ordering Solution",
+              "description": "Implement a global ordering system for resources, such as assigning unique IDs to each resource and always acquiring locks in ascending order of IDs, effectively preventing the circular wait condition."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-livelock-concurrency-multithreading-s-9"
+      ]
+    },
+    {
+      "id": "java-lock-interface-concurrency-multithreading-s-6",
+      "skillLevel": "intermediate",
+      "shortTitle": "Lock Interface",
+      "question": "In what ways are the Lock interfaces in Java more flexible than synchronized blocks?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Purpose",
+              "description": "The **Lock** interfaces in `java.util.concurrent.locks` provide more explicit and flexible locking operations compared to synchronized blocks, allowing for more sophisticated synchronization control."
+            },
+            {
+              "title": "Key Implementations",
+              "description": "Main implementations include **ReentrantLock** (standard reentrant mutual exclusion lock), **ReadWriteLock** (separate locks for reading and writing), and **StampedLock** (with optimistic reading)."
+            },
+            {
+              "title": "Basic Usage Pattern",
+              "description": "The standard usage pattern is more explicit but requires manual unlocking:\n\n```java\nLock lock = new ReentrantLock();\nlock.lock();\ntry {\n    // Critical section\n} finally {\n    lock.unlock(); // Must be in finally block\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Non-blocking Acquisition",
+              "description": "Lock interfaces support non-blocking attempts to acquire locks through `tryLock()`, allowing threads to perform other work if the lock isn't immediately available, instead of blocking."
+            },
+            {
+              "title": "Timed Locking",
+              "description": "`tryLock(long time, TimeUnit unit)` allows a thread to wait for a specified time to acquire a lock, preventing indefinite blocking and helping to recover from potential deadlocks."
+            },
+            {
+              "title": "Interruptible Locking",
+              "description": "`lockInterruptibly()` allows a thread waiting for a lock to be interrupted, which is useful for breaking out of long waits or responding to cancellation requests."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Multiple Condition Objects",
+              "description": "Lock interfaces support creating multiple **Condition** objects for a single lock, allowing threads to wait for different conditions on the same lock, unlike synchronized blocks which can only have a single wait set per object."
+            },
+            {
+              "title": "Fairness Policy",
+              "description": "Locks can be created with a fairness parameter (e.g., `new ReentrantLock(true)`) to ensure that the longest-waiting thread gets the lock next, preventing thread starvation at the cost of lower throughput."
+            },
+            {
+              "title": "ReadWriteLock Implementation",
+              "description": "**ReadWriteLock** provides two locks—a read lock that can be held simultaneously by multiple threads and a write lock for exclusive access—optimizing for scenarios with many reads and few writes:\n\n```java\nReadWriteLock rwLock = new ReentrantReadWriteLock();\n\n// Reading\nrwLock.readLock().lock();\ntry {\n    // Read from shared resource\n} finally {\n    rwLock.readLock().unlock();\n}\n\n// Writing\nrwLock.writeLock().lock();\ntry {\n    // Modify shared resource\n} finally {\n    rwLock.writeLock().unlock();\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-synchronized-keyword-concurrency-multithreading-s-1",
+        "java-condition-interface-concurrency-multithreading-s-10"
+      ]
+    },
+    {
+      "id": "java-atomic-variables-concurrency-multithreading-s-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Atomic Variables",
+      "question": "How do atomic variables in Java work, and when would you use them instead of synchronized methods?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Atomic variables** in the `java.util.concurrent.atomic` package provide lock-free, thread-safe operations on single variables, using hardware-level atomic instructions where available."
+            },
+            {
+              "title": "Common Classes",
+              "description": "The package includes atomic classes for various primitive types and references: **AtomicInteger**, **AtomicLong**, **AtomicBoolean**, **AtomicReference**, and array versions like **AtomicIntegerArray**."
+            },
+            {
+              "title": "Basic Operations",
+              "description": "Atomic variables support basic operations like `get()`, `set()`, `getAndSet()`, `incrementAndGet()`, `decrementAndGet()`, and `compareAndSet()` that execute as a single atomic unit."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Lock-Free Algorithm",
+              "description": "Atomic classes use **Compare-And-Swap (CAS)** operations, which attempt to update a value only if it matches an expected value, retrying if the value has changed."
+            },
+            {
+              "title": "Performance Advantage",
+              "description": "Atomic variables generally offer better performance than synchronized methods for simple operations on individual variables, especially under high contention, as they avoid locking overhead."
+            },
+            {
+              "title": "Use Case Example",
+              "description": "A common use case is atomic counters, sequence generators, or flags:\n\n```java\npublic class AtomicCounter {\n    private AtomicInteger count = new AtomicInteger(0);\n    \n    public int incrementAndGet() {\n        return count.incrementAndGet();\n    }\n    \n    public int get() {\n        return count.get();\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Compound Actions",
+              "description": "Atomic classes provide methods to perform compound operations atomically, like `updateAndGet()` and `accumulateAndGet()`, which apply a function to the current value and return the result."
+            },
+            {
+              "title": "Memory Visibility",
+              "description": "Like volatile variables, atomic variables guarantee memory visibility of updates across threads, with all writes to an atomic variable establishing happens-before relationships with subsequent reads."
+            },
+            {
+              "title": "Atomic Field Updaters",
+              "description": "For cases where creating new objects is undesirable, **AtomicIntegerFieldUpdater**, **AtomicLongFieldUpdater**, and **AtomicReferenceFieldUpdater** allow atomic operations on volatile fields of existing objects without modifying their structure:\n\n```java\npublic class User {\n    volatile int age;\n    // Other fields and methods\n}\n\n// Create a field updater\nprivate static final AtomicIntegerFieldUpdater<User> AGE_UPDATER = \n    AtomicIntegerFieldUpdater.newUpdater(User.class, \"age\");\n    \n// Use it to atomically update the field\npublic void incrementAge(User user) {\n    AGE_UPDATER.incrementAndGet(user);\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-volatile-keyword-concurrency-multithreading-s-3"
+      ]
+    },
+    {
+      "id": "java-thread-safety-concurrency-multithreading-s-8",
+      "skillLevel": "beginner",
+      "shortTitle": "Thread Safety",
+      "question": "What does thread safety mean in Java, and how can you achieve it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Thread safety** means that a piece of code or a class behaves correctly when accessed by multiple threads simultaneously, maintaining its invariants and producing correct results regardless of the execution timing."
+            },
+            {
+              "title": "Common Issues",
+              "description": "Thread safety issues include **race conditions** (results depend on execution timing), **visibility problems** (changes by one thread not visible to others), and **atomicity violations** (compound operations interrupted midway)."
+            },
+            {
+              "title": "Basic Approaches",
+              "description": "Common ways to achieve thread safety include: using **synchronization** (synchronized keyword), **immutable objects**, **thread-local variables**, and **concurrent collections**."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Synchronization Techniques",
+              "description": "Java offers multiple synchronization mechanisms: **intrinsic locks** (synchronized), **explicit locks** (Lock interface), **volatile variables**, and **atomic variables** for different synchronization needs."
+            },
+            {
+              "title": "Immutability as Strategy",
+              "description": "Immutable objects are inherently thread-safe since their state cannot change after construction. This eliminates the need for synchronization when accessing them:\n\n```java\npublic final class ImmutablePoint {\n    private final int x;\n    private final int y;\n    \n    public ImmutablePoint(int x, int y) {\n        this.x = x;\n        this.y = y;\n    }\n    \n    public int getX() { return x; }\n    public int getY() { return y; }\n}\n```"
+            },
+            {
+              "title": "Thread Confinement",
+              "description": "Thread confinement ensures objects are accessed by only one thread, either through local variables (stack confinement) or ThreadLocal instances (thread-local storage), eliminating the need for synchronization."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Thread Safety Levels",
+              "description": "Classes can have different levels of thread safety: **immutable** (always thread-safe), **conditionally thread-safe** (certain methods need external synchronization), **thread-compatible** (not thread-safe but can be used with external synchronization), and **thread-hostile** (cannot be made thread-safe)."
+            },
+            {
+              "title": "Documentation Importance",
+              "description": "Thread safety guarantees should be clearly documented, following patterns from Java's collection framework, which explicitly states thread safety properties: \"This class is not synchronized\" or \"Thread-safe implementation of List\"."
+            },
+            {
+              "title": "Composition Strategies",
+              "description": "Advanced thread safety can be achieved through composition strategies like **delegation** (to thread-safe classes), **monitor pattern** (all mutable state accessed through a single lock), and **split locks** (different locks for independent state variables to reduce contention)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-synchronized-keyword-concurrency-multithreading-s-1",
+        "java-volatile-keyword-concurrency-multithreading-s-3",
+        "java-atomic-variables-concurrency-multithreading-s-7"
+      ]
+    },
+    {
+      "id": "java-livelock-concurrency-multithreading-s-9",
+      "skillLevel": "advanced",
+      "shortTitle": "Livelock",
+      "question": "What is a livelock in Java and how does it differ from a deadlock?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A **livelock** occurs when multiple threads are actively responding to each other's actions but cannot make progress because they keep entering states that trigger responses from other threads, creating a loop of repeated state changes."
+            },
+            {
+              "title": "Comparison with Deadlock",
+              "description": "Unlike a deadlock where threads are blocked waiting for resources, in a livelock, threads are actively executing (not blocked) but still unable to proceed with their actual work."
+            },
+            {
+              "title": "Analogy",
+              "description": "A common analogy is two people meeting in a hallway who both move side to side to let the other pass, but continuously mirror each other's movements, thus neither can progress."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Common Causes",
+              "description": "Livelocks often occur when deadlock recovery mechanisms are implemented incorrectly, such as retrying operations that fail due to contention without sufficient randomization or backoff."
+            },
+            {
+              "title": "Example Scenario",
+              "description": "A typical livelock scenario occurs when multiple threads repeatedly try to acquire locks in response to failed acquisition attempts by other threads:\n\n```java\npublic void transferMoney(Account from, Account to, BigDecimal amount) {\n    while (true) {\n        if (from.tryLock()) {\n            try {\n                if (to.tryLock()) {\n                    try {\n                        from.debit(amount);\n                        to.credit(amount);\n                        return;\n                    } finally {\n                        to.unlock();\n                    }\n                }\n            } finally {\n                from.unlock();\n            }\n        }\n        // Problematic: immediate retry without delay\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Prevention Strategies",
+              "description": "Prevent livelocks by introducing randomization or backoff strategies when retrying operations, ensuring that conflicting threads don't continuously retry in lockstep."
+            },
+            {
+              "title": "Exponential Backoff",
+              "description": "Implement exponential backoff where retry delays increase exponentially, potentially with some randomization:\n\n```java\npublic void transferMoneyWithBackoff(Account from, Account to, BigDecimal amount) {\n    Random random = new Random();\n    int backoffTime = 1; // Initial backoff milliseconds\n    \n    for (int retries = 0; retries < MAX_RETRIES; retries++) {\n        if (from.tryLock()) {\n            try {\n                if (to.tryLock()) {\n                    try {\n                        from.debit(amount);\n                        to.credit(amount);\n                        return; // Success!\n                    } finally {\n                        to.unlock();\n                    }\n                }\n            } finally {\n                from.unlock();\n            }\n        }\n        \n        // Exponential backoff with randomization\n        try {\n            Thread.sleep(backoffTime + random.nextInt(backoffTime));\n            backoffTime *= 2; // Double the backoff time for next attempt\n        } catch (InterruptedException e) {\n            Thread.currentThread().interrupt();\n            return;\n        }\n    }\n    // Handle failure after max retries\n}\n```"
+            },
+            {
+              "title": "Detection Challenges",
+              "description": "Livelocks are harder to detect than deadlocks since threads are not blocked but actively consuming CPU. Profiling tools measuring thread progress rather than just thread state are needed to identify livelocks in complex systems."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-deadlocks-concurrency-multithreading-s-5"
+      ]
+    },
+    {
+      "id": "java-condition-interface-concurrency-multithreading-s-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Condition Interface",
+      "question": "How does the Condition interface improve thread coordination compared to Object's wait/notify methods?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "The **Condition** interface in `java.util.concurrent.locks` provides a way for threads to suspend execution and wait for a specific condition to become true, similar to Object's wait/notify mechanism but with enhanced functionality."
+            },
+            {
+              "title": "Creation",
+              "description": "Condition objects are created by calling the `newCondition()` method on a Lock object: `Condition condition = lock.newCondition();`."
+            },
+            {
+              "title": "Core Methods",
+              "description": "Key methods include `await()` (like wait()), `signal()` (like notify()), and `signalAll()` (like notifyAll()) for thread coordination."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Multiple Wait Sets",
+              "description": "Unlike intrinsic locks where each object has a single wait set, a Lock can have multiple associated Condition objects, enabling more precise thread coordination with different waiting conditions."
+            },
+            {
+              "title": "Lock Integration",
+              "description": "Condition objects are bound to a specific Lock and inherit its capabilities such as fairness policies and timed operations."
+            },
+            {
+              "title": "Usage Pattern",
+              "description": "The pattern for using a Condition is similar to wait/notify but requires explicit lock handling:\n\n```java\nLock lock = new ReentrantLock();\nCondition condition = lock.newCondition();\n\n// Waiting thread\nlock.lock();\ntry {\n    while (!conditionMet) {\n        condition.await(); // Releases lock and waits\n    }\n    // Process when condition is met\n} finally {\n    lock.unlock();\n}\n\n// Signaling thread\nlock.lock();\ntry {\n    // Change state that affects condition\n    conditionMet = true;\n    condition.signal(); // Or signalAll()\n} finally {\n    lock.unlock();\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Timed and Interruptible Waiting",
+              "description": "Condition extends wait functionality with methods like `await(long time, TimeUnit unit)` for timed waits and `awaitUninterruptibly()` for uninterruptible waits."
+            },
+            {
+              "title": "Signal Selection",
+              "description": "With multiple Condition objects for a single Lock, threads can be precisely notified based on specific state changes without waking threads waiting for different conditions, improving efficiency."
+            },
+            {
+              "title": "Real-World Example",
+              "description": "A bounded buffer implementation with separate conditions for \"not full\" and \"not empty\":\n\n```java\npublic class BoundedBuffer<E> {\n    private final Lock lock = new ReentrantLock();\n    private final Condition notEmpty = lock.newCondition();\n    private final Condition notFull = lock.newCondition();\n    \n    private final E[] items;\n    private int count, putIndex, takeIndex;\n    \n    @SuppressWarnings(\"unchecked\")\n    public BoundedBuffer(int capacity) {\n        items = (E[]) new Object[capacity];\n    }\n    \n    public void put(E item) throws InterruptedException {\n        lock.lock();\n        try {\n            while (count == items.length) {\n                notFull.await(); // Wait until buffer is not full\n            }\n            items[putIndex] = item;\n            putIndex = (putIndex + 1) % items.length;\n            count++;\n            notEmpty.signal(); // Signal that buffer is not empty\n        } finally {\n            lock.unlock();\n        }\n    }\n    \n    public E take() throws InterruptedException {\n        lock.lock();\n        try {\n            while (count == 0) {\n                notEmpty.await(); // Wait until buffer is not empty\n            }\n            E item = items[takeIndex];\n            items[takeIndex] = null; // Help GC\n            takeIndex = (takeIndex + 1) % items.length;\n            count--;\n            notFull.signal(); // Signal that buffer is not full\n            return item;\n        } finally {\n            lock.unlock();\n        }\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-communication-concurrency-multithreading-s-4",
+        "java-lock-interface-concurrency-multithreading-s-6"
+      ]
+    },
+    {
+      "id": "java-memory-visibility-concurrency-multithreading-s-11",
+      "skillLevel": "advanced",
+      "shortTitle": "Memory Visibility",
+      "question": "Could you explain the concept of memory visibility in Java and how it relates to concurrency?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Memory visibility** refers to when changes made to a variable by one thread become visible to other threads. In Java's memory model, there's no guarantee that changes made by one thread are immediately visible to others without proper synchronization."
+            },
+            {
+              "title": "Memory Hierarchy Challenge",
+              "description": "Modern computer architectures use CPU caches and instruction reordering for performance, which can cause threads on different cores to have inconsistent views of memory without explicit synchronization."
+            },
+            {
+              "title": "Visibility Mechanisms",
+              "description": "Java provides several mechanisms to ensure memory visibility: **synchronized** blocks/methods, **volatile** variables, concurrent collections, and atomic variables."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Java Memory Model (JMM)",
+              "description": "The Java Memory Model, formalized in JSR-133, defines the rules for how changes to memory by one thread become visible to other threads, balancing correctness with allowing compiler and hardware optimizations."
+            },
+            {
+              "title": "Happens-Before Relationship",
+              "description": "The JMM defines a \"happens-before\" relationship, which guarantees that memory operations in one thread are visible to another thread. If action A happens-before action B, then the effects of A are visible to B."
+            },
+            {
+              "title": "Key Happens-Before Rules",
+              "description": "Important happens-before relationships include: (1) Program order within a thread, (2) Releasing a monitor happens-before acquiring the same monitor, (3) Writing to a volatile field happens-before reading that field, (4) Thread start happens-before its first action."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Non-Atomic 64-bit Operations",
+              "description": "Without synchronization, reads and writes to 64-bit values (long and double) are not guaranteed to be atomic on 32-bit JVMs, potentially causing a thread to see half of a value from one write and half from another."
+            },
+            {
+              "title": "Final Field Guarantees",
+              "description": "The JMM provides special guarantees for final fields: if an object is properly constructed (no this reference escapes during construction), all threads will see the correct values for its final fields without additional synchronization."
+            },
+            {
+              "title": "Memory Barrier Effects",
+              "description": "Synchronization constructs establish memory barriers that control memory operation ordering:\n\n1. **Acquire barrier**: When a thread acquires a lock or reads a volatile, it ensures all subsequent reads reflect memory writes from other threads.\n\n2. **Release barrier**: When a thread releases a lock or writes to a volatile, it ensures all its prior memory writes are visible to threads that subsequently acquire the same lock or read the volatile.\n\nThese barriers are crucial for understanding advanced concurrency patterns like the double-checked locking pattern or implementing non-blocking algorithms."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-volatile-keyword-concurrency-multithreading-s-3",
+        "java-synchronized-keyword-concurrency-multithreading-s-1"
+      ]
+    },
+    {
+      "id": "java-reentrantlock-concurrency-multithreading-s-12",
+      "skillLevel": "intermediate",
+      "shortTitle": "ReentrantLock",
+      "question": "What is ReentrantLock in Java and how does it compare to synchronized blocks?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**ReentrantLock** is an explicit lock implementation in the `java.util.concurrent.locks` package that provides the same basic functionality as synchronized blocks but with additional features."
+            },
+            {
+              "title": "Reentrance Property",
+              "description": "Like synchronized blocks, ReentrantLock allows a thread that owns the lock to acquire it again without blocking (reentrance), keeping track of the number of acquisitions that must be matched by releases."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "The standard pattern requires explicit locking and unlocking, typically with a try-finally block:\n\n```java\nReentrantLock lock = new ReentrantLock();\nlock.lock();\ntry {\n    // Critical section\n} finally {\n    lock.unlock(); // Must release lock\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Fairness Option",
+              "description": "ReentrantLock can be created with fairness policy (`new ReentrantLock(true)`), which grants lock access in the order requests were made, preventing thread starvation at a slight performance cost."
+            },
+            {
+              "title": "Trylock Capability",
+              "description": "ReentrantLock provides non-blocking (`tryLock()`) and timed (`tryLock(time, unit)`) lock acquisition attempts, allowing threads to perform other work or implement timeouts if the lock isn't immediately available."
+            },
+            {
+              "title": "Interruptible Locking",
+              "description": "`lockInterruptibly()` allows threads waiting for the lock to be interrupted, which is useful for breaking out of lock acquisition attempts when the thread needs to be responsive to interruption."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Condition Variables",
+              "description": "ReentrantLock can create multiple `Condition` objects, each with its own wait set, enabling complex coordination between threads that would be difficult with the single wait set of intrinsic locks."
+            },
+            {
+              "title": "Monitoring Capabilities",
+              "description": "ReentrantLock provides methods to query its state, such as `isHeldByCurrentThread()`, `getHoldCount()`, `isLocked()`, `getQueueLength()`, and `hasQueuedThreads()`, useful for debugging and monitoring."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Under low contention, synchronized blocks may perform better due to JVM optimizations like biased locking, while under high contention, ReentrantLock often performs better, especially with its fairness options. Benchmark specific use cases for definitive answers.\n\nUnlike synchronized, ReentrantLock doesn't automatically release locks when a thread terminates abnormally, making the try-finally pattern essential:\n\n```java\nReentrantLock lock = new ReentrantLock();\nboolean acquired = false;\ntry {\n    acquired = lock.tryLock(1, TimeUnit.SECONDS);\n    if (acquired) {\n        // Work with the protected resource\n    } else {\n        // Handle failure to acquire lock\n    }\n} catch (InterruptedException e) {\n    // Handle interruption\n} finally {\n    if (acquired) {\n        lock.unlock();\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-lock-interface-concurrency-multithreading-s-6",
+        "java-synchronized-keyword-concurrency-multithreading-s-1"
+      ]
+    }
+  ]
+}
