@@ -790,7 +790,7 @@
             },
             {
               "title": "Environment Parity",
-              "description": "Maximize consistency across environments by using containers, configuration management, and infrastructure as code to minimize "works in dev but not in production" issues."
+              "description": "Maximize consistency across environments by using containers, configuration management, and infrastructure as code to minimize \"works in dev but not in production\" issues."
             },
             {
               "title": "Access Control",
@@ -983,7 +983,7 @@
             },
             {
               "title": "Shift Left Testing",
-              "description": "Move testing, security scanning, and quality checks as early as possible in the pipeline ("shift left") to catch issues early when they're cheaper and easier to fix."
+              "description": "Move testing, security scanning, and quality checks as early as possible in the pipeline (\"shift left\") to catch issues early when they're cheaper and easier to fix."
             }
           ]
         },
