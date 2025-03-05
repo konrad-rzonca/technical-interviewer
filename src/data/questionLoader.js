@@ -3,10 +3,19 @@ import {ANSWER_LEVELS, LEVEL_ORDER} from '../utils/answerConstants';
 // Import question files
 import fundamentalsQuestions
   from './questions/java/core-java/fundamentals-1.json';
+import fundamentals2Questions
+  from './questions/java/core-java/fundamentals-2.json';
 import memoryManagementQuestions
   from './questions/java/core-java/memory-management.json';
-import concurrencyQuestions
+import concurrentCollectionsQuestions
+  from './questions/java/concurrency-multithreading/concurrent-collections.json';
+import executorsQuestions
+  from './questions/java/concurrency-multithreading/executors.json';
+import synchronizationQuestions
+  from './questions/java/concurrency-multithreading/synchronization.json';
+import threadFundamentalsQuestions
   from './questions/java/concurrency-multithreading/thread-fundamentals.json';
+
 import collectionsQuestions from './questions/java/core-java/collections.json';
 import exceptionsQuestions from './questions/java/core-java/exceptions.json';
 import dataStructuresQuestions
@@ -22,6 +31,19 @@ import noSqlQuestions from './questions/java/databases/NoSQL.json';
 import transactionsQuestions
   from './questions/java/databases/transactions.json';
 
+import designPatternsQuestions
+  from './questions/java/software-design/design-patterns.json';
+import microservicesQuestions
+  from './questions/java/software-design/microservices.json';
+import RESTQuestions from './questions/java/software-design/REST.json';
+
+import gitQuestions from './questions/java/engineering/git.json';
+import CICDQuestions from './questions/java/engineering/CICD.json';
+import testingQuestions from './questions/java/engineering/testing.json';
+import cloudQuestions from './questions/java/engineering/cloud-azure.json';
+import securityQuestions from './questions/java/engineering/security.json';
+import openQuestions from './questions/java/engineering/open.json';
+
 // Question sets with author information
 const questionSets = {
   'core-java': [
@@ -29,7 +51,13 @@ const questionSets = {
       id: 'basic-set-core',
       name: 'Basic Set',
       files: {
-        'Fundamentals': fundamentalsQuestions,
+        'Fundamentals': {
+          category: fundamentalsQuestions.category,
+          subcategory: fundamentalsQuestions.subcategory,
+          questions: [
+            ...fundamentalsQuestions.questions,
+            ...fundamentals2Questions.questions],
+        },
         'Memory Management': memoryManagementQuestions,
         'Collections': collectionsQuestions,
         'Exceptions': exceptionsQuestions,
@@ -78,7 +106,10 @@ const questionSets = {
       id: 'basic-set-concurrency',
       name: 'Basic Set',
       files: {
-        'Concurrency and Multithreading': concurrencyQuestions,
+        'Concurrent Collections': concurrentCollectionsQuestions,
+        'Executors': executorsQuestions,
+        'Synchronization': synchronizationQuestions,
+        'Thread Fundamentals': threadFundamentalsQuestions,
       },
     },
   ],
@@ -86,14 +117,25 @@ const questionSets = {
     {
       id: 'design-patterns-basic-set',
       name: 'Basic Set',
-      files: {},
+      files: {
+        'Design Patterns': designPatternsQuestions,
+        'Microservices': microservicesQuestions,
+        'REST API': RESTQuestions,
+      },
     },
   ],
   'engineering-practices': [
     {
       id: 'engineering-basic-set',
       name: 'Basic Set',
-      files: {},
+      files: {
+        'Git': gitQuestions,
+        'CI/CD': CICDQuestions,
+        'Testing': testingQuestions,
+        'Cloud': cloudQuestions,
+        'Security': securityQuestions,
+        'Open Questions': openQuestions,
+      },
     },
   ],
 };
@@ -213,7 +255,7 @@ export const categories = [
       'Thread Fundamentals',
       'Synchronization',
       'Concurrent Collections',
-      'Executors Framework',
+      'Executors',
     ],
   },
   {

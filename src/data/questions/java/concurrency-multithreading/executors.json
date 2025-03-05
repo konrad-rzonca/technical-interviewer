@@ -1,6 +1,6 @@
 ﻿{
   "category": "Concurrency and Multithreading",
-  "subcategory": "Executors Framework",
+  "subcategory": "Executors",
   "questions": [
     {
       "id": "java-executor-framework-concurrency-multithreading-e-1",
