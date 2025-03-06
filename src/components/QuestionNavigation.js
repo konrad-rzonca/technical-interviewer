@@ -1,33 +1,9 @@
 // src/components/QuestionNavigation.js
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Box, Grid, Typography, useMediaQuery, useTheme} from '@mui/material';
 import SkillLevelSection from './SkillLevelSection';
 import {scrollbarStyles, usePanelStyles, useTitleStyles} from '../utils/styles';
 import {LAYOUT, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
-
-// Constants for skill levels
-const SKILL_LEVELS = {
-  BEGINNER: 'beginner',
-  INTERMEDIATE: 'intermediate',
-  ADVANCED: 'advanced',
-};
-
-// Section title as a memoized component
-const SectionTitle = React.memo(({titleStyles}) => (
-    <Typography
-        variant="subtitle1"
-        sx={{
-          ...titleStyles,
-          mb: SPACING.toUnits(SPACING.sm),
-          flexShrink: 0, // Don't shrink the title
-        }}
-    >
-      Question Navigation
-    </Typography>
-));
-
-// Empty state component
-const EmptyState = React.memo(() => null);
 
 const QuestionNavigation = ({
   filteredQuestions,
@@ -37,21 +13,23 @@ const QuestionNavigation = ({
 }) => {
   const theme = useTheme();
   const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  // Use the column threshold from theme
   const isVeryWideScreen = useMediaQuery(
-      `(min-width:${LAYOUT.COLUMN_THRESHOLD}px)`,
-  );
+      `(min-width:${LAYOUT.COLUMN_THRESHOLD}px)`);
 
-  // Container ref for width measurement
+  // Container ref to measure available width
   const containerRef = useRef(null);
   const resizeObserverRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
+  // Default to 1 column unless on very wide screens
   const [columnCount, setColumnCount] = useState(isVeryWideScreen ? 2 : 1);
 
-  // Get styles
+  // Get styles from style hooks for consistency with other panels
   const titleStyles = useTitleStyles({
     fontSize: TYPOGRAPHY.fontSize.panelTitle,
   });
 
+  // Get panel styles to match QuestionDetailsPanel and Candidate Evaluation
   const contentBoxStyles = usePanelStyles(false, false, {
     overflow: 'visible',
     height: '100%',
@@ -59,93 +37,89 @@ const QuestionNavigation = ({
     flexDirection: 'column',
   });
 
-  // Group questions by skill level - memoized to avoid recalculation
-  const skillLevelGroups = useMemo(() => {
-    if (!filteredQuestions || filteredQuestions.length === 0) {
-      return {
-        [SKILL_LEVELS.BEGINNER]: [],
-        [SKILL_LEVELS.INTERMEDIATE]: [],
-        [SKILL_LEVELS.ADVANCED]: [],
-      };
+  // Function to update width based on container size
+  const updateWidth = () => {
+    if (containerRef.current) {
+      const width = containerRef.current.offsetWidth;
+      setContainerWidth(width);
+
+      // Base column count on actual container width
+      // Only use 2 columns when container is very wide
+      if (width >= LAYOUT.COLUMN_THRESHOLD) {
+        setColumnCount(2);
+      } else {
+        setColumnCount(1);
+      }
     }
+  };
 
-    // Use reduce for efficient grouping
-    const groups = filteredQuestions.reduce((acc, question) => {
-      const level = question.skillLevel || SKILL_LEVELS.INTERMEDIATE;
-
-      if (!acc[level]) {
-        acc[level] = [];
-      }
-
-      acc[level].push(question);
-      return acc;
-    }, {
-      [SKILL_LEVELS.BEGINNER]: [],
-      [SKILL_LEVELS.INTERMEDIATE]: [],
-      [SKILL_LEVELS.ADVANCED]: [],
-    });
-
-    // Sort questions alphabetically within each group
-    Object.keys(groups).forEach(level => {
-      if (groups[level].length > 1) {
-        groups[level].sort((a, b) => {
-          const titleA = a.shortTitle || a.question;
-          const titleB = b.shortTitle || b.question;
-          return titleA.localeCompare(titleB);
-        });
-      }
-    });
-
-    return groups;
-  }, [filteredQuestions]);
-
-  // Measure container width
-  const updateWidth = useCallback(() => {
-    if (!containerRef.current) return;
-
-    const width = containerRef.current.offsetWidth;
-    setContainerWidth(width);
-
-    // Update column count based on width
-    setColumnCount(width >= LAYOUT.COLUMN_THRESHOLD ? 2 : 1);
-  }, []);
-
-  // Set up ResizeObserver
+  // Set up ResizeObserver with proper cleanup
   useEffect(() => {
-    // Initial measurement
-    updateWidth();
+    updateWidth(); // Initial measurement
 
     // Create ResizeObserver
-    resizeObserverRef.current = new ResizeObserver(() => {
-      window.requestAnimationFrame(updateWidth);
+    resizeObserverRef.current = new ResizeObserver(entries => {
+      // Use requestAnimationFrame to throttle updates
+      window.requestAnimationFrame(() => {
+        updateWidth();
+      });
     });
 
-    // Start observing
+    // Start observing when the component mounts
     if (containerRef.current) {
       resizeObserverRef.current.observe(containerRef.current);
     }
 
-    // Cleanup
+    // Cleanup observer when component unmounts
     return () => {
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
       }
     };
-  }, [updateWidth]);
+  }, []);
 
-  // Update columns when screen size changes
+  // Update column count when screen size changes
   useEffect(() => {
     setColumnCount(isVeryWideScreen ? 2 : 1);
   }, [isVeryWideScreen]);
 
-  // Stable handler for question selection
-  const handleQuestionSelect = useCallback((question) => {
-    onQuestionSelect(question);
-  }, [onQuestionSelect]);
+  // Group questions by skill level - memoized for performance
+  const skillLevelGroups = useMemo(() => {
+    if (!filteredQuestions || filteredQuestions.length === 0) {
+      return {beginner: [], intermediate: [], advanced: []};
+    }
 
-  // Early return for empty state
+    const groups = {
+      beginner: [],
+      intermediate: [],
+      advanced: [],
+    };
+
+    // Fill the groups with questions
+    filteredQuestions.forEach(question => {
+      if (groups.hasOwnProperty(question.skillLevel)) {
+        groups[question.skillLevel].push(question);
+      } else {
+        // Default to intermediate if unknown skill level
+        groups.intermediate.push(question);
+      }
+    });
+
+    // Sort questions within each group alphabetically
+    Object.keys(groups).forEach(level => {
+      groups[level].sort((a, b) => {
+        const titleA = a.shortTitle || a.question;
+        const titleB = b.shortTitle || b.question;
+        return titleA.localeCompare(titleB);
+      });
+    });
+
+    return groups;
+  }, [filteredQuestions]);
+
+  // Early return with memoized empty object
   if (!filteredQuestions || filteredQuestions.length === 0) {
-    return <EmptyState/>;
+    return null;
   }
 
   return (
@@ -158,9 +132,18 @@ const QuestionNavigation = ({
             flexDirection: 'column',
           }}
       >
-        <SectionTitle titleStyles={titleStyles}/>
+        <Typography
+            variant="subtitle1"
+            sx={{
+              ...titleStyles,
+              mb: SPACING.toUnits(SPACING.sm),
+              flexShrink: 0, // Don't shrink the title
+            }}
+        >
+          Question Navigation
+        </Typography>
 
-        {/* Three-column layout for question skill levels */}
+        {/* Three-column layout for question skill levels - allows internal scrolling */}
         <Grid
             container
             spacing={SPACING.toUnits(SPACING.sm)}
@@ -178,7 +161,7 @@ const QuestionNavigation = ({
                     questions={skillLevelGroups[level]}
                     currentQuestion={currentQuestion}
                     gradesMap={gradesMap}
-                    onQuestionSelect={handleQuestionSelect}
+                    onQuestionSelect={onQuestionSelect}
                     columnCount={columnCount}
                     isSmallScreen={isExtraSmallScreen}
                 />
@@ -189,31 +172,4 @@ const QuestionNavigation = ({
   );
 };
 
-// Equality check function for React.memo
-const areEqual = (prevProps, nextProps) => {
-  // Check if filtered questions array reference changed
-  if (prevProps.filteredQuestions !== nextProps.filteredQuestions) {
-    return false;
-  }
-
-  // Check if current question changed
-  if (prevProps.currentQuestion?.id !== nextProps.currentQuestion?.id) {
-    return false;
-  }
-
-  // Check grades for filtered questions only
-  if (prevProps.filteredQuestions === nextProps.filteredQuestions) {
-    // Only check grades that could cause visual changes
-    for (const question of prevProps.filteredQuestions) {
-      if (prevProps.gradesMap[question.id] !==
-          nextProps.gradesMap[question.id]) {
-        return false;
-      }
-    }
-  }
-
-  // If we got here, consider props equal
-  return true;
-};
-
-export default React.memo(QuestionNavigation, areEqual);
+export default React.memo(QuestionNavigation);
