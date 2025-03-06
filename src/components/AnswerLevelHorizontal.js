@@ -35,7 +35,8 @@ const AnswerPoint = React.memo(({
   const formattedDescription = formatTooltipContent(point.description);
 
   return (
-      <Tooltip {...tooltipProps} title={formattedDescription}>
+      <Tooltip {...tooltipProps}
+               title={formattedDescription}>
         <Box
             onClick={() => onPointClick(categoryIndex, pointIndex)}
             sx={{
@@ -56,6 +57,7 @@ const AnswerPoint = React.memo(({
                 backgroundColor: answerStyles.hoverBg,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               },
+
             }}
         >
           {/* Learning mode: show placeholder only when not selected */}

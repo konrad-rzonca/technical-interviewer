@@ -191,7 +191,7 @@
     },
     {
       "id": "java-relationship-mapping-frameworks-hibernate-4",
-      "skillLevel": "intermediate",
+      "skillLevel": "beginner",
       "shortTitle": "Relationship Mapping",
       "question": "Can you explain how different types of relationships are mapped in Hibernate?",
       "answerInsights": [
@@ -659,7 +659,7 @@
     },
     {
       "id": "java-n-plus-one-problem-frameworks-hibernate-11",
-      "skillLevel": "advanced",
+      "skillLevel": "intermediate",
       "shortTitle": "N+1 Problem",
       "question": "What is the N+1 query problem in Hibernate and how can it be solved?",
       "answerInsights": [
@@ -793,7 +793,7 @@
     },
     {
       "id": "java-performance-optimization-frameworks-hibernate-13",
-      "skillLevel": "advanced",
+      "skillLevel": "intermediate",
       "shortTitle": "Performance Optimization",
       "question": "What strategies can be employed to optimize Hibernate performance in high-load applications?",
       "answerInsights": [
