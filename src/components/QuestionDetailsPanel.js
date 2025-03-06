@@ -1,5 +1,5 @@
 // src/components/QuestionDetailsPanel.js
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   Box,
   IconButton,
@@ -53,6 +53,29 @@ const QuestionDetailsPanel = ({
   const contentBoxStyles = usePanelStyles(false, false,
       {overflow: 'visible'});
 
+  // Local state for notes to prevent lag during typing
+  const [localNotes, setLocalNotes] = useState('');
+
+  // Initialize local notes when current question changes
+  useEffect(() => {
+    if (currentQuestion) {
+      setLocalNotes(notesMap[currentQuestion.id] || '');
+    }
+  }, [currentQuestion, notesMap]);
+
+  // Handle local notes change without triggering save
+  const handleNotesChange = (event) => {
+    setLocalNotes(event.target.value);
+  };
+
+  // Save notes only when user finishes typing (on blur)
+  const handleNotesBlur = () => {
+    // Only update if content has changed
+    if (localNotes !== (notesMap[currentQuestion.id] || '')) {
+      onNotesChange(currentQuestion.id, localNotes);
+    }
+  };
+
   // Memoize the empty state to avoid unnecessary re-renders
   const emptyStateContent = useMemo(() => (
       <Box sx={{
@@ -85,11 +108,6 @@ const QuestionDetailsPanel = ({
       console.error('onAnswerPointSelect is not a function',
           onAnswerPointSelect);
     }
-  };
-
-  // Handle notes change
-  const handleNotesChange = (event) => {
-    onNotesChange(currentQuestion.id, event.target.value);
   };
 
   // Handle grade change
@@ -245,8 +263,9 @@ const QuestionDetailsPanel = ({
               rows={2} // Reduced from 4 to better fit in the fixed container
               variant="outlined"
               fullWidth
-              value={notesMap[currentQuestion.id] || ''}
+              value={localNotes}
               onChange={handleNotesChange}
+              onBlur={handleNotesBlur}
               sx={{mb: SPACING.toUnits(SPACING.sm)}}
               InputProps={{
                 style: {
