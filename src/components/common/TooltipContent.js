@@ -1,7 +1,7 @@
 ﻿// src/components/common/TooltipContent.js
 import React from 'react';
 import {Box, Rating} from '@mui/material';
-import {COLORS, TYPOGRAPHY} from '../../themes/baseTheme';
+import {TYPOGRAPHY} from '../../themes/baseTheme';
 import {formatTooltipContent} from '../../utils/formatTooltipContent';
 
 /**
@@ -34,7 +34,6 @@ const TooltipContent = ({
                 value={rating}
                 readOnly
                 size="small"
-                sx={{color: COLORS.basic.main}}
             />
           </Box>
       )}

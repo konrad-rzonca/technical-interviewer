@@ -252,7 +252,7 @@
     },
     {
       "id": "spring-security-authentication-frameworks-s-20",
-      "skillLevel": "advanced",
+      "skillLevel": "intermediate",
       "shortTitle": "Security Authentication",
       "question": "What authentication methods does Spring Security support and how would you implement them?",
       "answerInsights": [
