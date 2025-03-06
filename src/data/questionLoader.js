@@ -18,8 +18,10 @@ import threadFundamentalsQuestions
 
 import collectionsQuestions from './questions/java/core-java/collections.json';
 import exceptionsQuestions from './questions/java/core-java/exceptions.json';
-import dataStructuresQuestions
-  from './questions/java/data-structures-and-algorithms/data-structures.json';
+import dataStructuresQuestions1
+  from './questions/java/data-structures-and-algorithms/data-structures-1.json';
+import dataStructuresQuestions2
+  from './questions/java/data-structures-and-algorithms/data-structures-2.json';
 import springQuestions from './questions/java/framework/spring-1.json';
 import spring2Questions from './questions/java/framework/spring-2.json';
 
@@ -71,7 +73,13 @@ const questionSets = {
       id: 'dsa-basic-set',
       name: 'Basic Set',
       files: {
-        'Data Structures': dataStructuresQuestions,
+        'Data Structures': {
+          category: dataStructuresQuestions1.category,
+          subcategory: dataStructuresQuestions1.subcategory,
+          questions: [
+            ...dataStructuresQuestions1.questions,
+            ...dataStructuresQuestions2.questions],
+        },
         'Algorithms': {
           category: algorithmsQuestions1.category,
           subcategory: algorithmsQuestions1.subcategory,
