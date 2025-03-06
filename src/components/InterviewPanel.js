@@ -82,6 +82,29 @@ const InterviewPanel = ({
       setSelectedCategory(categories[0].id);
     }
   }, []);
+  
+  // Update selected category, expand it, and set subcategory filter when current question changes
+  useEffect(() => {
+    if (currentQuestion) {
+      const category = getCategoryForQuestion(currentQuestion);
+      if (category) {
+        // Update selected category if different
+        if (category.id !== selectedCategory) {
+          setSelectedCategory(category.id);
+        }
+
+        // Ensure the category is expanded
+        if (expandedCategory !== category.id) {
+          setExpandedCategory(category.id);
+        }
+
+        // Set subcategory filter to match the question's subcategory
+        if (subcategoryFilter !== currentQuestion.subcategoryName) {
+          setSubcategoryFilter(currentQuestion.subcategoryName);
+        }
+      }
+    }
+  }, [currentQuestion, selectedCategory, expandedCategory, subcategoryFilter]);
 
   // Initialize subcategory selection
   useEffect(() => {

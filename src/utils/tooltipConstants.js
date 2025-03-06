@@ -30,5 +30,5 @@ export const TOOLTIP_STYLING = {
   BOX_SHADOW: '0 4px 12px rgba(0, 0, 0, 0.2)',
   BORDER_RADIUS: 4,
   PADDING: '14px 18px', // Increased vertical padding for line breaks
-  MAX_WIDTH: 600, // Increased to accommodate formatted content
+  MAX_WIDTH: 800, // Increased to accommodate formatted content
 };
