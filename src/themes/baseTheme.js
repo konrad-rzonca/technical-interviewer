@@ -82,7 +82,7 @@ export const COLORS = {
 
 // Skill level colors - these map to the semantic colors above
 export const SKILL_LEVEL_COLORS = {
-  beginner: {
+  basic: {
     main: COLORS.basic.main,
     light: COLORS.basic.light,
     text: COLORS.basic.contrastText,
@@ -312,8 +312,8 @@ export const COMPONENT_STYLES = {
   // Answer level styling
   answerLevel: (level) => {
     // Map level index to skill level
-    const skillLevels = ['beginner', 'intermediate', 'advanced'];
-    const skillLevel = skillLevels[level] || 'beginner';
+    const skillLevels = ['basic', 'intermediate', 'advanced'];
+    const skillLevel = skillLevels[level] || 'basic';
     const colors = SKILL_LEVEL_COLORS[skillLevel];
 
     return {

@@ -151,7 +151,7 @@ const questionSets = {
 // Sort questions in a consistent order
 export const sortQuestionsByOrder = (questions) => {
   return [...questions].sort((a, b) => {
-    // First sort by skill level (beginner → intermediate → advanced)
+    // First sort by skill level (basic → intermediate → advanced)
     const levelDiff = LEVEL_ORDER[a.skillLevel] - LEVEL_ORDER[b.skillLevel];
     if (levelDiff !== 0) return levelDiff;
 

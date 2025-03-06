@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-thread-creation-c-m-tf-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Thread Creation",
       "question": "What are the different ways to create and start a thread in Java?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "java-thread-vs-runnable-c-m-tf-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Thread vs Runnable",
       "question": "Can you explain the differences between extending Thread and implementing Runnable in Java?",
       "answerInsights": [
@@ -129,7 +129,7 @@
     },
     {
       "id": "java-thread-lifecycle-c-m-tf-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Thread Lifecycle",
       "question": "Could you describe the lifecycle of a thread in Java and its different states?",
       "answerInsights": [
@@ -255,7 +255,7 @@
     },
     {
       "id": "java-thread-methods-c-m-tf-5",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Thread Methods",
       "question": "Could you explain the purpose and proper use of common Thread methods like sleep(), join(), and yield()?",
       "answerInsights": [

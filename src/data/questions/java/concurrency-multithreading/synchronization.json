@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-synchronized-keyword-concurrency-multithreading-s-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Synchronized Keyword",
       "question": "Could you explain the synchronized keyword and its purpose in Java?",
       "answerInsights": [
@@ -441,7 +441,7 @@
     },
     {
       "id": "java-thread-safety-concurrency-multithreading-s-8",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Thread Safety",
       "question": "What does thread safety mean in Java, and how can you achieve it?",
       "answerInsights": [

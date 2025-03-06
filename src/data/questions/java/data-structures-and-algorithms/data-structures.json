@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "arrays-basics-dsa-ds-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Arrays: Basics and Operations",
       "question": "Could you explain what arrays are, their characteristics, and common operations performed on them?",
       "answerInsights": [
@@ -68,7 +68,7 @@
     },
     {
       "id": "linked-list-basics-dsa-ds-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Linked Lists",
       "question": "Can you explain what linked lists are, their types, and advantages over arrays?",
       "answerInsights": [
@@ -133,7 +133,7 @@
     },
     {
       "id": "stack-implementation-dsa-ds-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Stack Implementation",
       "question": "How would you implement a stack data structure and what are its primary applications?",
       "answerInsights": [
@@ -196,7 +196,7 @@
     },
     {
       "id": "queue-implementation-dsa-ds-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Queue Implementation",
       "question": "Could you explain how queues work, their implementation approaches, and common use cases?",
       "answerInsights": [
@@ -259,7 +259,7 @@
     },
     {
       "id": "hash-tables-dsa-ds-5",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Hash Tables",
       "question": "How do hash tables work, and what techniques are used to handle collisions?",
       "answerInsights": [
@@ -322,7 +322,7 @@
     },
     {
       "id": "binary-tree-bst-dsa-ds-6",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Binary Trees and BSTs",
       "question": "Could you explain binary trees, binary search trees, and their common operations?",
       "answerInsights": [
@@ -701,7 +701,7 @@
     },
     {
       "id": "binary-tree-traversal-dsa-ds-13",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Binary Tree Traversals",
       "question": "Could you explain the different methods for traversing binary trees and their implementations?",
       "answerInsights": [
@@ -764,7 +764,7 @@
     },
     {
       "id": "doubly-linked-list-dsa-ds-14",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Doubly Linked Lists",
       "question": "What advantages do doubly linked lists offer over singly linked lists, and how are they implemented?",
       "answerInsights": [

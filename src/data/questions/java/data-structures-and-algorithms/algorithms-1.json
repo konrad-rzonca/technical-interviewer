@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-sorting-algorithms-dsa-a-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Sorting Algorithms",
       "question": "Could you compare the most common sorting algorithms in terms of performance and use cases?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "java-binary-search-dsa-a-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Binary Search",
       "question": "How does binary search work, and what are its performance characteristics?",
       "answerInsights": [
@@ -128,7 +128,7 @@
     },
     {
       "id": "java-search-algorithms-dsa-a-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Search Algorithms",
       "question": "What different search algorithms are available, and when would you use each one?",
       "answerInsights": [
@@ -191,7 +191,7 @@
     },
     {
       "id": "java-algorithm-complexity-dsa-a-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Algorithm Complexity",
       "question": "Could you explain time and space complexity analysis of algorithms and its importance?",
       "answerInsights": [
@@ -563,7 +563,7 @@
     },
     {
       "id": "java-collections-sorting-dsa-a-10",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Collections Sorting",
       "question": "How does sorting work in Java Collections, and what customization options are available?",
       "answerInsights": [

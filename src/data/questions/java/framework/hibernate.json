@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-hibernate-basics-frameworks-hibernate-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Hibernate Basics",
       "question": "Could you explain what Hibernate is and its core advantages in Java applications?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "java-jpa-vs-hibernate-frameworks-hibernate-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "JPA vs Hibernate",
       "question": "What is the difference between JPA and Hibernate?",
       "answerInsights": [
@@ -129,7 +129,7 @@
     },
     {
       "id": "java-entity-mapping-frameworks-hibernate-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Entity Mapping",
       "question": "How do you map Java classes to database tables using Hibernate?",
       "answerInsights": [
@@ -191,7 +191,7 @@
     },
     {
       "id": "java-relationship-mapping-frameworks-hibernate-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Relationship Mapping",
       "question": "Can you explain how different types of relationships are mapped in Hibernate?",
       "answerInsights": [

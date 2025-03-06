@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "rest-fundamentals-software-design-r-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "REST Fundamentals",
       "question": "Could you explain what REST is and its core principles?",
       "answerInsights": [
@@ -130,7 +130,7 @@
     },
     {
       "id": "rest-http-methods-software-design-r-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "HTTP Methods in REST",
       "question": "How are HTTP methods used in RESTful API design?",
       "answerInsights": [
@@ -256,7 +256,7 @@
     },
     {
       "id": "rest-uri-design-software-design-r-5",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "URI Design",
       "question": "What principles should guide URI design in RESTful APIs?",
       "answerInsights": [
@@ -445,7 +445,7 @@
     },
     {
       "id": "rest-vs-soap-software-design-r-8",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "REST vs. SOAP",
       "question": "How does REST compare to SOAP for web service design?",
       "answerInsights": [
@@ -570,7 +570,7 @@
     },
     {
       "id": "rest-status-codes-software-design-r-10",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "HTTP Status Codes",
       "question": "How should HTTP status codes be used in RESTful APIs?",
       "answerInsights": [

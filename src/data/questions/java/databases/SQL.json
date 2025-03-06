@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "sql-basic-query-structure-databases-sql-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "SQL Query Structure",
       "question": "Could you explain the basic structure of a SQL query and the order of execution?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "sql-joins-types-databases-sql-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "SQL Joins",
       "question": "Can you explain the different types of JOIN operations in SQL and when to use each?",
       "answerInsights": [
@@ -129,7 +129,7 @@
     },
     {
       "id": "sql-aggregate-functions-databases-sql-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Aggregate Functions",
       "question": "What are SQL aggregate functions and how do they work?",
       "answerInsights": [
@@ -192,7 +192,7 @@
     },
     {
       "id": "sql-group-by-having-databases-sql-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "GROUP BY and HAVING",
       "question": "Could you explain the GROUP BY and HAVING clauses in SQL?",
       "answerInsights": [
@@ -628,7 +628,7 @@
     },
     {
       "id": "sql-constraints-databases-sql-11",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "SQL Constraints",
       "question": "What are the different types of constraints in SQL and why are they important?",
       "answerInsights": [
@@ -690,7 +690,7 @@
     },
     {
       "id": "sql-database-keys-databases-sql-12",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Database Keys",
       "question": "Could you explain the different types of keys in database design?",
       "answerInsights": [
@@ -1308,7 +1308,7 @@
     },
     {
       "id": "sql-data-types-databases-sql-22",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "SQL Data Types",
       "question": "What are the most common SQL data types and how do you choose the appropriate ones?",
       "answerInsights": [

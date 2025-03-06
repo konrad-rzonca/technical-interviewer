@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "testing-types-engineering-practices-t-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Testing Types",
       "question": "Could you explain the different types of software testing and when each should be used?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "unit-testing-best-practices-engineering-practices-t-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Unit Testing Best Practices",
       "question": "What are the best practices for writing effective unit tests?",
       "answerInsights": [

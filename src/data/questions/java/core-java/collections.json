@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-collections-framework-core-java-c-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Collections Framework",
       "question": "Could you explain the Java Collections Framework and its core interfaces?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "java-arraylist-vs-linkedlist-core-java-c-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "ArrayList vs LinkedList",
       "question": "Can you compare ArrayList and LinkedList in terms of structure and performance?",
       "answerInsights": [
@@ -128,7 +128,7 @@
     },
     {
       "id": "java-hashmap-internal-core-java-c-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "HashMap Internals",
       "question": "Could you explain how HashMap works internally in Java?",
       "answerInsights": [
@@ -187,7 +187,7 @@
     },
     {
       "id": "java-hashset-vs-treeset-core-java-c-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "HashSet vs TreeSet",
       "question": "What are the key differences between HashSet and TreeSet in Java?",
       "answerInsights": [
@@ -436,7 +436,7 @@
     },
     {
       "id": "java-comparable-comparator-core-java-c-8",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Comparable vs Comparator",
       "question": "Could you explain the differences between Comparable and Comparator interfaces in Java?",
       "answerInsights": [
@@ -498,7 +498,7 @@
     },
     {
       "id": "java-map-interface-core-java-c-9",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Map Interface",
       "question": "Can you explain the Map interface in Java and its common implementations?",
       "answerInsights": [
@@ -561,7 +561,7 @@
     },
     {
       "id": "java-collection-vs-collections-core-java-c-10",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Collection vs Collections",
       "question": "What's the difference between the Collection interface and the Collections utility class in Java?",
       "answerInsights": [
@@ -867,7 +867,7 @@
     },
     {
       "id": "java-sorting-collections-core-java-c-15",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Sorting Collections",
       "question": "What are the different ways to sort collections in Java?",
       "answerInsights": [

@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "spring-ioc-di-frameworks-s-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "IoC & Dependency Injection",
       "question": "Can you explain the core concepts of Inversion of Control and Dependency Injection in Spring?",
       "answerInsights": [
@@ -130,7 +130,7 @@
     },
     {
       "id": "spring-boot-basics-frameworks-s-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Spring Boot Basics",
       "question": "What is Spring Boot and how does it simplify Spring application development?",
       "answerInsights": [
@@ -193,7 +193,7 @@
     },
     {
       "id": "spring-mvc-architecture-frameworks-s-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Spring MVC Architecture",
       "question": "How does the Spring MVC architecture work and what are its main components?",
       "answerInsights": [
@@ -440,7 +440,7 @@
     },
     {
       "id": "spring-configuration-approaches-frameworks-s-8",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Configuration Approaches",
       "question": "What are the different ways to configure a Spring application and when would you use each?",
       "answerInsights": [
@@ -503,7 +503,7 @@
     },
     {
       "id": "spring-boot-starters-frameworks-s-9",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Spring Boot Starters",
       "question": "What are Spring Boot Starters and how do they simplify dependency management?",
       "answerInsights": [
@@ -687,7 +687,7 @@
     },
     {
       "id": "spring-rest-api-frameworks-s-12",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "RESTful API with Spring",
       "question": "How would you build a RESTful API using Spring?",
       "answerInsights": [
@@ -870,7 +870,7 @@
     },
     {
       "id": "spring-di-types-frameworks-s-15",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Dependency Injection Types",
       "question": "What are the different types of dependency injection in Spring and what are the trade-offs?",
       "answerInsights": [
