@@ -91,7 +91,7 @@ function App() {
   return (
       <ThemeProvider theme={theme}>
         <CssBaseline/>
-        <Router>
+        <Router basename="technical-interviewer">
           <MainLayout
               questions={allQuestions}
               categories={categories}

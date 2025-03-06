@@ -236,17 +236,24 @@ export const categories = [
   {
     id: 'dsa',
     name: 'Data Structures & Algorithms',
-    subcategories: ['Data Structures', 'Algorithms'],
+    subcategories: [
+      'Data Structures',
+      'Algorithms'],
   },
   {
     id: 'frameworks',
     name: 'Frameworks',
-    subcategories: ['Spring', 'Hibernate'],
+    subcategories: [
+      'Spring',
+      'Hibernate'],
   },
   {
     id: 'databases',
     name: 'Databases',
-    subcategories: ['SQL', 'NoSQL', 'Transactions'],
+    subcategories: [
+      'SQL',
+      'NoSQL',
+      'Transactions'],
   },
   {
     id: 'concurrency-multithreading',
@@ -261,7 +268,10 @@ export const categories = [
   {
     id: 'software-design',
     name: 'Software Design',
-    subcategories: ['Design Patterns', 'Microservices', 'REST API'],
+    subcategories: [
+      'Design Patterns',
+      'Microservices',
+      'REST API'],
   },
   {
     id: 'engineering-practices',
