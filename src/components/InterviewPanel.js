@@ -586,6 +586,7 @@ const InterviewPanel = ({
                   onNotesChange={handleNotesChange}
                   onGradeChange={handleGradeChange}
                   onNavigateQuestion={handleNavigateQuestion}
+                  updateInterviewState={updateInterviewState}
               />
             </Box>
 
