@@ -39,7 +39,7 @@ const SettingsMenu = ({
 
     // Confirm with the user before clearing data
     if (window.confirm(
-        'Are you sure you want to clear all saved interview data? This cannot be undone.')) {
+        'Are you sure you want to clear all saved interview data? This will refresh your page, and cannot be undone.')) {
       storageService.clearInterviewState();
       // Notify the user
       alert(

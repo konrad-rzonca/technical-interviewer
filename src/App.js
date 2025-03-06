@@ -17,6 +17,7 @@ import {categories, getAllQuestions} from './data/questionLoader';
 import {createAppTheme} from './themes';
 import {NAVIGATION} from './utils/constants';
 import storageService from './services/storageService';
+import {exportInterviewData} from './utils/exportUtils';
 
 // Create the application theme using the theme system
 const theme = createAppTheme();
@@ -87,6 +88,12 @@ function App() {
     updateInterviewState({currentQuestion: question});
   };
 
+  const handleExportData = () => {
+    if (storageService.isStorageAvailable()) {
+      exportInterviewData(interviewState, allQuestions);
+    }
+  };
+
   // Handle answer point selection - improved with direct state update
   const handleAnswerPointSelect = (questionId, categoryPointKey) => {
     setInterviewState(prevState => {
@@ -144,6 +151,8 @@ function App() {
               onSettingChange={handleSettingChange}
               onQuestionSelect={handleQuestionSelect}
               onCategorySelect={handleCategorySelect}
+              onExportData={handleExportData}
+              onClearData={() => storageService.clearInterviewState()}
           >
             <Routes>
               <Route path={NAVIGATION.ROUTES.INTERVIEW} element={

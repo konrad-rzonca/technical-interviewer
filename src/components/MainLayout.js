@@ -18,6 +18,8 @@ const MainLayout = ({
   onSettingChange,
   onQuestionSelect,
   onCategorySelect,
+  onExportData,
+  onClearData,
 }) => {
   const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -52,6 +54,8 @@ const MainLayout = ({
             onCategorySelect={onCategorySelect}
             gradesMap={gradesMap}
             selectedCategory=""
+            onExportData={onExportData}
+            onClearData={onClearData}
         />
 
         {/* Settings Menu - Shared across the application */}

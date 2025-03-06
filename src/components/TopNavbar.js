@@ -14,6 +14,8 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import {Link, useLocation} from 'react-router-dom';
 import {SPACING} from '../themes/baseTheme';
 import {NAVIGATION} from '../utils/constants';
@@ -48,6 +50,8 @@ const TopNavbar = ({
   onCategorySelect,
   gradesMap,
   selectedCategory,
+  onExportData,
+  onClearData,
 }) => {
   const theme = useTheme();
   const location = useLocation();
@@ -61,6 +65,16 @@ const TopNavbar = ({
       (settings.learningMode ? 1 : 0) +
       (settings.hideAnsweredQuestions ? 1 : 0) +
       (settings.hideAnsweredInRelated ? 1 : 0);
+
+  // Handle clear data with confirmation
+  const handleClearData = () => {
+    if (window.confirm(
+        'Are you sure you want to clear all saved interview data? This will refresh your page, and cannot be undone.')) {
+      onClearData();
+      // Force a page refresh immediately instead of showing an alert
+      window.location.reload();
+    }
+  };
 
   return (
       <AppBar position="static" elevation={1} color="default">
@@ -149,7 +163,7 @@ const TopNavbar = ({
                 )}
           </Box>
 
-          {/* Right section: Settings Button */}
+          {/* Right section: Data Management and Settings Buttons */}
           <Box sx={{
             display: 'flex',
             alignItems: 'center',
@@ -157,6 +171,53 @@ const TopNavbar = ({
             flexGrow: isSmallScreen ? 0 : 1,
             maxWidth: isSmallScreen ? 'auto' : '33%',
           }}>
+            {/* Download Data Button */}
+            <Tooltip title="Download Interview Data">
+              <IconButton
+                  size="large"
+                  onClick={onExportData}
+                  color="primary"
+                  sx={{
+                    p: SPACING.toUnits(SPACING.sm),
+                    '& .MuiSvgIcon-root': {
+                      fontSize: '1.75rem',
+                    },
+                    width: 48,
+                    height: 48,
+                    borderRadius: '8px',
+                    '&:hover': {
+                      bgcolor: `${theme.palette.primary.main}20`,
+                    },
+                  }}
+              >
+                <FileDownloadIcon/>
+              </IconButton>
+            </Tooltip>
+
+            {/* Clear Data Button */}
+            <Tooltip title="Clear All Interview Data">
+              <IconButton
+                  size="large"
+                  onClick={handleClearData}
+                  color="primary"
+                  sx={{
+                    p: SPACING.toUnits(SPACING.sm),
+                    '& .MuiSvgIcon-root': {
+                      fontSize: '1.75rem',
+                    },
+                    width: 48,
+                    height: 48,
+                    borderRadius: '8px',
+                    '&:hover': {
+                      bgcolor: `${theme.palette.error.main}20`,
+                    },
+                  }}
+              >
+                <DeleteIcon/>
+              </IconButton>
+            </Tooltip>
+
+            {/* Settings Button */}
             <Tooltip title="Settings">
               <IconButton
                   size="large"

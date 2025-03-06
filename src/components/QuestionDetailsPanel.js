@@ -46,6 +46,7 @@ const QuestionDetailsPanel = ({
   onNotesChange,
   onGradeChange,
   onNavigateQuestion,
+  updateInterviewState,
 }) => {
   // Get styles from style hooks
   const titleStyles = useTitleStyles();
@@ -94,6 +95,41 @@ const QuestionDetailsPanel = ({
   // Handle grade change
   const handleGradeChange = (event, newValue) => {
     onGradeChange(currentQuestion.id, newValue);
+  };
+
+  // Handle clearing the current question data
+  const handleClearQuestionData = () => {
+    // Create updates to clear question data
+    const updates = {};
+
+    // Clear notes if they exist
+    if (notesMap[currentQuestion.id]) {
+      updates.notesMap = {
+        ...notesMap,
+        [currentQuestion.id]: '',
+      };
+    }
+
+    // Clear grade if it exists
+    if (gradesMap[currentQuestion.id] !== undefined) {
+      updates.gradesMap = {
+        ...gradesMap,
+      };
+      delete updates.gradesMap[currentQuestion.id];
+    }
+
+    // Clear selected points if they exist
+    if (selectedAnswerPointsMap[currentQuestion.id]) {
+      updates.selectedAnswerPointsMap = {
+        ...selectedAnswerPointsMap,
+        [currentQuestion.id]: {},
+      };
+    }
+
+    // Only update if there's something to clear
+    if (Object.keys(updates).length > 0) {
+      updateInterviewState(updates);
+    }
   };
 
   return (
@@ -166,12 +202,22 @@ const QuestionDetailsPanel = ({
           ...contentBoxStyles,
           mt: SPACING.toUnits(SPACING.md),
         }}>
-          <Typography variant="subtitle1" sx={{
-            ...titleStyles,
-            fontSize: TYPOGRAPHY.fontSize.panelTitle,
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: SPACING.toUnits(SPACING.md),
           }}>
-            Candidate Evaluation
-          </Typography>
+
+            <Typography variant="subtitle1" sx={{
+              ...titleStyles,
+              fontSize: TYPOGRAPHY.fontSize.panelTitle,
+              mb: 0,
+            }}>
+              Candidate Evaluation
+            </Typography>
+
+          </Box>
 
           <Box sx={{
             display: 'flex',
