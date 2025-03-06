@@ -2,16 +2,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Box, Paper, useMediaQuery, useTheme} from '@mui/material';
 
-import {
-  categories,
-  getCategoryForQuestion,
-  getFilteredQuestions,
-  getQuestionsByCategory,
-  getQuestionSets,
-  getRelatedQuestions,
-  sortQuestionsByOrder,
-} from '../data/questionLoader';
-
 import {scrollbarStyles, usePanelStyles} from '../utils/styles';
 import {LAYOUT} from '../themes/baseTheme';
 import CategorySidebar from './CategorySidebar';
@@ -20,6 +10,12 @@ import QuestionNavigation from './QuestionNavigation';
 import RelatedQuestionsSidebar from './RelatedQuestionsSidebar';
 import SidebarPanel from './SidebarPanel';
 import {MobileBottomNav, MobileDrawer} from './MobileNavigation';
+
+// Import custom hooks for state management
+import {useCategoryState} from '../hooks/useCategoryState';
+import {useQuestionNavigation} from '../hooks/useQuestionNavigation';
+import {useRelatedQuestions} from '../hooks/useRelatedQuestions';
+import {useEvaluationState} from '../hooks/useEvaluationState';
 
 /**
  * InterviewPanel - Main interview interface component
@@ -38,6 +34,7 @@ const InterviewPanel = ({
     gradesMap,
     selectedAnswerPointsMap,
   } = interviewState;
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
@@ -50,23 +47,37 @@ const InterviewPanel = ({
   const [mobileView, setMobileView] = useState('question'); // 'category', 'question', 'related'
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  // Category state
-  const [activeCategories, setActiveCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [expandedCategory, setExpandedCategory] = useState(null);
-  const [questions, setQuestions] = useState([]);
-  const [filteredQuestions, setFilteredQuestions] = useState([]);
-  const [relatedQuestionsList, setRelatedQuestionsList] = useState([]);
-  const [availableSets, setAvailableSets] = useState([]);
-  const [selectedSets, setSelectedSets] = useState({});
-  const [selectedSubcategories, setSelectedSubcategories] = useState({});
-  const [subcategoryFilter, setSubcategoryFilter] = useState(null);
+  // Use custom hooks for state management
+  const categoryState = useCategoryState(interviewState, updateInterviewState);
 
-  // Navigation state - Added for ordered navigation
-  const [navigationState, setNavigationState] = useState({
-    orderedQuestions: [],
-    currentIndex: -1,
-  });
+  const {
+    handleNavigateQuestion,
+    handleQuestionSelect,
+  } = useQuestionNavigation(
+      categoryState.filteredQuestions,
+      currentQuestion,
+      updateInterviewState,
+  );
+
+  const {filteredRelatedQuestions} = useRelatedQuestions(
+      currentQuestion,
+      gradesMap,
+      settings.hideAnsweredInRelated,
+  );
+
+  const {
+    handleNotesChange,
+    handleGradeChange,
+    handleAnswerPointSelect,
+  } = useEvaluationState(interviewState, updateInterviewState);
+
+  // Apply hide answered questions filter
+  useEffect(() => {
+    categoryState.applyAnsweredFilter(
+        settings.hideAnsweredQuestions,
+        gradesMap,
+    );
+  }, [settings.hideAnsweredQuestions, gradesMap, categoryState.questions]);
 
   // Sidebar toggle handlers - optimized with useCallback
   const toggleLeftSidebar = useCallback(() => {
@@ -76,175 +87,6 @@ const InterviewPanel = ({
   const toggleRightSidebar = useCallback(() => {
     setRightSidebarCollapsed(prev => !prev);
   }, []);
-
-  // Initialize active categories
-  useEffect(() => {
-    setActiveCategories(categories);
-
-    if (categories.length > 0 && !selectedCategory) {
-      setSelectedCategory(categories[0].id);
-    }
-  }, [selectedCategory]);
-
-  // Initialize subcategory selection
-  useEffect(() => {
-    const initialSelectedSubcategories = {};
-
-    categories.forEach(category => {
-      if (category.subcategories?.length > 0) {
-        initialSelectedSubcategories[category.id] = {};
-        category.subcategories.forEach(subcategory => {
-          initialSelectedSubcategories[category.id][subcategory] = true;
-        });
-      }
-    });
-
-    setSelectedSubcategories(initialSelectedSubcategories);
-  }, []);
-
-  // Load available question sets for the selected category
-  useEffect(() => {
-    if (selectedCategory) {
-      const sets = getQuestionSets(selectedCategory);
-      setAvailableSets(sets);
-
-      // Initialize all sets as selected by default
-      const initialSelection = {};
-      sets.forEach(set => {
-        initialSelection[set.id] = true;
-      });
-      setSelectedSets(initialSelection);
-    }
-  }, [selectedCategory]);
-
-  // Load questions based on selected category, subcategories, and sets
-  useEffect(() => {
-    let baseQuestions = [];
-
-    if (selectedCategory) {
-      // Filter questions
-      if (subcategoryFilter) {
-        // Filter by specific subcategory if selected
-        baseQuestions = getFilteredQuestions(
-            selectedCategory,
-            subcategoryFilter,
-        );
-      } else if (selectedSubcategories[selectedCategory]) {
-        // Filter by multiple selected subcategories
-        const activeSubcategories = Object.entries(
-            selectedSubcategories[selectedCategory],
-        ).
-            filter(([_, isSelected]) => isSelected).
-            map(([subcategory, _]) => subcategory);
-
-        if (activeSubcategories.length > 0) {
-          // Get questions from all active subcategories
-          baseQuestions = [];
-          activeSubcategories.forEach(subcategory => {
-            const subcategoryQuestions = getFilteredQuestions(
-                selectedCategory,
-                subcategory,
-            );
-            baseQuestions.push(...subcategoryQuestions);
-          });
-
-          // Sort the combined questions for consistent ordering
-          baseQuestions = sortQuestionsByOrder(baseQuestions);
-        }
-      } else {
-        // Get all questions for the category if no subcategory filtering
-        baseQuestions = getQuestionsByCategory(selectedCategory);
-      }
-
-      // If we have questions but no current question selected, select the first one
-      if (baseQuestions.length > 0 && !currentQuestion) {
-        updateInterviewState({currentQuestion: baseQuestions[0]});
-      }
-    }
-
-    // Use a brand new array to ensure React detects state change
-    setQuestions(baseQuestions);
-  }, [
-    selectedCategory,
-    selectedSets,
-    selectedSubcategories,
-    subcategoryFilter,
-    currentQuestion,
-    updateInterviewState,
-  ]);
-
-  // Apply hide answered questions filter
-  useEffect(() => {
-    let filtered = [...questions];
-
-    if (settings.hideAnsweredQuestions) {
-      filtered = questions.filter(question => !gradesMap[question.id]);
-
-      // If current question is filtered out, select first visible question
-      if (
-          filtered.length > 0 &&
-          currentQuestion &&
-          gradesMap[currentQuestion.id]
-      ) {
-        updateInterviewState({currentQuestion: filtered[0]});
-      }
-    }
-
-    setFilteredQuestions(filtered);
-  }, [
-    questions,
-    settings.hideAnsweredQuestions,
-    gradesMap,
-    currentQuestion,
-    updateInterviewState,
-  ]);
-
-  // Update navigation state when filtered questions or current question changes
-  useEffect(() => {
-    let orderedQuestions = [];
-    let currentIndex = -1;
-
-    if (filteredQuestions.length > 0) {
-      // Create ordered list for navigation
-      orderedQuestions = sortQuestionsByOrder([...filteredQuestions]);
-
-      currentIndex = currentQuestion
-          ? orderedQuestions.findIndex(q => q.id === currentQuestion.id)
-          : 0;
-
-      if (currentIndex === -1) {
-        currentIndex = 0;
-      }
-    }
-
-    setNavigationState({
-      orderedQuestions,
-      currentIndex,
-    });
-  }, [filteredQuestions, currentQuestion]);
-
-  // Load related questions when current question changes
-  useEffect(() => {
-    let related = [];
-
-    if (currentQuestion) {
-      related = getRelatedQuestions(currentQuestion.id);
-
-      // Filter out any questions that point to themselves
-      related = related.filter(q => q.id !== currentQuestion.id);
-
-      // Enhance related questions with category name information
-      related = related.map(q => {
-        const categoryObj = categories.find(c => c.id === q.categoryId) || {};
-        return {
-          ...q,
-          categoryName: categoryObj.name || '',
-        };
-      });
-    }
-
-    setRelatedQuestionsList(related);
-  }, [currentQuestion]);
 
   // Handle mobile view changes
   useEffect(() => {
@@ -277,178 +119,26 @@ const InterviewPanel = ({
     }
   }, [isMobile, isTablet]);
 
-  // Handle category selection - optimized with useCallback
-  const handleCategorySelect = useCallback(
-      (categoryId, explicitExpandedState = null) => {
-        if (categoryId === selectedCategory) {
-          // Toggle expansion if the category is already selected
-          setExpandedCategory(prevExpanded =>
-              explicitExpandedState !== null
-                  ? explicitExpandedState
-                  : prevExpanded === categoryId
-                      ? null
-                      : categoryId,
-          );
-          return;
-        }
-
-        setSelectedCategory(categoryId);
-        const category = categories.find(c => c.id === categoryId);
-
-        // If explicitExpandedState is provided, use it, otherwise use default logic
-        setExpandedCategory(
-            explicitExpandedState !== null
-                ? explicitExpandedState
-                : category && category.subcategories.length > 0
-                    ? categoryId
-                    : null,
-        );
-
-        setSubcategoryFilter(null);
-        updateInterviewState({currentQuestion: null});
-
-        // In mobile, switch to question view after selecting a category
-        if (isMobile) {
-          setMobileView('question');
-        }
-      }, [selectedCategory, isMobile, updateInterviewState]);
-
-  // Subcategory handlers - optimized with useCallback
-  const handleSubcategorySelect = useCallback(subcategory => {
-    setSubcategoryFilter(prev => prev === subcategory ? null : subcategory);
-  }, []);
-
-  const handleSubcategoryToggle = useCallback((categoryId, subcategory) => {
-    setSelectedSubcategories(prev => ({
-      ...prev,
-      [categoryId]: {
-        ...prev[categoryId],
-        [subcategory]: !prev[categoryId][subcategory],
-      },
-    }));
-    setSubcategoryFilter(null); // Clear any active filter
-  }, []);
-
-  // Handle question selection - optimized with useCallback
-  const handleQuestionSelect = useCallback(question => {
-    // Find the category for this question
-    const category = getCategoryForQuestion(question);
-
-    if (category && category.id !== selectedCategory) {
-      // If question is from a different category, update category selection
-      setSelectedCategory(category.id);
-    }
-
-    updateInterviewState({currentQuestion: question});
+  // Enhanced question selection handler for mobile view switching
+  const handleQuestionSelectWithMobileView = useCallback((question) => {
+    handleQuestionSelect(question);
 
     // In mobile, switch to question view after selecting a question
     if (isMobile) {
       setMobileView('question');
     }
-  }, [selectedCategory, isMobile, updateInterviewState]);
+  }, [handleQuestionSelect, isMobile]);
 
-  // Navigate to next/previous question - optimized with useCallback
-  const handleNavigateQuestion = useCallback(direction => {
-    const {orderedQuestions, currentIndex} = navigationState;
-    if (orderedQuestions.length <= 1) return;
+  // Enhanced category selection handler for mobile view switching
+  const handleCategorySelectWithMobileView = useCallback(
+      (categoryId, explicitExpandedState) => {
+        categoryState.handleCategorySelect(categoryId, explicitExpandedState);
 
-    let newIndex;
-    if (direction === 'next') {
-      newIndex = (currentIndex + 1) % orderedQuestions.length;
-    } else {
-      newIndex = (currentIndex - 1 + orderedQuestions.length) %
-          orderedQuestions.length;
-    }
-
-    updateInterviewState({currentQuestion: orderedQuestions[newIndex]});
-  }, [navigationState, updateInterviewState]);
-
-  // Handle notes change - optimized with useCallback
-  const handleNotesChange = useCallback((questionId, value) => {
-    updateInterviewState(prevState => ({
-      ...prevState,
-      notesMap: {
-        ...prevState.notesMap,
-        [questionId]: value,
-      },
-    }));
-  }, [updateInterviewState]);
-
-  // Handle grade change - optimized with useCallback
-  const handleGradeChange = useCallback((questionId, value) => {
-    updateInterviewState(prevState => ({
-      ...prevState,
-      gradesMap: {
-        ...prevState.gradesMap,
-        [questionId]: value,
-      },
-    }));
-  }, [updateInterviewState]);
-
-  // Set selection handlers - optimized with useCallback
-  const handleSetToggle = useCallback(setId => {
-    setSelectedSets(prev => ({
-      ...prev,
-      [setId]: !prev[setId],
-    }));
-  }, []);
-
-  const handleSelectAllSets = useCallback(() => {
-    const newSelection = {};
-    availableSets.forEach(set => {
-      newSelection[set.id] = true;
-    });
-    setSelectedSets(prev => ({...prev, ...newSelection}));
-  }, [availableSets]);
-
-  const handleDeselectAllSets = useCallback(() => {
-    const newSelection = {};
-    availableSets.forEach(set => {
-      newSelection[set.id] = false;
-    });
-    setSelectedSets(prev => ({...prev, ...newSelection}));
-  }, [availableSets]);
-
-  // Subcategory selection handlers - optimized with useCallback
-  const handleSelectAllSubcategories = useCallback(categoryId => {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return;
-
-    setSelectedSubcategories(prev => {
-      const newSelection = {...prev};
-      if (!newSelection[categoryId]) {
-        newSelection[categoryId] = {};
-      }
-
-      category.subcategories.forEach(subcategory => {
-        newSelection[categoryId][subcategory] = true;
-      });
-
-      return newSelection;
-    });
-
-    setSubcategoryFilter(null);
-  }, []);
-
-  const handleDeselectAllSubcategories = useCallback(categoryId => {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return;
-
-    setSelectedSubcategories(prev => {
-      const newSelection = {...prev};
-      if (!newSelection[categoryId]) {
-        newSelection[categoryId] = {};
-      }
-
-      category.subcategories.forEach(subcategory => {
-        newSelection[categoryId][subcategory] = false;
-      });
-
-      return newSelection;
-    });
-
-    setSubcategoryFilter(null);
-  }, []);
+        // In mobile, switch to question view after selecting a category
+        if (isMobile) {
+          setMobileView('question');
+        }
+      }, [categoryState.handleCategorySelect, isMobile]);
 
   // Handle settings changes - optimized with useCallback
   const handleSettingChange = useCallback(setting => {
@@ -531,21 +221,21 @@ const InterviewPanel = ({
               }}
           >
             <CategorySidebar
-                categories={activeCategories}
-                selectedCategory={selectedCategory}
-                expandedCategory={expandedCategory}
-                selectedSubcategories={selectedSubcategories}
-                subcategoryFilter={subcategoryFilter}
-                availableSets={availableSets}
-                selectedSets={selectedSets}
-                onCategorySelect={handleCategorySelect}
-                onSubcategorySelect={handleSubcategorySelect}
-                onSubcategoryToggle={handleSubcategoryToggle}
-                onSelectAllSubcategories={handleSelectAllSubcategories}
-                onDeselectAllSubcategories={handleDeselectAllSubcategories}
-                onSetToggle={handleSetToggle}
-                onSelectAllSets={handleSelectAllSets}
-                onDeselectAllSets={handleDeselectAllSets}
+                categories={categoryState.activeCategories || []}
+                selectedCategory={categoryState.selectedCategory}
+                expandedCategory={categoryState.expandedCategory}
+                selectedSubcategories={categoryState.selectedSubcategories}
+                subcategoryFilter={categoryState.subcategoryFilter}
+                availableSets={categoryState.availableSets}
+                selectedSets={categoryState.selectedSets}
+                onCategorySelect={handleCategorySelectWithMobileView}
+                onSubcategorySelect={categoryState.handleSubcategorySelect}
+                onSubcategoryToggle={categoryState.handleSubcategoryToggle}
+                onSelectAllSubcategories={categoryState.handleSelectAllSubcategories}
+                onDeselectAllSubcategories={categoryState.handleDeselectAllSubcategories}
+                onSetToggle={categoryState.handleSetToggle}
+                onSelectAllSets={categoryState.handleSelectAllSets}
+                onDeselectAllSets={categoryState.handleDeselectAllSets}
                 isCollapsed={leftSidebarCollapsed && !isMobile}
                 onToggle={toggleLeftSidebar}
             />
@@ -566,7 +256,7 @@ const InterviewPanel = ({
                   notesMap={notesMap}
                   gradesMap={gradesMap}
                   selectedAnswerPointsMap={selectedAnswerPointsMap}
-                  onAnswerPointSelect={onAnswerPointSelect}
+                  onAnswerPointSelect={handleAnswerPointSelect}
                   learningMode={settings.learningMode}
                   onNotesChange={handleNotesChange}
                   onGradeChange={handleGradeChange}
@@ -583,10 +273,10 @@ const InterviewPanel = ({
               ...scrollbarStyles, // Apply modern scrollbar styles
             }}>
               <QuestionNavigation
-                  filteredQuestions={filteredQuestions}
+                  filteredQuestions={categoryState.filteredQuestions}
                   currentQuestion={currentQuestion}
                   gradesMap={gradesMap}
-                  onQuestionSelect={handleQuestionSelect}
+                  onQuestionSelect={handleQuestionSelectWithMobileView}
               />
             </Box>
           </Paper>
@@ -614,9 +304,9 @@ const InterviewPanel = ({
               }}
           >
             <RelatedQuestionsSidebar
-                relatedQuestionsList={relatedQuestionsList}
+                relatedQuestionsList={filteredRelatedQuestions}
                 gradesMap={gradesMap}
-                onQuestionSelect={handleQuestionSelect}
+                onQuestionSelect={handleQuestionSelectWithMobileView}
                 hideAnswered={settings.hideAnsweredInRelated}
                 isCollapsed={rightSidebarCollapsed && !isMobile}
                 onToggle={toggleRightSidebar}
