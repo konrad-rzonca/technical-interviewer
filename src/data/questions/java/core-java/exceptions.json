@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-exception-hierarchy-core-java-e-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Exception Hierarchy",
       "question": "Could you explain the Java exception hierarchy and the difference between checked and unchecked exceptions?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "java-try-catch-block-core-java-e-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Try-Catch-Finally",
       "question": "Can you explain how try-catch-finally blocks work in Java and their execution flow?",
       "answerInsights": [
@@ -130,7 +130,7 @@
     },
     {
       "id": "java-errors-vs-exceptions-core-java-e-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Errors vs Exceptions",
       "question": "What's the difference between Error and Exception in Java, and how should each be handled?",
       "answerInsights": [
@@ -382,7 +382,7 @@
     },
     {
       "id": "java-catch-or-throws-core-java-e-7",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Catch vs Throws",
       "question": "When should you catch an exception versus declaring it with the throws clause in Java?",
       "answerInsights": [

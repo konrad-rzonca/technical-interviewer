@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "databases-transactions-acid-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "ACID Properties",
       "question": "Could you explain the ACID properties of database transactions?",
       "answerInsights": [
@@ -406,7 +406,7 @@
     },
     {
       "id": "databases-transactions-jdbc-7",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "JDBC Transaction Management",
       "question": "How do you manage database transactions using JDBC in Java applications?",
       "answerInsights": [

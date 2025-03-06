@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-executor-framework-concurrency-multithreading-e-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Executor Framework Basics",
       "question": "Could you explain the Executor framework in Java and why it's preferred over creating threads directly?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "java-executor-vs-executorservice-concurrency-multithreading-e-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Executor vs ExecutorService",
       "question": "What's the difference between the Executor and ExecutorService interfaces in Java?",
       "answerInsights": [
@@ -193,7 +193,7 @@
     },
     {
       "id": "java-thread-pool-types-concurrency-multithreading-e-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Thread Pool Types",
       "question": "Can you explain the different types of thread pools available in the Executors utility class?",
       "answerInsights": [
@@ -256,7 +256,7 @@
     },
     {
       "id": "java-callable-vs-runnable-concurrency-multithreading-e-5",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Callable vs Runnable",
       "question": "How does the Callable interface differ from Runnable, and when would you use each with executors?",
       "answerInsights": [

@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-interfaces-abstract-classes-core-java-f-21",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Interfaces vs Abstract Classes",
       "question": "What are the key differences between interfaces and abstract classes in Java?",
       "answerInsights": [
@@ -558,7 +558,7 @@
     },
     {
       "id": "java-exceptions-hierarchy-core-java-f-30",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Exceptions Hierarchy",
       "question": "Could you explain the Java exceptions hierarchy and the difference between checked and unchecked exceptions?",
       "answerInsights": [
@@ -620,7 +620,7 @@
     },
     {
       "id": "java-try-catch-finally-core-java-f-31",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Try-Catch-Finally",
       "question": "Can you explain how try-catch-finally blocks work in Java and the execution flow when exceptions occur?",
       "answerInsights": [

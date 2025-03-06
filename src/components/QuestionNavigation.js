@@ -86,11 +86,11 @@ const QuestionNavigation = ({
   // Group questions by skill level - memoized for performance
   const skillLevelGroups = useMemo(() => {
     if (!filteredQuestions || filteredQuestions.length === 0) {
-      return {beginner: [], intermediate: [], advanced: []};
+      return {basic: [], intermediate: [], advanced: []};
     }
 
     const groups = {
-      beginner: [],
+      basic: [],
       intermediate: [],
       advanced: [],
     };

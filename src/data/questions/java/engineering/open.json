@@ -523,7 +523,7 @@
     },
     {
       "id": "engineering-practices-open-questions-8",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Production Deployment Failure",
       "question": "Your team's latest deployment to production has failed and needs to be rolled back immediately. How would you handle this situation?",
       "answerInsights": [

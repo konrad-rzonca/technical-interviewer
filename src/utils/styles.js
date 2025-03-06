@@ -20,7 +20,7 @@ export const withOpacity = (color, opacity) => `${color}${opacity}`;
 
 // Get styling information for a specific skill level
 export const getSkillLevelStyles = (level) => {
-  return SKILL_LEVEL_COLORS[level] || SKILL_LEVEL_COLORS.beginner;
+  return SKILL_LEVEL_COLORS[level] || SKILL_LEVEL_COLORS.basic;
 };
 
 // Get the indicator color for a skill level
@@ -207,7 +207,7 @@ export function useSectionHeaderStyles(level, options = {}) {
 // Hook for answer level styling
 export function useAnswerLevelStyles(level, options = {}) {
   const theme = useTheme();
-  const index = ['beginner', 'intermediate', 'advanced'].indexOf(level);
+  const index = ['basic', 'intermediate', 'advanced'].indexOf(level);
   const styles = COMPONENT_STYLES.answerLevel(index);
 
   return useMemo(() => ({

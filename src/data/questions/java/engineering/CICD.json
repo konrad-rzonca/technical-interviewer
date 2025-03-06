@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "cicd-fundamentals-engineering-cicd-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "CI/CD Fundamentals",
       "question": "Could you explain the core concepts of CI/CD and their benefits?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "gitlab-cicd-engineering-cicd-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "GitLab CI/CD",
       "question": "How would you describe GitLab CI/CD and its key features?",
       "answerInsights": [

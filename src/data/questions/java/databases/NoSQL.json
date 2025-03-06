@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "nosql-fundamentals-databases-nosql-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "NoSQL Fundamentals",
       "question": "Could you explain what NoSQL databases are and why they've gained popularity?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "nosql-types-databases-nosql-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "NoSQL Database Types",
       "question": "Can you explain the different types of NoSQL databases and their use cases?",
       "answerInsights": [
@@ -450,7 +450,7 @@
     },
     {
       "id": "nosql-vs-sql-databases-nosql-8",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "NoSQL vs. SQL",
       "question": "What are the main differences between NoSQL and SQL databases, and when would you choose one over the other?",
       "answerInsights": [
@@ -897,7 +897,7 @@
     },
     {
       "id": "nosql-use-cases-databases-nosql-15",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "NoSQL Use Cases",
       "question": "What are the most appropriate use cases for different types of NoSQL databases?",
       "answerInsights": [

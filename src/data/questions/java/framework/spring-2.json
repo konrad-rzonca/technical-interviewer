@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "spring-boot-vs-spring-frameworks-s-16",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Spring Boot vs Spring",
       "question": "What are the key differences between Spring Framework and Spring Boot?",
       "answerInsights": [

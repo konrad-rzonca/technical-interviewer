@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "design-patterns-overview-software-design-dp-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Design Patterns Overview",
       "question": "Could you explain what design patterns are and why they're important in software development?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "design-patterns-categories-software-design-dp-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Pattern Categories",
       "question": "Can you describe the three main categories of design patterns and give examples of each?",
       "answerInsights": [
@@ -129,7 +129,7 @@
     },
     {
       "id": "design-patterns-singleton-software-design-dp-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Singleton Pattern",
       "question": "How does the Singleton pattern work, and what are some situations where you might use it?",
       "answerInsights": [
@@ -191,7 +191,7 @@
     },
     {
       "id": "design-patterns-factory-software-design-dp-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Factory Patterns",
       "question": "What's the difference between the Factory Method pattern and the Abstract Factory pattern?",
       "answerInsights": [
@@ -566,7 +566,7 @@
     },
     {
       "id": "design-patterns-facade-software-design-dp-10",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Facade Pattern",
       "question": "What problems does the Facade pattern address, and when would you apply it?",
       "answerInsights": [

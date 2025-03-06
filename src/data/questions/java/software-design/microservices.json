@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "microservices-fundamentals-software-design-m-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Microservices Fundamentals",
       "question": "Could you explain what microservices architecture is and its key characteristics?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "microservices-vs-monolith-software-design-m-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Microservices vs Monolith",
       "question": "Can you compare microservices architecture with monolithic architecture in terms of advantages and disadvantages?",
       "answerInsights": [

@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "owasp-top-ten-engineering-practices-security-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "OWASP Top 10",
       "question": "Could you explain what the OWASP Top 10 is and why it's important for secure development?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "authentication-authorization-engineering-practices-security-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Authentication vs Authorization",
       "question": "Can you explain the difference between authentication and authorization in security?",
       "answerInsights": [
@@ -719,7 +719,7 @@
     },
     {
       "id": "https-tls-engineering-practices-security-11",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "HTTPS & TLS",
       "question": "Why is HTTPS important, and what are best practices for implementing TLS in web applications?",
       "answerInsights": [
@@ -867,7 +867,7 @@
     },
     {
       "id": "dependency-management-engineering-practices-security-13",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Dependency Vulnerabilities",
       "question": "How do you handle security vulnerabilities in third-party dependencies?",
       "answerInsights": [

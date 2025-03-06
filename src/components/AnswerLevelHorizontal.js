@@ -99,7 +99,7 @@ const AnswerCategory = React.memo(({
   tooltipProps,
 }) => {
   // Always call hooks unconditionally at the top level
-  const level = INDEX_TO_LEVEL[categoryIndex] || 'beginner';
+  const level = INDEX_TO_LEVEL[categoryIndex] || 'basic';
   const answerStyles = useAnswerLevelStyles(level);
 
   // Check if a point is selected

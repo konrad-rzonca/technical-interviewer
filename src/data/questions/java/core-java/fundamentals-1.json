@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-jvm-architecture-core-java-f-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "JVM Architecture",
       "question": "Could you explain the JVM architecture and its role in Java's platform independence?",
       "answerInsights": [
@@ -66,7 +66,7 @@
     },
     {
       "id": "java-jre-jdk-difference-core-java-f-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "JRE vs JDK",
       "question": "What's the difference between JRE and JDK in the Java ecosystem?",
       "answerInsights": [
@@ -128,7 +128,7 @@
     },
     {
       "id": "java-datatypes-core-java-f-3",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Data Types",
       "question": "Can you explain the different data types in Java and how they're categorized?",
       "answerInsights": [
@@ -190,7 +190,7 @@
     },
     {
       "id": "java-variable-scope-core-java-f-4",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Variable Scope",
       "question": "How would you describe the different variable scopes in Java?",
       "answerInsights": [
@@ -252,7 +252,7 @@
     },
     {
       "id": "java-operators-precedence-core-java-f-5",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Operators and Precedence",
       "question": "Could you explain the different operators in Java and their precedence rules?",
       "answerInsights": [
@@ -312,7 +312,7 @@
     },
     {
       "id": "java-control-flow-core-java-f-6",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Control Flow",
       "question": "How do control flow statements work in Java?",
       "answerInsights": [
@@ -372,7 +372,7 @@
     },
     {
       "id": "java-oop-principles-core-java-f-7",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "OOP Principles",
       "question": "What are the main Object-Oriented Programming principles in Java?",
       "answerInsights": [
@@ -496,7 +496,7 @@
     },
     {
       "id": "java-access-modifiers-core-java-f-9",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Access Modifiers",
       "question": "Can you explain the different access modifiers in Java and their scope of visibility?",
       "answerInsights": [
@@ -558,7 +558,7 @@
     },
     {
       "id": "java-constructors-core-java-f-10",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Constructors",
       "question": "How do constructors work in Java, and what are their special characteristics?",
       "answerInsights": [
@@ -682,7 +682,7 @@
     },
     {
       "id": "java-method-overloading-overriding-core-java-f-12",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Overloading vs Overriding",
       "question": "Could you explain the difference between method overloading and method overriding in Java?",
       "answerInsights": [
@@ -806,7 +806,7 @@
     },
     {
       "id": "java-static-keyword-core-java-f-14",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Static Keyword",
       "question": "What are the various uses of the 'static' keyword in Java?",
       "answerInsights": [
@@ -930,7 +930,7 @@
     },
     {
       "id": "java-wrapper-classes-core-java-f-16",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Wrapper Classes",
       "question": "What are wrapper classes in Java, and why are they needed?",
       "answerInsights": [
@@ -992,7 +992,7 @@
     },
     {
       "id": "java-autoboxing-unboxing-core-java-f-17",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Autoboxing and Unboxing",
       "question": "Can you explain autoboxing and unboxing in Java and potential pitfalls?",
       "answerInsights": [
@@ -1116,7 +1116,7 @@
     },
     {
       "id": "java-string-vs-stringbuilder-core-java-f-19",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "StringBuilder vs StringBuffer",
       "question": "Could you compare String, StringBuilder, and StringBuffer in Java?",
       "answerInsights": [

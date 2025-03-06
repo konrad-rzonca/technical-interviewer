@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "git-fundamentals-engineering-practices-g-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Git Basics",
       "question": "Could you explain what Git is and what problems it solves?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "git-branching-engineering-practices-g-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Branching and Merging",
       "question": "Can you explain Git's branching and merging model and how it supports collaborative development?",
       "answerInsights": [

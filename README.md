@@ -292,7 +292,7 @@ subcategory.
   "questions": [
     {
       "id": "java-equals-vs-operator",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "== vs .equals()",
       "question": "What is the difference between '==' and '.equals()' in Java?",
       "answerInsights": [

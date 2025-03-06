@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-concurrent-collections-overview-cm-cc-1",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "Concurrent Collections Overview",
       "question": "What are concurrent collections in Java and why are they important for multithreaded applications?",
       "answerInsights": [
@@ -67,7 +67,7 @@
     },
     {
       "id": "java-concurrent-hashmap-vs-hashtable-cm-cc-2",
-      "skillLevel": "beginner",
+      "skillLevel": "basic",
       "shortTitle": "ConcurrentHashMap vs Hashtable",
       "question": "Could you compare ConcurrentHashMap with Hashtable in terms of thread safety and performance?",
       "answerInsights": [
