@@ -82,8 +82,8 @@ const InterviewPanel = ({
       setSelectedCategory(categories[0].id);
     }
   }, []);
-  
-  // Update selected category, expand it, and set subcategory filter when current question changes
+
+  // Update selected category and expand it when current question changes
   useEffect(() => {
     if (currentQuestion) {
       const category = getCategoryForQuestion(currentQuestion);
@@ -91,20 +91,17 @@ const InterviewPanel = ({
         // Update selected category if different
         if (category.id !== selectedCategory) {
           setSelectedCategory(category.id);
-        }
 
-        // Ensure the category is expanded
-        if (expandedCategory !== category.id) {
+          // Ensure the category is expanded
           setExpandedCategory(category.id);
-        }
 
-        // Set subcategory filter to match the question's subcategory
-        if (subcategoryFilter !== currentQuestion.subcategoryName) {
+          // Only set subcategory filter when the category changes
+          // This avoids overriding manual subcategory selection
           setSubcategoryFilter(currentQuestion.subcategoryName);
         }
       }
     }
-  }, [currentQuestion, selectedCategory, expandedCategory, subcategoryFilter]);
+  }, [currentQuestion, selectedCategory]);
 
   // Initialize subcategory selection
   useEffect(() => {

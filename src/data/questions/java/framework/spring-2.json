@@ -1,0 +1,922 @@
+﻿{
+  "category": "Frameworks",
+  "subcategory": "Spring",
+  "questions": [
+    {
+      "id": "spring-boot-vs-spring-frameworks-s-16",
+      "skillLevel": "beginner",
+      "shortTitle": "Spring Boot vs Spring",
+      "question": "What are the key differences between Spring Framework and Spring Boot?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Purpose",
+              "description": "**Spring Framework** is a comprehensive programming and configuration model for Java applications, while **Spring Boot** is a project built on top of Spring to simplify its use with sensible defaults."
+            },
+            {
+              "title": "Configuration Approach",
+              "description": "Spring Framework requires explicit configuration (XML, Java, or annotations), while Spring Boot uses auto-configuration to reduce boilerplate configuration based on the classpath."
+            },
+            {
+              "title": "Deployment Model",
+              "description": "Spring applications are traditionally deployed as WAR files to external servers, whereas Spring Boot encourages standalone applications with embedded servers packaged as executable JARs."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Starter Dependencies",
+              "description": "Spring Boot introduces **starter dependencies** that bundle related dependencies together, simplifying dependency management compared to Spring Framework's individual dependency declarations."
+            },
+            {
+              "title": "Production Features",
+              "description": "Spring Boot includes production-ready features like health checks, metrics, and externalized configuration through the Actuator module, which aren't available out-of-the-box in Spring Framework."
+            },
+            {
+              "title": "Opinionated Defaults",
+              "description": "Spring Boot makes opinionated choices about configuration, providing sensible defaults, while Spring Framework is more flexible but requires explicit decisions about every aspect."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Convention over Configuration",
+              "description": "Spring Boot embraces **convention over configuration**, reducing decision points and code through sensible defaults, whereas Spring Framework offers more granular control but requires more explicit configuration."
+            },
+            {
+              "title": "Relationship",
+              "description": "Spring Boot builds upon Spring Framework, adding a layer of convenience rather than replacing it—every Spring Boot application is still a Spring Framework application underneath."
+            },
+            {
+              "title": "Migration Path",
+              "description": "Moving from Spring Framework to Spring Boot primarily involves adopting the starter dependencies, removing explicit configuration that's now auto-configured, and adapting to the executable JAR model if desired."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-boot-basics-frameworks-s-3"
+      ]
+    },
+    {
+      "id": "spring-bean-scopes-frameworks-s-17",
+      "skillLevel": "intermediate",
+      "shortTitle": "Bean Scopes",
+      "question": "What are the different bean scopes in Spring and when would you use each?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Singleton Scope",
+              "description": "**Singleton** (default scope) creates a single shared instance of the bean per Spring container, which is appropriate for stateless beans like services."
+            },
+            {
+              "title": "Prototype Scope",
+              "description": "**Prototype** creates a new instance each time the bean is requested, suitable for stateful beans where each client needs a distinct instance."
+            },
+            {
+              "title": "Scope Declaration",
+              "description": "Bean scopes are declared using the **@Scope** annotation on component classes or @Bean methods, or the \"scope\" attribute in XML configuration."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Web-Specific Scopes",
+              "description": "In web applications, Spring provides additional scopes:\n- **Request**: One instance per HTTP request\n- **Session**: One instance per HTTP session\n- **Application**: One instance per ServletContext\n- **WebSocket**: One instance per WebSocket"
+            },
+            {
+              "title": "Scoped Dependencies",
+              "description": "When injecting shorter-lived beans (like prototype) into longer-lived ones (like singleton), use **scoped proxies** or **ObjectFactory/Provider** to ensure correct behavior."
+            },
+            {
+              "title": "Singleton vs. Prototype",
+              "description": "Singleton beans are initialized at container startup (unless lazy-initialized) and cached, while prototype beans are created on demand and not managed after creation."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Scopes",
+              "description": "Spring allows registering custom scopes by implementing the **Scope** interface and registering with a **CustomScopeConfigurer** bean, enabling application-specific lifetime management."
+            },
+            {
+              "title": "Proxy Mode",
+              "description": "For non-singleton scopes, use **@Scope(value=\"x\", proxyMode=ScopedProxyMode.TARGET_CLASS)** to ensure that dependencies receive a proxy that resolves to the correct instance based on the current scope."
+            },
+            {
+              "title": "Lifecycle Management",
+              "description": "Spring fully manages the lifecycle of singleton beans (creation and destruction), but only creates prototype beans, leaving their destruction to garbage collection, which impacts beans implementing DisposableBean."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-bean-lifecycle-frameworks-s-2"
+      ]
+    },
+    {
+      "id": "spring-mvc-vs-webflux-frameworks-s-18",
+      "skillLevel": "advanced",
+      "shortTitle": "MVC vs WebFlux",
+      "question": "How does Spring MVC compare to Spring WebFlux and when would you choose one over the other?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Programming Model",
+              "description": "**Spring MVC** uses a synchronous, blocking model with one thread per request, while **Spring WebFlux** uses a non-blocking, reactive model with an event loop handling many requests with fewer threads."
+            },
+            {
+              "title": "Servlet API",
+              "description": "Spring MVC is built on the Servlet API and runs on servlet containers like Tomcat, while WebFlux is built on Reactive Streams and runs on servlet 3.1+ containers or Netty."
+            },
+            {
+              "title": "Performance Characteristics",
+              "description": "MVC is optimized for CPU-bound applications with quick processing times, while WebFlux excels at I/O-bound applications with high concurrency and external service dependencies."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Return Types",
+              "description": "MVC controllers typically return concrete objects or ModelAndView, while WebFlux controllers return Mono<T> or Flux<T> (reactive types from Project Reactor) for asynchronous processing."
+            },
+            {
+              "title": "Ecosystem Compatibility",
+              "description": "MVC works with any synchronous Java library, while WebFlux requires reactive libraries for full benefit (e.g., R2DBC instead of JDBC, reactive MongoDB client instead of blocking one)."
+            },
+            {
+              "title": "Controller Definition",
+              "description": "MVC uses @Controller and @RestController annotations with similar endpoints, while WebFlux can use either annotated controllers or a functional routing API (RouterFunction)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Backpressure",
+              "description": "WebFlux supports backpressure (flow control where consumers signal producers how much data they can handle), which is crucial for systems dealing with high and variable loads."
+            },
+            {
+              "title": "Thread Model Implications",
+              "description": "In WebFlux, code should never block (e.g., Thread.sleep(), synchronous I/O) as it would defeat the purpose of the non-blocking model and potentially cause performance issues."
+            },
+            {
+              "title": "Selection Criteria",
+              "description": "Choose MVC for applications with simple request-response flows, synchronous processing, and when the team is familiar with imperative programming. Choose WebFlux for applications with high concurrency needs, streaming data scenarios, microservices calling other services, or when embracing reactive programming paradigms."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-mvc-architecture-frameworks-s-4"
+      ]
+    },
+    {
+      "id": "spring-data-repositories-frameworks-s-19",
+      "skillLevel": "intermediate",
+      "shortTitle": "Data Repositories",
+      "question": "What are the different types of repositories in Spring Data and how do they work?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Repository Hierarchy",
+              "description": "Spring Data provides a hierarchy of repository interfaces: **Repository** (marker interface), **CrudRepository** (basic CRUD operations), **PagingAndSortingRepository** (adds pagination), and technology-specific ones like **JpaRepository**."
+            },
+            {
+              "title": "Query Methods",
+              "description": "Spring Data can automatically create query implementations from method names using patterns like **findBy[Property][Operator]**, e.g., findByEmailContaining or findByAgeGreaterThan."
+            },
+            {
+              "title": "Basic Usage",
+              "description": "To use Spring Data repositories, create an interface extending one of the repository types, parameterized with entity class and ID type, and Spring automatically provides implementations at runtime."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Custom Queries",
+              "description": "For complex queries, use the **@Query** annotation with JPQL/HQL (for JPA) or native SQL, with named parameters supported via **@Param** annotation."
+            },
+            {
+              "title": "Derived Queries",
+              "description": "Query method names can combine property expressions with operators like **And**, **Or**, **Between**, **LessThan**, **GreaterThan**, **Like**, **NotNull**, **OrderBy**, etc."
+            },
+            {
+              "title": "Result Handling",
+              "description": "Repositories support various return types: single entity, Optional<T>, List<T>, Page<T> (for pagination), Slice<T> (for chunking), Stream<T>, Future<T>, and CompletableFuture<T> for asynchronous operations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Implementations",
+              "description": "For operations that can't be expressed through query methods or @Query, create a custom interface with your methods, an implementation class, and combine them using the naming convention **InterfaceName + Impl**."
+            },
+            {
+              "title": "Projections",
+              "description": "Use interface or class-based **projections** to retrieve only specific fields from entities, reducing data transfer and improving performance by avoiding full entity loading."
+            },
+            {
+              "title": "Specifications",
+              "description": "For dynamic query creation, use the **Specification** pattern with **JpaSpecificationExecutor** interface to build complex queries with multiple conditions determined at runtime."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-data-jpa-frameworks-s-5"
+      ]
+    },
+    {
+      "id": "spring-security-authentication-frameworks-s-20",
+      "skillLevel": "advanced",
+      "shortTitle": "Security Authentication",
+      "question": "What authentication methods does Spring Security support and how would you implement them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Form-Based Authentication",
+              "description": "The default authentication method uses HTML forms to submit credentials. Configure with **http.formLogin()** to customize login page, success/failure handlers, and other aspects."
+            },
+            {
+              "title": "HTTP Basic Authentication",
+              "description": "Simple authentication sending credentials with each request. Enable with **http.httpBasic()**, commonly used for API authentication."
+            },
+            {
+              "title": "In-Memory Authentication",
+              "description": "Simple authentication against in-memory users, configured via **auth.inMemoryAuthentication()** with usernames, passwords, and roles, useful for testing or simple applications."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Database Authentication",
+              "description": "Authenticate against database-stored credentials by implementing **UserDetailsService** interface with a method that loads users by username, typically using a repository."
+            },
+            {
+              "title": "LDAP Authentication",
+              "description": "Connect to LDAP/Active Directory servers with **auth.ldapAuthentication()**, configuring server URL, search base, and binding attributes."
+            },
+            {
+              "title": "OAuth 2.0 / OpenID Connect",
+              "description": "Support for OAuth 2.0 flows (authorization code, client credentials, password) and OpenID Connect, configured with OAuth2LoginConfigurer for client applications or AuthorizationServerConfigurer for servers."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "JWT Authentication",
+              "description": "Implement stateless JWT-based authentication with **JwtAuthenticationFilter** to extract and validate tokens, typically used for RESTful APIs."
+            },
+            {
+              "title": "Multi-Factor Authentication",
+              "description": "Implement MFA by extending **AbstractAuthenticationProcessingFilter** or using **AuthenticationProvider** chain to verify multiple factors sequentially."
+            },
+            {
+              "title": "Remember-Me Authentication",
+              "description": "Enable persistent login with **http.rememberMe()**, storing tokens in a database or as cookies, with configurable validity periods and token persistence."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-security-fundamentals-frameworks-s-6"
+      ]
+    },
+    {
+      "id": "spring-boot-autoconfiguration-frameworks-s-21",
+      "skillLevel": "intermediate",
+      "shortTitle": "Auto-configuration",
+      "question": "How does Spring Boot auto-configuration work and how can you customize it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Concept",
+              "description": "Spring Boot **auto-configuration** automatically configures beans based on the classpath, properties, and existing beans, reducing the need for explicit configuration."
+            },
+            {
+              "title": "Activation",
+              "description": "Auto-configuration is enabled by the **@EnableAutoConfiguration** annotation (included in @SpringBootApplication) and works through **conditional configuration**."
+            },
+            {
+              "title": "Configuration Report",
+              "description": "See applied auto-configurations by running with **--debug** flag or setting **logging.level.org.springframework.boot.autoconfigure=DEBUG** in application.properties."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Conditional Annotations",
+              "description": "Auto-configuration classes use annotations like **@ConditionalOnClass**, **@ConditionalOnMissingBean**, **@ConditionalOnProperty**, and **@ConditionalOnWebApplication** to determine when they should be applied."
+            },
+            {
+              "title": "Excluding Auto-configurations",
+              "description": "Exclude specific auto-configurations using **@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})** or **spring.autoconfigure.exclude** property."
+            },
+            {
+              "title": "Property Customization",
+              "description": "Most auto-configurations can be customized through properties in application.properties/yml, with naming conventions following the structure of the associated configuration class."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Loading Mechanism",
+              "description": "Auto-configurations are loaded from **META-INF/spring.factories** files using the **SpringFactoriesLoader** mechanism, with ordering controlled by **@AutoConfigureBefore**, **@AutoConfigureAfter**, and **@AutoConfigureOrder** annotations."
+            },
+            {
+              "title": "Custom Auto-configuration",
+              "description": "Create custom auto-configurations by creating a configuration class with appropriate conditional annotations and registering it in **META-INF/spring.factories** under **org.springframework.boot.autoconfigure.EnableAutoConfiguration**."
+            },
+            {
+              "title": "Replacing Auto-configuration",
+              "description": "To replace parts of an auto-configuration, create beans of the same type with primary designation (@Primary) or define your own configuration with @Configuration that takes precedence based on ordering."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-boot-basics-frameworks-s-3"
+      ]
+    },
+    {
+      "id": "spring-cloud-overview-frameworks-s-22",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Cloud",
+      "question": "What is Spring Cloud and what challenges does it address in distributed systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "**Spring Cloud** provides tools for developers to quickly build common distributed system patterns like configuration management, service discovery, circuit breakers, and API gateways for microservices architecture."
+            },
+            {
+              "title": "Core Components",
+              "description": "Key projects include **Spring Cloud Config** (centralized configuration), **Spring Cloud Netflix** (integration with Netflix OSS), **Spring Cloud Gateway** (API gateway), and **Spring Cloud Stream** (messaging)."
+            },
+            {
+              "title": "Integration with Spring Boot",
+              "description": "Spring Cloud builds on Spring Boot, adding distributed system features while maintaining the same simplicity and auto-configuration principles."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Service Registration & Discovery",
+              "description": "**Spring Cloud Netflix Eureka** or **Spring Cloud Consul** enable services to register themselves and discover other services without hardcoded hostnames and ports."
+            },
+            {
+              "title": "Circuit Breaker",
+              "description": "**Spring Cloud Circuit Breaker** (with implementations for Resilience4j, Hystrix, etc.) provides fault tolerance, preventing cascading failures when a service is down."
+            },
+            {
+              "title": "Distributed Tracing",
+              "description": "**Spring Cloud Sleuth** integrated with **Zipkin** enables tracing requests across multiple services, helping debug and monitor distributed system behavior."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Configuration Management",
+              "description": "**Spring Cloud Config** provides centralized, versioned configuration with options for Git-backed storage, encryption, and dynamic refresh without restarting services."
+            },
+            {
+              "title": "Load Balancing",
+              "description": "Client-side load balancing with **Spring Cloud LoadBalancer** distributes requests across service instances retrieved from service discovery."
+            },
+            {
+              "title": "API Gateway",
+              "description": "**Spring Cloud Gateway** routes requests to appropriate services, handling cross-cutting concerns like security, monitoring, and rate limiting in a central location."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-caching-frameworks-s-23",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Caching",
+      "question": "How does Spring's caching abstraction work and what caching providers can you use with it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Caching Abstraction",
+              "description": "Spring provides a caching abstraction that allows adding caching behavior to methods with simple annotations, without tying code to specific caching implementations."
+            },
+            {
+              "title": "Core Annotations",
+              "description": "Key annotations include **@Cacheable** (cache method results), **@CacheEvict** (remove entries), **@CachePut** (update cache without affecting method execution), and **@Caching** (combine multiple operations)."
+            },
+            {
+              "title": "Basic Setup",
+              "description": "Enable caching with **@EnableCaching** on a configuration class and add a cache manager bean appropriate for your chosen provider."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Caching Providers",
+              "description": "Spring integrates with various cache providers:\n- **Simple**: ConcurrentMap (in-memory, development)\n- **Cache Stores**: EhCache, Caffeine, Hazelcast\n- **Distributed**: Redis, Gemfire\n- **JCache (JSR-107)**: Any JCache-compliant implementation"
+            },
+            {
+              "title": "Cache Configuration",
+              "description": "Configure caching with **cacheNames/value** (specify cache names), **key** (custom key expression), **condition** (condition for caching), and **unless** (condition for not caching) attributes on annotations."
+            },
+            {
+              "title": "Key Generation",
+              "description": "Spring uses a **KeyGenerator** to derive cache keys from method parameters. Default uses all parameters, but you can customize with SpEL expressions or by implementing a custom KeyGenerator."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Cache Resolution",
+              "description": "Use **@CacheConfig** at class level to share common cache configurations, and implement **CacheResolver** for dynamic cache determination at runtime."
+            },
+            {
+              "title": "Conditional Caching",
+              "description": "Implement fine-grained control with SpEL expressions in **condition** and **unless** attributes, like @Cacheable(unless=\"#result == null\") to avoid caching null results."
+            },
+            {
+              "title": "Multi-level Caching",
+              "description": "Configure multiple cache managers to implement multi-level caching with different providers (e.g., Caffeine for in-memory L1 and Redis for distributed L2), with different eviction policies for each level."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-validation-frameworks-s-24",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Validation",
+      "question": "How does Spring handle bean validation and how can you implement custom validators?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "JSR-380 Integration",
+              "description": "Spring integrates with the Bean Validation API (JSR-380) through **Hibernate Validator**, supporting annotations like **@NotNull**, **@Size**, **@Min**, **@Max**, and **@Email** on model properties."
+            },
+            {
+              "title": "Controller Validation",
+              "description": "Trigger validation in controllers with the **@Valid** or **@Validated** annotation on method parameters, and access validation errors via **BindingResult** parameter."
+            },
+            {
+              "title": "Dependencies",
+              "description": "Include **spring-boot-starter-validation** (or hibernate-validator and javax.validation:validation-api for non-Boot projects) to enable validation support."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Validation Groups",
+              "description": "Use validation groups (marker interfaces) with **@Validated(Group.class)** to apply different validation rules in different contexts, such as creation vs. update operations."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Handle validation errors in controllers by checking BindingResult.hasErrors(), or globally by creating an **@ExceptionHandler** for **MethodArgumentNotValidException** in a **@ControllerAdvice** class."
+            },
+            {
+              "title": "Programmatic Validation",
+              "description": "Perform validation programmatically using **Validator** interface and **LocalValidatorFactoryBean**, useful for validation in service layer or complex validations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Custom Validation Annotations",
+              "description": "Create custom validation annotations by:\n1. Define a constraint annotation with @Constraint\n2. Implement ConstraintValidator interface\n3. Link them together in the annotation definition\n\nExample:\n```java\n@Target({ElementType.FIELD})\n@Retention(RetentionPolicy.RUNTIME)\n@Constraint(validatedBy = UniqueUsernameValidator.class)\npublic @interface UniqueUsername {\n    String message() default \"Username already exists\";\n    Class<?>[] groups() default {};\n    Class<? extends Payload>[] payload() default {};\n}\n\npublic class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @Override\n    public boolean isValid(String username, ConstraintValidatorContext context) {\n        return username != null && !userRepository.existsByUsername(username);\n    }\n}\n```"
+            },
+            {
+              "title": "Cross-Field Validation",
+              "description": "Implement validations across multiple fields with class-level constraints by applying validation annotations to the class itself and implementing a validator that can access multiple properties."
+            },
+            {
+              "title": "Cascading Validation",
+              "description": "Enable validation of associated objects with **@Valid** annotation on fields or properties, creating validation chains through object graphs."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-boot-deployment-frameworks-s-25",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Boot Deployment",
+      "question": "What are the different ways to deploy a Spring Boot application and their trade-offs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Executable JAR",
+              "description": "The simplest deployment method is packaging as an executable JAR with embedded server, using **java -jar application.jar** to run. This is self-contained, simple to deploy, and works well for microservices."
+            },
+            {
+              "title": "Traditional WAR",
+              "description": "Deploy as a WAR file to an external servlet container by extending **SpringBootServletInitializer** and configuring packaging as 'war' in the build file. This leverages existing servlet container infrastructure."
+            },
+            {
+              "title": "Docker Container",
+              "description": "Package the application as a Docker image, either using Cloud Native Buildpacks or Dockerfile, for containerized deployment in any environment supporting Docker."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Cloud Platforms",
+              "description": "Deploy to cloud platforms like **AWS Elastic Beanstalk**, **Azure App Service**, **Google App Engine**, or **Cloud Foundry** which provide managed environments with auto-scaling and integrated monitoring."
+            },
+            {
+              "title": "Kubernetes",
+              "description": "Deploy containerized Spring Boot applications to Kubernetes clusters for orchestrated container management, scaling, and self-healing capabilities."
+            },
+            {
+              "title": "Virtual Machines",
+              "description": "Run on traditional VMs using systemd, init.d scripts, or Windows services to manage the application lifecycle, with benefits of full OS isolation but higher resource overhead."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Native Images",
+              "description": "Compile Spring Boot applications to native executables using **GraalVM Native Image** (with Spring Native or Spring Boot 3+ with AOT), improving startup time and memory usage at the cost of build complexity."
+            },
+            {
+              "title": "Serverless Platforms",
+              "description": "Deploy to serverless environments like **AWS Lambda** using adapters like **AWS Serverless Java Container** or Spring Cloud Function, suitable for event-driven workloads with variable traffic."
+            },
+            {
+              "title": "Multi-environment Deployment",
+              "description": "Manage configuration across environments using Spring profiles, externalized configuration, and environment-specific property sources to maintain a single artifact deployable anywhere."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-boot-config-properties-frameworks-s-26",
+      "skillLevel": "intermediate",
+      "shortTitle": "Configuration Properties",
+      "question": "How can you use @ConfigurationProperties in Spring Boot for type-safe configuration?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Basic Concept",
+              "description": "**@ConfigurationProperties** binds external properties (from application.properties/yml) to structured Java classes, providing type-safety, default values, and validation."
+            },
+            {
+              "title": "Simple Implementation",
+              "description": "Create a POJO with fields matching property names, annotate it with **@ConfigurationProperties(prefix=\"app\")**, and enable processing with **@EnableConfigurationProperties** or **@ConfigurationPropertiesScan**."
+            },
+            {
+              "title": "Property Binding",
+              "description": "Properties use relaxed binding, supporting various formats like camelCase, kebab-case, snake_case, or UPPERCASE, making it flexible for different property sources."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Nested Properties",
+              "description": "Support complex structures with nested classes, maps, and collections. External properties use dot notation (app.security.enabled) to configure nested properties."
+            },
+            {
+              "title": "Validation",
+              "description": "Add JSR-380 validation annotations to property classes and include the spring-boot-starter-validation dependency to validate configuration at startup."
+            },
+            {
+              "title": "Property Conversion",
+              "description": "Spring Boot automatically converts properties to appropriate types, including durations, data sizes, and custom types with Converter implementations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Constructor Binding",
+              "description": "Use **@ConstructorBinding** with **@ConfigurationProperties** to bind properties via constructor instead of setters, creating immutable configuration classes."
+            },
+            {
+              "title": "Metadata",
+              "description": "Generate configuration metadata using the **spring-boot-configuration-processor** dependency to provide IDE assistance with property auto-completion and documentation."
+            },
+            {
+              "title": "Profile-specific Properties",
+              "description": "Combine with profiles to override properties in different environments by using application-{profile}.properties files or setting spring.config.activate.on-profile in YAML documents."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-configuration-approaches-frameworks-s-8"
+      ]
+    },
+    {
+      "id": "spring-events-frameworks-s-27",
+      "skillLevel": "intermediate",
+      "shortTitle": "Spring Events",
+      "question": "How does the Spring event system work and when would you use it?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Event Concept",
+              "description": "Spring's event system allows beans to communicate asynchronously without direct coupling, following the observer pattern."
+            },
+            {
+              "title": "Event Publishing",
+              "description": "Publish events using **ApplicationEventPublisher** (autowired into components) or by implementing **ApplicationEventPublisherAware** interface."
+            },
+            {
+              "title": "Event Listening",
+              "description": "Listen for events by annotating methods with **@EventListener** and accepting the event type as a parameter."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Custom Events",
+              "description": "Create custom events by extending **ApplicationEvent** (pre-Spring 4.2) or using any POJO class (Spring 4.2+) for more flexibility."
+            },
+            {
+              "title": "Asynchronous Events",
+              "description": "Make event processing asynchronous by adding **@Async** to listener methods and enabling async support with **@EnableAsync**."
+            },
+            {
+              "title": "Conditional Processing",
+              "description": "Use the **condition** attribute of **@EventListener** with SpEL expressions to selectively process events based on their properties."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Transaction Binding",
+              "description": "With **@TransactionalEventListener**, bind event processing to transaction phases (AFTER_COMMIT, BEFORE_COMMIT, AFTER_ROLLBACK, AFTER_COMPLETION) to ensure consistent processing."
+            },
+            {
+              "title": "Event Ordering",
+              "description": "Control listener execution order with **@Order** annotation when multiple listeners process the same event."
+            },
+            {
+              "title": "Use Cases",
+              "description": "Spring events are ideal for:\n- Decoupling components\n- Cross-cutting concerns like auditing\n- Workflow triggers\n- Cache invalidation\n- Multi-step processes across different components\n- Notification systems"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-exception-handling-frameworks-s-28",
+      "skillLevel": "intermediate",
+      "shortTitle": "Exception Handling",
+      "question": "What approaches does Spring provide for exception handling in web applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Controller-level Handling",
+              "description": "Use **@ExceptionHandler** methods in controllers to handle exceptions thrown within that controller, returning appropriate response entities or views."
+            },
+            {
+              "title": "Global Exception Handling",
+              "description": "Create a class annotated with **@ControllerAdvice** containing **@ExceptionHandler** methods to handle exceptions across all controllers."
+            },
+            {
+              "title": "SimpleMappingExceptionResolver",
+              "description": "Configure **SimpleMappingExceptionResolver** bean for mapping exception classes to view names in traditional Spring MVC applications."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "ResponseStatusException",
+              "description": "Throw **ResponseStatusException** with HTTP status and optional reason for more control over the response status without custom exception classes."
+            },
+            {
+              "title": "Custom Error Pages",
+              "description": "Define custom error pages for specific HTTP status codes by adding error.html templates or configuring the server.error.* properties."
+            },
+            {
+              "title": "REST Error Responses",
+              "description": "Return consistent error responses for RESTful APIs by creating a standard error DTO containing fields like status, message, timestamp, and details."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Problem Details (RFC 7807)",
+              "description": "Implement the standardized Problem Details format (RFC 7807) for HTTP APIs using Spring's **ProblemDetail** class (Spring 6+) or libraries like Zalando's Problem."
+            },
+            {
+              "title": "Hierarchical Exception Handling",
+              "description": "Create an exception hierarchy with base classes and use @ExceptionHandler with these base types to handle entire categories of exceptions with common logic."
+            },
+            {
+              "title": "Exception Handling with WebFlux",
+              "description": "In reactive applications, use similar @ExceptionHandler approaches or leverage **ErrorWebExceptionHandler** for more control over the error processing pipeline."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-rest-api-frameworks-s-12"
+      ]
+    },
+    {
+      "id": "spring-jdbc-template-frameworks-s-29",
+      "skillLevel": "intermediate",
+      "shortTitle": "JDBC Template",
+      "question": "How does Spring's JdbcTemplate simplify JDBC operations compared to standard JDBC?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "JDBC Simplification",
+              "description": "**JdbcTemplate** handles resource acquisition, connection management, exception handling, and statement creation, eliminating most of the boilerplate code required in standard JDBC."
+            },
+            {
+              "title": "Exception Translation",
+              "description": "Converts checked SQLException instances into Spring's unchecked DataAccessException hierarchy, providing more meaningful exceptions and removing try-catch clutter."
+            },
+            {
+              "title": "Basic Operations",
+              "description": "Provides simple methods for common operations: **update()** for DML statements, **query()** and **queryForObject()** for queries, and **execute()** for DDL statements."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Parameter Binding",
+              "description": "Supports both positional parameters using varargs/arrays and named parameters (with **NamedParameterJdbcTemplate**) using maps or SqlParameterSource implementations."
+            },
+            {
+              "title": "Result Mapping",
+              "description": "Maps query results to objects using **RowMapper** (mapping single rows) or **ResultSetExtractor** (processing the entire ResultSet), making data retrieval more object-oriented."
+            },
+            {
+              "title": "Batch Operations",
+              "description": "Efficiently executes batch operations using **batchUpdate()** methods with arrays of parameter values or a BatchPreparedStatementSetter implementation."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Stored Procedures",
+              "description": "Executes stored procedures through **call()** methods with **SimpleJdbcCall** or **StoredProcedure** classes, handling input parameters, out parameters, and result sets."
+            },
+            {
+              "title": "Transaction Integration",
+              "description": "Works seamlessly with Spring's transaction management, allowing JdbcTemplate operations to participate in bigger transactional contexts without explicit connection handling."
+            },
+            {
+              "title": "Advanced Mapping",
+              "description": "Supports advanced mapping scenarios like hierarchical result mappings and one-to-many relationships by combining ResultSetExtractor with manual mapping logic or leveraging BeanPropertyRowMapper for simple bean mapping."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "spring-integration-frameworks-s-30",
+      "skillLevel": "advanced",
+      "shortTitle": "Spring Integration",
+      "question": "What is Spring Integration and how does it support enterprise integration patterns?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Concept",
+              "description": "**Spring Integration** provides an implementation of Enterprise Integration Patterns based on the messaging paradigm, facilitating communication between disparate systems and application components."
+            },
+            {
+              "title": "Message-Based Architecture",
+              "description": "Built around the concept of **Messages** flowing through **Channels** and being processed by **Message Handlers**, creating a loosely coupled, event-driven architecture."
+            },
+            {
+              "title": "Key Components",
+              "description": "Core components include **Message** (payload with headers), **MessageChannel** (pipe for messages), **MessageHandler** (consumes messages), and **Endpoint** (connects channels to handlers)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Integration Patterns",
+              "description": "Implements numerous patterns like **Message Router**, **Message Filter**, **Content Enricher**, **Message Transformer**, **Aggregator**, **Splitter**, and **Service Activator**."
+            },
+            {
+              "title": "Configuration Approaches",
+              "description": "Supports multiple configuration styles: XML with namespace support, Java DSL (fluent API), and annotation-based (@ServiceActivator, @Router, @Transformer, etc.)."
+            },
+            {
+              "title": "Adapters and Gateways",
+              "description": "Connects to external systems through **Channel Adapters** (inbound/outbound) and simplifies integration code with **Service Gateways** that hide messaging details behind simple interfaces."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Protocol Support",
+              "description": "Provides ready-to-use adapters for various protocols and systems: JMS, AMQP, Kafka, HTTP, WebSocket, JDBC, JPA, FTP, SFTP, TCP/UDP, File systems, Email, and more."
+            },
+            {
+              "title": "Flow Control",
+              "description": "Manages message flow with **Poller** configurations, **QueueChannel** capacity, **PriorityChannel** ordering, and **ExecutorChannel** for parallel processing."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Offers sophisticated error handling through **Error Channel** patterns, **Message Error Handlers**, retry mechanisms, and circuit breaker integration for resilient messaging flows."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": []
+    }
+  ]
+}

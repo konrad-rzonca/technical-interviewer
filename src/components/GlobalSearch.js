@@ -35,6 +35,9 @@ const QuestionResultItem = React.memo(
         return category ? category.name : 'Unknown';
       }, [question.categoryId, categories]);
 
+      // Get subcategory name
+      const subcategoryName = question.subcategoryName || 'Unknown';
+
       // Highlight matching text in search results
       const highlightMatch = (text, term) => {
         if (!term || !text) return text;
@@ -92,6 +95,7 @@ const QuestionResultItem = React.memo(
                 display: 'flex',
                 mt: SPACING.toUnits(SPACING.xs),
                 gap: SPACING.toUnits(SPACING.xs),
+                alignItems: 'center',
               }}>
                 <Chip
                     size="small"
@@ -104,15 +108,17 @@ const QuestionResultItem = React.memo(
                       color: skillLevelColor,
                     }}
                 />
-                <Chip
-                    size="small"
-                    label={categoryName}
+                <Typography
+                    variant="caption"
                     sx={{
-                      height: 20,
                       fontSize: TYPOGRAPHY.fontSize.small,
+                      color: COLORS.text.secondary,
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
-                    variant="outlined"
-                />
+                >
+                  {subcategoryName}
+                </Typography>
               </Box>
             </Box>
           </ListItem>

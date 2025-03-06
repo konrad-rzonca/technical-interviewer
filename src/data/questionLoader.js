@@ -20,7 +20,9 @@ import collectionsQuestions from './questions/java/core-java/collections.json';
 import exceptionsQuestions from './questions/java/core-java/exceptions.json';
 import dataStructuresQuestions
   from './questions/java/data-structures-and-algorithms/data-structures.json';
-import springQuestions from './questions/java/framework/spring.json';
+import springQuestions from './questions/java/framework/spring-1.json';
+import spring2Questions from './questions/java/framework/spring-2.json';
+
 import hibernateQuestions from './questions/java/framework/hibernate.json';
 import algorithmsQuestions1
   from './questions/java/data-structures-and-algorithms/algorithms-1.json';
@@ -96,7 +98,13 @@ const questionSets = {
       id: 'frameworks-basic-set',
       name: 'Basic Set',
       files: {
-        'Spring': springQuestions,
+        'Spring': {
+          category: springQuestions.category,
+          subcategory: springQuestions.subcategory,
+          questions: [
+            ...springQuestions.questions,
+            ...spring2Questions.questions],
+        },
         'Hibernate': hibernateQuestions,
       },
     },
