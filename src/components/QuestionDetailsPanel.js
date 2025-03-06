@@ -58,7 +58,7 @@ const QuestionDetailsPanel = ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 200, // Reduced height to fit better in fixed container
+        height: 500, // Reduced height to fit better in fixed container
       }}>
         <Typography variant="subtitle1" color="text.secondary" sx={{
           fontSize: TYPOGRAPHY.fontSize.regularText,
