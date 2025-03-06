@@ -30,7 +30,7 @@ const QuestionItem = ({
   );
 
   const isAnswered = useMemo(() =>
-          gradesMap && gradesMap[question.id] !== undefined,
+          gradesMap && gradesMap[question.id] > 0,
       [gradesMap, question.id],
   );
 

@@ -1,5 +1,4 @@
 ﻿// src/utils/exportUtils.js
-import {APP_CONSTANTS} from './constants';
 
 /**
  * Transforms interview state into human-readable format for export
@@ -49,7 +48,7 @@ export const prepareInterviewDataForExport = (interviewState, allQuestions) => {
 
   // Transform gradesMap
   Object.entries(interviewState.gradesMap).forEach(([questionId, grade]) => {
-    if (grade !== undefined && grade !== 0) { // Only include non-zero grades
+    if (grade !== undefined && grade !== 0 && grade !== null) { // Only include non-zero grades
       const title = questionTitleMap[questionId] || questionId;
       transformedGradesMap[title] = grade;
     }
@@ -83,7 +82,6 @@ export const prepareInterviewDataForExport = (interviewState, allQuestions) => {
 
   return {
     timestamp: new Date().toISOString(),
-    version: APP_CONSTANTS.VERSION,
     data: {
       notesMap: transformedNotesMap,
       gradesMap: transformedGradesMap,

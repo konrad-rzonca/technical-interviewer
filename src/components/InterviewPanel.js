@@ -398,11 +398,19 @@ const InterviewPanel = ({
 
   // Handle grade change
   const handleGradeChange = (questionId, value) => {
+    // Create a new copy of the grades map
+    const newGradesMap = {...gradesMap};
+
+    if (value === 0) {
+      // Remove the entry completely when rating is cleared
+      delete newGradesMap[questionId];
+    } else {
+      // Set the new value otherwise
+      newGradesMap[questionId] = value;
+    }
+
     updateInterviewState({
-      gradesMap: {
-        ...gradesMap,
-        [questionId]: value,
-      },
+      gradesMap: newGradesMap,
     });
   };
 
