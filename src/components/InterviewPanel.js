@@ -1,5 +1,5 @@
 // src/components/InterviewPanel.js
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Paper, useMediaQuery, useTheme} from '@mui/material';
 
 import {
@@ -68,14 +68,11 @@ const InterviewPanel = ({
     currentIndex: -1,
   });
 
-  // Sidebar toggle handlers - optimized with useCallback
-  const toggleLeftSidebar = useCallback(() => {
-    setLeftSidebarCollapsed(prev => !prev);
-  }, []);
-
-  const toggleRightSidebar = useCallback(() => {
-    setRightSidebarCollapsed(prev => !prev);
-  }, []);
+  // Sidebar toggle handlers
+  const toggleLeftSidebar = () => setLeftSidebarCollapsed(
+      !leftSidebarCollapsed);
+  const toggleRightSidebar = () => setRightSidebarCollapsed(
+      !rightSidebarCollapsed);
 
   // Initialize active categories
   useEffect(() => {
@@ -84,7 +81,7 @@ const InterviewPanel = ({
     if (categories.length > 0 && !selectedCategory) {
       setSelectedCategory(categories[0].id);
     }
-  }, [selectedCategory]);
+  }, []);
 
   // Initialize subcategory selection
   useEffect(() => {
@@ -119,10 +116,15 @@ const InterviewPanel = ({
 
   // Load questions based on selected category, subcategories, and sets
   useEffect(() => {
-    let baseQuestions = [];
-
     if (selectedCategory) {
+      // Get the list of selected set IDs
+      const activeSets = Object.entries(selectedSets).
+          filter(([_, isSelected]) => isSelected).
+          map(([setId, _]) => setId);
+
       // Filter questions
+      let baseQuestions;
+
       if (subcategoryFilter) {
         // Filter by specific subcategory if selected
         baseQuestions = getFilteredQuestions(
@@ -150,20 +152,25 @@ const InterviewPanel = ({
 
           // Sort the combined questions for consistent ordering
           baseQuestions = sortQuestionsByOrder(baseQuestions);
+        } else {
+          baseQuestions = [];
         }
       } else {
         // Get all questions for the category if no subcategory filtering
         baseQuestions = getQuestionsByCategory(selectedCategory);
       }
 
+      // Use a brand new array to ensure React detects state change
+      setQuestions(Array.from(baseQuestions));
+
       // If we have questions but no current question selected, select the first one
       if (baseQuestions.length > 0 && !currentQuestion) {
         updateInterviewState({currentQuestion: baseQuestions[0]});
       }
+    } else {
+      // If no category is selected, clear questions
+      setQuestions([]);
     }
-
-    // Use a brand new array to ensure React detects state change
-    setQuestions(baseQuestions);
   }, [
     selectedCategory,
     selectedSets,
@@ -175,10 +182,9 @@ const InterviewPanel = ({
 
   // Apply hide answered questions filter
   useEffect(() => {
-    let filtered = [...questions];
-
     if (settings.hideAnsweredQuestions) {
-      filtered = questions.filter(question => !gradesMap[question.id]);
+      const filtered = questions.filter(question => !gradesMap[question.id]);
+      setFilteredQuestions(filtered);
 
       // If current question is filtered out, select first visible question
       if (
@@ -188,9 +194,9 @@ const InterviewPanel = ({
       ) {
         updateInterviewState({currentQuestion: filtered[0]});
       }
+    } else {
+      setFilteredQuestions(questions);
     }
-
-    setFilteredQuestions(filtered);
   }, [
     questions,
     settings.hideAnsweredQuestions,
@@ -201,49 +207,41 @@ const InterviewPanel = ({
 
   // Update navigation state when filtered questions or current question changes
   useEffect(() => {
-    let orderedQuestions = [];
-    let currentIndex = -1;
-
     if (filteredQuestions.length > 0) {
       // Create ordered list for navigation
-      orderedQuestions = sortQuestionsByOrder([...filteredQuestions]);
+      const orderedQuestions = sortQuestionsByOrder([...filteredQuestions]);
 
-      currentIndex = currentQuestion
+      const currentIndex = currentQuestion
           ? orderedQuestions.findIndex(q => q.id === currentQuestion.id)
           : 0;
 
-      if (currentIndex === -1) {
-        currentIndex = 0;
-      }
+      setNavigationState({
+        orderedQuestions,
+        currentIndex: currentIndex !== -1 ? currentIndex : 0,
+      });
+    } else {
+      setNavigationState({orderedQuestions: [], currentIndex: -1});
     }
-
-    setNavigationState({
-      orderedQuestions,
-      currentIndex,
-    });
   }, [filteredQuestions, currentQuestion]);
 
   // Load related questions when current question changes
   useEffect(() => {
-    let related = [];
-
     if (currentQuestion) {
-      related = getRelatedQuestions(currentQuestion.id);
-
+      const related = getRelatedQuestions(currentQuestion.id);
       // Filter out any questions that point to themselves
-      related = related.filter(q => q.id !== currentQuestion.id);
+      const filteredRelated = related.filter(q => q.id !== currentQuestion.id);
 
       // Enhance related questions with category name information
-      related = related.map(q => {
+      const enhancedRelated = filteredRelated.map(q => {
         const categoryObj = categories.find(c => c.id === q.categoryId) || {};
         return {
           ...q,
           categoryName: categoryObj.name || '',
         };
       });
-    }
 
-    setRelatedQuestionsList(related);
+      setRelatedQuestionsList(enhancedRelated);
+    }
   }, [currentQuestion]);
 
   // Handle mobile view changes
@@ -277,48 +275,53 @@ const InterviewPanel = ({
     }
   }, [isMobile, isTablet]);
 
-  // Handle category selection - optimized with useCallback
-  const handleCategorySelect = useCallback(
-      (categoryId, explicitExpandedState = null) => {
-        if (categoryId === selectedCategory) {
-          // Toggle expansion if the category is already selected
-          setExpandedCategory(prevExpanded =>
-              explicitExpandedState !== null
-                  ? explicitExpandedState
-                  : prevExpanded === categoryId
-                      ? null
-                      : categoryId,
-          );
-          return;
-        }
+  // Handle category selection
+  const handleCategorySelect = (categoryId, explicitExpandedState = null) => {
+    if (categoryId === selectedCategory) {
+      // Toggle expansion if the category is already selected
+      setExpandedCategory(
+          explicitExpandedState !== null
+              ? explicitExpandedState
+              : expandedCategory === categoryId
+                  ? null
+                  : categoryId,
+      );
+      return;
+    }
 
-        setSelectedCategory(categoryId);
-        const category = categories.find(c => c.id === categoryId);
+    setSelectedCategory(categoryId);
+    const category = categories.find(c => c.id === categoryId);
 
-        // If explicitExpandedState is provided, use it, otherwise use default logic
-        setExpandedCategory(
-            explicitExpandedState !== null
-                ? explicitExpandedState
-                : category && category.subcategories.length > 0
-                    ? categoryId
-                    : null,
-        );
+    // If explicitExpandedState is provided, use it, otherwise use default logic
+    if (explicitExpandedState !== null) {
+      setExpandedCategory(explicitExpandedState);
+    } else {
+      setExpandedCategory(
+          category && category.subcategories.length > 0 ? categoryId : null,
+      );
+    }
 
-        setSubcategoryFilter(null);
-        updateInterviewState({currentQuestion: null});
+    setSubcategoryFilter(null);
+    updateInterviewState({currentQuestion: null});
 
-        // In mobile, switch to question view after selecting a category
-        if (isMobile) {
-          setMobileView('question');
-        }
-      }, [selectedCategory, isMobile, updateInterviewState]);
+    // In mobile, switch to question view after selecting a category
+    if (isMobile) {
+      setMobileView('question');
+    }
+  };
 
-  // Subcategory handlers - optimized with useCallback
-  const handleSubcategorySelect = useCallback(subcategory => {
-    setSubcategoryFilter(prev => prev === subcategory ? null : subcategory);
-  }, []);
+  // Toggle a single subcategory selection
+  const handleSubcategorySelect = subcategory => {
+    // If we have an active filter, change to this subcategory
+    if (subcategoryFilter === subcategory) {
+      setSubcategoryFilter(null);
+    } else {
+      setSubcategoryFilter(subcategory);
+    }
+  };
 
-  const handleSubcategoryToggle = useCallback((categoryId, subcategory) => {
+  // Toggle a subcategory's checked state
+  const handleSubcategoryToggle = (categoryId, subcategory) => {
     setSelectedSubcategories(prev => ({
       ...prev,
       [categoryId]: {
@@ -327,10 +330,10 @@ const InterviewPanel = ({
       },
     }));
     setSubcategoryFilter(null); // Clear any active filter
-  }, []);
+  };
 
-  // Handle question selection - optimized with useCallback
-  const handleQuestionSelect = useCallback(question => {
+  // Handle question selection
+  const handleQuestionSelect = question => {
     // Find the category for this question
     const category = getCategoryForQuestion(question);
 
@@ -345,10 +348,10 @@ const InterviewPanel = ({
     if (isMobile) {
       setMobileView('question');
     }
-  }, [selectedCategory, isMobile, updateInterviewState]);
+  };
 
-  // Navigate to next/previous question - optimized with useCallback
-  const handleNavigateQuestion = useCallback(direction => {
+  // Navigate to next/previous question - UPDATED for consistent navigation
+  const handleNavigateQuestion = direction => {
     const {orderedQuestions, currentIndex} = navigationState;
     if (orderedQuestions.length <= 1) return;
 
@@ -361,117 +364,94 @@ const InterviewPanel = ({
     }
 
     updateInterviewState({currentQuestion: orderedQuestions[newIndex]});
-  }, [navigationState, updateInterviewState]);
+  };
 
-  // Handle notes change - optimized with useCallback
-  const handleNotesChange = useCallback((questionId, value) => {
-    updateInterviewState(prevState => ({
-      ...prevState,
+  // Handle notes change
+  const handleNotesChange = (questionId, value) => {
+    updateInterviewState({
       notesMap: {
-        ...prevState.notesMap,
+        ...notesMap,
         [questionId]: value,
       },
-    }));
-  }, [updateInterviewState]);
+    });
+  };
 
-  // Handle grade change - optimized with useCallback
-  const handleGradeChange = useCallback((questionId, value) => {
-    updateInterviewState(prevState => ({
-      ...prevState,
+  // Handle grade change
+  const handleGradeChange = (questionId, value) => {
+    updateInterviewState({
       gradesMap: {
-        ...prevState.gradesMap,
+        ...gradesMap,
         [questionId]: value,
       },
-    }));
-  }, [updateInterviewState]);
+    });
+  };
 
-  // Set selection handlers - optimized with useCallback
-  const handleSetToggle = useCallback(setId => {
+  // Handle set selection changes
+  const handleSetToggle = setId => {
     setSelectedSets(prev => ({
       ...prev,
       [setId]: !prev[setId],
     }));
-  }, []);
+  };
 
-  const handleSelectAllSets = useCallback(() => {
+  // Handle select all sets
+  const handleSelectAllSets = () => {
     const newSelection = {};
     availableSets.forEach(set => {
       newSelection[set.id] = true;
     });
-    setSelectedSets(prev => ({...prev, ...newSelection}));
-  }, [availableSets]);
+    setSelectedSets(newSelection);
+  };
 
-  const handleDeselectAllSets = useCallback(() => {
+  // Handle deselect all sets
+  const handleDeselectAllSets = () => {
     const newSelection = {};
     availableSets.forEach(set => {
       newSelection[set.id] = false;
     });
-    setSelectedSets(prev => ({...prev, ...newSelection}));
-  }, [availableSets]);
+    setSelectedSets(newSelection);
+  };
 
-  // Subcategory selection handlers - optimized with useCallback
-  const handleSelectAllSubcategories = useCallback(categoryId => {
+  // Select all subcategories for a category
+  const handleSelectAllSubcategories = categoryId => {
     const category = categories.find(c => c.id === categoryId);
     if (!category) return;
 
-    setSelectedSubcategories(prev => {
-      const newSelection = {...prev};
-      if (!newSelection[categoryId]) {
-        newSelection[categoryId] = {};
-      }
-
-      category.subcategories.forEach(subcategory => {
-        newSelection[categoryId][subcategory] = true;
-      });
-
-      return newSelection;
+    const newSelection = {};
+    category.subcategories.forEach(subcategory => {
+      newSelection[subcategory] = true;
     });
 
-    setSubcategoryFilter(null);
-  }, []);
+    setSelectedSubcategories(prev => ({
+      ...prev,
+      [categoryId]: newSelection,
+    }));
 
-  const handleDeselectAllSubcategories = useCallback(categoryId => {
+    setSubcategoryFilter(null);
+  };
+
+  // Deselect all subcategories for a category
+  const handleDeselectAllSubcategories = categoryId => {
     const category = categories.find(c => c.id === categoryId);
     if (!category) return;
 
-    setSelectedSubcategories(prev => {
-      const newSelection = {...prev};
-      if (!newSelection[categoryId]) {
-        newSelection[categoryId] = {};
-      }
-
-      category.subcategories.forEach(subcategory => {
-        newSelection[categoryId][subcategory] = false;
-      });
-
-      return newSelection;
+    const newSelection = {};
+    category.subcategories.forEach(subcategory => {
+      newSelection[subcategory] = false;
     });
 
-    setSubcategoryFilter(null);
-  }, []);
+    setSelectedSubcategories(prev => ({
+      ...prev,
+      [categoryId]: newSelection,
+    }));
 
-  // Handle settings changes - optimized with useCallback
-  const handleSettingChange = useCallback(setting => {
+    setSubcategoryFilter(null);
+  };
+
+  // Handle settings changes
+  const handleSettingChange = setting => {
     onSettingChange(setting);
-  }, [onSettingChange]);
-
-  // Direct style calculation instead of useMemo to avoid hook issues
-  const mainPanelStyles = usePanelStyles(false, true, {
-    flexGrow: 1,
-    p: 3,
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden', // Container doesn't scroll
-    width: isMobile ? 'calc(100% - 24px)' : 'auto',
-    transition: 'margin 0.3s ease, width 0.3s ease',
-    visibility: isMobile
-        ? mobileView === 'question'
-            ? 'visible'
-            : 'hidden'
-        : 'visible',
-    // Very subtle edge shadows to help with panel separation
-    boxShadow: '0 0 2px rgba(0,0,0,0.05)',
-  });
+  };
 
   return (
       <Box
@@ -554,7 +534,22 @@ const InterviewPanel = ({
           {/* Main Content */}
           <Paper
               elevation={0}
-              sx={mainPanelStyles}
+              sx={usePanelStyles(false, true, {
+                flexGrow: 1,
+                p: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden', // Container doesn't scroll
+                width: isMobile ? 'calc(100% - 24px)' : 'auto',
+                transition: 'margin 0.3s ease, width 0.3s ease',
+                visibility: isMobile
+                    ? mobileView === 'question'
+                        ? 'visible'
+                        : 'hidden'
+                    : 'visible',
+                // Very subtle edge shadows to help with panel separation
+                boxShadow: '0 0 2px rgba(0,0,0,0.05)',
+              })}
           >
             {/* Question Details Panel - fixed height, no scrolling */}
             <Box sx={{

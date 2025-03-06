@@ -1,4 +1,3 @@
-// src/data/questionLoader.js - Optimized with indexed data structures
 import {ANSWER_LEVELS, LEVEL_ORDER} from '../utils/answerConstants';
 
 // Import question files
@@ -161,21 +160,8 @@ const createDefaultInsight = (category) => ({
   points: [],
 });
 
-// Initialize data structures
-let questionsInitialized = false;
-let questions = []; // All questions
-let sortedQuestions = []; // Sorted questions (computed once)
-let questionsByCategory = {}; // Questions indexed by category
-let questionsBySubcategory = {}; // Questions indexed by [category][subcategory]
-let questionById = {}; // Questions indexed by ID
-let filterCache = new Map(); // Cache for filtered results
-
-// Extract all questions from files with optimized data structures
+// Extract all questions from files
 const extractQuestionsFromFiles = () => {
-  if (questionsInitialized) {
-    return questions;
-  }
-
   const allQuestions = [];
 
   // Required answer insight levels in the exact order they should appear
@@ -187,22 +173,8 @@ const extractQuestionsFromFiles = () => {
 
   // Process question sets
   Object.entries(questionSets).forEach(([categoryId, sets]) => {
-    // Initialize category indexes if they don't exist
-    if (!questionsByCategory[categoryId]) {
-      questionsByCategory[categoryId] = [];
-    }
-
-    if (!questionsBySubcategory[categoryId]) {
-      questionsBySubcategory[categoryId] = {};
-    }
-
     sets.forEach(set => {
       Object.entries(set.files).forEach(([subcategoryName, file]) => {
-        // Initialize subcategory index if it doesn't exist
-        if (!questionsBySubcategory[categoryId][subcategoryName]) {
-          questionsBySubcategory[categoryId][subcategoryName] = [];
-        }
-
         if (file && file.questions && Array.isArray(file.questions)) {
           // Add category, subcategory, and set info to each question
           const questionsWithMetadata = file.questions.map(question => {
@@ -229,55 +201,25 @@ const extractQuestionsFromFiles = () => {
                 insightsByCategory[level] || createDefaultInsight(level),
             );
 
-            // Create the enhanced question object
-            const enhancedQuestion = {
+            return {
               ...question,
               answerInsights: completeAnswerInsights,
               categoryId,
               subcategoryName,
               setId: set.id,
             };
-
-            // Add to ID lookup map
-            questionById[enhancedQuestion.id] = enhancedQuestion;
-
-            return enhancedQuestion;
           });
-
-          // Add questions to all indexes
           allQuestions.push(...questionsWithMetadata);
-          questionsByCategory[categoryId].push(...questionsWithMetadata);
-          questionsBySubcategory[categoryId][subcategoryName].push(
-              ...questionsWithMetadata);
         }
       });
     });
   });
 
-  // Sort questions once
-  questions = allQuestions;
-  sortedQuestions = sortQuestionsByOrder([...allQuestions]);
-
-  // Sort indexed categories and subcategories
-  Object.keys(questionsByCategory).forEach(categoryId => {
-    questionsByCategory[categoryId] = sortQuestionsByOrder(
-        questionsByCategory[categoryId]);
-
-    if (questionsBySubcategory[categoryId]) {
-      Object.keys(questionsBySubcategory[categoryId]).forEach(subcategory => {
-        questionsBySubcategory[categoryId][subcategory] =
-            sortQuestionsByOrder(
-                questionsBySubcategory[categoryId][subcategory]);
-      });
-    }
-  });
-
-  questionsInitialized = true;
-  return questions;
+  return allQuestions;
 };
 
-// Initialize questions
-extractQuestionsFromFiles();
+// All questions array
+const questions = extractQuestionsFromFiles();
 
 // Categories with subcategories
 export const categories = [
@@ -335,80 +277,40 @@ export const categories = [
   },
 ];
 
-// Create a cache key for filtered results
-const createFilterCacheKey = (categoryId, subcategory, skillLevel) => {
-  return `${categoryId || ''}:${subcategory || ''}:${skillLevel || ''}`;
-};
-
-// Get all questions - return pre-sorted array
+// Get all questions
 export const getAllQuestions = () => {
-  return sortedQuestions;
+  return sortQuestionsByOrder([...questions]); // Return a sorted copy
 };
 
-// Get questions by category - now using indexed lookup
+// Get questions by category
 export const getQuestionsByCategory = (categoryId) => {
-  if (!categoryId || !questionsByCategory[categoryId]) {
-    return [];
-  }
-
-  return questionsByCategory[categoryId];
+  const categoryQuestions = questions.filter(
+      question => question.categoryId === categoryId);
+  return sortQuestionsByOrder(categoryQuestions);
 };
 
-// Get filtered questions by category and subcategory - optimized with indexes and caching
+// Get filtered questions by category and subcategory
 export const getFilteredQuestions = (
     categoryId = null, subcategory = null, skillLevel = null) => {
+  let filtered = questions;
 
-  // Create a cache key for this filter combination
-  const cacheKey = createFilterCacheKey(categoryId, subcategory, skillLevel);
-
-  // Check if we have a cached result
-  if (filterCache.has(cacheKey)) {
-    return filterCache.get(cacheKey);
+  // Filter by category if specified
+  if (categoryId) {
+    filtered = filtered.filter(q => q.categoryId === categoryId);
   }
 
-  let filteredQuestions = [];
-
-  // Direct lookup by category and subcategory if possible
-  if (categoryId && subcategory &&
-      questionsBySubcategory[categoryId]?.[subcategory]) {
-    filteredQuestions = [...questionsBySubcategory[categoryId][subcategory]];
-  }
-  // Lookup by category if only category is specified
-  else if (categoryId && !subcategory && questionsByCategory[categoryId]) {
-    filteredQuestions = [...questionsByCategory[categoryId]];
-  }
-  // Fall back to filtering all questions
-  else {
-    filteredQuestions = [...sortedQuestions];
-
-    // Apply category filter if specified
-    if (categoryId) {
-      filteredQuestions = filteredQuestions.filter(
-          q => q.categoryId === categoryId);
-    }
-
-    // Apply subcategory filter if specified
-    if (subcategory) {
-      filteredQuestions = filteredQuestions.filter(
-          q => q.subcategoryName === subcategory);
-    }
+  // Filter by subcategory if specified
+  if (subcategory) {
+    filtered = filtered.filter(q => q.subcategoryName === subcategory);
   }
 
-  // Apply skill level filter if specified
+  // Filter by skill level if specified
   if (skillLevel) {
-    filteredQuestions = filteredQuestions.filter(
-        q => q.skillLevel === skillLevel);
+    filtered = filtered.filter(q => q.skillLevel === skillLevel);
   }
 
-  // If we need to sort the results, do so
-  const result = skillLevel
-      ? sortQuestionsByOrder(filteredQuestions)
-      : filteredQuestions;
-
-  // Cache the result
-  filterCache.set(cacheKey, result);
-
-  return result;
+  // Return a sorted copy to ensure consistent ordering
+  return sortQuestionsByOrder([...filtered]);
 };
 
 // Get question sets for a category
@@ -416,25 +318,19 @@ export const getQuestionSets = (categoryId) => {
   return questionSets[categoryId] || [];
 };
 
-// Get question by ID - now using direct lookup
+// Get question by ID
 export const getQuestionById = (id) => {
-  return questionById[id] || null;
+  return questions.find(question => question.id === id);
 };
 
-// Get related questions - optimized with direct lookups
+// Get related questions
 export const getRelatedQuestions = (questionId) => {
   const question = getQuestionById(questionId);
   if (!question || !question.relatedQuestions) return [];
 
-  const relatedQs = [];
-
-  // Use direct lookups instead of mapping and filtering
-  for (const id of question.relatedQuestions) {
-    const relatedQuestion = questionById[id];
-    if (relatedQuestion && relatedQuestion.id !== questionId) {
-      relatedQs.push(relatedQuestion);
-    }
-  }
+  const relatedQs = question.relatedQuestions.map(id => getQuestionById(id)).
+      filter(Boolean) // Filter out any undefined results
+      .filter(q => q.id !== questionId); // Filter out self-references
 
   // Return related questions in sorted order
   return sortQuestionsByOrder(relatedQs);
@@ -449,9 +345,4 @@ export const getCategoryById = (categoryId) => {
 export const getCategoryForQuestion = (question) => {
   if (!question) return null;
   return getCategoryById(question.categoryId);
-};
-
-// Clear filter cache - utility function for testing or forced refreshes
-export const clearFilterCache = () => {
-  filterCache.clear();
 };
