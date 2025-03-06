@@ -1265,7 +1265,7 @@
     },
     {
       "id": "data-structure-complexity-dsa-ds-24",
-      "skillLevel": "intermediate",
+      "skillLevel": "basic",
       "shortTitle": "Time-Space Complexity Analysis",
       "question": "How do you analyze and compare the time and space complexity of different data structures?",
       "answerInsights": [

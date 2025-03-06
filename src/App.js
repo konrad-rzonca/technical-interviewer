@@ -16,6 +16,7 @@ import MainLayout from './components/MainLayout';
 import {categories, getAllQuestions} from './data/questionLoader';
 import {createAppTheme} from './themes';
 import {NAVIGATION} from './utils/constants';
+import storageService from './services/storageService';
 
 // Create the application theme using the theme system
 const theme = createAppTheme();
@@ -43,11 +44,42 @@ function App() {
     setAllQuestions(questions);
   }, []);
 
+  // Load saved interview state from localStorage on app initialization
+  useEffect(() => {
+    if (storageService.isStorageAvailable()) {
+      const savedState = storageService.loadInterviewState();
+      if (savedState) {
+        setInterviewState(prevState => ({
+          ...prevState,
+          notesMap: savedState.notesMap || {},
+          gradesMap: savedState.gradesMap || {},
+          selectedAnswerPointsMap: savedState.selectedAnswerPointsMap || {},
+          // Don't restore currentQuestion to avoid navigation issues
+        }));
+      }
+    }
+  }, []);
+
   const updateInterviewState = (updates) => {
-    setInterviewState(prevState => ({
-      ...prevState,
-      ...updates,
-    }));
+    setInterviewState(prevState => {
+      const newState = {
+        ...prevState,
+        ...updates,
+      };
+
+      // Save to localStorage after update
+      if (storageService.isStorageAvailable()) {
+        const stateToSave = {
+          notesMap: newState.notesMap,
+          gradesMap: newState.gradesMap,
+          selectedAnswerPointsMap: newState.selectedAnswerPointsMap,
+          // Don't save currentQuestion as it's navigation state
+        };
+        storageService.debouncedSaveInterviewState(stateToSave);
+      }
+
+      return newState;
+    });
   };
 
   // Handle question selection from global search
@@ -64,13 +96,25 @@ function App() {
         [categoryPointKey]: !currentPoints[categoryPointKey],
       };
 
-      return {
+      const newState = {
         ...prevState,
         selectedAnswerPointsMap: {
           ...prevState.selectedAnswerPointsMap,
           [questionId]: updatedPoints,
         },
       };
+
+      // Save to localStorage after update
+      if (storageService.isStorageAvailable()) {
+        const stateToSave = {
+          notesMap: newState.notesMap,
+          gradesMap: newState.gradesMap,
+          selectedAnswerPointsMap: newState.selectedAnswerPointsMap,
+        };
+        storageService.debouncedSaveInterviewState(stateToSave);
+      }
+
+      return newState;
     });
   };
 

@@ -1,11 +1,21 @@
 ﻿// src/components/SettingsMenu.js
 import React from 'react';
-import {Box, Menu, MenuItem, Switch, Typography, useTheme} from '@mui/material';
+import {
+  Box,
+  Divider,
+  Menu,
+  MenuItem,
+  Switch,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffOutlinedIcon
   from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import storageService from '../services/storageService';
 
 const SettingsMenu = ({
   anchorEl,
@@ -21,6 +31,22 @@ const SettingsMenu = ({
   const handleToggle = (setting, e) => {
     e.stopPropagation(); // Prevent menu from closing
     onSettingChange(setting);
+  };
+
+  // Handle clearing saved interview data
+  const handleClearSavedData = (e) => {
+    e.stopPropagation(); // Prevent menu from closing
+
+    // Confirm with the user before clearing data
+    if (window.confirm(
+        'Are you sure you want to clear all saved interview data? This cannot be undone.')) {
+      storageService.clearInterviewState();
+      // Notify the user
+      alert(
+          'Your saved interview data has been cleared. Refresh the page to see the changes.');
+    }
+
+    onClose();
   };
 
   return (
@@ -192,6 +218,53 @@ const SettingsMenu = ({
               color="primary"
               onClick={(e) => handleToggle('hideAnsweredInRelated', e)}
           />
+        </MenuItem>
+
+        {/* Data Management Section */}
+        <Divider sx={{my: 1}}/>
+
+        <Typography
+            variant="caption"
+            sx={{
+              display: 'block',
+              px: 2,
+              pt: 1,
+              pb: 0.5,
+              color: 'text.secondary',
+              fontWeight: 500,
+              fontSize: '0.75rem',
+            }}
+        >
+          DATA MANAGEMENT
+        </Typography>
+
+        {/* Clear Saved Data */}
+        <MenuItem
+            sx={{
+              minWidth: 320,
+              display: 'flex',
+              justifyContent: 'space-between',
+              py: 1.5,
+              px: 2,
+              color: theme.palette.error.main,
+              '&:hover': {
+                backgroundColor: `${theme.palette.error.main}10`,
+              },
+            }}
+            onClick={handleClearSavedData}
+        >
+          <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <DeleteOutlineIcon fontSize="small" sx={{
+              mr: 1.5,
+              color: theme.palette.error.main,
+            }}/>
+            <Typography variant="body2" sx={{
+              fontSize: '0.9rem',
+              color: theme.palette.error.main,
+            }}>
+              Clear Saved Interview Data
+            </Typography>
+          </Box>
         </MenuItem>
       </Menu>
   );
