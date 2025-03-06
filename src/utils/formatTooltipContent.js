@@ -149,7 +149,7 @@ export const formatTooltipContent = (content, options = {}) => {
                       const boldText = boldSegment.slice(2, -2);
                       return <span key={j} style={{
                         fontWeight: 'bold',
-                        color: '#4DC3D0', // Soft cyan color that works well on dark backgrounds
+                        color: '#ffffff', // Soft cyan color that works well on dark backgrounds
                       }}>{boldText}</span>;
                     }
                     return <span key={j}>{boldSegment}</span>;
