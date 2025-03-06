@@ -13,9 +13,7 @@ import TooltipContent from './common/TooltipContent';
 
 // Constants for styling
 const DOT_SIZE = 12; // Smaller dot size for better proportions
-const DOT_MARGIN = 10; // Equal margin on both sides of the dot
 
-// Memoized component to prevent unnecessary re-renders
 const QuestionItem = ({
   question,
   currentQuestion,
@@ -23,10 +21,10 @@ const QuestionItem = ({
   onQuestionSelect,
   isSmallScreen = false,
 }) => {
-  // Memoize derived state
+  // Memoize derived values with clear dependencies
   const isSelected = useMemo(() =>
           currentQuestion && currentQuestion.id === question.id,
-      [currentQuestion, question.id],
+      [currentQuestion?.id, question.id],
   );
 
   const isAnswered = useMemo(() =>
@@ -39,21 +37,28 @@ const QuestionItem = ({
       [gradesMap, question.id],
   );
 
-  // Get styles from optimized style hooks
+  // Get styles from style hooks
   const itemStyles = useQuestionItemStyles(isSelected, isAnswered,
       question.skillLevel);
   const textStyles = useItemTextStyles(isSelected, isSmallScreen);
 
-  // Get skill level colors
+  // Memoize the indicator color
   const indicatorColor = useMemo(() =>
           getIndicatorColor(question.skillLevel),
       [question.skillLevel],
   );
 
-  // Get standardized tooltip props
+  // Get tooltip props
   const tooltipProps = useTooltip('question');
 
-  // Memoize the tooltip content for better performance
+  // Memoize the displayed text
+  const displayText = useMemo(() =>
+          question.shortTitle ||
+          (question.question.split(' ').slice(0, 5).join(' ') + '...'),
+      [question.shortTitle, question.question],
+  );
+
+  // Memoize the tooltip content
   const tooltipContent = useMemo(() => (
       <TooltipContent
           title={question.question}
@@ -115,8 +120,7 @@ const QuestionItem = ({
                   m: 0,
                 }}
             >
-              {question.shortTitle ||
-                  question.question.split(' ').slice(0, 5).join(' ') + '...'}
+              {displayText}
             </Typography>
           </Box>
 
@@ -141,14 +145,34 @@ const QuestionItem = ({
   );
 };
 
-// Use React.memo with custom comparison function for optimal performance
-export default React.memo(QuestionItem, (prevProps, nextProps) => {
-  // Only re-render if these props change
-  return (
-      prevProps.question.id === nextProps.question.id &&
-      (prevProps.currentQuestion?.id === nextProps.currentQuestion?.id) &&
-      (prevProps.gradesMap[prevProps.question.id] ===
-          nextProps.gradesMap[nextProps.question.id]) &&
-      prevProps.isSmallScreen === nextProps.isSmallScreen
-  );
-});
+// Custom comparison function that checks the most important props
+const areEqual = (prevProps, nextProps) => {
+  // Check question ID (most fundamental check)
+  if (prevProps.question.id !== nextProps.question.id) {
+    return false;
+  }
+
+  // Check selection state
+  const prevSelected = prevProps.currentQuestion?.id === prevProps.question.id;
+  const nextSelected = nextProps.currentQuestion?.id === nextProps.question.id;
+  if (prevSelected !== nextSelected) {
+    return false;
+  }
+
+  // Check answered status
+  const prevAnswered = prevProps.gradesMap?.[prevProps.question.id];
+  const nextAnswered = nextProps.gradesMap?.[nextProps.question.id];
+  if (prevAnswered !== nextAnswered) {
+    return false;
+  }
+
+  // Check screen size
+  if (prevProps.isSmallScreen !== nextProps.isSmallScreen) {
+    return false;
+  }
+
+  // If all checks pass, consider props equal
+  return true;
+};
+
+export default React.memo(QuestionItem, areEqual);
