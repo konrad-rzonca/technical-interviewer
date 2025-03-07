@@ -78,6 +78,7 @@ const QuestionItem = ({
               pt: 0,
               pb: 0,
               mb: 0,
+              overflow: 'hidden',
             }}
         >
           {/* Container for dot with consistent spacing */}

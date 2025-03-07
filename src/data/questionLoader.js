@@ -40,6 +40,10 @@ import designPatternsQuestions
 import microservicesQuestions
   from './questions/java/software-design/microservices.json';
 import RESTQuestions from './questions/java/software-design/REST.json';
+import distributedSystemsQuestions
+  from './questions/java/software-design/distributed-systems-1.json';
+import distributedSystemsPracticalQuestions
+  from './questions/java/software-design/distributed-systems-2.json';
 
 import gitQuestions from './questions/java/engineering/git.json';
 import CICDQuestions from './questions/java/engineering/CICD.json';
@@ -137,6 +141,14 @@ const questionSets = {
         'Design Patterns': designPatternsQuestions,
         'Microservices': microservicesQuestions,
         'REST API': RESTQuestions,
+        'Distributed Systems': {
+          category: distributedSystemsQuestions.category,
+          subcategory: distributedSystemsQuestions.subcategory,
+          questions: [
+            ...distributedSystemsQuestions.questions,
+            ...distributedSystemsPracticalQuestions.questions,
+          ],
+        },
       },
     },
   ],
@@ -247,6 +259,7 @@ export const categories = [
       'Memory Management',
       'Collections',
       'Exceptions',
+      'Reactive',
     ],
   },
   {
@@ -287,7 +300,9 @@ export const categories = [
     subcategories: [
       'Design Patterns',
       'Microservices',
-      'REST API'],
+      'REST API',
+      'Distributed Systems',
+    ],
   },
   {
     id: 'engineering-practices',
@@ -300,8 +315,7 @@ export const categories = [
       'Security',
       'Open Questions',
     ],
-  },
-];
+  }];
 
 // Get all questions
 export const getAllQuestions = () => {
