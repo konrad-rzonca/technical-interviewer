@@ -1,0 +1,379 @@
+﻿{
+  "category": "Core Java",
+  "subcategory": "Reactive",
+  "questions": [
+    {
+      "id": "java-reactive-use-cases-core-java-r-11",
+      "skillLevel": "basic",
+      "shortTitle": "Practical Use Cases",
+      "question": "What are some practical use cases where reactive programming in Java provides significant benefits?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "High-Concurrency Web Applications",
+              "description": "Web applications that need to handle many concurrent users benefit from reactive programming's non-blocking nature. Server resources can be used more efficiently, often handling more concurrent connections with the same hardware compared to traditional blocking approaches."
+            },
+            {
+              "title": "Real-time Data Processing",
+              "description": "Applications that process continuous streams of data (like monitoring systems, analytics platforms, or IoT data collection) can use reactive streams to handle data flow in a controlled manner with backpressure, preventing system overload when data surges occur."
+            },
+            {
+              "title": "External API Integration",
+              "description": "When applications need to integrate with multiple external services, reactive programming allows orchestrating and combining these calls efficiently. This is especially useful when API responses need to be combined, transformed, or when sequential calls depend on previous results."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event-Driven Microservices",
+              "description": "Microservices architectures that communicate via events can leverage reactive programming for processing event streams. The declarative nature of reactive code simplifies handling event routing, transformation, enrichment, and error recovery."
+            },
+            {
+              "title": "Long-Polling and Server-Sent Events",
+              "description": "Applications that use long-polling or Server-Sent Events (SSE) to push updates to clients benefit from reactive programming's ability to keep many connections open efficiently without blocking threads. This enables real-time updates with less resource consumption."
+            },
+            {
+              "title": "Resource-Constrained Environments",
+              "description": "In environments with limited resources (like edge devices or containers with restricted memory/CPU), reactive programming can improve efficiency by reducing thread usage and memory consumption compared to thread-per-request models."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Resilient Communication Patterns",
+              "description": "Systems requiring sophisticated resilience patterns (circuit breakers, retries with backoff, fallbacks, bulkheads) benefit from reactive libraries that integrate these patterns. This is particularly valuable in distributed systems where network failures are common."
+            },
+            {
+              "title": "High-Throughput ETL Processing",
+              "description": "Extract, Transform, Load (ETL) workflows that process large volumes of data can use reactive streams to implement backpressure, allowing the system to process data at a sustainable rate, with controlled parallelism and resource usage."
+            },
+            {
+              "title": "Responsive User Interfaces",
+              "description": "While most reactive programming in Java focuses on server-side, some Java UI frameworks (JavaFX with ReactFX, Android with RxJava) use reactive patterns to handle user input, application state, and UI updates in a more maintainable way than traditional event listeners."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-reactive-design-patterns-core-java-r-9"
+      ]
+    },
+    {
+      "id": "java-reactive-conversion-core-java-r-12",
+      "skillLevel": "basic",
+      "shortTitle": "Converting Between Models",
+      "question": "How can you effectively convert between reactive and traditional programming models in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Blocking to Reactive",
+              "description": "To convert blocking operations to reactive, wrap them using `Mono.fromCallable()` or `Flux.defer()` (in Project Reactor) or `Single.fromCallable()` or `Observable.fromCallable()` (in RxJava). Execute these on an appropriate scheduler to avoid blocking the main thread:\n```java\n// Project Reactor example\nMono.fromCallable(() -> blockingService.getData(id))\n    .subscribeOn(Schedulers.boundedElastic());\n```"
+            },
+            {
+              "title": "Reactive to Blocking",
+              "description": "When you need to integrate reactive code with blocking consumers, use blocking terminal operators like `block()` in Project Reactor or `blockingGet()` in RxJava. Note that this should be avoided in fully reactive applications:\n```java\n// Getting a result synchronously\nUser user = userRepository.findById(id) // Returns Mono<User>\n    .block(); // Blocks until the result is available\n```"
+            },
+            {
+              "title": "Collections to Reactive Streams",
+              "description": "Convert standard collections to reactive streams using factory methods:\n```java\n// From a list to a Flux\nList<String> items = Arrays.asList(\"a\", \"b\", \"c\");\nFlux<String> flux = Flux.fromIterable(items);\n\n// From a list to an Observable\nObservable<String> observable = Observable.fromIterable(items);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "CompletableFuture Integration",
+              "description": "Convert between CompletableFuture and reactive types:\n```java\n// CompletableFuture to Mono\nCompletableFuture<String> future = service.getDataAsync();\nMono<String> mono = Mono.fromFuture(future);\n\n// Mono to CompletableFuture\nCompletableFuture<String> newFuture = mono.toFuture();\n```"
+            },
+            {
+              "title": "Callbacks to Reactive",
+              "description": "Convert callback-based APIs to reactive streams using create operators:\n```java\n// Converting a callback-based API to a Mono\nMono<Response> mono = Mono.create(sink -> {\n    client.executeRequest(request, new Callback<Response>() {\n        @Override\n        public void onSuccess(Response response) {\n            sink.success(response);\n        }\n        \n        @Override\n        public void onError(Throwable error) {\n            sink.error(error);\n        }\n    });\n});\n```"
+            },
+            {
+              "title": "Stream API Integration",
+              "description": "Convert between Java Stream API and reactive streams:\n```java\n// From Stream to Flux\nStream<String> stream = Arrays.asList(\"a\", \"b\", \"c\").stream();\nFlux<String> flux = Flux.fromStream(stream);\n\n// From Flux to Stream (be careful with infinite streams)\nStream<String> newStream = flux.toStream(); // Blocks!\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Integrating with ExecutorService",
+              "description": "Customize thread allocation when converting blocking to reactive:\n```java\n// Using a custom executor\nExecutorService executor = Executors.newFixedThreadPool(10);\nScheduler scheduler = Schedulers.fromExecutor(executor);\n\nMono.fromCallable(() -> blockingService.getData())\n    .subscribeOn(scheduler);\n```"
+            },
+            {
+              "title": "Rx to Reactor Conversion",
+              "description": "Convert between RxJava and Project Reactor using adapters and the Reactive Streams interfaces:\n```java\n// RxJava to Reactor\nimport io.reactivex.rxjava3.core.Flowable;\nimport reactor.core.publisher.Flux;\n\nFlowable<String> flowable = Flowable.just(\"a\", \"b\", \"c\");\nFlux<String> flux = Flux.from(flowable); // Uses Reactive Streams\n\n// Reactor to RxJava\nFlux<String> flux = Flux.just(\"a\", \"b\", \"c\");\nFlowable<String> flowable = Flowable.fromPublisher(flux);\n```"
+            },
+            {
+              "title": "Mixing Synchronous and Asynchronous Code",
+              "description": "When integrating reactive code into a larger traditional application, consider using \"islands of reactivity\": keeping subsystems internal components fully reactive, while offering synchronous APIs at their boundaries. This pattern works well when incrementally adopting reactive programming in an existing codebase."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-reactive-streams-core-java-r-1"
+      ]
+    },
+    {
+      "id": "java-reactive-spring-webflux-core-java-r-13",
+      "skillLevel": "basic",
+      "shortTitle": "Spring WebFlux Basics",
+      "question": "How does Spring WebFlux enable reactive programming for web applications in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Overview",
+              "description": "**Spring WebFlux** is a reactive web framework that provides an alternative to Spring MVC for building non-blocking, reactive web applications. It's built on Project Reactor and supports both functional and annotation-based programming models."
+            },
+            {
+              "title": "Non-blocking Runtime",
+              "description": "Unlike Spring MVC which uses a thread-per-request model, WebFlux runs on servers that use a non-blocking event loop model (like Netty, Undertow, or Servlet 3.1+ containers). This enables handling many more concurrent connections with fewer threads."
+            },
+            {
+              "title": "Reactive Controllers",
+              "description": "WebFlux controllers return reactive types (Mono/Flux) instead of direct values:\n```java\n@RestController\npublic class UserController {\n    private final UserRepository userRepository;\n    \n    // Constructor injection\n    \n    @GetMapping(\"/users/{id}\")\n    public Mono<User> getUser(@PathVariable String id) {\n        return userRepository.findById(id);\n    }\n    \n    @GetMapping(\"/users\")\n    public Flux<User> getAllUsers() {\n        return userRepository.findAll();\n    }\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Functional Routes",
+              "description": "In addition to annotated controllers, WebFlux supports a functional programming model with RouterFunctions:\n```java\n@Configuration\npublic class UserRoutes {\n    @Bean\n    public RouterFunction<ServerResponse> userRoutes(UserHandler userHandler) {\n        return route()\n            .GET(\"/users/{id}\", userHandler::getUser)\n            .GET(\"/users\", userHandler::getAllUsers)\n            .POST(\"/users\", userHandler::createUser)\n            .build();\n    }\n}\n\n// Corresponding handler class\n@Component\npublic class UserHandler {\n    private final UserRepository userRepository;\n    \n    // Constructor injection\n    \n    public Mono<ServerResponse> getUser(ServerRequest request) {\n        String id = request.pathVariable(\"id\");\n        return userRepository.findById(id)\n            .flatMap(user -> ServerResponse.ok().bodyValue(user))\n            .switchIfEmpty(ServerResponse.notFound().build());\n    }\n    \n    // Other handler methods\n}\n```"
+            },
+            {
+              "title": "WebClient",
+              "description": "WebFlux includes **WebClient**, a reactive HTTP client that replaces RestTemplate:\n```java\nWebClient client = WebClient.create(\"https://api.example.com\");\n\n// Making a request\nMono<User> user = client.get()\n    .uri(\"/users/{id}\", userId)\n    .retrieve()\n    .bodyToMono(User.class);\n    \n// Making parallel requests\nFlux<User> users = Flux.fromIterable(userIds)\n    .flatMap(id -> client.get()\n        .uri(\"/users/{id}\", id)\n        .retrieve()\n        .bodyToMono(User.class))\n    .limitRate(10); // Limiting concurrency\n```"
+            },
+            {
+              "title": "Reactive Data Access",
+              "description": "Spring Data provides reactive extensions for MongoDB, Redis, Cassandra, and R2DBC (Reactive Relational Database Connectivity) with repositories returning Mono/Flux:\n```java\npublic interface UserRepository extends ReactiveCrudRepository<User, String> {\n    Flux<User> findByLastName(String lastName);\n    Mono<User> findByEmail(String email);\n}\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Server-Sent Events",
+              "description": "WebFlux supports Server-Sent Events (SSE) for pushing updates to clients, perfect for real-time dashboards, notifications, or activity feeds:\n```java\n@GetMapping(value = \"/events\", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<ServerSentEvent<Event>> streamEvents() {\n    return eventService.getEventStream()\n        .map(event -> ServerSentEvent.builder(event)\n            .id(event.getId())\n            .event(\"update\")\n            .build());\n}\n```"
+            },
+            {
+              "title": "WebSockets",
+              "description": "WebFlux includes reactive WebSocket support for bidirectional communication:\n```java\n@Bean\npublic HandlerMapping webSocketMapping() {\n    Map<String, WebSocketHandler> handlers = new HashMap<>();\n    handlers.put(\"/ws/chat\", new ReactiveWebSocketHandler());\n    \n    SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();\n    mapping.setUrlMap(handlers);\n    mapping.setOrder(-1); // Higher precedence than HTTP handlers\n    return mapping;\n}\n\npublic class ReactiveWebSocketHandler implements WebSocketHandler {\n    @Override\n    public Mono<Void> handle(WebSocketSession session) {\n        // Handle incoming messages\n        Flux<WebSocketMessage> incoming = session.receive()\n            .map(WebSocketMessage::getPayloadAsText)\n            .map(message -> processMessage(message))\n            .map(response -> session.textMessage(response));\n            \n        // Send outgoing messages\n        return session.send(incoming);\n    }\n}\n```"
+            },
+            {
+              "title": "Security Integration",
+              "description": "Spring Security integrates with WebFlux, providing reactive authentication and authorization:\n```java\n@Configuration\n@EnableWebFluxSecurity\npublic class SecurityConfig {\n    @Bean\n    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {\n        return http\n            .authorizeExchange()\n            .pathMatchers(\"/public/**\").permitAll()\n            .pathMatchers(\"/api/**\").authenticated()\n            .anyExchange().authenticated()\n            .and()\n            .oauth2ResourceServer().jwt()\n            .and().and().build();\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-project-reactor-core-java-r-4"
+      ]
+    },
+    {
+      "id": "java-reactive-hot-cold-core-java-r-14",
+      "skillLevel": "basic",
+      "shortTitle": "Hot vs Cold Publishers",
+      "question": "What's the difference between hot and cold publishers in reactive programming, and when would you use each?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Cold Publishers",
+              "description": "**Cold publishers** start producing data when a subscriber subscribes and produce a fresh data sequence for each subscriber. They're like DVDs—each viewer watches from the beginning. Examples include: `Flux.range()`, `Mono.fromCallable()`, HTTP requests with WebClient, or database queries."
+            },
+            {
+              "title": "Hot Publishers",
+              "description": "**Hot publishers** emit data regardless of subscriptions, and new subscribers only receive data emitted after they subscribe. They're like live TV broadcasts—viewers tune in and see only what's broadcast from that point forward. Examples include UI events, system metrics, or real-time data feeds."
+            },
+            {
+              "title": "Basic Usage Patterns",
+              "description": "Use **cold publishers** when each subscriber needs its own complete data set (e.g., database queries or HTTP calls). Use **hot publishers** when sharing a single data stream among multiple subscribers (e.g., mouse clicks or stock price updates)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Converting Cold to Hot",
+              "description": "You can convert a cold publisher to hot using operators like `share()`, `publish()`, or `cache()` in Project Reactor:\n```java\n// Cold publisher\nFlux<Integer> cold = Flux.range(1, 10)\n    .delayElements(Duration.ofMillis(100));\n\n// Convert to hot (share)\nFlux<Integer> hot = cold.share();\n\n// First subscriber gets all values\nhot.subscribe(i -> System.out.println(\"First: \" + i));\n\n// Second subscriber (after delay) gets only remaining values\nThread.sleep(500); // After ~5 elements have been emitted\nhot.subscribe(i -> System.out.println(\"Second: \" + i)); // Only sees ~6-10\n```"
+            },
+            {
+              "title": "Replay and Caching",
+              "description": "Some hot publishers can replay emissions to new subscribers:\n```java\n// Cache entire history and replay to new subscribers\nFlux<Integer> cached = Flux.range(1, 10)\n    .delayElements(Duration.ofMillis(100))\n    .cache(); // Will replay all items to new subscribers\n\n// Replay only last N elements\nFlux<Integer> replayLast = Flux.range(1, 10)\n    .delayElements(Duration.ofMillis(100))\n    .replay(3) // Keep last 3 values for replay\n    .autoConnect();\n```"
+            },
+            {
+              "title": "Multicast with ConnectableFlux",
+              "description": "Fine-grained control over when emissions start using `publish()` and `connect()`:\n```java\n// Create a connectable flux that won't emit until connect is called\nConnectableFlux<Integer> published = Flux.range(1, 5)\n    .delayElements(Duration.ofMillis(100))\n    .publish();\n\n// Set up subscribers\npublished.subscribe(i -> System.out.println(\"First: \" + i));\npublished.subscribe(i -> System.out.println(\"Second: \" + i));\n\n// Nothing happens until we call connect\npublished.connect(); // Now both subscribers receive the same emissions\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Resource Management",
+              "description": "Hot publishers need careful resource management since they may be producing data even without active subscribers. Use `autoConnect(n)` or `refCount(n)` to automatically connect when reaching n subscribers and to disconnect when subscribers leave:\n```java\n// Connect when 2 subscribers arrive, disconnect when all leave\nFlux<Long> shared = Flux.interval(Duration.ofSeconds(1))\n    .publish()\n    .refCount(2); // Connects at 2 subscribers, disconnects at 0\n```"
+            },
+            {
+              "title": "Real-world Hot Sources",
+              "description": "Common hot publishers include event buses, message brokers, and reactive wrappers for system events. Creating custom hot sources often involves `DirectProcessor`, `EmitterProcessor`, or `Sinks` in Reactor, or `Subject`s in RxJava:\n```java\n// Creating a hot source with a sink\nSinks.Many<String> sink = Sinks.many().multicast().onBackpressureBuffer();\nFlux<String> hotFlux = sink.asFlux();\n\n// Subscribers can subscribe to the hot flux\nhotFlux.subscribe(data -> System.out.println(\"Subscriber 1: \" + data));\n\n// Emit data to all subscribers\nsink.tryEmitNext(\"Hello\"); // Received by existing subscribers\n\n// Later subscribers only see new data\nhotFlux.subscribe(data -> System.out.println(\"Subscriber 2: \" + data));\nsink.tryEmitNext(\"World\"); // Received by both subscribers\n```"
+            },
+            {
+              "title": "Testing Considerations",
+              "description": "Testing hot and cold publishers requires different approaches:\n- Cold publishers are easier to test since each test gets a fresh data stream\n- Hot publishers often need special handling for testing, such as subscribing before triggering events or using `TestPublisher` in Reactor\n- Time-based tests for hot publishers benefit from virtual time schedulers to control emissions"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-reactive-streams-core-java-r-1"
+      ]
+    },
+    {
+      "id": "java-reactive-debugging-core-java-r-15",
+      "skillLevel": "intermediate",
+      "shortTitle": "Debugging Reactive Code",
+      "question": "What techniques and tools can help effectively debug reactive code in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Debug Operators",
+              "description": "Reactive libraries provide operators to peek into the stream for debugging: `doOnNext`, `doOnError`, `doOnComplete`, etc. These allow observing the stream without changing its content:\n```java\nFlux.range(1, 10)\n    .map(i -> i * 2)\n    .doOnNext(i -> System.out.println(\"After map: \" + i)) // Debug point\n    .filter(i -> i > 5)\n    .doOnNext(i -> System.out.println(\"After filter: \" + i)) // Debug point\n    .subscribe();\n```"
+            },
+            {
+              "title": "Logging",
+              "description": "Dedicated logging operators simplify adding logs throughout the reactive chain:\n```java\n// Project Reactor\nimport reactor.core.publisher.Flux;\nimport reactor.util.Logger;\nimport reactor.util.Loggers;\n\nLogger log = Loggers.getLogger(MyClass.class);\n\nFlux.range(1, 5)\n    .log(log, Level.INFO, SignalType.ON_NEXT)\n    .map(i -> i * 2)\n    .log(\"afterMap\")\n    .subscribe();\n\n// RxJava\nObservable.range(1, 5)\n    .doOnNext(i -> Log.d(TAG, \"Emitted: \" + i))\n    .map(i -> i * 2)\n    .subscribe();\n```"
+            },
+            {
+              "title": "Stack Trace Debugging",
+              "description": "Reactive stack traces can be difficult to interpret because they span asynchronous boundaries. Looking for your application code among framework classes is key. Start at the error point and look for your package names in the stack trace."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Debug Mode",
+              "description": "Enable debug mode to get more detailed stack traces. In Project Reactor:\n```java\n// Enable globally (e.g., in a @PostConstruct method)\nHooks.onOperatorDebug();\n\n// Or for specific chains\nFlux.range(1, 10)\n    .checkpoint(\"after range\")\n    .map(i -> i / (i - 5)) // Will cause div by zero error\n    .checkpoint(\"after map\")\n    .subscribe();\n```"
+            },
+            {
+              "title": "Debugging in IDE",
+              "description": "When using breakpoints in IDEs:\n1. Place breakpoints in lambda expressions inside operators\n2. Use conditional breakpoints for specific data values\n3. For asynchronous code, enable \"suspend thread\" rather than \"suspend VM\" in breakpoint settings\n4. Use \"drop frame\" to retry the execution of a method with corrected values"
+            },
+            {
+              "title": "Timeouts and Blocking",
+              "description": "Add timeouts to detect stuck or slow publishers, and use blocking operators carefully for debugging (never in production code):\n```java\n// Add timeout to detect stalled streams\nflux.timeout(Duration.ofSeconds(5))\n    .doOnError(e -> log.error(\"Stream did not complete in time\", e))\n    .onErrorResume(TimeoutException.class, e -> Flux.empty())\n    .subscribe();\n\n// For debug only: block to inspect a value\nList<Integer> results = flux.collectList().block(); // NEVER in production code\nSystem.out.println(\"Results: \" + results);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Reactor Tools",
+              "description": "Use `ReactorDebugAgent` for enhanced debugging without performance impact in production:\n```java\n// In your application startup\nimport reactor.tools.agent.ReactorDebugAgent;\n\npublic static void main(String[] args) {\n    ReactorDebugAgent.init();\n    // or\n    ReactorDebugAgent.processExistingClasses();\n    \n    // application code\n}\n```"
+            },
+            {
+              "title": "Tracing and Metrics",
+              "description": "Integrate with distributed tracing and metrics systems:\n```java\n// Reactor with Micrometer\nFlux.range(1, 10)\n    .name(\"my-flux\").tag(\"step\", \"source\") // Add name and tags\n    .metrics() // Enable metrics collection\n    .map(i -> process(i))\n    .name(\"my-flux\").tag(\"step\", \"processed\")\n    .metrics()\n    .subscribe();\n```"
+            },
+            {
+              "title": "Custom Operator/Hook Testing",
+              "description": "For debugging custom operators or integrations, create test pipelines that isolate the problematic section and use custom hooks to intercept signals:\n```java\n// Register a hook to intercept all onNext signals\nHooks.onEachOperator(operatorSpec ->\n    operatorSpec.operatorStacktrace()\n        .lifter((publisher, subscriber) -> new SignalPeekingSubscriber(subscriber))\n);\n\n// Create a subscriber that logs signals at various levels\npublic class SignalPeekingSubscriber implements CoreSubscriber<T> {\n    // Implementation that logs signals and delegates to actual subscriber\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-reactive-testing-core-java-r-8"
+      ]
+    },
+    {
+      "id": "java-reactive-composition-core-java-r-16",
+      "skillLevel": "basic",
+      "shortTitle": "Composing Operations",
+      "question": "How do you effectively compose and transform reactive streams in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Basic Transformations",
+              "description": "Common operators for transforming individual elements:\n```java\nFlux.range(1, 5)\n    .map(i -> i * 2)              // Transform each value: 2, 4, 6, 8, 10\n    .filter(i -> i > 5)           // Keep only values > 5: 6, 8, 10\n    .distinct()                   // Remove duplicates\n    .take(2)                      // Limit to first 2 items: 6, 8\n    .subscribe(System.out::println);\n```"
+            },
+            {
+              "title": "Combining Streams",
+              "description": "Merge multiple streams together:\n```java\nFlux<String> flux1 = Flux.just(\"A\", \"B\", \"C\");\nFlux<String> flux2 = Flux.just(\"D\", \"E\", \"F\");\n\n// Combine elements from both sources as they arrive\nFlux.merge(flux1, flux2)\n    .subscribe(System.out::println);\n    \n// Concatenate second source after first completes\nFlux.concat(flux1, flux2)\n    .subscribe(System.out::println);\n    \n// Zip corresponding elements together\nFlux.zip(flux1, flux2, (a, b) -> a + b)\n    .subscribe(System.out::println); // Prints: AD, BE, CF\n```"
+            },
+            {
+              "title": "Error Handling",
+              "description": "Handle exceptions in the reactive stream:\n```java\nFlux.just(1, 2, 0, 4, 5)\n    .map(i -> 10 / i)                     // Will throw when i=0\n    .onErrorReturn(0)                     // Replace error with default value\n    .subscribe(System.out::println);\n    \n// Alternative error handling approaches\nFlux.just(1, 2, 0, 4, 5)\n    .map(i -> {\n        try {\n            return 10 / i;\n        } catch (ArithmeticException e) {\n            return 0;                      // Handle locally\n        }\n    })\n    .onErrorResume(e -> Flux.just(-1, -2)) // Switch to fallback stream on error\n    .subscribe(System.out::println);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Flattening Nested Streams",
+              "description": "Handle nested streams with various flatMap operators:\n```java\n// Flatmap example: for each user, fetch their orders\nFlux<User> users = userRepository.findAll();\n\n// Process each user's orders (sequentially)\nusers.flatMap(user -> orderRepository.findByUser(user.getId()))\n     .subscribe(order -> processOrder(order));\n     \n// Process concurrently (up to 5 users at a time)\nusers.flatMap(user -> orderRepository.findByUser(user.getId()),\n               5)  // concurrency hint\n     .subscribe(order -> processOrder(order));\n     \n// Keep original order using concatMap (slower but ordered)\nusers.concatMap(user -> orderRepository.findByUser(user.getId()))\n     .subscribe(order -> processOrder(order));\n```"
+            },
+            {
+              "title": "Conditional Processing",
+              "description": "Apply different logic based on conditions:\n```java\n// Dynamically choose a source based on a condition\nMono<String> result = Mono.just(\"input\")\n    .flatMap(input -> {\n        if (input.length() > 10) {\n            return serviceA.process(input);\n        } else {\n            return serviceB.process(input);\n        }\n    });\n    \n// Switch to alternate stream if original is empty\nMono<User> user = userRepository.findById(id)\n    .switchIfEmpty(Mono.just(User.defaultUser()));\n    \n// Apply different transformations based on type\nFlux<Object> mixed = Flux.just(\"string\", 123, \"another\", 456);\nmixed.handle((item, sink) -> {\n    if (item instanceof String) {\n        sink.next(\"String: \" + item);\n    } else if (item instanceof Integer) {\n        sink.next(\"Number: \" + item);\n    }\n});\n```"
+            },
+            {
+              "title": "Time-Based Operations",
+              "description": "Operators for handling time aspects of streams:\n```java\n// Throttle events to at most one per second\nclickFlux.sample(Duration.ofSeconds(1))\n         .subscribe(click -> processClick(click));\n         \n// Group events into 2-second windows\nmetricFlux.window(Duration.ofSeconds(2))\n          .flatMap(windowFlux -> windowFlux.reduce(0, Integer::sum))\n          .subscribe(sum -> System.out.println(\"Sum in window: \" + sum));\n          \n// Add timeout to operations\nuserRepository.findById(id)\n    .timeout(Duration.ofSeconds(3))\n    .onErrorResume(TimeoutException.class, \n                   e -> Mono.just(User.defaultUser()))\n    .subscribe(user -> displayUser(user));\n```"
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Dynamic Subscription Management",
+              "description": "Control or dynamically modify subscriptions:\n```java\n// Switch to new stream when a condition changes\nFlux<String> source = Flux.interval(Duration.ofSeconds(1))\n    .map(i -> \"Source 1: \" + i);\n    \nFlux<String> trigger = Flux.just(\"switch\")\n    .delayElements(Duration.ofSeconds(5));\n    \nFlux<String> alternate = Flux.interval(Duration.ofMillis(500))\n    .map(i -> \"Source 2: \" + i);\n    \n// When trigger emits, switch to alternate source\nsource.takeUntilOther(trigger)\n      .concatWith(alternate)\n      .subscribe(System.out::println);\n      \n// Or use switchMap for more dynamic switching\nMono<String> userIdMono = getCurrentUserId(); // Changes over time\n\nuserIdMono\n    .switchMap(userId -> userRepository.findById(userId)\n                         .flatMapMany(user -> activityRepository.findByUser(user)))\n    .subscribe(activity -> displayActivity(activity));\n```"
+            },
+            {
+              "title": "Controlled Parallelism",
+              "description": "Fine control over parallelism and scheduling:\n```java\n// Process in parallel with controlled parallelism\nFlux.range(1, 100)\n    .parallel(4)                          // Split into 4 rails\n    .runOn(Schedulers.parallel())         // Use parallel scheduler\n    .map(i -> computeIntensiveFunction(i))\n    .sequential()                         // Merge back to single stream\n    .subscribe(result -> saveResult(result));\n    \n// Schedule different operations on appropriate schedulers\nuserInteraction\n    .subscribeOn(Schedulers.boundedElastic()) // Handle on I/O thread\n    .map(input -> parseInput(input))          // CPU-bound\n    .publishOn(Schedulers.parallel())         // Switch to computation thread\n    .map(data -> performHeavyCalculation(data)) // CPU-intensive\n    .publishOn(Schedulers.boundedElastic())   // Switch back to I/O thread\n    .flatMap(result -> databaseRepository.save(result)) // I/O bound\n    .subscribe();\n```"
+            },
+            {
+              "title": "Reusable Compositions",
+              "description": "Create reusable operators by composing existing ones:\n```java\n// Create a reusable transformation\npublic <T> Function<Flux<T>, Flux<T>> logAndRetry(String name) {\n    return flux -> flux\n        .doOnNext(item -> log.info(\"Processing {} item: {}\", name, item))\n        .doOnError(e -> log.error(\"Error in {}: {}\", name, e.getMessage()))\n        .retry(3)\n        .timeout(Duration.ofSeconds(10));\n}\n\n// Use the composition\nFlux<Order> orders = orderRepository.findAll()\n    .transform(logAndRetry(\"order-processing\"));\n    \n// Using transform for multiple steps\nFlux<UserActivity> activities = userActivityRepository.findByUserId(userId)\n    .transform(flux -> applySecurityFilters(flux))\n    .transform(flux -> enrichWithUserInfo(flux))\n    .transform(flux -> applyTimeFilters(flux))\n    .transform(logAndRetry(\"activity-processing\"));\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-project-reactor-core-java-r-4",
+        "java-rxjava-core-java-r-5"
+      ]
+    }
+  ]
+}

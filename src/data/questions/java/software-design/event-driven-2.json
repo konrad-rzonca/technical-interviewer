@@ -1,0 +1,761 @@
+﻿{
+  "category": "Software Design",
+  "subcategory": "Event-Driven Architecture",
+  "questions": [
+    {
+      "id": "event-driven-saga-pattern-software-design-eda-9",
+      "skillLevel": "advanced",
+      "shortTitle": "Saga Pattern",
+      "question": "What is the Saga pattern and how does it help manage distributed transactions in event-driven systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Saga Definition",
+              "description": "A **Saga** is a pattern for managing distributed transactions spanning multiple services where each service performs its local transaction and publishes events to trigger the next transaction in the saga. If a step fails, compensating transactions undo the changes made earlier."
+            },
+            {
+              "title": "Key Components",
+              "description": "Sagas consist of **saga participants** (services involved in the transaction), **local transactions** (atomic operations within each service), **coordinating events** (signals between steps), and **compensating actions** (operations that undo previous steps)."
+            },
+            {
+              "title": "Basic Example",
+              "description": "For an e-commerce order, a saga might include steps like: reserve inventory → process payment → update shipping → send confirmation. If payment fails, the inventory reservation would be cancelled through a compensating transaction."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Choreography vs. Orchestration",
+              "description": "Sagas can be implemented using **choreography** (each service emits events that trigger the next step) or **orchestration** (a central coordinator service commands each participant and manages the workflow). Each approach has different trade-offs regarding coupling, visibility, and complexity."
+            },
+            {
+              "title": "Compensating Transactions",
+              "description": "Compensating transactions must be designed to work even after the original transaction is complete. They should be **idempotent** (safe to execute multiple times) and consider that the system state may have changed since the original transaction."
+            },
+            {
+              "title": "Consistency Guarantees",
+              "description": "Sagas provide **eventual consistency** rather than ACID transactions. Business operations need to be designed to tolerate temporary inconsistencies, and user interfaces should set appropriate expectations about process completion."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Failure Recovery Strategies",
+              "description": "Advanced implementations handle various failure scenarios: **retries with backoff** for transient failures, **partial compensation** when full rollback isn't possible, **manual intervention workflows** for unresolvable situations, and **saga timeouts** to prevent indefinitely stuck transactions."
+            },
+            {
+              "title": "Observability Requirements",
+              "description": "Production saga implementations need strong observability including **saga tracking** (monitoring in-flight sagas), **compensating action monitoring**, **correlation IDs** across services, and **saga visualization tools** to understand complex distributed workflows."
+            },
+            {
+              "title": "Design Considerations",
+              "description": "Key design decisions include **saga isolation** (preventing interference between concurrent sagas), **idempotency keys** (preventing duplicate processing), **event ordering guarantees** (ensuring correct sequence), and **saga data management** (passing context between steps without excessive coupling)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-microservices-software-design-eda-7"
+      ]
+    },
+    {
+      "id": "event-driven-implementation-software-design-eda-10",
+      "skillLevel": "intermediate",
+      "shortTitle": "EDA Implementation",
+      "question": "What are the key considerations and steps for implementing an event-driven architecture?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Starting Assessment",
+              "description": "Begin by identifying **suitable business domains** for event-driven approaches (those with asynchronous processes, decoupled operations, or event-centric business logic), and **evaluate existing systems** for integration points."
+            },
+            {
+              "title": "Technology Selection",
+              "description": "Choose appropriate technology components: **event broker** (Kafka, RabbitMQ, etc.), **serialization format** (JSON, Avro, Protobuf), **client libraries** for your platforms, and potentially **schema registry** solutions."
+            },
+            {
+              "title": "Event Identification",
+              "description": "Work with domain experts to identify significant business events that should be captured and published. Focus on **state changes** that other parts of the system would need to know about."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event Modeling",
+              "description": "Create an **event model** documenting event types, their structure, relationships between events, and which components produce or consume each event. Consider using techniques like **Event Storming** to collaboratively identify and refine events."
+            },
+            {
+              "title": "Producer Implementation",
+              "description": "Implement event producers with consideration for **transactional boundaries** (ensuring events are published only when operations succeed), **event enrichment** (adding necessary context), and **failure handling** (what happens if event publishing fails)."
+            },
+            {
+              "title": "Consumer Implementation",
+              "description": "Implement event consumers with attention to **idempotency** (handling duplicate events safely), **ordering requirements** (if event sequence matters), **error handling** (what happens when processing fails), and **dynamic discovery** of new event types."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Infrastructure Considerations",
+              "description": "Design robust infrastructure covering **high availability** of the event backbone, **disaster recovery** procedures, **environment isolation** (dev/test/prod separation), **performance testing** under realistic loads, and **security controls** for sensitive events."
+            },
+            {
+              "title": "Operational Readiness",
+              "description": "Prepare for operation with **monitoring solutions** (tracking event flow, latency, errors), **alerting on anomalies**, **visualization of event relationships**, **debugging tools** for event flows, and **documented runbooks** for common failure scenarios."
+            },
+            {
+              "title": "Incremental Adoption",
+              "description": "Consider incremental adoption strategies such as the **Strangler Pattern** (gradually replacing synchronous communication), **Event Backbone introduction** (adding eventing while preserving existing interfaces), or **Domain-by-Domain migration** (converting one business area at a time)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-fundamentals-software-design-eda-1",
+        "event-driven-testing-software-design-eda-11"
+      ]
+    },
+    {
+      "id": "event-driven-testing-software-design-eda-11",
+      "skillLevel": "advanced",
+      "shortTitle": "Testing Event-Driven Systems",
+      "question": "What strategies and techniques are effective for testing event-driven architectures?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Testing Challenges",
+              "description": "Event-driven systems present unique testing challenges including **asynchronous behavior** (time-dependent results), **distributed components** (multiple moving parts), **event ordering** issues, and **non-determinism** in event delivery."
+            },
+            {
+              "title": "Unit Testing",
+              "description": "Unit test event producers to verify they generate correct events for given inputs, and event consumers to ensure they properly process events and produce expected side effects, using mocks for event infrastructure."
+            },
+            {
+              "title": "Integration Testing",
+              "description": "Integration tests verify interactions between components, using embedded event brokers, test doubles for external systems, and assertions on both produced events and resulting state changes."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Contract Testing",
+              "description": "Implement **consumer-driven contract tests** to verify event producers generate events that match what consumers expect, and that consumers can correctly process events from producers, safeguarding against breaking changes."
+            },
+            {
+              "title": "Event Flow Testing",
+              "description": "Test entire event flows by publishing initial events and verifying the resulting chain of events and state changes, using techniques like **test event processors** that capture and validate events along the flow."
+            },
+            {
+              "title": "Chaos Testing",
+              "description": "Introduce controlled failures such as broker outages, network partitions, or consumer crashes to verify the system's resilience, recovery mechanisms, and ability to handle duplicate or delayed events."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Temporal Testing",
+              "description": "Implement specialized approaches for time-dependent behavior, such as **virtual time control** (accelerating or controlling time progression), **deterministic event scheduling** for reproducible tests, and **eventual consistency verification** checking final state after event processing."
+            },
+            {
+              "title": "Production Testing",
+              "description": "Use techniques like **shadow processing** (processing production events in parallel test systems), **synthetic event injection** (introducing test events in production), and **A/B testing** of event processing logic to safely test in real environments."
+            },
+            {
+              "title": "Event Sourcing Testing",
+              "description": "For event-sourced systems, employ specialized techniques like **event store snapshots** (testing state reconstruction), **event stream verification** (validating sequences of events), and **projection testing** (verifying read models built from events)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-implementation-software-design-eda-10",
+        "event-driven-challenges-software-design-eda-12"
+      ]
+    },
+    {
+      "id": "event-driven-challenges-software-design-eda-12",
+      "skillLevel": "intermediate",
+      "shortTitle": "Common Challenges",
+      "question": "What are the common challenges and potential pitfalls when implementing event-driven architectures?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Debugging Complexity",
+              "description": "Asynchronous and distributed nature makes debugging challenging as issues may span multiple services with time delays between cause and effect, requiring specialized tracing and monitoring tools."
+            },
+            {
+              "title": "Event Schema Evolution",
+              "description": "As systems evolve, changing event schemas can break consumers if not managed carefully, requiring intentional versioning strategies and compatibility planning."
+            },
+            {
+              "title": "Operational Complexity",
+              "description": "Event infrastructure (brokers, queues, streams) adds operational overhead requiring expertise in monitoring, scaling, and maintaining these critical components."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Eventual Consistency",
+              "description": "Embracing eventual consistency requires rethinking user experience and business processes to handle temporary inconsistencies, potentially requiring compensating actions when consistency violations are unacceptable."
+            },
+            {
+              "title": "Message Ordering and Delivery",
+              "description": "Different event brokers provide different ordering and delivery guarantees, creating challenges when business processes depend on specific event sequences or exactly-once processing."
+            },
+            {
+              "title": "Error Handling",
+              "description": "Handling failures in event processing is complex: failed events may need retry logic, dead-letter queues, manual intervention workflows, or compensating actions to maintain system integrity."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Event Sourcing Pitfalls",
+              "description": "Event sourcing adds specific challenges including schema evolution complexity (how to handle old events), performance costs of event replay, and storage growth requiring careful event store management and pruning strategies."
+            },
+            {
+              "title": "Testing and Simulation",
+              "description": "Creating realistic test environments that mimic production event flows, timing, and scale is difficult, often requiring specialized frameworks and approaches beyond traditional testing tools."
+            },
+            {
+              "title": "Data Consistency Boundaries",
+              "description": "Determining appropriate consistency boundaries (where strong consistency is required vs. where eventual consistency is acceptable) requires deep domain understanding and careful system design to avoid business rule violations."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-testing-software-design-eda-11",
+        "event-driven-processing-patterns-software-design-eda-13"
+      ]
+    },
+    {
+      "id": "event-driven-processing-patterns-software-design-eda-13",
+      "skillLevel": "advanced",
+      "shortTitle": "Event Processing Patterns",
+      "question": "What are the key event processing patterns used in event-driven systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Simple Event Processing",
+              "description": "Basic pattern where a consumer receives an event, performs a business operation based on the event content, and potentially produces new events as a result."
+            },
+            {
+              "title": "Event Filtering",
+              "description": "Pattern where consumers receive only a subset of events based on defined criteria such as event type, content attributes, or metadata properties, reducing processing overhead for irrelevant events."
+            },
+            {
+              "title": "Event Enrichment",
+              "description": "Process of enhancing events with additional context or information before they're processed downstream, either at the producer side or through an intermediary service."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Complex Event Processing (CEP)",
+              "description": "Analyzing multiple events from different sources to identify meaningful patterns, correlations, or business situations in real-time, often using temporal windows, aggregations, or pattern matching rules."
+            },
+            {
+              "title": "Event Stream Processing",
+              "description": "Continuous processing of ordered sequences of events, often implementing operations like filtering, transformation, aggregation, and joining across streams using technologies like Kafka Streams, Apache Flink, or Apache Spark Streaming."
+            },
+            {
+              "title": "Event Sourcing",
+              "description": "Storing all state changes as a sequence of events that can be replayed to reconstruct current state, creating a complete audit trail and enabling temporal queries."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Event Collaboration",
+              "description": "Pattern where multiple services collaborate through events to complete a business process, with each service handling a specific aspect and publishing events that trigger the next steps."
+            },
+            {
+              "title": "Event Replay and Reprocessing",
+              "description": "The ability to replay historical events through processing logic, useful for debugging, recovering from failures, testing new algorithms, or generating new views of existing data."
+            },
+            {
+              "title": "Dynamic Event Routing",
+              "description": "Advanced pattern where event routing decisions are made at runtime based on event content, system state, load balancing needs, or business rules, creating adaptive event flows."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-challenges-software-design-eda-12",
+        "event-driven-design-considerations-software-design-eda-14"
+      ]
+    },
+    {
+      "id": "event-driven-design-considerations-software-design-eda-14",
+      "skillLevel": "intermediate",
+      "shortTitle": "Design Considerations",
+      "question": "What key design considerations should be addressed when architecting event-driven systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Event Definition",
+              "description": "Carefully design events to represent meaningful business occurrences with clear semantics, appropriate granularity, and sufficient context for consumers to process them independently."
+            },
+            {
+              "title": "Delivery Guarantees",
+              "description": "Determine required message delivery guarantees (at-least-once, at-most-once, or exactly-once) based on business requirements, and select appropriate infrastructure and patterns to achieve these guarantees."
+            },
+            {
+              "title": "Consumer Independence",
+              "description": "Design events to allow consumers to process them independently without requiring knowledge of other consumers, producers, or external context beyond what's included in the event itself."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event Versioning",
+              "description": "Establish an event versioning strategy that enables evolution while maintaining compatibility, including governance processes for schema changes, documentation requirements, and compatibility testing."
+            },
+            {
+              "title": "Error Handling Strategy",
+              "description": "Develop a comprehensive approach to handling failures in event processing, including retry policies, dead-letter queues, error events, monitoring alerts, and recovery procedures."
+            },
+            {
+              "title": "Event Ownership",
+              "description": "Clearly define ownership boundaries for events, establishing which team/service is responsible for each event's definition, schema evolution, and quality, avoiding confusion or conflicting changes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Consistency Boundaries",
+              "description": "Identify where strong consistency is required versus where eventual consistency is acceptable, potentially implementing different patterns (synchronous calls, two-phase commits, sagas) based on these requirements."
+            },
+            {
+              "title": "Event Sourcing Considerations",
+              "description": "If using event sourcing, address specialized concerns like event store partitioning, snapshot strategies, handling schema evolution of stored events, and projection rebuilding approaches."
+            },
+            {
+              "title": "Observability Design",
+              "description": "Design for comprehensive observability from the beginning, including correlation identifiers across events, standardized metadata for filtering/searching, event flow visualization capabilities, and business-relevant metrics."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-processing-patterns-software-design-eda-13",
+        "event-driven-streaming-platforms-software-design-eda-15"
+      ]
+    },
+    {
+      "id": "event-driven-streaming-platforms-software-design-eda-15",
+      "skillLevel": "intermediate",
+      "shortTitle": "Streaming Platforms",
+      "question": "How do streaming platforms support event-driven architectures, and what are their key capabilities?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Streaming Platform Definition",
+              "description": "**Streaming platforms** are infrastructure systems that enable high-throughput, real-time processing of event streams, typically providing capabilities for event storage, routing, processing, and integration with external systems."
+            },
+            {
+              "title": "Key Components",
+              "description": "Core components typically include **event brokers** (handling publication and subscription), **storage subsystems** (persisting events), **processing frameworks** (transforming events), and **integration adapters** (connecting to external systems)."
+            },
+            {
+              "title": "Popular Implementations",
+              "description": "Major streaming platforms include **Apache Kafka** (with Kafka Streams and ksqlDB), **Apache Pulsar**, **AWS Kinesis**, **Google Cloud Pub/Sub** with Dataflow, and **Azure Event Hubs** with Stream Analytics."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event Storage Capabilities",
+              "description": "Advanced platforms provide durable, high-performance event storage with features like **partitioning** (for parallelism), **retention policies** (controlling how long events are kept), **compaction** (keeping only latest values), and **tiered storage** (balancing performance and cost)."
+            },
+            {
+              "title": "Stream Processing",
+              "description": "Stream processing frameworks enable operations on event streams including **filtering** (selecting relevant events), **mapping/transformation** (changing event structure), **aggregation** (combining events over time windows), **joining** (combining multiple streams), and **enrichment** (adding context)."
+            },
+            {
+              "title": "Scalability Features",
+              "description": "Enterprise-grade platforms offer scalability through **horizontal scaling** (adding nodes), **partition-based parallelism** (distributing processing), **consumer groups** (load balancing across instances), and **backpressure handling** (managing overload situations)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Exactly-Once Processing",
+              "description": "Advanced platforms provide mechanisms for exactly-once processing semantics through features like **idempotent producers**, **transactional APIs** (atomic multi-partition writes), **offset tracking**, and **stateful processing** with fault tolerance."
+            },
+            {
+              "title": "Schema Management",
+              "description": "Enterprise streaming platforms often include **schema registry** components that manage event schemas, enforce compatibility rules, handle versioning, and provide client libraries for serialization/deserialization with schema resolution."
+            },
+            {
+              "title": "Ecosystem Integration",
+              "description": "Mature platforms offer rich ecosystems including **connectors** for diverse data sources and sinks, **monitoring tools** for operational visibility, **security frameworks** for authentication/authorization, and **machine learning integration** for real-time analytics and predictions."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-buses-brokers-software-design-eda-4",
+        "event-driven-design-considerations-software-design-eda-14"
+      ]
+    },
+    {
+      "id": "event-driven-practical-debugging-software-design-eda-16",
+      "skillLevel": "basic",
+      "shortTitle": "Debugging ED Applications",
+      "question": "What are effective techniques for debugging issues in event-driven applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Logging Strategy",
+              "description": "Implement comprehensive logging that captures **event metadata** (IDs, types, timestamps), **payload information** (essential data fields), and **processing status** (received, processed, failed). Use consistent formats and include correlation IDs to track events across services."
+            },
+            {
+              "title": "Message Inspection",
+              "description": "Use broker-specific tools to inspect messages directly in the queue or topic: Kafka Console Consumer, RabbitMQ Management UI, or cloud provider console tools. These allow you to verify message content, check queue depths, and inspect message headers."
+            },
+            {
+              "title": "Local Development Setup",
+              "description": "Create a simplified local development environment using containerized message brokers (like Kafka or RabbitMQ in Docker) with minimal configuration. This enables testing event flows without requiring the full production infrastructure."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event Replay",
+              "description": "Implement the ability to replay specific events through your processing logic, either by republishing them to input queues or by directly invoking handler methods with deserialized event objects. This helps isolate whether issues are in the event content or the processing logic."
+            },
+            {
+              "title": "Dead Letter Queues",
+              "description": "Configure dead letter queues (DLQs) to capture events that fail processing. Include original metadata, error details, and failure timestamps. Create tooling to inspect DLQs and potentially reprocess messages after fixes are applied."
+            },
+            {
+              "title": "Event Flow Visualization",
+              "description": "Create visual representations of event flows through your system using tools like Apache NiFi for flow diagrams or custom dashboards with tools like Grafana. Visualization helps identify bottlenecks, processing gaps, or unexpected routing."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Distributed Tracing",
+              "description": "Implement distributed tracing using tools like Jaeger, Zipkin, or AWS X-Ray. Ensure trace IDs propagate across event boundaries to create a complete picture of request flows across asynchronous boundaries."
+            },
+            {
+              "title": "Event Sourcing Debugging",
+              "description": "For event-sourced systems, build tools that can show the state evolution by applying events incrementally. This helps identify which specific event caused unexpected state changes and understand the sequence of events that led to an issue."
+            },
+            {
+              "title": "Chaos Testing",
+              "description": "Use chaos engineering approaches to proactively identify failure modes by deliberately introducing failures like message delays, broker outages, or corrupt messages. Tools like Chaos Monkey or Toxiproxy can help simulate these conditions in controlled environments."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-testing-software-design-eda-11",
+        "event-driven-monitoring-software-design-eda-20"
+      ]
+    },
+    {
+      "id": "event-driven-retry-patterns-software-design-eda-17",
+      "skillLevel": "basic",
+      "shortTitle": "Implementing Retry Patterns",
+      "question": "How should retry patterns be implemented in event-driven systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Retry Fundamentals",
+              "description": "Implement retries when processing events fails due to transient issues like network problems or temporary service unavailability. The basic approach includes catching exceptions, waiting a defined period, and then attempting the operation again up to a maximum number of retries."
+            },
+            {
+              "title": "Simple Implementation",
+              "description": "A basic retry implementation might look like this:\n```java\npublic void processEvent(Event event) {\n    int retries = 0;\n    boolean success = false;\n    while (!success && retries < MAX_RETRIES) {\n        try {\n            // process the event\n            success = true;\n        } catch (TransientException e) {\n            retries++;\n            Thread.sleep(calculateBackoff(retries));\n        }\n    }\n    if (!success) {\n        // handle permanent failure\n    }\n}\n```"
+            },
+            {
+              "title": "Backoff Strategies",
+              "description": "Use increasing delays between retry attempts to prevent overwhelming the target system. Common approaches include **fixed backoff** (same delay each time), **exponential backoff** (delay increases exponentially: 1s, 2s, 4s, 8s...), or **random jitter** (adding randomness to prevent retry storms)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Broker-Based Retries",
+              "description": "Many message brokers provide built-in retry capabilities. For example, RabbitMQ can be configured to retry message delivery with the `x-dead-letter-exchange` and `x-message-ttl` settings, while Kafka consumer clients can be configured to automatically retry failed poll operations."
+            },
+            {
+              "title": "Distinguishing Error Types",
+              "description": "Differentiate between **retriable errors** (temporary failures like timeouts or connection issues) and **non-retriable errors** (permanent failures like validation errors or unauthorized access). Only retry when there's a reasonable chance of success on a subsequent attempt."
+            },
+            {
+              "title": "Retry Queues",
+              "description": "Implement a dedicated retry queue pattern where failed messages are sent to a delay queue with a TTL (time-to-live), after which they are automatically returned to the original queue for reprocessing. This offloads waiting time from the consumer and doesn't block processing of other messages."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Retry Libraries",
+              "description": "Use purpose-built retry libraries like **Resilience4j**, **Polly** (.NET), or **retry** (Go) that provide sophisticated retry functionality including circuit breakers, fallbacks, and comprehensive metrics. These libraries handle edge cases and provide configurable policies."
+            },
+            {
+              "title": "Persistent Retry State",
+              "description": "For critical operations, implement persistent retry state that survives process restarts. Store retry counters and next attempt times in a database, allowing a restarted application to continue the retry strategy rather than resetting counters."
+            },
+            {
+              "title": "Business-Aware Retry Policies",
+              "description": "Develop domain-specific retry policies based on business importance, timing constraints, or operation type. For example, payment processing might have different retry strategies than inventory updates, reflecting different business priorities and time sensitivities."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-duplicate-handling-software-design-eda-18",
+        "event-driven-challenges-software-design-eda-12"
+      ]
+    },
+    {
+      "id": "event-driven-duplicate-handling-software-design-eda-18",
+      "skillLevel": "basic",
+      "shortTitle": "Handling Duplicate Events",
+      "question": "What techniques can developers use to handle duplicate events in event-driven systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Idempotent Processing",
+              "description": "Implement **idempotent consumers** that produce the same result regardless of how many times they process an event. This is the most fundamental approach to handling duplicates, as it makes them harmless rather than trying to prevent them entirely."
+            },
+            {
+              "title": "Unique Event Identifiers",
+              "description": "Ensure each event has a globally unique identifier (UUID/GUID) assigned by the producer. Consumers can then track which event IDs they've already processed and skip duplicate processing."
+            },
+            {
+              "title": "Simple Deduplication Store",
+              "description": "Maintain a simple store of recently processed event IDs, checking each incoming event against this store before processing. For example:\n```python\nprocessed_events = set()  # or database table in production\n\ndef process_event(event):\n    if event.id in processed_events:\n        logger.info(f\"Skipping duplicate event {event.id}\")\n        return\n    \n    # Normal processing here\n    \n    processed_events.add(event.id)\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Time-Based Expiration",
+              "description": "Don't store processed event IDs forever, as this would lead to unbounded growth. Instead, implement time-based expiration using TTL (time-to-live) features in databases like Redis, or periodically purge older entries based on the maximum expected delay for duplicates."
+            },
+            {
+              "title": "Transactional Deduplication",
+              "description": "For database-backed applications, implement deduplication within the same transaction as the event processing. This prevents race conditions where an event is processed twice concurrently, using unique constraints in the database to enforce uniqueness."
+            },
+            {
+              "title": "Natural Deduplication Keys",
+              "description": "When possible, use natural business keys for deduplication rather than just event IDs. For example, in an order processing system, the combination of order ID and state transition might serve as a natural deduplication key, preventing duplicate state transitions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Deduplication Windows",
+              "description": "Implement sliding deduplication windows based on the expected system behavior. For example, if your architecture guarantees no duplicates after 24 hours, you only need to maintain deduplication records for that period, allowing efficient cleanup of older records."
+            },
+            {
+              "title": "Bloom Filters",
+              "description": "For high-volume systems, consider using probabilistic data structures like **Bloom filters** that can efficiently check if an event ID has been seen before with minimal memory usage, at the cost of a small false positive rate."
+            },
+            {
+              "title": "Producer-Side Deduplication",
+              "description": "Implement deduplication at the producer side with techniques like the **Outbox Pattern**, where events are first written to a database table and a separate process publishes them to the broker, using database constraints to prevent duplicate writes and tracking which events have been successfully published."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-retry-patterns-software-design-eda-17",
+        "event-driven-implementation-software-design-eda-10"
+      ]
+    },
+    {
+      "id": "event-driven-serialization-software-design-eda-19",
+      "skillLevel": "basic",
+      "shortTitle": "Event Serialization",
+      "question": "What are the best practices for serializing and deserializing events in event-driven systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Choose Appropriate Format",
+              "description": "Select a serialization format based on your needs: **JSON** (human-readable, widely supported), **Protocol Buffers** (compact, type-safe, efficient), **Avro** (schema evolution, compact), or **MessagePack** (compact JSON alternative). For most applications, JSON provides a good balance of readability and support."
+            },
+            {
+              "title": "Include Metadata",
+              "description": "Always include essential metadata in your serialized events: a unique identifier, event type, timestamp, and version information. This helps with routing, logging, debugging, and handling schema evolution."
+            },
+            {
+              "title": "Basic Serialization Example",
+              "description": "A simple Java serialization example using Jackson for JSON:\n```java\n// Serialization\nObjectMapper mapper = new ObjectMapper();\nOrderCreatedEvent event = new OrderCreatedEvent(\"123\", customer, items);\nString json = mapper.writeValueAsString(event);\nproducer.send(json);\n\n// Deserialization\nString receivedJson = consumer.receive();\nOrderCreatedEvent receivedEvent = mapper.readValue(receivedJson, OrderCreatedEvent.class);\n```"
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Schema Validation",
+              "description": "Implement schema validation during serialization and deserialization to catch issues early. For JSON, use JSON Schema validation. For Avro or Protocol Buffers, the schema is typically enforced during serialization/deserialization automatically."
+            },
+            {
+              "title": "Handling Unknown Fields",
+              "description": "Configure deserializers to be tolerant of unknown fields, allowing them to ignore fields they don't recognize rather than failing. This provides forward compatibility, letting newer producer versions add fields without breaking older consumers."
+            },
+            {
+              "title": "Polymorphic Deserialization",
+              "description": "Implement type-based deserialization for systems with multiple event types flowing through the same channel. In Jackson, this can be done with `@JsonTypeInfo` and `@JsonSubTypes` annotations to properly map JSON to different event classes based on a type field."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Schema Registry Integration",
+              "description": "For Avro or Protocol Buffers, integrate with a schema registry (like Confluent Schema Registry) to centrally manage schemas, enforce compatibility, and handle versioning. This example shows Avro serialization with schema registry in Java:\n```java\nKafkaAvroSerializer serializer = new KafkaAvroSerializer(schemaRegistry);\nGenericRecord avroRecord = new GenericData.Record(schema);\navroRecord.put(\"orderId\", \"123\");\n// Set other fields\nbyte[] serialized = serializer.serialize(\"orders\", avroRecord);\n```"
+            },
+            {
+              "title": "Performance Optimization",
+              "description": "For high-throughput systems, optimize serialization performance by: reusing serializer instances (they're typically thread-safe), using binary formats instead of text, employing object pooling to reduce garbage collection, and considering specialized serialization libraries like FST or Kryo for internal communications."
+            },
+            {
+              "title": "Custom Serialization Modules",
+              "description": "Implement custom serialization modules for complex types, handling Java 8 date/time types, domain-specific types, or third-party library objects. These modules encapsulate serialization logic and keep entity classes clean of serialization annotations:\n```java\n// Jackson module example\npublic class MySerializationModule extends SimpleModule {\n    public MySerializationModule() {\n        addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());\n        addDeserializer(ZonedDateTime.class, new ZonedDateTimeDeserializer());\n        // Add more custom serializers/deserializers\n    }\n}\n```"
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-schema-evolution-software-design-eda-8",
+        "event-driven-events-anatomy-software-design-eda-3"
+      ]
+    },
+    {
+      "id": "event-driven-monitoring-software-design-eda-20",
+      "skillLevel": "basic",
+      "shortTitle": "Monitoring Event-Driven Systems",
+      "question": "How should developers implement effective monitoring for event-driven applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Essential Metrics",
+              "description": "Track these fundamental metrics for each producer, consumer, and queue: **throughput** (events processed per second), **latency** (processing time per event), **error rates** (failed processing attempts), and **queue depths** (number of pending messages)."
+            },
+            {
+              "title": "Basic Health Checks",
+              "description": "Implement health check endpoints in each service that verify connectivity to message brokers, check consumer/producer status, and report basic health information. These endpoints can be used by container orchestration systems for readiness/liveness probes."
+            },
+            {
+              "title": "Structured Logging",
+              "description": "Use structured logging (JSON format) with consistent fields across all services, including: **correlation ID** (to track related events), **event type**, **event ID**, **timestamp**, **service name**, and **operation outcome**. This makes log aggregation and analysis much more effective."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Consumer Lag Monitoring",
+              "description": "Monitor **consumer lag** (difference between latest produced message and consumer's current position) to identify processing bottlenecks. Most message brokers provide APIs to retrieve this information, such as Kafka's AdminClient API or RabbitMQ's Management API."
+            },
+            {
+              "title": "Dead Letter Monitoring",
+              "description": "Implement alerting on dead letter queues (DLQs) where failed messages are sent after retry attempts are exhausted. Track DLQ growth rates and set alerts on sudden increases that may indicate systemic problems."
+            },
+            {
+              "title": "Business Metrics",
+              "description": "Track domain-specific metrics derived from events, such as order values, user signups, or critical business transactions. These metrics provide context to technical metrics and help prioritize issues based on business impact."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Distributed Tracing",
+              "description": "Implement distributed tracing with tools like Jaeger, Zipkin, or AWS X-Ray. Ensure trace context propagates across asynchronous boundaries by including trace and span IDs in event metadata and continuing the trace in consumers."
+            },
+            {
+              "title": "Event Flow Visualization",
+              "description": "Build or adopt tools that visualize the flow of events through your system in real-time, showing volume, errors, and latency along each path. This helps quickly identify bottlenecks or failures in complex event chains."
+            },
+            {
+              "title": "Anomaly Detection",
+              "description": "Implement automated anomaly detection to identify unusual patterns in event processing: sudden changes in volume, increased error rates, unusual latency patterns, or deviations from expected business metrics. Tools like Prometheus with alerting rules or specialized services like AWS CloudWatch Anomaly Detection can help."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-practical-debugging-software-design-eda-16",
+        "event-driven-implementation-software-design-eda-10"
+      ]
+    }
+  ]
+}

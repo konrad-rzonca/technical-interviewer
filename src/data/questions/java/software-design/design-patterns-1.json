@@ -1,0 +1,756 @@
+﻿{
+  "category": "Software Design",
+  "subcategory": "Design Patterns",
+  "questions": [
+    {
+      "id": "design-patterns-categories-sd-dp-1",
+      "skillLevel": "basic",
+      "shortTitle": "Design Pattern Categories",
+      "question": "Can you explain the difference between creational, structural, and behavioral design patterns with examples of each?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Creational Patterns",
+              "description": "**Creational patterns** focus on object creation mechanisms, trying to create objects in a manner suitable to the situation. Examples include **Singleton** (ensuring a class has only one instance), **Factory Method** (letting subclasses decide which class to instantiate), and **Builder** (separating the construction of complex objects from their representation)."
+            },
+            {
+              "title": "Structural Patterns",
+              "description": "**Structural patterns** deal with object composition, creating relationships between objects to form larger structures. Examples include **Adapter** (allowing incompatible interfaces to work together), **Decorator** (adding responsibilities to objects dynamically), and **Composite** (composing objects into tree structures)."
+            },
+            {
+              "title": "Behavioral Patterns",
+              "description": "**Behavioral patterns** focus on communication between objects, how they interact and distribute responsibility. Examples include **Observer** (defining a one-to-many dependency between objects), **Strategy** (defining a family of algorithms), and **Command** (encapsulating a request as an object)."
+            },
+            {
+              "title": "Pattern Selection Criteria",
+              "description": "The choice of pattern depends on the specific problem: use creational patterns when creating objects introduces complexity, structural patterns when organizing objects in larger structures, and behavioral patterns when defining communication protocols between objects."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Creational Pattern Applications",
+              "description": "Creational patterns solve problems like: **hiding complex creation logic** (Abstract Factory), **creating objects step-by-step** (Builder), **reusing existing objects instead of creating new ones** (Object Pool), and **ensuring a class has exactly one instance** (Singleton)."
+            },
+            {
+              "title": "Structural Pattern Applications",
+              "description": "Structural patterns address challenges such as: **making incompatible interfaces work together** (Adapter), **adding responsibilities dynamically** (Decorator), **optimizing memory usage for large numbers of similar objects** (Flyweight), and **simplifying access to complex subsystems** (Facade)."
+            },
+            {
+              "title": "Behavioral Pattern Applications",
+              "description": "Behavioral patterns handle scenarios like: **defining a family of interchangeable algorithms** (Strategy), **executing operations in sequence** (Chain of Responsibility), **changing object behavior when state changes** (State), and **capturing and externalizing object state** (Memento)."
+            },
+            {
+              "title": "Pattern Combinations",
+              "description": "Patterns are often used in combination: for example, a **Factory Method** (creational) might return objects implementing the **Strategy** pattern (behavioral), or a **Composite** structure (structural) might use the **Observer** pattern (behavioral) for change notification."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Anti-patterns",
+              "description": "Each category has associated anti-patterns: **Singleton abuse** (creational) leading to global state, **deep class hierarchies** (structural) causing inflexibility, and **god objects** (behavioral) concentrating too much responsibility in one class."
+            },
+            {
+              "title": "Language-Specific Implementations",
+              "description": "Pattern implementations vary across languages: Java might use interfaces for **Strategy**, C# might use delegates, while JavaScript might use higher-order functions. Modern languages often have built-in support for common patterns, like **Factory** functions in JavaScript or **Builder** patterns in Kotlin."
+            },
+            {
+              "title": "Evolving Patterns",
+              "description": "Design patterns evolve with programming paradigms: functional programming brings alternatives like immutable data structures instead of **Observer**, monads instead of **Chain of Responsibility**, and function composition instead of **Decorator**."
+            },
+            {
+              "title": "Pattern Detection",
+              "description": "Identifying when to apply patterns requires experience: over-application leads to unnecessary complexity while under-application misses opportunities for reusable solutions. Code smells like duplicate conditional logic, tight coupling, or rigid class hierarchies often indicate where patterns could help."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "common-design-patterns-sd-dp-2",
+        "design-pattern-selection-sd-dp-6"
+      ]
+    },
+    {
+      "id": "common-design-patterns-sd-dp-2",
+      "skillLevel": "basic",
+      "shortTitle": "Common Design Patterns",
+      "question": "What are the most commonly used design patterns you've encountered, and when would you apply them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Singleton Pattern",
+              "description": "The **Singleton pattern** ensures a class has only one instance and provides a global point of access to it. It's commonly used for configuration managers, connection pools, logging systems, and thread pools. Apply it when exactly one instance is needed to coordinate actions across the system."
+            },
+            {
+              "title": "Factory Method Pattern",
+              "description": "The **Factory Method pattern** defines an interface for creating objects but lets subclasses decide which classes to instantiate. It's used in frameworks, UI component creation, and plugin systems. Apply it when a class can't anticipate the type of objects it needs to create or when you want to delegate responsibility to subclasses."
+            },
+            {
+              "title": "Observer Pattern",
+              "description": "The **Observer pattern** defines a one-to-many dependency between objects so that when one object changes state, all its dependents are notified. It's used in event handling systems, MVC architectures, and notification services. Apply it when changes to one object require changing others, and you don't know how many objects need to be changed."
+            },
+            {
+              "title": "Strategy Pattern",
+              "description": "The **Strategy pattern** defines a family of algorithms, encapsulates each one, and makes them interchangeable. It's used for sorting algorithms, payment processing methods, and validation rules. Apply it when you have multiple related classes that differ only in their behavior or when you need different variants of an algorithm."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Decorator Pattern",
+              "description": "The **Decorator pattern** attaches additional responsibilities to an object dynamically. It's used for adding features to UI components, I/O stream handling, and middleware in web frameworks. Apply it when you need to add responsibilities to objects without subclassing or when extension by subclassing is impractical."
+            },
+            {
+              "title": "Adapter Pattern",
+              "description": "The **Adapter pattern** converts the interface of a class into another interface clients expect. It's used when integrating with third-party libraries, legacy code, or incompatible interfaces. Apply it when you want to use an existing class, but its interface doesn't match the one you need."
+            },
+            {
+              "title": "Command Pattern",
+              "description": "The **Command pattern** encapsulates a request as an object, allowing for parameterization of clients with different requests, queuing of requests, and logging of operations. It's used in GUI buttons, undo/redo functionality, and transaction systems. Apply it when you want to parameterize objects with operations, queue operations, or support undoable operations."
+            },
+            {
+              "title": "Composite Pattern",
+              "description": "The **Composite pattern** composes objects into tree structures to represent part-whole hierarchies. It's used for file systems, organizational structures, and GUI containers. Apply it when clients should be able to ignore the difference between compositions of objects and individual objects."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Proxy Pattern",
+              "description": "The **Proxy pattern** provides a surrogate or placeholder for another object to control access to it. It's used for lazy loading, access control, logging, and remote communication. Apply it when you need a more versatile or sophisticated reference to an object than a simple pointer."
+            },
+            {
+              "title": "Builder Pattern",
+              "description": "The **Builder pattern** separates the construction of a complex object from its representation. It's used for creating complex objects like documents, meals, or configuration settings. Apply it when a constructor with many parameters becomes unwieldy or when you need different representations of the same construction process."
+            },
+            {
+              "title": "State Pattern",
+              "description": "The **State pattern** allows an object to alter its behavior when its internal state changes. It's used for workflow management, game state handling, and UI controls. Apply it when an object's behavior depends on its state, and it must change its behavior at runtime depending on that state."
+            },
+            {
+              "title": "Template Method Pattern",
+              "description": "The **Template Method pattern** defines the skeleton of an algorithm in a method, deferring some steps to subclasses. It's used in frameworks, batch processing, and data processing pipelines. Apply it when you want to define the skeleton of an algorithm and let subclasses redefine certain steps without changing the algorithm's structure."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "design-patterns-categories-sd-dp-1",
+        "singleton-pattern-sd-dp-5"
+      ]
+    },
+    {
+      "id": "mvc-patterns-sd-dp-3",
+      "skillLevel": "basic",
+      "shortTitle": "MVC and Related Patterns",
+      "question": "Can you explain the MVC (Model-View-Controller) pattern and its variations like MVP and MVVM? When would you use each?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "MVC Core Concept",
+              "description": "The **Model-View-Controller (MVC)** pattern separates an application into three interconnected components: the **Model** (data and business logic), the **View** (user interface), and the **Controller** (handles user input and updates the model). This separation allows for independent development, testing, and maintenance of each component."
+            },
+            {
+              "title": "MVC Data Flow",
+              "description": "In MVC, the data flow typically works as follows: The user interacts with the View, the Controller handles the input and updates the Model as needed, and the Model notifies the View (often through an Observer pattern) of any changes that require updates to the display."
+            },
+            {
+              "title": "MVC Applications",
+              "description": "MVC is widely used in web applications (like Ruby on Rails, ASP.NET MVC, and Spring MVC), desktop applications, and mobile app development. It's particularly useful for applications with complex user interfaces where separation of concerns improves maintainability."
+            },
+            {
+              "title": "MVC Advantages",
+              "description": "Key advantages of MVC include: **Separation of concerns** (making code more maintainable), **simultaneous development** (different team members can work on model, view, and controller independently), **high cohesion** (related functionality is grouped together), and **low coupling** (minimal dependencies between components)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "MVP Pattern",
+              "description": "The **Model-View-Presenter (MVP)** pattern is a derivative of MVC where the Presenter assumes the responsibility of the Controller but also takes on the task of updating the View. The View becomes more passive (\"dumb\") and delegates most logic to the Presenter, which improves testability by making the View easier to mock."
+            },
+            {
+              "title": "MVP vs. MVC",
+              "description": "Key differences between MVP and MVC: In MVP, the View has no knowledge of the Model (the Presenter mediates all interactions), there's usually a one-to-one mapping between View and Presenter, and communication is typically through interfaces rather than the Observer pattern, making it more testable."
+            },
+            {
+              "title": "MVVM Pattern",
+              "description": "The **Model-View-ViewModel (MVVM)** pattern introduces a ViewModel that handles all View display logic and state. The View binds to properties on the ViewModel, usually through a declarative data and command-binding framework. This pattern leverages data binding to reduce boilerplate code for property change notification."
+            },
+            {
+              "title": "MVVM Applications",
+              "description": "MVVM is particularly popular in frameworks with built-in data binding support, like WPF, Xamarin, Vue.js, and Angular. It's well-suited for applications with rich user interfaces where the cost of setting up data binding is offset by the reduction in code needed to synchronize the View and Model."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Pattern Selection Criteria",
+              "description": "Choose **MVC** when you need clear separation of concerns in a traditional web application or when the controller logic is substantial. Choose **MVP** when you need maximum testability and have complex view logic. Choose **MVVM** when working with frameworks that support data binding and when you want to minimize UI update code."
+            },
+            {
+              "title": "Hybrid Approaches",
+              "description": "Many real-world applications use hybrid approaches: **MVVM-C** adds a Coordinator to handle navigation logic, **MVC+S** adds a Service layer to handle business logic outside the Model, and **Clean Architecture** may incorporate aspects of these patterns within a larger architectural framework focused on dependency rules."
+            },
+            {
+              "title": "Testing Considerations",
+              "description": "The patterns differ in testability: MVVM and MVP generally offer better unit testing capabilities because the View can be completely mocked or stubbed. MVC controllers often have dependencies on the HTTP context or other framework-specific elements that make testing more challenging."
+            },
+            {
+              "title": "Modern Adaptations",
+              "description": "These patterns continue to evolve: **Flux/Redux** (used with React) can be seen as an evolution addressing MVC's bidirectional data flow complexity, **Elm Architecture** provides a functional approach to UI organization, and **Unidirectional Data Flow** patterns have become increasingly popular for managing application state and reducing bugs related to complex state changes."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "common-design-patterns-sd-dp-2",
+        "pub-sub-implementation-sd-dp-9"
+      ]
+    },
+    {
+      "id": "legacy-refactoring-sd-dp-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Legacy Code Refactoring",
+      "question": "Can you explain how you would approach refactoring a legacy system with deeply nested conditional logic to make it more maintainable?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Identify Code Smells",
+              "description": "Identify code smells like deeply nested conditionals that indicate potential for pattern application. These are usually signs that the code could benefit from better structuring using design patterns."
+            },
+            {
+              "title": "Strategy Pattern",
+              "description": "Consider **Strategy pattern** to encapsulate different algorithmic behaviors that vary based on conditions, allowing you to extract each conditional branch into its own strategy implementation."
+            },
+            {
+              "title": "Factory Method Pattern",
+              "description": "Use **Factory Method pattern** to create appropriate object instances based on conditions, removing conditional logic from client code and centralizing object creation."
+            },
+            {
+              "title": "Extract Method Refactoring",
+              "description": "Apply **Extract Method** refactoring technique to break down complex methods before applying patterns, making the code more readable and identifying common functionality."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "State Pattern",
+              "description": "Implement **State pattern** to handle objects whose behavior changes based on internal state, converting conditional statements that depend on an object's state into separate state classes."
+            },
+            {
+              "title": "Chain of Responsibility",
+              "description": "Consider **Chain of Responsibility** to process requests through a chain of handler objects, allowing multiple objects to handle a request without the sender needing to know which object will ultimately process it."
+            },
+            {
+              "title": "Command Pattern",
+              "description": "Use **Command pattern** to encapsulate requests as objects, allowing for queuing, logging, and supporting undoable operations that were previously handled with complex conditional logic."
+            },
+            {
+              "title": "Test Coverage",
+              "description": "Apply unit tests before refactoring to ensure behavior is preserved, creating a safety net that helps identify when refactoring introduces regressions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Visitor Pattern",
+              "description": "Consider using **Visitor pattern** for complex object structures where operations need to be performed, separating algorithms from the objects on which they operate."
+            },
+            {
+              "title": "Decorator Pattern",
+              "description": "Apply **Decorator pattern** incrementally to add responsibilities to objects without subclassing, allowing for a more flexible alternative to extending functionality than inheritance."
+            },
+            {
+              "title": "Specification Pattern",
+              "description": "Use **Specification pattern** for complex business rules and queries, encapsulating business rules as objects that can be combined through boolean logic."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Consider performance implications of pattern application in critical sections, as some patterns introduce additional indirection that may impact performance in high-throughput scenarios."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "plugin-system-design-sd-dp-7",
+        "design-pattern-selection-sd-dp-6"
+      ]
+    },
+    {
+      "id": "singleton-pattern-sd-dp-5",
+      "skillLevel": "basic",
+      "shortTitle": "Singleton Pattern",
+      "question": "What is the Singleton pattern, when would you use it, and what are its potential drawbacks?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Singleton Definition",
+              "description": "The **Singleton pattern** ensures a class has only one instance and provides a global point of access to it. It involves a class that is responsible for creating its own unique instance and ensuring no other instance can be created by controlling its instantiation process."
+            },
+            {
+              "title": "Common Implementation",
+              "description": "A basic implementation typically includes: a private constructor (preventing external instantiation), a private static instance variable (holding the single instance), and a public static method (providing access to the instance, creating it if it doesn't exist yet). Thread-safe implementations add synchronization mechanisms."
+            },
+            {
+              "title": "Appropriate Uses",
+              "description": "Singleton is appropriate when exactly one instance of a class is needed and must be accessible from many parts of the system. Common examples include: configuration managers, connection pools, logging services, device drivers, caches, and thread pools."
+            },
+            {
+              "title": "Basic Advantages",
+              "description": "Key advantages include: controlled access to the sole instance, reduced namespace pollution (compared to global variables), support for lazy initialization (creating the instance only when needed), and the ability to extend the singleton class through inheritance when needed."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Thread Safety Concerns",
+              "description": "In multi-threaded environments, care must be taken to ensure thread-safe initialization. Approaches include: using synchronized methods, double-checked locking pattern (with volatile in Java), static holder class pattern, or language-specific features like C#'s Lazy<T> or Java's enum-based singletons."
+            },
+            {
+              "title": "Primary Drawbacks",
+              "description": "Major drawbacks include: introducing global state (making program behavior dependent on the singleton's state), tight coupling (classes depending directly on the singleton), difficulty in unit testing (due to hard-coded dependencies), and potential for concurrency issues in multi-threaded applications."
+            },
+            {
+              "title": "Singleton vs. Dependency Injection",
+              "description": "Dependency Injection (DI) is often a better alternative to Singleton. Instead of classes directly accessing a Singleton, they receive instances through constructors or setters. This improves testability (dependencies can be mocked) and flexibility (different implementations can be injected)."
+            },
+            {
+              "title": "Language-Specific Implementations",
+              "description": "Different languages offer various implementation options: Java can use enum singletons (thread-safe, serialization-safe), C# can use a static readonly field with a static constructor, C++ has the Meyer's Singleton (leveraging static initialization), and Python can simply use a module-level variable (modules are singletons by default)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Singleton Variations",
+              "description": "Advanced variations include: **Multiton** (controlling creation of a bounded number of instances), **Thread-specific storage** (one instance per thread), **Registry of Singletons** (maintaining a map of named singletons), and **Monostate** (multiple instances sharing the same state through static fields)."
+            },
+            {
+              "title": "Testing Strategies",
+              "description": "When working with existing singletons, testing strategies include: using dependency injection seams, creating abstract base classes/interfaces that the singleton implements (allowing for test doubles), using service locators that can be configured with test implementations, or utilizing aspect-oriented programming to intercept singleton access."
+            },
+            {
+              "title": "Lifecycle Management",
+              "description": "In advanced applications, consider singleton lifecycle management: initialization order (when multiple singletons depend on each other), proper cleanup (releasing resources when the application shuts down), reset capabilities (for testing or reconfiguration), and handling serialization/deserialization or process boundaries."
+            },
+            {
+              "title": "Modern Alternatives",
+              "description": "In contemporary practice, Singleton is often replaced by: **Dependency Injection containers** (managing object lifetimes), **Per-context instances** (scoped to a request or session), **Factory methods with caching**, or **Functional approaches** (pure functions operating on immutable configuration data rather than stateful objects)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "common-design-patterns-sd-dp-2",
+        "design-pattern-selection-sd-dp-6"
+      ]
+    },
+    {
+      "id": "design-pattern-selection-sd-dp-6",
+      "skillLevel": "basic",
+      "shortTitle": "Design Pattern Selection",
+      "question": "How do you approach selecting the right design pattern for a particular problem? What factors do you consider?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Problem Analysis",
+              "description": "Start by thoroughly understanding the problem: what are you trying to solve? Identify key requirements, constraints, and what aspects of the system might change in the future. Look for characteristics that match known pattern applications, such as object creation complexity, relationship management, or behavior coordination."
+            },
+            {
+              "title": "Pattern Familiarity",
+              "description": "Consider which patterns you know well and have successfully applied before. Patterns are tools in your toolbox, and it's better to correctly apply a pattern you understand thoroughly than to misapply a more \"optimal\" but less familiar pattern. Continuously expand your knowledge to increase your options."
+            },
+            {
+              "title": "Pattern Intent Matching",
+              "description": "Match the intent of available patterns to your problem. For example, if you need to create objects without specifying their exact class, consider Factory patterns. If you need to define a one-to-many dependency between objects, the Observer pattern might be appropriate."
+            },
+            {
+              "title": "Code Smells",
+              "description": "Look for code smells that suggest the need for patterns: excessive conditionals might indicate a need for Strategy or State patterns, tight coupling might call for Observer or Mediator, complex object creation might benefit from Builder or Factory patterns, and duplicate code might benefit from Template Method."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Context Consideration",
+              "description": "Evaluate the context in which the pattern will be used: team expertise (will others understand and maintain this pattern?), project constraints (time, performance requirements), existing architecture (what patterns are already in use?), and language features (some patterns are unnecessary in languages with certain built-in capabilities)."
+            },
+            {
+              "title": "Trade-off Analysis",
+              "description": "Analyze trade-offs between different applicable patterns: simplicity vs. flexibility, performance vs. maintainability, learning curve vs. long-term benefits. No pattern is perfect for all situations, and sometimes the simplest solution is best, even if it doesn't strictly follow a named pattern."
+            },
+            {
+              "title": "Prototype and Evaluate",
+              "description": "When uncertain between multiple patterns, create simple prototypes to evaluate how well each solves the problem. This helps identify unforeseen issues and confirms whether a pattern's benefits outweigh its costs in your specific context."
+            },
+            {
+              "title": "Pattern Combinations",
+              "description": "Consider combining patterns to address complex problems. Patterns rarely exist in isolation—a Factory might create Strategy objects, a Composite might use the Observer pattern for change notification, or a Decorator might enhance objects created by a Builder."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Pattern Consequences",
+              "description": "Thoroughly evaluate a pattern's consequences beyond the immediate problem it solves: How will it affect testing? Will it introduce unnecessary complexity? How will it impact future extensions? Will it create performance bottlenecks? Does it align with the overall architectural vision?"
+            },
+            {
+              "title": "Anti-pattern Awareness",
+              "description": "Be aware of anti-patterns and patterns that are frequently misused. For example, Singleton is often overused, creating global state and testing difficulties. Similarly, excessive inheritance hierarchies from misapplied patterns can lead to rigidity and brittleness in the codebase."
+            },
+            {
+              "title": "Domain-Specific Patterns",
+              "description": "Look beyond the classic Gang of Four patterns to domain-specific patterns relevant to your field, such as enterprise integration patterns for messaging systems, concurrency patterns for multi-threaded applications, or architectural patterns like microservices or event sourcing for distributed systems."
+            },
+            {
+              "title": "Pattern Evolution",
+              "description": "Consider how patterns have evolved with modern programming paradigms and language features. For instance, many patterns are simplified or unnecessary in functional programming, while features like lambdas, generics, or mixins in object-oriented languages can lead to more elegant pattern implementations than their classic forms."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "design-patterns-categories-sd-dp-1",
+        "common-design-patterns-sd-dp-2"
+      ]
+    },
+    {
+      "id": "plugin-system-design-sd-dp-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Plugin System Design",
+      "question": "Could you describe your approach to designing a plugin system that allows third-party developers to extend your application's functionality?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to define family of interchangeable algorithms, allowing plugins to provide alternative implementations that the main application can use interchangeably."
+            },
+            {
+              "title": "Template Method Pattern",
+              "description": "**Template Method pattern** to define the skeleton of an algorithm with extension points, allowing plugins to customize specific steps while maintaining the overall algorithm structure."
+            },
+            {
+              "title": "Abstract Factory Pattern",
+              "description": "**Abstract Factory pattern** to create families of related objects, enabling plugins to provide complete sets of compatible components that work together."
+            },
+            {
+              "title": "Interface Design",
+              "description": "Consider clear interface definitions as the contract for plugin developers, ensuring backwards compatibility and proper separation of concerns between the core application and plugins."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Adapter Pattern",
+              "description": "Use **Adapter pattern** to make incompatible interfaces work together, allowing third-party code to integrate with your system even if it wasn't originally designed for your plugin architecture."
+            },
+            {
+              "title": "Composite Pattern",
+              "description": "Apply **Composite pattern** for tree structures of simple and complex components, enabling plugins to be composed of multiple sub-components while being treated uniformly by the main application."
+            },
+            {
+              "title": "Dependency Injection",
+              "description": "Implement **Service Locator** or **Dependency Injection** for managing plugin instances, decoupling the creation and use of plugin objects and making the system more flexible."
+            },
+            {
+              "title": "Versioning Strategy",
+              "description": "Consider versioning strategy for API stability over time, allowing multiple versions of plugins to coexist and preventing breaking changes from affecting existing plugins."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Bridge Pattern",
+              "description": "Apply **Bridge pattern** to separate abstraction from implementation, allowing both to vary independently and providing flexibility in how plugins interact with the core system."
+            },
+            {
+              "title": "IoC Containers",
+              "description": "Consider **Inversion of Control containers** for complex plugin management, providing a framework for registering, discovering, and instantiating plugins with their dependencies."
+            },
+            {
+              "title": "Sandboxing Patterns",
+              "description": "Implement sandboxing and security patterns for third-party code execution, protecting the main application from malicious or poorly written plugins that could compromise stability or security."
+            },
+            {
+              "title": "Feature Toggles",
+              "description": "Use **Feature Toggles pattern** to manage graduated plugin enablement, allowing plugins to be enabled or disabled dynamically without restarting the application."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "legacy-refactoring-sd-dp-4",
+        "order-processing-sd-dp-8"
+      ]
+    },
+    {
+      "id": "order-processing-sd-dp-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Order Processing Pipeline",
+      "question": "Do you know how to design a system that processes orders through multiple stages (validation, payment, fulfillment) while ensuring the system remains extensible?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Chain of Responsibility",
+              "description": "**Chain of Responsibility pattern** for passing requests through a chain of handlers, where each handler either processes the order and passes it to the next handler, or decides it cannot process the order and passes it to the next handler."
+            },
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** for encapsulating different processing algorithms at each stage, allowing you to swap out validation, payment, or fulfillment strategies without affecting the overall order flow."
+            },
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** to notify relevant components about state changes, enabling loose coupling between order processing stages and systems that need to react to order status changes."
+            },
+            {
+              "title": "Pipeline Pattern",
+              "description": "Consider a **Pipeline pattern** for sequential processing stages, structuring the system as a series of processing elements where the output of one element is the input to the next."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Command Pattern",
+              "description": "**Command pattern** to encapsulate each processing step as objects, allowing you to queue, log, and potentially undo operations as orders move through the system."
+            },
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add additional behaviors to processing steps, such as logging, metrics collection, or validation checks, without modifying the core processing logic."
+            },
+            {
+              "title": "State Pattern",
+              "description": "**State pattern** to manage different states an order can be in, enabling an order to alter its behavior when its state changes (e.g., behaving differently when it's in 'payment pending' vs. 'ready for shipment')."
+            },
+            {
+              "title": "Template Method Pattern",
+              "description": "**Template Method pattern** for defining the skeleton of the process flow, with specific implementations customizing certain steps while maintaining the overall structure of the order processing pipeline."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Saga Pattern",
+              "description": "**Saga pattern** for managing distributed transactions across services, ensuring that if a step fails, compensating transactions restore the system to a consistent state (e.g., refunding payment if fulfillment fails)."
+            },
+            {
+              "title": "Process Manager Pattern",
+              "description": "**Process Manager pattern** to coordinate complex workflows, centralizing the coordination logic while keeping the individual processing services focused on their specific responsibilities."
+            },
+            {
+              "title": "Event Sourcing",
+              "description": "**Event Sourcing** to track the full history of order state changes, recording each significant event in the order's lifecycle as an immutable fact that can be used to reconstruct the order's state at any point in time."
+            },
+            {
+              "title": "CQRS",
+              "description": "**Command Query Responsibility Segregation (CQRS)** to separate read and write operations for complex order processing, optimizing each side for its specific needs and scaling them independently."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "external-api-integration-sd-dp-10",
+        "plugin-system-design-sd-dp-7"
+      ]
+    },
+    {
+      "id": "pub-sub-implementation-sd-dp-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Publisher-Subscriber Implementation",
+      "question": "In your experience, what design patterns would you apply to a system that needs to notify multiple components when data changes?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** is fundamental for implementing publish-subscribe relationships, allowing an object (the subject) to notify other objects (observers) about state changes without knowing who those observers are."
+            },
+            {
+              "title": "Mediator Pattern",
+              "description": "**Mediator pattern** can centralize communication between multiple components, reducing direct dependencies between components by having them communicate through a mediator object."
+            },
+            {
+              "title": "Event-Driven Architecture",
+              "description": "Consider event-driven architecture principles alongside these patterns, designing the system around the production, detection, and consumption of events."
+            },
+            {
+              "title": "Coupling Analysis",
+              "description": "Identify which components need to be loosely coupled versus tightly coupled, as this will influence which pattern is most appropriate for different parts of the system."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event Bus Pattern",
+              "description": "Implement **Event Bus pattern** for more complex event distribution, providing a central channel through which different components can communicate without direct dependencies."
+            },
+            {
+              "title": "Proxy Pattern",
+              "description": "Use **Proxy pattern** to control access to the observable objects, potentially adding behavior like caching, access control, or lazy loading when accessing the subject."
+            },
+            {
+              "title": "Memento Pattern",
+              "description": "Consider **Memento pattern** if you need to capture and restore state during changes, allowing you to take snapshots of an object's state and restore it later."
+            },
+            {
+              "title": "Threading Concerns",
+              "description": "Evaluate threading concerns in notification systems, as observers may be executing on different threads, requiring synchronization mechanisms to prevent race conditions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Reactive Patterns",
+              "description": "Apply **Reactive patterns** (like those in Rx libraries) for complex event streams, allowing for composition, transformation, and filtering of event streams with operators like map, filter, and merge."
+            },
+            {
+              "title": "CQRS",
+              "description": "Consider **Command Query Responsibility Segregation (CQRS)** for systems with complex read/write requirements, separating operations that modify state from operations that read state."
+            },
+            {
+              "title": "Circuit Breaker Pattern",
+              "description": "Implement **Circuit Breaker pattern** to handle failures in distributed notification systems, preventing a failure in one component from cascading to others and allowing the system to continue functioning."
+            },
+            {
+              "title": "Event Sourcing",
+              "description": "Consider **event sourcing** for systems requiring full audit history, storing state changes as a sequence of events that can be replayed to reconstruct the current state."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "mvc-patterns-sd-dp-3",
+        "undo-redo-implementation-sd-dp-20"
+      ]
+    },
+    {
+      "id": "external-api-integration-sd-dp-10",
+      "skillLevel": "intermediate",
+      "shortTitle": "External API Integration",
+      "question": "When building a system that interacts with multiple external APIs (payment gateways, shipping services, etc.), what design patterns would make your system resilient to API changes?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Adapter Pattern",
+              "description": "**Adapter pattern** to convert external API interfaces to a common interface, allowing your system to work with different APIs through a consistent interface regardless of their specific requirements."
+            },
+            {
+              "title": "Facade Pattern",
+              "description": "**Facade pattern** to provide a simplified interface to the complex subsystem of APIs, hiding the details of API interactions behind a clean, unified interface for your application code."
+            },
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to encapsulate different API implementations, making it possible to switch between different providers or API versions without changing the client code."
+            },
+            {
+              "title": "Factory Method Pattern",
+              "description": "**Factory Method pattern** to create appropriate API client instances based on configuration or runtime conditions, centralizing client creation logic and making it easier to add support for new APIs."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Abstract Factory Pattern",
+              "description": "**Abstract Factory pattern** for families of related API clients, useful when dealing with multiple services from the same provider or when you need to ensure compatible clients are used together."
+            },
+            {
+              "title": "Proxy Pattern",
+              "description": "**Proxy pattern** to add caching, logging, or error handling to API calls, creating a layer that can absorb some API changes and provide additional cross-cutting functionality."
+            },
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add additional behaviors to API interactions, such as retry logic, rate limiting, or request/response transformation, in a flexible and composable way."
+            },
+            {
+              "title": "Circuit Breaker Pattern",
+              "description": "Consider **Circuit Breaker pattern** for handling API failures gracefully, preventing cascade failures when an external service is unavailable and allowing for degraded functionality rather than complete system failure."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Anti-Corruption Layer",
+              "description": "**Anti-Corruption Layer pattern** to isolate your domain model from external systems, translating between your clean domain model and potentially messy external API models to prevent external concerns from leaking into your core business logic."
+            },
+            {
+              "title": "Bulkhead Pattern",
+              "description": "**Bulkhead pattern** to isolate failures in one API from affecting others, partitioning service clients and resources to ensure that issues with one external service don't impact others."
+            },
+            {
+              "title": "Retry Pattern",
+              "description": "Implement **Retry pattern** with exponential backoff for transient failures, automatically retrying failed API calls with increasing delays between attempts to handle temporary issues without developer intervention."
+            },
+            {
+              "title": "API Versioning Strategy",
+              "description": "Consider API versioning strategies and backward compatibility approaches, such as maintaining multiple adapter implementations for different API versions or designing adapters that can handle variations in API responses."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "order-processing-sd-dp-8",
+        "caching-system-design-sd-dp-13"
+      ]
+    }
+  ]
+}
