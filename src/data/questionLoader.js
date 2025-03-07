@@ -15,6 +15,9 @@ import synchronizationQuestions
   from './questions/java/concurrency-multithreading/synchronization.json';
 import threadFundamentalsQuestions
   from './questions/java/concurrency-multithreading/thread-fundamentals.json';
+import reactiveQuestions1 from './questions/java/core-java/reactive-1.json';
+
+import reactiveQuestions2 from './questions/java/core-java/reactive-2.json';
 
 import collectionsQuestions from './questions/java/core-java/collections.json';
 import exceptionsQuestions from './questions/java/core-java/exceptions.json';
@@ -35,8 +38,14 @@ import noSqlQuestions from './questions/java/databases/NoSQL.json';
 import transactionsQuestions
   from './questions/java/databases/transactions.json';
 
-import designPatternsQuestions
-  from './questions/java/software-design/design-patterns.json';
+import designPatternsQuestions1
+  from './questions/java/software-design/design-patterns-1.json';
+import designPatternsQuestions2
+  from './questions/java/software-design/design-patterns-2.json';
+import eventDrivenQuestions1
+  from './questions/java/software-design/event-driven-1.json';
+import eventDrivenQuestions2
+  from './questions/java/software-design/event-driven-2.json';
 import microservicesQuestions
   from './questions/java/software-design/microservices.json';
 import RESTQuestions from './questions/java/software-design/REST.json';
@@ -51,6 +60,7 @@ import testingQuestions from './questions/java/engineering/testing.json';
 import cloudQuestions from './questions/java/engineering/cloud-azure.json';
 import securityQuestions from './questions/java/engineering/security.json';
 import openQuestions from './questions/java/engineering/open.json';
+import aiQuestions from './questions/java/engineering/AI.json';
 
 // Question sets with author information
 const questionSets = {
@@ -69,6 +79,13 @@ const questionSets = {
         'Memory Management': memoryManagementQuestions,
         'Collections': collectionsQuestions,
         'Exceptions': exceptionsQuestions,
+        'Reactive': {
+          category: reactiveQuestions1.category,
+          subcategory: reactiveQuestions1.subcategory,
+          questions: [
+            ...reactiveQuestions1.questions,
+            ...reactiveQuestions2.questions],
+        },
       },
     },
   ],
@@ -138,7 +155,14 @@ const questionSets = {
       id: 'design-patterns-basic-set',
       name: 'Basic Set',
       files: {
-        'Design Patterns': designPatternsQuestions,
+        'Design Patterns': {
+          category: designPatternsQuestions1.category,
+          subcategory: designPatternsQuestions1.subcategory,
+          questions: [
+            ...designPatternsQuestions1.questions,
+            ...designPatternsQuestions2.questions,
+          ],
+        },
         'Microservices': microservicesQuestions,
         'REST API': RESTQuestions,
         'Distributed Systems': {
@@ -147,6 +171,14 @@ const questionSets = {
           questions: [
             ...distributedSystemsQuestions.questions,
             ...distributedSystemsPracticalQuestions.questions,
+          ],
+        },
+        'Event Driven': {
+          category: eventDrivenQuestions1.category,
+          subcategory: eventDrivenQuestions1.subcategory,
+          questions: [
+            ...eventDrivenQuestions1.questions,
+            ...eventDrivenQuestions2.questions,
           ],
         },
       },
@@ -162,6 +194,7 @@ const questionSets = {
         'Testing': testingQuestions,
         'Cloud': cloudQuestions,
         'Security': securityQuestions,
+        'AI': aiQuestions,
         'Open Questions': openQuestions,
       },
     },
@@ -302,6 +335,7 @@ export const categories = [
       'Microservices',
       'REST API',
       'Distributed Systems',
+      'Event Driven',
     ],
   },
   {
@@ -313,6 +347,7 @@ export const categories = [
       'Testing',
       'Cloud',
       'Security',
+      'AI',
       'Open Questions',
     ],
   }];

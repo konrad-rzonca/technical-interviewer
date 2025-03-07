@@ -1,0 +1,756 @@
+﻿{
+  "category": "Software Design",
+  "subcategory": "Design Patterns",
+  "questions": [
+    {
+      "id": "form-validation-sd-dp-11",
+      "skillLevel": "intermediate",
+      "shortTitle": "Form Validation System",
+      "question": "When developing a complex form validation system that supports multiple validation rules and custom validators, what design patterns would you consider?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to encapsulate different validation algorithms, allowing you to create various validators (email validator, credit card validator, required field validator) that share a common interface but implement different validation logic."
+            },
+            {
+              "title": "Chain of Responsibility Pattern",
+              "description": "**Chain of Responsibility pattern** to process validations sequentially, where each validator in the chain either handles the validation and passes it to the next validator, or fails and returns an error message."
+            },
+            {
+              "title": "Composite Pattern",
+              "description": "**Composite pattern** to compose complex validations from simple ones, enabling you to treat individual validators and groups of validators uniformly and build complex validation trees."
+            },
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** to notify UI components of validation results, allowing form fields or other UI elements to update their state (show/hide error messages, change styling) when validation status changes."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add validation behaviors to form fields, enabling progressive enhancement of validation rules without modifying existing validators, such as adding max length validation to a required field validator."
+            },
+            {
+              "title": "Builder Pattern",
+              "description": "**Builder pattern** to construct complex validation rules, providing a fluent interface for defining validation chains like `validator.required().email().maxLength(100)`."
+            },
+            {
+              "title": "Specification Pattern",
+              "description": "**Specification pattern** for combining business rules, allowing logical combinations of validators using AND, OR, and NOT operations to express complex validation requirements."
+            },
+            {
+              "title": "Command Pattern",
+              "description": "Consider **Command pattern** for validations that require complex processing, encapsulating validation requests as objects that can be queued, logged, and potentially executed asynchronously."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Interpreter Pattern",
+              "description": "**Interpreter pattern** for parsing and executing validation rule expressions, enabling domain-specific languages for validation rules that business analysts or non-technical users could write or configure."
+            },
+            {
+              "title": "Visitor Pattern",
+              "description": "**Visitor pattern** to apply different operations to validation rule structures, separating algorithms from the object structure on which they operate, useful for implementing operations like rule analysis, optimization, or serialization."
+            },
+            {
+              "title": "Fluent Interfaces",
+              "description": "Apply fluent interfaces for more readable validation rule construction, creating a domain-specific language for validation that improves code readability and maintenance."
+            },
+            {
+              "title": "Validation Pipeline",
+              "description": "Consider validation pipeline patterns for complex multi-step validations, structuring validation as a series of transformations where each stage can enrich, validate, or transform the data before passing it to the next stage."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "caching-system-design-sd-dp-13",
+        "search-system-design-sd-dp-17"
+      ]
+    },
+    {
+      "id": "ui-theming-sd-dp-12",
+      "skillLevel": "intermediate",
+      "shortTitle": "UI Theming System",
+      "question": "Could you describe how you would design a system that needs to support multiple UI themes while keeping the core business logic separate?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to encapsulate different theming algorithms, allowing you to switch between different theme implementations without modifying the components that use them."
+            },
+            {
+              "title": "Bridge Pattern",
+              "description": "**Bridge pattern** to separate UI abstraction from implementation details, allowing both to vary independently so that UI components can work with different theme implementations."
+            },
+            {
+              "title": "Abstract Factory Pattern",
+              "description": "**Abstract Factory pattern** to create families of related UI components, ensuring that components created for a particular theme are consistent and work together harmoniously."
+            },
+            {
+              "title": "Separation of Concerns",
+              "description": "Consider a clear separation between business logic and presentation logic, ensuring that theme changes only affect the UI layer without impacting the application's core functionality."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add theming behavior to UI components, allowing dynamic application of themes without modifying the original component implementations."
+            },
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** to notify UI components of theme changes, enabling real-time theme switching without requiring page reloads or component reconstructions."
+            },
+            {
+              "title": "Composite Pattern",
+              "description": "**Composite pattern** for building complex UI component hierarchies, ensuring that theme changes propagate correctly through component trees from parents to children."
+            },
+            {
+              "title": "Factory Method Pattern",
+              "description": "**Factory Method pattern** for creating appropriate themed components, centralizing the component creation logic and making it easier to maintain consistency across the application."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "CSS-in-JS Patterns",
+              "description": "Apply **CSS-in-JS patterns** or equivalent for dynamic theming, generating styles programmatically based on theme configurations rather than using static CSS files."
+            },
+            {
+              "title": "Dependency Injection",
+              "description": "Consider **Dependency Injection** for theme-related services, providing theme services to components without creating direct dependencies on specific implementations."
+            },
+            {
+              "title": "Flyweight Pattern",
+              "description": "Implement **Flyweight pattern** to share common theme resources, reducing memory usage by sharing style objects, color definitions, or other theme elements across multiple UI components."
+            },
+            {
+              "title": "Extensibility Design",
+              "description": "Design for extensibility to allow third-party theme development, creating a plugin architecture that enables developers to create and distribute custom themes without modifying the core application."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "search-system-design-sd-dp-17",
+        "form-validation-sd-dp-11"
+      ]
+    },
+    {
+      "id": "caching-system-design-sd-dp-13",
+      "skillLevel": "intermediate",
+      "shortTitle": "Caching System Design",
+      "question": "Can you explain how you would design a caching system that supports multiple cache providers (memory, Redis, file system) while keeping the application code clean?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to encapsulate different caching algorithms, allowing the application to switch between in-memory, Redis, file system, or other cache implementations without changing the code that uses the cache."
+            },
+            {
+              "title": "Factory Method Pattern",
+              "description": "**Factory Method pattern** to create appropriate cache provider instances based on configuration or environment, centralizing the instantiation logic and making it easier to add new providers."
+            },
+            {
+              "title": "Adapter Pattern",
+              "description": "**Adapter pattern** to provide a common interface for different cache providers, creating wrappers around third-party caching libraries to make them conform to your application's unified caching interface."
+            },
+            {
+              "title": "Separation of Concerns",
+              "description": "Consider separation of concerns between cache policy and cache implementation, allowing you to change caching policies (TTL, eviction strategies) independently from the underlying storage mechanism."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add behaviors like statistics or logging to cache operations, enhancing cache functionality without modifying the original implementation, such as adding hit/miss metrics or request timing."
+            },
+            {
+              "title": "Proxy Pattern",
+              "description": "**Proxy pattern** to control access to expensive resource creation, providing a cache proxy that checks if an object exists in the cache before creating it, transparently handling caching for clients."
+            },
+            {
+              "title": "Builder Pattern",
+              "description": "**Builder pattern** for constructing complex cache configurations, providing a fluent interface to set up caching with various options like timeouts, serialization strategies, and backup mechanisms."
+            },
+            {
+              "title": "Chain of Responsibility",
+              "description": "**Chain of Responsibility** for hierarchical cache access (check memory, then Redis, then file system, etc.), implementing a multi-level caching strategy where faster caches are checked before slower ones."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Cache-Aside Pattern",
+              "description": "Consider applying **Cache-Aside pattern** for interaction with backing stores, where the application is responsible for loading data from the data store and storing it in the cache when needed."
+            },
+            {
+              "title": "Circuit Breaker Pattern",
+              "description": "Implement **Circuit Breaker pattern** for handling remote cache failures, preventing application performance degradation when a distributed cache like Redis becomes unavailable or slow."
+            },
+            {
+              "title": "Cache Patterns",
+              "description": "Apply **Read-Through/Write-Through/Write-Behind patterns** as appropriate, defining strategies for how data flows between the application, cache, and primary data store based on specific use cases."
+            },
+            {
+              "title": "Distributed Cache Design",
+              "description": "Design for distributed cache coherence in multi-node environments, addressing challenges like stale data, concurrent updates, and network partitions in distributed caching scenarios."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "external-api-integration-sd-dp-10",
+        "form-validation-sd-dp-11"
+      ]
+    },
+    {
+      "id": "logging-monitoring-sd-dp-14",
+      "skillLevel": "intermediate",
+      "shortTitle": "Logging and Monitoring",
+      "question": "In your experience, what design patterns would you apply to build a robust logging and monitoring system for a distributed application?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Singleton Pattern",
+              "description": "**Singleton pattern** (carefully applied) for global logger access, ensuring a consistent entry point for logging throughout the application while being mindful of the drawbacks associated with global state."
+            },
+            {
+              "title": "Facade Pattern",
+              "description": "**Facade pattern** to provide a simplified interface to complex logging subsystems, hiding the details of different logging providers, formats, and destinations behind a clean, unified API."
+            },
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add context information to log entries, enriching log messages with additional metadata like correlation IDs, user information, or request details without modifying the core logging code."
+            },
+            {
+              "title": "Separation of Concerns",
+              "description": "Consider **Separation of Concerns** between logging, alerting, and monitoring, treating these as distinct concerns with different requirements while allowing them to work together as part of a cohesive observability strategy."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** for subscribing to important events or log entries, allowing monitoring systems, alerting mechanisms, or dashboards to react to specific log patterns or thresholds without tight coupling."
+            },
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** for different logging implementations (console, file, cloud), enabling the application to switch between logging strategies based on environment, configuration, or runtime conditions."
+            },
+            {
+              "title": "Chain of Responsibility",
+              "description": "**Chain of Responsibility** for log filtering and routing, creating a pipeline of log processors that can filter, transform, enrich, or route log messages based on their content or metadata."
+            },
+            {
+              "title": "Command Pattern",
+              "description": "**Command pattern** for asynchronous log processing, encapsulating log messages as commands that can be queued and processed in the background to minimize the performance impact of logging on the main application."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Publisher-Subscriber Pattern",
+              "description": "Consider **Publisher-Subscriber pattern** for distributed log aggregation, decoupling log producers from consumers and enabling scalable log collection across many distributed system components."
+            },
+            {
+              "title": "Circuit Breaker",
+              "description": "Apply **Circuit Breaker** for resilient remote logging endpoints, preventing logging failures from affecting application performance by gracefully degrading when logging backends become unavailable."
+            },
+            {
+              "title": "Bulkhead Pattern",
+              "description": "Implement **Bulkhead pattern** to isolate logging from critical application paths, ensuring that logging resources (threads, connections, memory) are separate from application resources to prevent logging issues from affecting core functionality."
+            },
+            {
+              "title": "Correlation Patterns",
+              "description": "Design correlation patterns for tracing requests across distributed systems, using techniques like correlation IDs, trace contexts, or distributed tracing to link related log entries across multiple services and components."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "external-api-integration-sd-dp-10",
+        "caching-system-design-sd-dp-13"
+      ]
+    },
+    {
+      "id": "workflow-engine-sd-dp-15",
+      "skillLevel": "advanced",
+      "shortTitle": "Workflow Engine Design",
+      "question": "Could you describe how you would design a workflow engine that allows business users to define and modify workflows without requiring code changes?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "State Pattern",
+              "description": "**State pattern** to represent different workflow states and transitions, encapsulating state-specific behavior and transitions in separate classes that can be configured and modified without changing core engine code."
+            },
+            {
+              "title": "Command Pattern",
+              "description": "**Command pattern** to encapsulate workflow actions as objects, allowing workflow steps to be stored, serialized, and executed independently from their definition."
+            },
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** to notify interested parties about workflow progress, enabling status updates, logging, and triggering subsequent workflow steps when conditions are met."
+            },
+            {
+              "title": "Builder Pattern",
+              "description": "**Builder pattern** for constructing workflow definitions, providing business users with a structured way to define complex workflows through a simplified interface or domain-specific language."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Interpreter Pattern",
+              "description": "**Interpreter pattern** for parsing and executing workflow rule expressions, enabling a domain-specific language that business users can use to define conditions, transitions, and actions without programming knowledge."
+            },
+            {
+              "title": "Composite Pattern",
+              "description": "**Composite pattern** for building complex workflows from simple steps, allowing workflows to contain sub-workflows, parallel branches, or conditional paths while maintaining a consistent interface."
+            },
+            {
+              "title": "Template Method Pattern",
+              "description": "**Template Method pattern** for defining workflow skeletons with customizable steps, providing predefined workflow templates that business users can extend or customize for specific scenarios."
+            },
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** for different workflow execution strategies, separating the workflow definition from execution concerns like transaction handling, error recovery, or performance optimization."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Domain-Specific Language",
+              "description": "Consider **Domain-Specific Language (DSL)** patterns for workflow definition, creating a specialized language or visual tooling that maps directly to business concepts and workflow patterns familiar to business users."
+            },
+            {
+              "title": "Rule Engine Patterns",
+              "description": "Apply **Rule Engine patterns** for complex business rule evaluation, separating decision logic from process flow to make rules more maintainable and accessible to business experts."
+            },
+            {
+              "title": "Saga Pattern",
+              "description": "Implement **Saga pattern** for long-running distributed workflows, managing sequences of local transactions with compensation actions that can roll back partial work if a step fails."
+            },
+            {
+              "title": "Versioning and Migration",
+              "description": "Design for versioning, migration, and instance management of in-flight workflows, addressing the challenge of evolving workflow definitions while maintaining compatibility with workflows that are already in progress."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "order-processing-sd-dp-8",
+        "permission-system-sd-dp-19"
+      ]
+    },
+    {
+      "id": "payment-processing-sd-dp-16",
+      "skillLevel": "intermediate",
+      "shortTitle": "Payment Processing Design",
+      "question": "When designing a system that needs to handle multiple payment methods (credit cards, PayPal, cryptocurrency), what design patterns would you apply to ensure easy addition of new payment methods?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to encapsulate different payment processing algorithms, allowing the system to use different payment providers interchangeably through a common interface while keeping their specific implementations separate."
+            },
+            {
+              "title": "Factory Method Pattern",
+              "description": "**Factory Method pattern** to create appropriate payment processor instances based on payment method selection, centralizing the creation logic and making it easier to add new payment methods."
+            },
+            {
+              "title": "Adapter Pattern",
+              "description": "**Adapter pattern** to provide a common interface for different payment providers, wrapping third-party payment APIs with adapters that conform to your system's unified payment interface."
+            },
+            {
+              "title": "Template Method Pattern",
+              "description": "**Template Method pattern** to define the skeleton of payment processing with steps like validation, authorization, capture, and receipt generation, allowing specific payment methods to customize certain steps while maintaining the overall process flow."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Abstract Factory Pattern",
+              "description": "**Abstract Factory pattern** for creating families of related payment objects, such as creating matching payment request builders, validators, and processors for each payment method to ensure compatibility."
+            },
+            {
+              "title": "Builder Pattern",
+              "description": "**Builder pattern** for constructing complex payment requests, providing a fluent interface to build payment objects with various options like installments, recurring billing, or additional verification."
+            },
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add behaviors like logging or fraud detection to payment processors, enhancing payment processing with cross-cutting concerns without modifying the core payment logic."
+            },
+            {
+              "title": "Chain of Responsibility",
+              "description": "**Chain of Responsibility** for processing payment authorization steps, creating a pipeline of verification checks (address verification, fraud detection, balance confirmation) that can be customized per payment method."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Command Pattern with Queuing",
+              "description": "Consider **Command pattern** with Queuing for asynchronous payment processing, encapsulating payment operations as commands that can be queued, retried, or executed asynchronously to improve system responsiveness."
+            },
+            {
+              "title": "Circuit Breaker Pattern",
+              "description": "Apply **Circuit Breaker pattern** for handling payment gateway failures, preventing cascading failures when a payment provider is unavailable and allowing the system to degrade gracefully."
+            },
+            {
+              "title": "Saga Pattern",
+              "description": "Implement **Saga pattern** for multi-step payment flows with compensating actions, managing complex payment scenarios like split payments, marketplace distributions, or escrow releases with proper transaction management."
+            },
+            {
+              "title": "Idempotency Design",
+              "description": "Design for idempotency in payment processing to handle retries safely, ensuring that the same payment is not processed twice even if the same request is received multiple times due to network issues or client retries."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "order-processing-sd-dp-8",
+        "external-api-integration-sd-dp-10"
+      ]
+    },
+    {
+      "id": "search-system-design-sd-dp-17",
+      "skillLevel": "advanced",
+      "shortTitle": "Search System Design",
+      "question": "In your experience, how would you apply design patterns to build a flexible search system that supports multiple search providers and complex query construction?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to encapsulate different search algorithms or providers, allowing the system to switch between search implementations (like Elasticsearch, Solr, or database full-text search) without changing the client code."
+            },
+            {
+              "title": "Adapter Pattern",
+              "description": "**Adapter pattern** to provide a common interface for different search engines, creating wrappers around third-party search APIs to make them conform to your application's unified search interface."
+            },
+            {
+              "title": "Facade Pattern",
+              "description": "**Facade pattern** to simplify complex search operations, providing a high-level interface to a set of search-related interfaces, making the search subsystem easier to use."
+            },
+            {
+              "title": "Builder Pattern",
+              "description": "**Builder pattern** for constructing complex search queries, providing a fluent API that allows clients to build search queries incrementally without having to understand the underlying query syntax."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Composite Pattern",
+              "description": "**Composite pattern** for building complex search criteria from simple ones, enabling the construction of search expressions that combine multiple criteria using logical operators (AND, OR, NOT) in a tree-like structure."
+            },
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add behaviors like caching or logging to search operations, enhancing search functionality with cross-cutting concerns without modifying the core search implementation."
+            },
+            {
+              "title": "Interpreter Pattern",
+              "description": "**Interpreter pattern** for parsing and executing search query expressions, enabling a domain-specific query language that can be translated into provider-specific search syntax."
+            },
+            {
+              "title": "Chain of Responsibility",
+              "description": "**Chain of Responsibility** for processing search filters sequentially, creating a pipeline of filters that can be applied to search results or queries in a configurable order."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Specification Pattern",
+              "description": "Consider **Specification pattern** for complex query predicate composition, encapsulating search criteria as objects that can be combined using logical operations and translated to the appropriate query language."
+            },
+            {
+              "title": "Visitor Pattern",
+              "description": "Apply **Visitor pattern** to traverse and transform query structures, separating query manipulation algorithms from the query structure itself, useful for query optimization or translation to different search providers."
+            },
+            {
+              "title": "Mediator Pattern",
+              "description": "Implement **Mediator pattern** for coordinating federated searches across providers, centralizing the logic for dispatching search requests to multiple providers and aggregating their results."
+            },
+            {
+              "title": "Performance Optimization",
+              "description": "Design for performance optimization patterns like lazy loading or pagination, implementing techniques such as cursor-based pagination, infinite scrolling, or search-after to efficiently handle large result sets."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "form-validation-sd-dp-11",
+        "ui-theming-sd-dp-12"
+      ]
+    },
+    {
+      "id": "large-dataset-processing-sd-dp-18",
+      "skillLevel": "advanced",
+      "shortTitle": "Large Dataset Processing",
+      "question": "Do you know how you would design a system that needs to process large datasets using different algorithms while maintaining good performance?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** to encapsulate different processing algorithms, allowing the system to switch between processing strategies (like batch processing, stream processing, or parallel processing) without changing the client code."
+            },
+            {
+              "title": "Template Method Pattern",
+              "description": "**Template Method pattern** to define the skeleton of processing with customizable steps, establishing a common processing framework while allowing specific algorithms to customize certain steps."
+            },
+            {
+              "title": "Builder Pattern",
+              "description": "**Builder pattern** for constructing complex processing pipelines, providing a fluent API to configure processing stages, transformation rules, and output formats."
+            },
+            {
+              "title": "Command Pattern",
+              "description": "Consider **Command pattern** for encapsulating processing requests as objects, allowing processing jobs to be queued, prioritized, logged, and potentially rolled back if needed."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add behaviors like caching or logging to processing steps, enhancing the core processing functionality with cross-cutting concerns without modifying the underlying algorithms."
+            },
+            {
+              "title": "Composite Pattern",
+              "description": "**Composite pattern** for building complex processing from simple operations, enabling the construction of processing pipelines that combine multiple operations in a hierarchical structure."
+            },
+            {
+              "title": "Flyweight Pattern",
+              "description": "**Flyweight pattern** to share common data structures, reducing memory consumption by sharing immutable or read-only data across multiple processing instances rather than duplicating it."
+            },
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** to notify about processing progress or completion, allowing clients or monitoring systems to track the status of long-running processing jobs without tight coupling."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Map-Reduce Pattern",
+              "description": "Consider **Map-Reduce patterns** for parallel processing, breaking down large data processing tasks into independent chunks that can be processed in parallel and then combining the results."
+            },
+            {
+              "title": "Pipeline Pattern",
+              "description": "Apply **Pipeline pattern** for streaming large datasets, organizing processing as a series of stages where data flows continuously from one stage to the next without storing the entire dataset in memory."
+            },
+            {
+              "title": "Bulkhead Pattern",
+              "description": "Implement **Bulkhead pattern** to isolate processing resources, partitioning system resources (threads, memory, connections) to prevent one processing job from consuming all available resources and affecting others."
+            },
+            {
+              "title": "Backpressure Handling",
+              "description": "Design for backpressure handling with patterns like **Throttling** or **Circuit Breaker**, implementing mechanisms to slow down data production when consumption cannot keep pace, preventing system overload."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "workflow-engine-sd-dp-15",
+        "search-system-design-sd-dp-17"
+      ]
+    },
+    {
+      "id": "permission-system-sd-dp-19",
+      "skillLevel": "advanced",
+      "shortTitle": "Permission System Design",
+      "question": "Could you describe how you would design a permission system that supports role-based access control with hierarchical permissions?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Composite Pattern",
+              "description": "**Composite pattern** for building hierarchical permission structures, allowing permissions to be organized in trees where both individual permissions and groups of permissions share a common interface."
+            },
+            {
+              "title": "Proxy Pattern",
+              "description": "**Proxy pattern** to control access to protected resources, creating access control proxies that check permissions before allowing operations on the underlying resources."
+            },
+            {
+              "title": "Chain of Responsibility Pattern",
+              "description": "**Chain of Responsibility pattern** for permission checking, creating a chain of permission checkers that can evaluate access requests against different rules or permission levels."
+            },
+            {
+              "title": "Flyweight Pattern",
+              "description": "Consider **Flyweight pattern** for sharing common permission objects, reducing memory usage by sharing permission instances across multiple users or roles that require the same permissions."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Decorator Pattern",
+              "description": "**Decorator pattern** to add additional permission checking behavior, enhancing basic permission checks with context-specific rules or temporary permission elevations without modifying the core permission system."
+            },
+            {
+              "title": "Interpreter Pattern",
+              "description": "**Interpreter pattern** for parsing and evaluating permission expressions, enabling a domain-specific language for defining complex permission rules combining multiple conditions."
+            },
+            {
+              "title": "Strategy Pattern",
+              "description": "**Strategy pattern** for different permission evaluation algorithms, allowing the system to switch between different permission checking strategies based on resource type, user context, or system configuration."
+            },
+            {
+              "title": "Observer Pattern",
+              "description": "**Observer pattern** to notify about permission changes, keeping dependent components (like UI elements, caches, or audit logs) updated when permissions are modified."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Specification Pattern",
+              "description": "Consider **Specification pattern** for complex permission rule combinations, encapsulating permission criteria as objects that can be combined using logical operations and evaluated against user and resource contexts."
+            },
+            {
+              "title": "Visitor Pattern",
+              "description": "Apply **Visitor pattern** for operations on permission hierarchies, separating algorithms from the permission structure, useful for tasks like permission auditing, serialization, or optimization."
+            },
+            {
+              "title": "Memento Pattern",
+              "description": "Implement **Memento pattern** for tracking permission state changes, capturing permission snapshots that can be used for audit trails, rollbacks, or temporary permission elevations."
+            },
+            {
+              "title": "Distributed Permission Management",
+              "description": "Design for distributed permission management in microservices architecture, addressing challenges like permission caching, cross-service authorization, and maintaining consistency across distributed permission stores."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "workflow-engine-sd-dp-15",
+        "undo-redo-implementation-sd-dp-20"
+      ]
+    },
+    {
+      "id": "undo-redo-implementation-sd-dp-20",
+      "skillLevel": "intermediate",
+      "shortTitle": "Undo-Redo Functionality",
+      "question": "In your experience, how would you apply design patterns to implement an undo/redo functionality in a complex application?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Command Pattern",
+              "description": "**Command pattern** to encapsulate operations as objects that can be stored and reversed, capturing both the action to perform and how to undo it within the same command object."
+            },
+            {
+              "title": "Memento Pattern",
+              "description": "**Memento pattern** to capture and externalize an object's state for later restoration, allowing the application to save snapshots of object state that can be restored for undo operations."
+            },
+            {
+              "title": "History Stack",
+              "description": "Consider maintaining a history stack or queue for tracking operations, using data structures like stacks to manage the sequence of commands or states for both undo and redo operations."
+            },
+            {
+              "title": "Operation Boundaries",
+              "description": "Define clear boundaries for atomic operations that can be undone/redone, ensuring that operations are granular enough to provide a good user experience but comprehensive enough to maintain system consistency."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Prototype Pattern",
+              "description": "**Prototype pattern** to create deep copies of objects for state tracking, enabling efficient state capture by cloning objects rather than manually recreating their state."
+            },
+            {
+              "title": "Composite Pattern",
+              "description": "**Composite pattern** for complex operations composed of multiple simple operations, allowing composite commands that can treat both individual operations and groups of operations uniformly for undo/redo purposes."
+            },
+            {
+              "title": "Command Processors",
+              "description": "Implement Command processors that can execute, undo, and redo operations, centralizing the logic for managing the command history and executing commands in the appropriate context."
+            },
+            {
+              "title": "Transaction Boundaries",
+              "description": "Consider transaction boundaries and consistency guarantees, ensuring that undo/redo operations respect the same transactional boundaries as the original operations to maintain data consistency."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Event Sourcing",
+              "description": "Consider **Event Sourcing pattern** for applications requiring full history, storing all changes as a sequence of events that can be used to reconstruct the state at any point in time."
+            },
+            {
+              "title": "Snapshot Strategies",
+              "description": "Implement snapshot strategies for memory optimization with large histories, periodically capturing complete state snapshots to avoid having to replay long sequences of commands for distant undo operations."
+            },
+            {
+              "title": "Conflict Resolution",
+              "description": "Design for conflict resolution in multi-user scenarios, implementing strategies to handle cases where multiple users might be undoing or redoing operations on the same data concurrently."
+            },
+            {
+              "title": "Compensating Actions",
+              "description": "Implement compensating actions for operations that cannot be directly reversed, designing alternative operations that achieve the logical inverse of irreversible operations like network calls or external system integrations."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "pub-sub-implementation-sd-dp-9",
+        "permission-system-sd-dp-19"
+      ]
+    }
+  ]
+}

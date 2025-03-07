@@ -1,0 +1,509 @@
+﻿{
+  "category": "Software Design",
+  "subcategory": "Event-Driven Architecture",
+  "questions": [
+    {
+      "id": "event-driven-fundamentals-software-design-eda-1",
+      "skillLevel": "basic",
+      "shortTitle": "EDA Fundamentals",
+      "question": "Could you explain what Event-Driven Architecture is and its key characteristics?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Event-Driven Architecture (EDA)** is a design paradigm where the flow of the program is determined by events such as user actions, sensor outputs, or system messages. Components communicate through events rather than direct method calls or synchronous requests."
+            },
+            {
+              "title": "Key Characteristics",
+              "description": "Core characteristics include **loose coupling** between components, **asynchronous communication**, **event producers and consumers** that don't need to know about each other, and **push-based message delivery** rather than pull-based approaches."
+            },
+            {
+              "title": "Basic Components",
+              "description": "An event-driven system typically consists of **event producers** (sources that generate events), **event consumers** (components that react to events), **event channels** (like queues or topics for event transmission), and **event processors** (that handle, filter, or transform events)."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event Types",
+              "description": "Events can be categorized as **domain events** (significant occurrences in the business domain), **integration events** (events shared between systems), **notification events** (pure signals without payload), and **state-transfer events** (carrying the data needed to update state)."
+            },
+            {
+              "title": "Communication Patterns",
+              "description": "Event-driven systems employ patterns like **publish-subscribe** (producers publish to topics, consumers subscribe to relevant topics), **event streams** (ordered sequence of events), and **event collaboration** (multiple services working together through events)."
+            },
+            {
+              "title": "Temporal Decoupling",
+              "description": "Event-driven architecture enables **temporal decoupling**, where producers and consumers don't need to be active simultaneously. This improves system resilience as components can process events when ready, rather than failing if a dependency is temporarily unavailable."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "System Qualities",
+              "description": "EDA can enhance system qualities including **scalability** (components can scale independently), **resilience** (failures are contained), **responsiveness** (asynchronous processing doesn't block the user), and **extensibility** (new consumers can be added without modifying producers)."
+            },
+            {
+              "title": "Consistency Considerations",
+              "description": "Event-driven systems often embrace **eventual consistency** rather than immediate consistency, requiring careful design for scenarios where strict consistency is needed, potentially using techniques like event sourcing or compensating transactions."
+            },
+            {
+              "title": "Observability Challenges",
+              "description": "The asynchronous and distributed nature of event-driven systems creates observability challenges, requiring specialized approaches to **distributed tracing**, **event correlation**, and **causality tracking** to understand system behavior and troubleshoot issues."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-vs-request-response-software-design-eda-2"
+      ]
+    },
+    {
+      "id": "event-driven-vs-request-response-software-design-eda-2",
+      "skillLevel": "basic",
+      "shortTitle": "EDA vs. Request-Response",
+      "question": "How does Event-Driven Architecture compare to traditional request-response architecture?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Communication Model",
+              "description": "**Request-response** architecture relies on direct, synchronous communication where a requester waits for a response. **Event-driven** architecture uses asynchronous communication where events are published without waiting for responses."
+            },
+            {
+              "title": "Coupling Differences",
+              "description": "Request-response creates tighter coupling as the requester must know the responder's address and interface. Event-driven systems are more loosely coupled as event producers don't need to know who (if anyone) will consume their events."
+            },
+            {
+              "title": "Interaction Pattern",
+              "description": "Request-response follows a **pull-based** model where consumers actively request data. Event-driven uses a **push-based** model where producers actively send events to interested consumers as changes occur."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Scalability Characteristics",
+              "description": "Request-response systems can face scalability challenges as each request typically blocks a thread or resource until completed. Event-driven systems can achieve better scalability by processing events asynchronously and independently."
+            },
+            {
+              "title": "Failure Handling",
+              "description": "In request-response, failures directly impact the requester, which must handle errors or timeouts. In event-driven systems, failures can be more isolated, but require careful consideration of event delivery guarantees and error handling."
+            },
+            {
+              "title": "Development Complexity",
+              "description": "Request-response is often simpler to understand and implement initially, with clear call-and-return semantics. Event-driven systems introduce complexity in tracking event flows, ensuring proper event ordering, and debugging asynchronous processes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Hybrid Approaches",
+              "description": "Many modern systems use **hybrid architectures** combining both patterns: request-response for query operations requiring immediate responses, and event-driven for notifications, background processing, and system integration."
+            },
+            {
+              "title": "Transactional Boundaries",
+              "description": "Request-response naturally fits within transactional boundaries, while event-driven systems often require specialized patterns like sagas or compensating transactions to maintain consistency across asynchronous event flows."
+            },
+            {
+              "title": "Evolution and Change Management",
+              "description": "Event-driven systems can be more adaptable to change as new event consumers can be added without modifying producers. However, they require careful event schema evolution strategies to prevent breaking changes as systems evolve."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-fundamentals-software-design-eda-1",
+        "event-driven-events-anatomy-software-design-eda-3"
+      ]
+    },
+    {
+      "id": "event-driven-events-anatomy-software-design-eda-3",
+      "skillLevel": "basic",
+      "shortTitle": "Event Types and Anatomy",
+      "question": "What are the different types of events in Event-Driven Architecture and how should they be structured?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Event Definition",
+              "description": "An **event** is a record of something that has happened in the system, typically represented as a data structure with a name, timestamp, and relevant details about what occurred."
+            },
+            {
+              "title": "Common Event Types",
+              "description": "Common event types include **domain events** (significant business occurrences), **integration events** (shared between systems), **system events** (infrastructure or technical occurrences), and **command events** (instructions to perform an action)."
+            },
+            {
+              "title": "Basic Event Structure",
+              "description": "A well-structured event typically includes: an **event identifier**, **event type**, **timestamp**, **source** (what created the event), and a **payload** containing the relevant data about what happened."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event vs. Command",
+              "description": "**Events** represent facts that have occurred and are named in past tense (e.g., \"OrderPlaced\"). **Commands** are requests for something to happen, named in imperative tense (e.g., \"PlaceOrder\"). This distinction is important for system design and responsibility assignment."
+            },
+            {
+              "title": "Fat vs. Thin Events",
+              "description": "**Fat events** contain all data needed by consumers within the payload, reducing the need for lookups but increasing message size. **Thin events** contain minimal data (often just IDs), requiring consumers to query for additional details if needed."
+            },
+            {
+              "title": "Event Metadata",
+              "description": "Beyond basic fields, useful event metadata includes: **correlation ID** (linking related events), **causation ID** (linking events in a causal chain), **version** (for schema evolution), and **context information** (user ID, tenant ID, trace ID for debugging)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Event Serialization",
+              "description": "Events must be serialized for transmission between systems. Key considerations include **format selection** (JSON, Avro, Protobuf, etc.), **schema compatibility** (backward/forward compatibility), and **compression** strategies for large events."
+            },
+            {
+              "title": "Domain Events Design",
+              "description": "Well-designed domain events should be **immutable** (never changed after creation), **self-contained** (including all relevant context), **represent completed state changes** (not in-progress actions), and **be named from the perspective of the domain expert** rather than technical implementation."
+            },
+            {
+              "title": "Standardization Approaches",
+              "description": "For enterprise-wide event consistency, consider adopting standards like **CloudEvents** (CNCF specification for event metadata), implementing custom **event envelope patterns**, or using **event schema registries** to manage and validate event formats across the organization."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-schema-evolution-software-design-eda-8",
+        "event-driven-buses-brokers-software-design-eda-4"
+      ]
+    },
+    {
+      "id": "event-driven-buses-brokers-software-design-eda-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Event Buses and Brokers",
+      "question": "What is the role of event buses and message brokers in Event-Driven Architecture?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition and Purpose",
+              "description": "**Event buses** and **message brokers** are middleware components that facilitate communication between event producers and consumers, decoupling them from direct knowledge of each other and handling message routing, delivery, and often persistence."
+            },
+            {
+              "title": "Core Functionality",
+              "description": "Key functions include **message routing** (getting events to intended consumers), **delivery guarantees** (ensuring events aren't lost), **consumer management** (tracking who receives what), and **message filtering** (delivering only relevant messages to each consumer)."
+            },
+            {
+              "title": "Common Implementations",
+              "description": "Popular message broker technologies include **Apache Kafka**, **RabbitMQ**, **Apache ActiveMQ**, **AWS SNS/SQS**, **Google Pub/Sub**, and **Azure Service Bus**. Each has different characteristics regarding throughput, latency, and delivery guarantees."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Delivery Models",
+              "description": "Message brokers support different delivery models: **point-to-point** (each message consumed by one receiver, typically using queues), **publish-subscribe** (each message delivered to multiple subscribers, typically using topics), and **hybrid approaches** combining both patterns."
+            },
+            {
+              "title": "Delivery Guarantees",
+              "description": "Brokers offer varying delivery guarantees: **at-most-once** (messages may be lost but never duplicated), **at-least-once** (messages are never lost but may be duplicated), and **exactly-once** (messages delivered exactly once, though often with performance trade-offs)."
+            },
+            {
+              "title": "Message Ordering",
+              "description": "Different brokers provide different ordering guarantees, from **strict global ordering** (all messages processed in sequence), to **partition-level ordering** (messages within a partition/queue are ordered), to **no ordering guarantees** (messages may be processed in any order)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Considerations",
+              "description": "Key performance factors include **throughput** (messages per second), **latency** (delay between publishing and consumption), **durability** (persistence to disk vs. in-memory), and **scalability** (ability to handle increasing load through partitioning or clustering)."
+            },
+            {
+              "title": "Stream Processing Integration",
+              "description": "Modern event platforms often integrate with **stream processing** frameworks (Apache Kafka Streams, Apache Flink, etc.) to enable real-time data transformation, aggregation, and complex event processing directly on event streams."
+            },
+            {
+              "title": "Operational Challenges",
+              "description": "Operating production event brokers requires addressing challenges like **dead letter queues** (handling failed processing), **poison message detection** (identifying messages that repeatedly cause failures), **monitoring message flow**, **capacity planning**, and **disaster recovery** procedures for this critical infrastructure component."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-events-anatomy-software-design-eda-3",
+        "event-driven-event-sourcing-software-design-eda-5"
+      ]
+    },
+    {
+      "id": "event-driven-event-sourcing-software-design-eda-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Event Sourcing Pattern",
+      "question": "Could you explain the Event Sourcing pattern and its applications in system design?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "**Event Sourcing** is a pattern where all changes to application state are stored as a sequence of events in an append-only store, rather than just storing the current state. The current state can be reconstructed by replaying these events."
+            },
+            {
+              "title": "Core Components",
+              "description": "Key components include the **event store** (append-only log of events), **aggregates** (entities whose state changes are tracked), **event handlers** (for side effects when events occur), and **projections** (deriving specific views from events)."
+            },
+            {
+              "title": "Primary Benefits",
+              "description": "Event Sourcing provides a **complete audit log** of all changes, enables **temporal queries** (state at any point in time), supports **event replay** for debugging or analysis, and creates a **natural event stream** for driving other systems."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Implementation Approaches",
+              "description": "Implementation typically involves **domain aggregates** that generate events, an **event store** for persistence (specialized databases or adapters on traditional databases), and **projection engines** that create read-optimized views from events."
+            },
+            {
+              "title": "Snapshots",
+              "description": "For performance optimization, systems often implement **snapshots** - point-in-time captures of aggregate state that reduce the number of events that need to be replayed when reconstructing current state, especially for long-lived entities."
+            },
+            {
+              "title": "CQRS Integration",
+              "description": "Event Sourcing is frequently combined with **Command Query Responsibility Segregation (CQRS)**, where events from the event store update read models optimized for different query patterns, separating write and read concerns."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Event Schema Evolution",
+              "description": "Long-lived event-sourced systems must handle **event schema evolution** through strategies like **upcasting** (transforming old events to new formats during replay), **versioned events**, or **event adaptation layers** that translate between versions."
+            },
+            {
+              "title": "Performance Considerations",
+              "description": "Advanced implementations address performance through techniques like **event stream partitioning** (dividing events by aggregate ID), **parallel projection rebuilding**, **selective subscriptions** (processing only relevant events), and **optimistic concurrency control** for handling concurrent updates."
+            },
+            {
+              "title": "Practical Challenges",
+              "description": "Production event-sourced systems face challenges including **eventual consistency** of read models, **projection rebuilding costs** when models change, **event store scaling** for high-volume systems, and **complexity in debugging** across event chains."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-cqrs-software-design-eda-6",
+        "event-driven-buses-brokers-software-design-eda-4"
+      ]
+    },
+    {
+      "id": "event-driven-cqrs-software-design-eda-6",
+      "skillLevel": "advanced",
+      "shortTitle": "CQRS Pattern",
+      "question": "How does Command Query Responsibility Segregation (CQRS) complement Event-Driven Architecture?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "CQRS Definition",
+              "description": "**Command Query Responsibility Segregation (CQRS)** is a pattern that separates read operations (queries) from write operations (commands) using different models, potentially different services, and even different data stores."
+            },
+            {
+              "title": "Basic Structure",
+              "description": "In CQRS, **commands** (instructions to change state) go to a **command handler** that processes them and emits events, while **queries** (requests for information) go to a **query handler** that returns data from an optimized read model."
+            },
+            {
+              "title": "Core Benefits",
+              "description": "CQRS enables **independent optimization** of read and write operations, **specialized data models** for different query needs, and **separate scaling** of read and write workloads."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Event-Driven Integration",
+              "description": "CQRS naturally integrates with event-driven architecture as commands generate domain events, which then update one or more read models. This creates a unidirectional flow: command → event → read model update."
+            },
+            {
+              "title": "Read Model Projections",
+              "description": "Read models in CQRS are often implemented as **projections** (views derived from events) that are optimized for specific query patterns, potentially using specialized storage technologies (document DBs, search engines, graph DBs) suited to particular query types."
+            },
+            {
+              "title": "Consistency Considerations",
+              "description": "As read models are updated asynchronously from events, CQRS systems typically embrace **eventual consistency**, requiring strategies for handling stale data in UIs and consideration of scenarios where stronger consistency is required."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Implementation Patterns",
+              "description": "Advanced implementations include **separate services** for commands and queries, **event handlers** that update multiple specialized read models, **materialized views** for complex aggregations, and **versioned read models** to track update progress."
+            },
+            {
+              "title": "Handling Edge Cases",
+              "description": "Production CQRS systems must address edge cases like **read-your-writes consistency** (ensuring users see their own updates), **compensating actions** for rejected commands, **conflict resolution** for concurrent updates, and **rebuilding read models** when their structure changes."
+            },
+            {
+              "title": "Testing Considerations",
+              "description": "Testing CQRS systems requires specialized approaches including **command validation testing**, **event-driven test fixtures**, **read model consistency verification**, and **temporal testing** (ensuring projected state matches expected state after events are processed)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-event-sourcing-software-design-eda-5",
+        "event-driven-microservices-software-design-eda-7"
+      ]
+    },
+    {
+      "id": "event-driven-microservices-software-design-eda-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Event-Driven Microservices",
+      "question": "What are best practices for designing event-driven microservices?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Service Boundaries",
+              "description": "Define microservice boundaries based on **business capabilities**, ensuring each service owns its data and publishes events when significant state changes occur within its domain."
+            },
+            {
+              "title": "Event Ownership",
+              "description": "Each event should have a clear owner (typically the service that produces it), which is responsible for the event's schema, versioning, and documentation."
+            },
+            {
+              "title": "Communication Patterns",
+              "description": "Prefer asynchronous event-based communication between services for better resilience and scalability, using synchronous calls only when immediate responses are required."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Choreography vs. Orchestration",
+              "description": "Choose between **choreography** (services react to events without central coordination) and **orchestration** (a service coordinates the workflow) based on process complexity, visibility needs, and error handling requirements."
+            },
+            {
+              "title": "Event Collaboration",
+              "description": "Use events for cross-service collaboration, where one service publishes domain events and other interested services subscribe to them, creating loose coupling between service implementations."
+            },
+            {
+              "title": "Idempotent Processing",
+              "description": "Design event consumers to be **idempotent** (able to process the same event multiple times without side effects), as event delivery might involve duplicates in distributed systems."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Event Versioning Strategy",
+              "description": "Implement a robust event versioning strategy that maintains backward compatibility, using techniques like **schema registries**, **event upcasting**, **polymorphic event handling**, or **event chain migration** when breaking changes are unavoidable."
+            },
+            {
+              "title": "Transactional Outbox Pattern",
+              "description": "Use the **Transactional Outbox Pattern** to ensure reliable event publishing: store events in a database table within the same transaction that updates the service's data, then use a separate process to reliably publish these events."
+            },
+            {
+              "title": "Event Observability",
+              "description": "Build comprehensive observability into event flows, including **event tracing** (tracking event paths across services), **event monitoring** (measuring volumes, latencies, and error rates), and **event replay capabilities** for debugging or recovery scenarios."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-cqrs-software-design-eda-6",
+        "event-driven-schema-evolution-software-design-eda-8"
+      ]
+    },
+    {
+      "id": "event-driven-schema-evolution-software-design-eda-8",
+      "skillLevel": "advanced",
+      "shortTitle": "Event Schema Evolution",
+      "question": "How should event schemas be designed and evolved in event-driven systems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Schema Design Principles",
+              "description": "Design event schemas to be **clear** (representing business concepts), **self-contained** (including all relevant context), **versioned** (indicating schema version), and **minimal** (including only necessary data)."
+            },
+            {
+              "title": "Compatibility Types",
+              "description": "Understand the types of compatibility: **Backward compatibility** (new producers, old consumers), **forward compatibility** (old producers, new consumers), and **full compatibility** (both backward and forward)."
+            },
+            {
+              "title": "Schema Formats",
+              "description": "Common schema formats include **JSON Schema**, **Apache Avro**, **Protocol Buffers (Protobuf)**, and **Apache Thrift**. Each has different capabilities regarding validation, serialization efficiency, and evolution support."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Compatible Changes",
+              "description": "Safe schema changes include **adding optional fields**, **relaxing validation rules**, **adding new event types**, and **extending enumerations**. Avoid breaking changes like **removing fields**, **renaming fields**, **changing field types**, or **making optional fields required**."
+            },
+            {
+              "title": "Schema Repositories",
+              "description": "Use **schema registries** (like Confluent Schema Registry or AWS Glue Schema Registry) to centrally manage event schemas, enforce compatibility checking, and enable automatic client-side schema resolution."
+            },
+            {
+              "title": "Event Versioning Strategies",
+              "description": "Common approaches include **version in event type** (e.g., OrderCreated_v1), **version field in payload**, **content-type headers** (for HTTP-based systems), or **schema identifiers** (when using schema registries)."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Breaking Changes Management",
+              "description": "When breaking changes are unavoidable, use strategies like **event versioning with consumer coordination**, **maintaining multiple endpoints**, **event transformers** (adapting between versions), or **dual-writing** (publishing to both old and new schemas during transition)."
+            },
+            {
+              "title": "Upcasting and Downcasting",
+              "description": "Implement **upcasting** (converting old event versions to new versions during processing) and sometimes **downcasting** (converting new versions to old formats for legacy consumers) to handle multiple versions in the system."
+            },
+            {
+              "title": "Event Design Patterns",
+              "description": "Advanced patterns include **event envelopes** (standard metadata wrapper around payloads), **polymorphic events** (inheritance hierarchies), **event schema composition** (reusing common components), and **event normalization** (breaking complex events into simpler ones for better evolution)."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "event-driven-events-anatomy-software-design-eda-3",
+        "event-driven-microservices-software-design-eda-7"
+      ]
+    }
+  ]
+}
