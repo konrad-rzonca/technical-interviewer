@@ -47,7 +47,7 @@ const AnswerPoint = React.memo(({
                   ? '#ffffff' + '80'
                   : `${answerStyles.hoverBg}`,
               border: `1px solid ${answerStyles.color}50`,
-              transition: 'all 0.1s ease',
+              transition: 'all 0.2s ease',
               transform: 'translateZ(0)', // promotes hardware acceleration
               display: 'flex',
               justifyContent: 'center',
