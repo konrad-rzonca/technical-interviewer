@@ -1,0 +1,447 @@
+﻿{
+  "category": "Data Structures & Algorithms",
+  "subcategory": "Algorithms",
+  "questions": [
+    {
+      "id": "java-data-deduplication-dsa-a-25",
+      "skillLevel": "intermediate",
+      "shortTitle": "Data Deduplication",
+      "question": "How would you efficiently identify and remove duplicate records from a large dataset?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Hash-Based Approach",
+              "description": "The simplest approach uses a HashSet or HashMap to track seen elements. Iterate through the dataset once, adding each item to the set and checking if it already exists. This achieves O(n) time complexity with O(n) space complexity. It works well for in-memory processing of datasets with simple equality comparisons, but requires enough memory to hold all unique items."
+            },
+            {
+              "title": "Sort and Compare",
+              "description": "Another approach sorts the data first (O(n log n)), then makes a linear pass to identify adjacent duplicates. This reduces space complexity to O(1) additional memory (or O(log n) for the sort) at the cost of higher time complexity. It's useful when memory is limited and the data can be sorted efficiently, especially if the dataset is already partially sorted."
+            },
+            {
+              "title": "Exact vs. Fuzzy Matching",
+              "description": "For exact duplicates, equality comparison suffices. For fuzzy matching (e.g., similar customer records with slight variations), define similarity metrics like edit distance for strings or field-based similarity scores. The choice significantly impacts both the algorithm and performance characteristics."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Bloom Filters",
+              "description": "For extremely large datasets, Bloom filters can identify probable duplicates with minimal memory. This probabilistic data structure can tell if an element is definitely not in a set or might be in the set (false positives possible, but no false negatives). It's useful as a first pass to filter obvious non-duplicates before applying more expensive exact checks."
+            },
+            {
+              "title": "MinHash for Similar Items",
+              "description": "For near-duplicate detection, MinHash approximates Jaccard similarity between sets. By hashing elements of each record and keeping only the minimum hash values, we can estimate similarity with much less computation than pairwise comparisons. This technique works well for document deduplication or finding similar product listings in e-commerce datasets."
+            },
+            {
+              "title": "External Sorting",
+              "description": "When data exceeds available memory, external sorting algorithms partition data into manageable chunks, sort each chunk, and merge the results. After sorting, a linear scan identifies duplicates. This approach works with limited memory but relies on efficient disk I/O and takes longer due to external storage access patterns."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "MapReduce Approach",
+              "description": "For distributed deduplication, a MapReduce approach assigns identical records to the same reducer. The map phase extracts the key for similarity comparison, and the reduce phase consolidates duplicates. This scales horizontally across computing clusters and is suitable for deduplicating web-scale datasets like logs or user records across distributed systems."
+            },
+            {
+              "title": "Incremental Deduplication",
+              "description": "For continuously growing datasets, maintain a persistent index of seen items and check each new record against this index. This avoids reprocessing the entire dataset when new data arrives. Techniques like consistent hashing can distribute this index across multiple nodes for scalability."
+            },
+            {
+              "title": "Domain-Specific Optimizations",
+              "description": "Different data types warrant specialized approaches: for strings, suffix trees can find duplicate substrings; for images, perceptual hashes identify visually similar content; for time-series data, feature extraction followed by clustering can group similar patterns. These domain-specific techniques often achieve better results than general-purpose methods."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-hashing-algorithms-dsa-a-15",
+        "java-sorting-algorithms-dsa-a-1"
+      ]
+    },
+    {
+      "id": "java-array-intersection-dsa-a-26",
+      "skillLevel": "intermediate",
+      "shortTitle": "Array Intersection Problems",
+      "question": "Given two arrays of integers, what's the most efficient way to find their intersection (common elements)?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Hash Set Approach",
+              "description": "The straightforward solution uses a HashSet: add all elements from the first array to a set, then iterate through the second array and collect elements that exist in the set. This achieves O(n+m) time complexity and O(min(n,m)) space complexity, where n and m are the array lengths. It works efficiently for unsorted arrays and handles duplicates if you use a frequency map instead of a simple set."
+            },
+            {
+              "title": "Sorting and Two Pointers",
+              "description": "If arrays are already sorted (or sorting is acceptable), use two pointers starting at the beginning of each array. Compare current elements: if equal, add to result; if the first is smaller, advance its pointer; otherwise, advance the second pointer. This approach has O(n log n + m log m) time complexity if sorting is needed, or O(n+m) if arrays are already sorted, with only O(1) extra space (excluding the result array)."
+            },
+            {
+              "title": "Binary Search Approach",
+              "description": "If one array is significantly smaller than the other and the larger array is sorted, iterate through the smaller array and binary search for each element in the larger array. This yields O(n log m) time complexity (where n is the size of the smaller array), which can be better than the two-pointer approach when n << m."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Handling Duplicates",
+              "description": "For arrays with duplicates, the intersection should contain elements as many times as they appear in both arrays. With hash sets, use a frequency counter (HashMap<Integer, Integer>) for the first array, then decrement counts while processing the second array. With the two-pointer approach, simply advance both pointers after adding a match to the result."
+            },
+            {
+              "title": "Memory-Efficient Processing",
+              "description": "For very large arrays that don't fit in memory, consider chunking: process the data in manageable segments. Sort both arrays externally, then use the two-pointer approach on smaller chunks loaded into memory. Alternatively, use a disk-based hash table to track elements from the first array while streaming through the second."
+            },
+            {
+              "title": "Optimization for Repeated Queries",
+              "description": "If you need to find intersections repeatedly against the same reference array, preprocess it into a more efficient structure. For example, convert it to a balanced binary search tree, a hash table, or a bitmap (if the range of values is limited). This amortizes the preprocessing cost across multiple queries."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Parallelize for Large Arrays",
+              "description": "For very large arrays, parallelize the processing: partition the arrays and compute partial intersections in parallel threads/processes, then combine results. This approach scales with available computing resources but requires careful handling of duplicates during the merge phase."
+            },
+            {
+              "title": "Bloom Filter Optimization",
+              "description": "When one array is extremely large, use a Bloom filter to represent it compactly. The Bloom filter provides a space-efficient way to test if elements from the second array might be in the first (with no false negatives but possible false positives). Follow up with exact checks for potential matches. This trades perfect accuracy for significant memory savings."
+            },
+            {
+              "title": "Adaptation for Stream Processing",
+              "description": "If one array arrives as a stream or is too large to process at once, maintain a frequency counter for the smaller array and process the stream elements one by one. This online algorithm avoids storing the entire second array, making it suitable for continuous processing or memory-constrained environments."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-search-algorithms-dsa-a-3",
+        "java-algorithm-design-patterns-dsa-a-17"
+      ]
+    },
+    {
+      "id": "java-task-scheduling-dsa-a-27",
+      "skillLevel": "advanced",
+      "shortTitle": "Task Scheduling",
+      "question": "How would you schedule tasks with dependencies to minimize total completion time?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Problem Modeling",
+              "description": "This is essentially a task scheduling problem with dependencies, which can be modeled as a directed acyclic graph (DAG) where nodes represent tasks and edges represent dependencies. The goal is to find a topological ordering that minimizes the critical path length (total completion time)."
+            },
+            {
+              "title": "Topological Sorting",
+              "description": "The first step is topological sorting to find a valid execution order respecting all dependencies. Use either Depth-First Search (DFS) or a queue-based approach with in-degree tracking. DFS: perform a post-order traversal and reverse the result. Queue-based: repeatedly add nodes with zero in-degree to the result and remove their outgoing edges. Both approaches have O(V+E) time complexity where V is the number of tasks and E is the number of dependencies."
+            },
+            {
+              "title": "Single-Processor Scheduling",
+              "description": "For a single processor, once you have a valid topological order, execute tasks in that order. The total completion time will be the sum of all task durations. While this respects dependencies, it doesn't necessarily minimize completion time for multi-processor scenarios."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Critical Path Method",
+              "description": "To minimize completion time, identify the critical path - the longest path through the dependency graph when considering task durations. Calculate two values for each task: earliest start time (EST) and latest start time (LST). The difference between LST and EST is the \"float\" - tasks on the critical path have zero float. Focus optimization efforts on the critical path, as other paths have slack time."
+            },
+            {
+              "title": "Multi-Processor Scheduling",
+              "description": "With multiple processors, the problem becomes more complex (NP-hard). A common heuristic is List Scheduling: prioritize tasks by some metric (like remaining critical path length), then assign the highest-priority available task to the next available processor. Another approach is level-based scheduling: group tasks by their levels in the dependency graph and schedule each level optimally."
+            },
+            {
+              "title": "Priority-Based Approaches",
+              "description": "Effective task prioritization metrics include: (1) Task duration (longest or shortest first), (2) Number of dependent tasks (most dependents first), (3) Bottom level (length of the longest path from the task to a terminal node), or (4) LBLLB (largest bottom level, least laxity - prioritizes critical path tasks with less flexibility). Different metrics work better for different dependency structures."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Handling Resource Constraints",
+              "description": "Real-world scheduling often includes resource constraints beyond simple dependencies. Extend the algorithm to track resource usage during scheduling and only assign tasks when required resources are available. For complex resource constraints, constraint programming or operations research techniques may be necessary."
+            },
+            {
+              "title": "Preemptive vs. Non-preemptive",
+              "description": "Consider whether tasks can be preempted (paused and resumed later). Non-preemptive scheduling is simpler but may lead to processor idle time. Preemptive scheduling can improve resource utilization but adds complexity for saving and restoring task state and may not be feasible for all task types."
+            },
+            {
+              "title": "Online vs. Offline Scheduling",
+              "description": "For scenarios where not all tasks are known in advance, online scheduling algorithms make decisions as tasks arrive. Approaches like Earliest Deadline First (EDF) or Least Laxity First (LLF) work well for dynamic task sets but may not produce globally optimal schedules compared to offline algorithms with complete knowledge of all tasks."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-graph-algorithms-dsa-a-5",
+        "java-dynamic-programming-dsa-a-6"
+      ]
+    },
+    {
+      "id": "java-rate-limiting-dsa-a-28",
+      "skillLevel": "advanced",
+      "shortTitle": "Rate Limiting Algorithms",
+      "question": "What algorithm would you implement for API rate limiting and why?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Fixed Window Counter",
+              "description": "The simplest approach divides time into fixed windows (e.g., 1-minute intervals) and counts requests in each window, rejecting requests once the limit is reached. Implementation requires just a counter and a timestamp, making it memory-efficient and easy to understand. However, it allows potential traffic spikes at window boundaries - a service could receive twice the rate limit in a short period if requests cluster at the end of one window and the beginning of the next."
+            },
+            {
+              "title": "Token Bucket Algorithm",
+              "description": "This algorithm uses a bucket that continuously fills with tokens at a fixed rate up to a maximum capacity. Each request consumes one token, and requests without available tokens are rejected. Token bucket allows for bursts of traffic (up to the bucket size) while maintaining a long-term rate limit. It requires storing the token count and last refill timestamp, with tokens calculated on demand rather than actually scheduling token additions."
+            },
+            {
+              "title": "Leaky Bucket Algorithm",
+              "description": "Leaky bucket works like a fixed-capacity queue with a constant processing rate. Incoming requests enter the queue if space is available; otherwise, they're rejected. Unlike token bucket, leaky bucket smooths out traffic to a consistent rate without allowing bursts. It can be implemented either as a queue with a separate processor or as a counter similar to token bucket but without accumulating tokens when idle."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Sliding Window Algorithm",
+              "description": "To address the boundary problem of fixed windows, sliding window keeps track of requests in the past N seconds at all times, rather than using fixed intervals. A simple approximation weights the previous window's count based on the overlap with the current sliding window period. More precise implementations use a data structure like a queue or a timestamp set to track individual requests within the window."
+            },
+            {
+              "title": "Distributed Rate Limiting",
+              "description": "In distributed systems, rate limiters must coordinate across multiple nodes. Approaches include: (1) Centralized storage using Redis or a similar service to maintain counters, (2) Cell-based rate limiting where requests are partitioned by user/IP to specific servers, or (3) Eventually consistent local rate limits with a global circuit breaker. Each approach balances consistency, performance, and fault tolerance differently."
+            },
+            {
+              "title": "Adaptive Rate Limiting",
+              "description": "Advanced systems dynamically adjust rate limits based on current conditions. For example, gradually reducing limits as system load increases or implementing different tiers of service degradation. These adaptive approaches help maintain system stability during traffic spikes while maximizing throughput during normal operation."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Implementation Considerations",
+              "description": "When implementing rate limiters, consider: (1) Memory usage - token bucket and leaky bucket require constant memory regardless of request rate, while window-based approaches may need more memory during high traffic, (2) Accuracy vs. performance tradeoffs - exact counting is more expensive than approximations, and (3) Clock synchronization issues in distributed environments."
+            },
+            {
+              "title": "Hierarchical Rate Limiting",
+              "description": "Real-world systems often implement multiple layers of rate limits: per endpoint, per user, per IP, and global limits. These hierarchical limiters check requests against multiple criteria before allowing them through. Implementation requires careful ordering of checks (typically from most to least specific) and may combine different algorithms at different levels."
+            },
+            {
+              "title": "Response Strategies",
+              "description": "Beyond simply accepting or rejecting requests, consider graduated responses: (1) Adding delay to responses when approaching limits, (2) Returning degraded service (e.g., cached data or simplified responses), (3) Implementing retry-after headers to guide clients, or (4) Using different limits for different request priorities. These strategies improve user experience while still protecting system resources."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-algorithm-design-patterns-dsa-a-17",
+        "java-cache-aware-algorithms-dsa-a-23"
+      ]
+    },
+    {
+      "id": "java-text-search-dsa-a-30",
+      "skillLevel": "intermediate",
+      "shortTitle": "Text Search Engines",
+      "question": "How would you design a system to quickly search for keywords across millions of documents?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Inverted Index",
+              "description": "The fundamental data structure for text search is an **inverted index**, which maps each word to a list of documents containing it. Unlike a forward index (document → words), an inverted index enables efficient keyword queries by directly looking up matching documents. Building this index requires tokenizing documents, normalizing terms (stemming, case folding), and recording document references for each term."
+            },
+            {
+              "title": "Boolean Retrieval",
+              "description": "The simplest search approach retrieves documents matching boolean combinations of keywords (AND, OR, NOT). It performs set operations on document lists: intersection for AND (O(n+m) with merge algorithms), union for OR, and complement for NOT. While efficient and precise, boolean search lacks ranking capability - results are either matching or non-matching with no relevance scoring."
+            },
+            {
+              "title": "Term Frequency Scoring",
+              "description": "Basic relevance ranking uses term frequency (TF) - how often a term appears in a document. Documents with more occurrences of search terms rank higher. This can be improved with inverse document frequency (IDF), which reduces the weight of common words appearing in many documents. The combined TF-IDF score balances term frequency with term specificity."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Index Compression",
+              "description": "For large document collections, index compression is essential. Techniques include: (1) Dictionary encoding - replacing terms with integer IDs, (2) Variable byte encoding for document IDs, (3) Delta encoding - storing differences between consecutive IDs, and (4) Bitmap encoding for frequently occurring terms. These methods significantly reduce index size while maintaining query performance."
+            },
+            {
+              "title": "Query Processing Optimization",
+              "description": "Efficient query execution strategies include: (1) Processing terms in order of increasing frequency to minimize intermediate result sizes, (2) Using skip lists in posting lists for faster list intersections, (3) Implementing early termination when enough results are found, and (4) Caching frequent queries or partial results. These optimizations dramatically improve response times for common queries."
+            },
+            {
+              "title": "Wildcard and Fuzzy Search",
+              "description": "Supporting partial matching requires additional structures: (1) N-gram indexes break terms into character sequences to handle substrings, (2) Suffix trees or arrays enable efficient prefix/suffix matching, and (3) Edit distance algorithms like Levenshtein distance support fuzzy matching for misspellings. These techniques expand search capabilities but increase index complexity and size."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Vector Space Model",
+              "description": "Representing documents and queries as vectors in term space enables more sophisticated ranking. Each dimension corresponds to a term, with values based on TF-IDF weights. Document relevance is measured by cosine similarity between query and document vectors. This model supports partial matching and produces ranked results but requires computing similarity scores at query time."
+            },
+            {
+              "title": "Distributed Indexing",
+              "description": "For web-scale collections, distributed architectures are necessary: (1) Partitioning by document (each server handles a subset of documents) improves throughput, (2) Partitioning by term (each server manages specific terms) reduces index size per node, and (3) Replication improves fault tolerance and query throughput. These approaches introduce coordination overhead but enable horizontal scaling."
+            },
+            {
+              "title": "Practical Optimizations",
+              "description": "Real-world search engines implement numerous optimizations: (1) Field-specific indexes for structured data (title, author, date), (2) In-memory caching of frequent terms and documents, (3) Tiered indexes with different compression levels, and (4) Concurrent index updates without blocking queries. These practical considerations significantly impact search performance and user experience."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-string-matching-dsa-a-24",
+        "java-string-algorithms-dsa-a-11"
+      ]
+    },
+    {
+      "id": "java-cache-eviction-dsa-a-31",
+      "skillLevel": "intermediate",
+      "shortTitle": "Cache Eviction Policies",
+      "question": "What cache eviction policy would you choose for a web application and why?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "LRU (Least Recently Used)",
+              "description": "LRU evicts the item that hasn't been accessed for the longest time, based on the principle that items used recently are likely to be used again. Implementation typically uses a combination of a hashmap and a doubly-linked list to achieve O(1) lookup and update operations. LRU works well for general-purpose caching but doesn't consider access frequency, potentially evicting frequently used items that happen to have not been accessed very recently."
+            },
+            {
+              "title": "FIFO (First In, First Out)",
+              "description": "FIFO evicts the oldest items first, regardless of access patterns. It's simple to implement using a queue data structure and has low overhead. While appropriate for sequential access patterns or time-sensitive data with a clear expiration order, FIFO performs poorly for workloads with temporal locality since it doesn't adapt to usage patterns."
+            },
+            {
+              "title": "Random Replacement",
+              "description": "This policy evicts a randomly selected item when space is needed. Despite its simplicity, random eviction performs surprisingly well in practice and avoids edge cases that can degrade other policies. It requires minimal overhead and is resistant to pathological access patterns that might negatively impact more sophisticated policies. It's suitable when simplicity is valued over optimality or when access patterns are unpredictable."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "LFU (Least Frequently Used)",
+              "description": "LFU tracks how often each item is accessed and evicts the least frequently used. It performs well for frequency-skewed workloads where some items are consistently more popular than others. Efficient implementations use min-heaps or frequency-ordered lists. LFU has two key limitations: (1) it doesn't account for recency, potentially keeping old items with historically high access counts, and (2) new items start with low frequency counts and are vulnerable to quick eviction."
+            },
+            {
+              "title": "CLOCK Algorithm",
+              "description": "CLOCK approximates LRU with lower overhead by using a circular buffer with reference bits. When an item is accessed, its reference bit is set. During eviction, the algorithm scans items, clearing reference bits until finding an unreferenced item to evict. This provides near-LRU performance without the linked list operations, making it popular in operating system page replacement."
+            },
+            {
+              "title": "Size-Based Policies",
+              "description": "For caches storing variable-sized objects, size-aware policies like Size-Adjusted LRU or Greedy-Dual-Size evict based on both recency and size, preferring to evict larger items when possible. These policies optimize hit ratio relative to memory consumption rather than just hit count, making them appropriate for web caches or content delivery networks where cached items have significantly different sizes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "ARC (Adaptive Replacement Cache)",
+              "description": "ARC combines recency and frequency by maintaining two LRU lists: one for recently accessed items and one for frequently accessed items. It dynamically adjusts the space allocated to each list based on workload patterns. This adaptive approach performs well across diverse workloads and self-tunes without manual parameter setting. ARC is used in storage systems and databases where adaptability to changing workloads is important."
+            },
+            {
+              "title": "LIRS (Low Inter-reference Recency Set)",
+              "description": "LIRS uses the distance between consecutive accesses to predict future reuse, maintaining hot and cold item sets. Unlike LRU, which only considers the time since last access, LIRS considers the pattern of accesses over time. It performs well for workloads with weak locality and scan-resistant scenarios where sequential scans would normally flush more valuable cache entries."
+            },
+            {
+              "title": "Web Application Considerations",
+              "description": "For web applications specifically, consider: (1) Content type - HTML fragments might benefit from TTL-based expiration while static assets might use LRU, (2) User behavior - personalized content might use per-user LRU caches while shared content might use global LFU, (3) Write patterns - frequently updated content might use write-through or write-around caching strategies, and (4) Consistency requirements - eventual consistency might allow longer cache lifetimes than strict consistency."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-amortized-analysis-dsa-a-21",
+        "java-cache-aware-algorithms-dsa-a-23"
+      ]
+    },
+    {
+      "id": "java-moving-average-dsa-a-32",
+      "skillLevel": "intermediate",
+      "shortTitle": "Moving Average Calculation",
+      "question": "How would you implement an efficient algorithm to calculate a moving average over a stream of data?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Queue-Based Approach",
+              "description": "For a simple moving average with fixed window size n, maintain a queue of the n most recent values and a running sum. When a new value arrives: (1) Add it to the sum, (2) Add it to the queue, (3) If queue size exceeds n, remove the oldest value from both the queue and the sum, (4) Calculate average as sum/queue.size(). This achieves O(1) time complexity per update with O(n) space complexity."
+            },
+            {
+              "title": "Circular Buffer Implementation",
+              "description": "A more memory-efficient approach uses a fixed-size circular buffer instead of a queue. Maintain an array of size n, a position pointer, and a running sum. When a new value arrives: (1) Subtract the value being replaced from the sum, (2) Store the new value at the current position, (3) Add the new value to the sum, (4) Update position = (position + 1) % n. This achieves the same time complexity but with less overhead."
+            },
+            {
+              "title": "Basic Optimizations",
+              "description": "Key optimizations include: (1) Pre-allocating the buffer to avoid resizing, (2) Using primitive arrays instead of collections for numerical data, (3) Handling edge cases like the initial filling period before the window is complete, and (4) Managing numerical stability by periodically recalculating the sum to avoid floating-point error accumulation."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Exponential Moving Average",
+              "description": "If a weighted average favoring recent data is acceptable, an exponential moving average (EMA) offers significant efficiency benefits. Calculate as: EMA = α × current_value + (1-α) × previous_EMA, where α is a smoothing factor between 0 and 1. This requires only O(1) time and space regardless of window size, storing just the previous EMA value."
+            },
+            {
+              "title": "Weighted Moving Average",
+              "description": "For a weighted moving average with linear weights, maintain both the sum of weighted values and the sum of weights. When a new value arrives, update both sums using the appropriate weights. This approach requires storing all values in the window but can be optimized using a circular buffer similar to the simple moving average implementation."
+            },
+            {
+              "title": "Handling Data Gaps",
+              "description": "Real-world data streams often have irregular intervals or missing data points. Solutions include: (1) Time-weighted averages that account for the actual time between samples, (2) Interpolation strategies to fill gaps before computing the average, or (3) Window definitions based on time periods rather than sample counts. These approaches maintain statistical validity despite irregular data."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Cumulative Moving Average",
+              "description": "For growing windows (cumulative average instead of fixed-size), update using the formula: new_avg = old_avg + (value - old_avg) / count. This maintains a running average without storing individual values, requiring only O(1) time and space. It's useful for calculating lifetime averages or when the entire history matters."
+            },
+            {
+              "title": "Multiple Window Sizes",
+              "description": "Applications often need multiple moving averages with different window sizes simultaneously (e.g., 5-day, 20-day, and 50-day averages for financial data). Efficiently implement this by maintaining a single circular buffer of the largest size needed, with multiple running sums tracking different ranges within the buffer. This avoids redundant storage of values that appear in multiple windows."
+            },
+            {
+              "title": "Statistical Enhancements",
+              "description": "Beyond basic averages, consider implementing: (1) Moving standard deviation by tracking sum of squares, (2) Exponentially weighted moving variance using Welford's online algorithm, (3) Moving median using two heaps to track the lower and upper halves of the window, or (4) Moving percentiles using approximate techniques like t-digest or reservoir sampling. These provide richer statistical insights with manageable computational complexity."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-algorithm-design-patterns-dsa-a-17",
+        "java-bit-manipulation-dsa-a-20"
+      ]
+    }
+  ]
+}

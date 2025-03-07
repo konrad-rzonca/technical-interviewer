@@ -33,6 +33,8 @@ import algorithmsQuestions1
   from './questions/java/data-structures-and-algorithms/algorithms-1.json';
 import algorithmsQuestions2
   from './questions/java/data-structures-and-algorithms/algorithms-2.json';
+import algorithmsQuestions3
+  from './questions/java/data-structures-and-algorithms/algorithms-3.json';
 import sqlQuestions from './questions/java/databases/SQL.json';
 import noSqlQuestions from './questions/java/databases/NoSQL.json';
 import transactionsQuestions
@@ -106,7 +108,8 @@ const questionSets = {
           subcategory: algorithmsQuestions1.subcategory,
           questions: [
             ...algorithmsQuestions1.questions,
-            ...algorithmsQuestions2.questions],
+            ...algorithmsQuestions2.questions,
+            ...algorithmsQuestions3.questions],
         },
       },
     },
