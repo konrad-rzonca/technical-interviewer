@@ -283,7 +283,7 @@ const AnswerLevelHorizontal = ({
 }) => {
   // Get standardized tooltip props - always call this hook
   const detailsTooltipProps = useTooltip('question', {
-    placement: 'top',
+    placement: 'bottom',
     enterDelay: 100,
   });
 
