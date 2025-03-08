@@ -129,7 +129,7 @@
     },
     {
       "id": "java-thread-lifecycle-c-m-tf-3",
-      "skillLevel": "basic",
+      "skillLevel": "intermediate",
       "shortTitle": "Thread Lifecycle",
       "question": "Could you describe the lifecycle of a thread in Java and its different states?",
       "answerInsights": [
