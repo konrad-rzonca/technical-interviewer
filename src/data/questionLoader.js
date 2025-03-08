@@ -19,7 +19,10 @@ import reactiveQuestions1 from './questions/java/core-java/reactive-1.json';
 
 import reactiveQuestions2 from './questions/java/core-java/reactive-2.json';
 
-import collectionsQuestions from './questions/java/core-java/collections.json';
+import collectionsQuestions1
+  from './questions/java/core-java/collections-1.json';
+import collectionsQuestions2
+  from './questions/java/core-java/collections-2.json';
 import exceptionsQuestions from './questions/java/core-java/exceptions.json';
 import dataStructuresQuestions1
   from './questions/java/data-structures-and-algorithms/data-structures-1.json';
@@ -79,7 +82,13 @@ const questionSets = {
             ...fundamentals2Questions.questions],
         },
         'Memory Management': memoryManagementQuestions,
-        'Collections': collectionsQuestions,
+        'Collections': {
+          category: collectionsQuestions1.category,
+          subcategory: collectionsQuestions1.subcategory,
+          questions: [
+            ...collectionsQuestions1.questions,
+            ...collectionsQuestions2.questions],
+        },
         'Exceptions': exceptionsQuestions,
         'Reactive': {
           category: reactiveQuestions1.category,

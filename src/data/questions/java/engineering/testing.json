@@ -509,7 +509,7 @@
     {
       "id": "testing-in-cicd-engineering-practices-t-9",
       "skillLevel": "intermediate",
-      "shortTitle": "Testing in CI/CD",
+      "shortTitle": "Efficient Testing in CI/CD",
       "question": "How should testing be integrated into CI/CD pipelines for maximum efficiency and quality?",
       "answerInsights": [
         {

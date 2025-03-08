@@ -690,7 +690,7 @@
     {
       "id": "azure-infrastructure-as-code-engineering-cloud-11",
       "skillLevel": "intermediate",
-      "shortTitle": "Infrastructure as Code",
+      "shortTitle": "Infrastructure as Code in Azure",
       "question": "Could you compare the different approaches for Infrastructure as Code in Azure?",
       "answerInsights": [
         {

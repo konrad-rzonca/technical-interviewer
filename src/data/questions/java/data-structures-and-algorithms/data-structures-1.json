@@ -379,9 +379,7 @@
         }
       ],
       "relatedQuestions": [
-        "balanced-trees-dsa-ds-8",
-        "binary-tree-traversal-dsa-ds-13",
-        "b-trees-dsa-ds-17"
+        "binary-tree-traversal-dsa-ds-13"
       ]
     },
     {
@@ -443,8 +441,7 @@
         }
       ],
       "relatedQuestions": [
-        "queue-implementation-dsa-ds-4",
-        "heap-sort-dsa-al-10"
+        "queue-implementation-dsa-ds-4"
       ]
     },
     {
@@ -569,8 +566,7 @@
         }
       ],
       "relatedQuestions": [
-        "graph-representation-dsa-ds-9",
-        "shortest-path-algorithms-dsa-al-3"
+        "graph-representation-dsa-ds-9"
       ]
     },
     {
@@ -632,7 +628,6 @@
         }
       ],
       "relatedQuestions": [
-        "string-search-dsa-al-7",
         "data-structure-selection-dsa-ds-16"
       ]
     },
@@ -695,8 +690,7 @@
         }
       ],
       "relatedQuestions": [
-        "graph-representation-dsa-ds-9",
-        "minimum-spanning-tree-dsa-al-4"
+        "graph-representation-dsa-ds-9"
       ]
     },
     {
@@ -1009,8 +1003,7 @@
         }
       ],
       "relatedQuestions": [
-        "hash-tables-dsa-ds-5",
-        "advanced-data-structures-dsa-ds-20"
+        "hash-tables-dsa-ds-5"
       ]
     },
     {
@@ -1072,7 +1065,6 @@
         }
       ],
       "relatedQuestions": [
-        "balanced-trees-dsa-ds-8",
         "linked-list-basics-dsa-ds-2"
       ]
     },
@@ -1198,7 +1190,6 @@
         }
       ],
       "relatedQuestions": [
-        "concurrent-algorithms-dsa-al-12"
       ]
     },
     {
@@ -1322,8 +1313,7 @@
         }
       ],
       "relatedQuestions": [
-        "data-structure-selection-dsa-ds-16",
-        "algorithm-complexity-dsa-al-20"
+        "data-structure-selection-dsa-ds-16"
       ]
     },
     {
@@ -1373,10 +1363,7 @@
         }
       ],
       "relatedQuestions": [
-        "b-trees-dsa-ds-17",
-        "balanced-trees-dsa-ds-8",
-        "binary-tree-bst-dsa-ds-6",
-        "self-balancing-trees-dsa-ds-9"
+        "binary-tree-bst-dsa-ds-6"
       ]
     }
   ]

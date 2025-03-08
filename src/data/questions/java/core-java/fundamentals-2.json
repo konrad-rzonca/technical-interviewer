@@ -190,7 +190,7 @@
     },
     {
       "id": "java-lambda-expressions-core-java-f-24",
-      "skillLevel": "intermediate",
+      "skillLevel": "basic",
       "shortTitle": "Lambda Expressions",
       "question": "How do lambda expressions work in Java, and what are the best practices for using them?",
       "answerInsights": [
@@ -314,7 +314,7 @@
     },
     {
       "id": "java-stream-api-core-java-f-26",
-      "skillLevel": "intermediate",
+      "skillLevel": "basic",
       "shortTitle": "Stream API",
       "question": "How does the Stream API work in Java, and what are its key operations?",
       "answerInsights": [
@@ -376,7 +376,7 @@
     },
     {
       "id": "java-optional-core-java-f-27",
-      "skillLevel": "intermediate",
+      "skillLevel": "basic",
       "shortTitle": "Optional",
       "question": "How should the Optional class be used in Java, and what are its benefits?",
       "answerInsights": [
@@ -615,69 +615,6 @@
         }
       ],
       "relatedQuestions": [
-        "java-try-catch-finally-core-java-f-31"
-      ]
-    },
-    {
-      "id": "java-try-catch-finally-core-java-f-31",
-      "skillLevel": "basic",
-      "shortTitle": "Try-Catch-Finally",
-      "question": "Can you explain how try-catch-finally blocks work in Java and the execution flow when exceptions occur?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Basic Structure",
-              "description": "The try-catch-finally structure consists of three blocks:\n```java\ntry {\n    // Code that might throw exceptions\n} catch (ExceptionType1 e1) {\n    // Handler for ExceptionType1\n} catch (ExceptionType2 e2) {\n    // Handler for ExceptionType2\n} finally {\n    // Code that always executes, whether an exception occurred or not\n}\n```"
-            },
-            {
-              "title": "Execution Flow",
-              "description": "The normal execution flow is:\n1. Code in the `try` block is executed until completion or until an exception occurs\n2. If an exception occurs, the JVM looks for a matching `catch` block\n3. If a matching `catch` is found, that block executes\n4. The `finally` block always executes, regardless of whether an exception occurred or was caught\n5. After the `finally` block, execution continues after the entire try-catch-finally structure, unless an exception was thrown but not caught"
-            },
-            {
-              "title": "Exception Matching",
-              "description": "When an exception occurs, catch blocks are examined in order. The first catch block that can handle the exception (the exception is an instance of the declared exception type) will execute. More specific exception types should be caught before more general ones."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Multiple Catch Blocks",
-              "description": "Using multiple catch blocks:\n```java\ntry {\n    int result = divide(10, 0);\n    System.out.println(\"Result: \" + result);\n} catch (ArithmeticException e) {\n    System.err.println(\"Arithmetic error: \" + e.getMessage());\n} catch (Exception e) {\n    System.err.println(\"General error: \" + e.getMessage());\n}\n```\nOnly one catch block executes for a given exception. If `ArithmeticException` occurs, only the first catch block runs."
-            },
-            {
-              "title": "Multi-Catch Syntax",
-              "description": "Java 7 introduced multi-catch syntax for handling multiple exception types in the same way:\n```java\ntry {\n    // Code that might throw different exceptions\n} catch (IOException | SQLException e) {\n    // Handle both exception types the same way\n    logger.log(e);\n    showErrorMessage(e.getMessage());\n}\n```"
-            },
-            {
-              "title": "Finally Block Details",
-              "description": "The `finally` block executes even if:\n1. The try block completes normally\n2. The try block exits with an exception that's caught\n3. The try block exits with an exception that's not caught\n4. A catch block executes and completes normally\n5. A catch block executes and throws an exception\n\nThe only situations where `finally` won't execute are:\n1. The JVM exits during try/catch execution (e.g., `System.exit(0)` is called)\n2. The thread executing the try/catch is interrupted or killed\n3. A fatal error occurs that crashes the JVM"
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Return Statements and Finally",
-              "description": "Return statements in try/catch/finally blocks have special behavior:\n```java\npublic int complexReturn() {\n    try {\n        return 1;  // This value will be remembered\n    } catch (Exception e) {\n        return 2;  // This would be remembered if an exception occurred\n    } finally {\n        // The finally block still executes before the method returns\n        System.out.println(\"Finally executing\");\n        // CAREFUL: This would override the remembered return value!\n        // return 3;  \n    }\n}\n```\nThe finally block executes before the method returns, but the return value from try or catch is remembered unless finally also has a return statement (which overrides the previous return value)."
-            },
-            {
-              "title": "Try-With-Resources",
-              "description": "Java 7 introduced try-with-resources as a cleaner way to handle resource cleanup:\n```java\n// Traditional approach\nBufferedReader br = null;\ntry {\n    br = new BufferedReader(new FileReader(\"file.txt\"));\n    // Use the resource\n} catch (IOException e) {\n    // Handle exception\n} finally {\n    if (br != null) {\n        try {\n            br.close();\n        } catch (IOException e) {\n            // Handle close exception\n        }\n    }\n}\n\n// Try-with-resources approach\ntry (BufferedReader br = new BufferedReader(new FileReader(\"file.txt\"))) {\n    // Use the resource\n} catch (IOException e) {\n    // Handle exception\n}\n// Resource automatically closed\n```\nAll resources declared in the try-with-resources statement must implement `AutoCloseable` or `Closeable` interface."
-            },
-            {
-              "title": "Suppressed Exceptions",
-              "description": "In try-with-resources, exceptions from the resource's `close()` method are suppressed if there's already an exception from the try block:\n```java\ntry (AutoCloseableResource res = new AutoCloseableResource()) {\n    throw new FirstException(); // Primary exception\n} // If res.close() throws SecondException, it gets suppressed\n\n// Access suppressed exceptions\ncatch (FirstException e) {\n    System.err.println(\"Primary: \" + e.getMessage());\n    \n    Throwable[] suppressed = e.getSuppressed();\n    for (Throwable t : suppressed) {\n        System.err.println(\"Suppressed: \" + t.getMessage());\n    }\n}\n```\nThis prevents the original exception from being lost, which was a common problem with traditional try-finally blocks.\n\nJava 9 enhanced try-with-resources to allow using effectively final variables:\n```java\n// Java 8\nBufferedReader reader = new BufferedReader(new FileReader(\"file.txt\"));\ntry (BufferedReader r = reader) { // Need to create a new variable\n    // Use reader\n}\n\n// Java 9+\nBufferedReader reader = new BufferedReader(new FileReader(\"file.txt\"));\ntry (reader) { // Can use the existing variable directly\n    // Use reader\n}\n```"
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-exceptions-hierarchy-core-java-f-30"
       ]
     },
     {
@@ -744,7 +681,7 @@
     },
     {
       "id": "java-type-erasure-core-java-f-33",
-      "skillLevel": "advanced",
+      "skillLevel": "intermediate",
       "shortTitle": "Type Erasure",
       "question": "What is type erasure in Java generics, and what limitations does it impose?",
       "answerInsights": [

@@ -335,8 +335,7 @@ To ensure high-quality question/answer data:
 - Structured Answer Insights:
     - Organize insights into clear categories (Basic, Intermediate, Advanced) with up to four points each.
     - Provide a roadmap for further discussion on each topic. Link related questions if any.
-    - If answer insight is not obvious then you should provide more details and examples. Answer can be substantial as
-      long as it starts with the summary.
+    - If answer insight is not obvious then it must contain extensive details alongside relevant examples (if any).
     - Use new lines, and spaces for styling
     - You can also use code blocks with `Code`, ```\nCode\n```, as well as **bolded text**
 - Consistency and Uniqueness:

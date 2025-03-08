@@ -255,7 +255,7 @@
     {
       "id": "distributed-transactions-software-design-ds-5",
       "skillLevel": "intermediate",
-      "shortTitle": "Distributed Transactions",
+      "shortTitle": "Distributed Transactions in DS",
       "question": "What approaches exist for managing transactions across multiple services or databases?",
       "answerInsights": [
         {

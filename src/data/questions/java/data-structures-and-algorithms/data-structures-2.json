@@ -189,8 +189,7 @@
       ],
       "relatedQuestions": [
         "hash-tables-dsa-ds-5",
-        "binary-tree-bst-dsa-ds-6",
-        "balanced-trees-dsa-ds-8"
+        "binary-tree-bst-dsa-ds-6"
       ]
     },
     {
@@ -252,8 +251,7 @@
         }
       ],
       "relatedQuestions": [
-        "trie-data-structure-dsa-ds-11",
-        "string-search-dsa-al-7"
+        "trie-data-structure-dsa-ds-11"
       ]
     },
     {
@@ -315,8 +313,7 @@
         }
       ],
       "relatedQuestions": [
-        "binary-tree-bst-dsa-ds-6",
-        "b-trees-dsa-ds-17"
+        "binary-tree-bst-dsa-ds-6"
       ]
     },
     {
@@ -568,7 +565,6 @@
       ],
       "relatedQuestions": [
         "hash-tables-dsa-ds-5",
-        "b-trees-dsa-ds-17",
         "skip-lists-dsa-ds-19"
       ]
     },
