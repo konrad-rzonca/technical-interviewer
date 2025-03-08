@@ -13,15 +13,15 @@
           "points": [
             {
               "title": "Definition",
-              "description": "**Reactive Streams** is a specification for asynchronous stream processing with non-blocking backpressure. It provides a standard for asynchronous stream processing with controlled resource consumption."
+              "description": "**Reactive Streams** is a specification for asynchronous stream processing with non-blocking backpressure. It provides a standard for asynchronous stream processing with controlled resource consumption. The specification was created to address the need for handling data streams efficiently across asynchronous boundaries, especially in systems with variable throughput and latency."
             },
             {
               "title": "Core Interfaces",
-              "description": "The specification defines four core interfaces: **Publisher** (source of data items), **Subscriber** (consumer of data), **Subscription** (controls the demand between Publisher and Subscriber), and **Processor** (both a Subscriber and Publisher for transformation stages)."
+              "description": "The specification defines four core interfaces: **Publisher** (source of data items that emits events to its Subscribers), **Subscriber** (consumer of data that receives and processes events), **Subscription** (controls the demand between Publisher and Subscriber through request(n) and cancel() methods), and **Processor** (both a Subscriber and Publisher for transformation stages in a processing pipeline)."
             },
             {
               "title": "Main Goal",
-              "description": "The primary goal is to govern the exchange of stream data across an asynchronous boundary while ensuring that the receiving party is not forced to buffer arbitrary amounts of data—this is achieved through backpressure signaling."
+              "description": "The primary goal is to govern the exchange of stream data across an asynchronous boundary while ensuring that the receiving party is not forced to buffer arbitrary amounts of data—this is achieved through backpressure signaling. This prevents fast producers from overwhelming slow consumers, a critical feature for building resilient and stable reactive systems that can handle varying loads."
             }
           ]
         },
@@ -30,15 +30,15 @@
           "points": [
             {
               "title": "Backpressure Mechanism",
-              "description": "Backpressure allows downstream components to signal upstream components about their capacity to process data. A Subscriber can request a specific number of items via `Subscription.request(n)`, preventing the Publisher from overwhelming it."
+              "description": "Backpressure allows downstream components to signal upstream components about their capacity to process data. A Subscriber can request a specific number of items via `Subscription.request(n)`, preventing the Publisher from overwhelming it. For example, if a Subscriber can only process 10 items at a time, it would call `request(10)`, and the Publisher would emit no more than 10 items until the Subscriber requests more."
             },
             {
               "title": "Implementation Libraries",
-              "description": "Major implementations include **RxJava**, **Project Reactor**, **Akka Streams**, and Java 9's **Flow API** (which directly incorporated the Reactive Streams interfaces into the JDK)."
+              "description": "Major implementations include **RxJava** (Netflix's reactive extension for Java), **Project Reactor** (Pivotal's reactive library, which powers Spring WebFlux), **Akka Streams** (part of the Akka toolkit for building resilient systems), and Java 9's **Flow API** (which directly incorporated the Reactive Streams interfaces into the JDK as java.util.concurrent.Flow)."
             },
             {
               "title": "Subscription Lifecycle",
-              "description": "The subscription lifecycle follows a specific sequence: `Publisher.subscribe(Subscriber)` → `Subscriber.onSubscribe(Subscription)` → `Subscription.request(n)` → `Subscriber.onNext(item)` (repeated) → `Subscriber.onComplete()` or `Subscriber.onError(throwable)`."
+              "description": "The subscription lifecycle follows a specific sequence: `Publisher.subscribe(Subscriber)` → `Subscriber.onSubscribe(Subscription)` → `Subscription.request(n)` → `Subscriber.onNext(item)` (repeated) → `Subscriber.onComplete()` or `Subscriber.onError(throwable)`. This well-defined protocol ensures orderly event processing and proper resource management throughout the stream's lifecycle."
             }
           ]
         },
@@ -47,15 +47,15 @@
           "points": [
             {
               "title": "Specification Rules",
-              "description": "The Reactive Streams specification includes detailed rules governing signaling (e.g., \"onNext calls must be strictly ordered\"), subscription handling (e.g., \"cancel must be idempotent\"), and error management (e.g., \"after onError or onComplete, no further signals may occur\")."
+              "description": "The Reactive Streams specification includes detailed rules governing signaling (e.g., \"onNext calls must be strictly ordered\"), subscription handling (e.g., \"cancel must be idempotent\"), and error management (e.g., \"after onError or onComplete, no further signals may occur\"). These rules, totaling over 30 specific requirements, ensure consistent behavior across all implementations and prevent issues like race conditions and memory leaks."
             },
             {
               "title": "TCK Compliance",
-              "description": "The **Technology Compatibility Kit (TCK)** provides tests ensuring implementations comply with the specification. Proper implementations must pass these tests to ensure interoperability across different reactive libraries."
+              "description": "The **Technology Compatibility Kit (TCK)** provides tests ensuring implementations comply with the specification. Proper implementations must pass these tests to ensure interoperability across different reactive libraries. The TCK includes verification for Publisher, Subscriber, and Processor implementations, with tests for edge cases like zero-demand requests, subscription cancellation, and exception propagation."
             },
             {
               "title": "Interoperability",
-              "description": "One key benefit of the Reactive Streams standard is the ability to interoperate between different implementations. For example, a Publisher from RxJava can work with a Subscriber from Project Reactor through appropriate adapters."
+              "description": "One key benefit of the Reactive Streams standard is the ability to interoperate between different implementations. For example, a Publisher from RxJava can work with a Subscriber from Project Reactor through appropriate adapters. This enables building systems using best-of-breed components from different libraries without lock-in to a specific implementation, fostering a rich ecosystem of compatible tools and libraries."
             }
           ]
         }
@@ -75,15 +75,15 @@
           "points": [
             {
               "title": "Definition",
-              "description": "**CompletableFuture** is a class introduced in Java 8 that represents a future result of an asynchronous computation. Unlike the older Future interface, it supports composition, allowing operations to be chained together."
+              "description": "**CompletableFuture** is a class introduced in Java 8 that represents a future result of an asynchronous computation. Unlike the older Future interface, it supports composition, allowing operations to be chained together. CompletableFuture implements both Future and CompletionStage interfaces, providing a rich set of methods for asynchronous programming with non-blocking operations."
             },
             {
               "title": "Creation Methods",
-              "description": "CompletableFuture can be created using methods like `supplyAsync()` (returns a value), `runAsync()` (returns void), `completedFuture()` (already completed), or manually using `new CompletableFuture<>()` which can be completed later with `complete()` or `completeExceptionally()`."
+              "description": "CompletableFuture can be created using methods like `supplyAsync()` (returns a value), `runAsync()` (returns void), `completedFuture()` (already completed), or manually using `new CompletableFuture<>()` which can be completed later with `complete()` or `completeExceptionally()`. For example: \n```java\nCompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> fetchDataFromService());\nCompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> sendNotification());\nCompletableFuture<String> future3 = CompletableFuture.completedFuture(\"Immediate result\");\n```"
             },
             {
               "title": "Basic Composition",
-              "description": "The core power of CompletableFuture is its ability to compose asynchronous operations using methods like `thenApply()` (transform result), `thenAccept()` (consume result), and `thenRun()` (execute after completion without using result)."
+              "description": "The core power of CompletableFuture is its ability to compose asynchronous operations using methods like `thenApply()` (transform result), `thenAccept()` (consume result), and `thenRun()` (execute after completion without using result). This enables building pipelines of asynchronous operations without callback hell:\n```java\nCompletableFuture.supplyAsync(() -> fetchUserData(userId))\n    .thenApply(userData -> enrichUserData(userData))      // transform the result\n    .thenAccept(enrichedData -> displayUserInfo(enrichedData)) // consume the result\n    .thenRun(() -> logAnalytics(\"user data viewed\"));      // run after completion\n```"
             }
           ]
         },
@@ -92,15 +92,15 @@
           "points": [
             {
               "title": "Combining Futures",
-              "description": "CompletableFuture offers methods to combine multiple futures: `thenCombine()` (combine two futures), `allOf()` (wait for all to complete), and `anyOf()` (wait for any to complete)."
+              "description": "CompletableFuture offers methods to combine multiple futures: `thenCombine()` (combine two futures), `allOf()` (wait for all to complete), and `anyOf()` (wait for any to complete). These enable coordinating multiple asynchronous operations:\n```java\nCompletableFuture<User> userFuture = fetchUser(userId);\nCompletableFuture<List<Order>> ordersFuture = fetchOrders(userId);\n\n// Combine results when both futures complete\nCompletableFuture<UserProfile> profileFuture = userFuture.thenCombine(\n    ordersFuture, (user, orders) -> createUserProfile(user, orders));\n    \n// Wait for multiple futures to complete\nCompletableFuture<Void> allDone = CompletableFuture.allOf(future1, future2, future3);\n\n// Get the first future to complete\nCompletableFuture<Object> firstDone = CompletableFuture.anyOf(future1, future2);\n```"
             },
             {
               "title": "Error Handling",
-              "description": "Error handling is provided through methods like `exceptionally()` (recover from exceptions), `handle()` (process both normal and exceptional results), and `whenComplete()` (perform action after completion, without changing result)."
+              "description": "Error handling is provided through methods like `exceptionally()` (recover from exceptions), `handle()` (process both normal and exceptional results), and `whenComplete()` (perform action after completion, without changing result). This allows graceful error handling without nested try-catch blocks:\n```java\nCompletableFuture<Data> future = CompletableFuture.supplyAsync(() -> fetchData())\n    .exceptionally(ex -> {\n        log.error(\"Failed to fetch data\", ex);\n        return fallbackData();  // Provide alternative data\n    })\n    .handle((data, ex) -> {\n        if (ex != null) {\n            return processError(ex);  // Handle error case\n        } else {\n            return processData(data);  // Handle success case\n        }\n    });\n```"
             },
             {
               "title": "Execution Control",
-              "description": "CompletableFuture offers control over execution context through async variants of its methods (e.g., `thenApplyAsync()`, `thenAcceptAsync()`) that can optionally take an Executor, allowing custom thread management."
+              "description": "CompletableFuture offers control over execution context through async variants of its methods (e.g., `thenApplyAsync()`, `thenAcceptAsync()`) that can optionally take an Executor, allowing custom thread management. This is crucial for controlling which thread pool handles different parts of your asynchronous pipeline:\n```java\n// Default common ForkJoinPool for async operations\nCompletableFuture<String> future = CompletableFuture.supplyAsync(() -> fetchData())\n    .thenApplyAsync(data -> processData(data));\n\n// Custom thread pool for CPU-intensive operations\nExecutor cpuBoundTasks = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());\nfuture.thenApplyAsync(data -> complexCalculation(data), cpuBoundTasks);\n\n// Custom thread pool for I/O operations\nExecutor ioBoundTasks = Executors.newFixedThreadPool(20);\nfuture.thenApplyAsync(result -> saveToDatabase(result), ioBoundTasks);\n```"
             }
           ]
         },
@@ -109,15 +109,15 @@
           "points": [
             {
               "title": "Timeout Management",
-              "description": "Java 9 added timeout capabilities through `orTimeout(long timeout, TimeUnit unit)` which completes the future exceptionally after a timeout, and `completeOnTimeout(T value, long timeout, TimeUnit unit)` which provides a default value on timeout."
+              "description": "Java 9 added timeout capabilities through `orTimeout(long timeout, TimeUnit unit)` which completes the future exceptionally after a timeout, and `completeOnTimeout(T value, long timeout, TimeUnit unit)` which provides a default value on timeout. These methods help build robust systems that don't wait indefinitely:\n```java\nCompletableFuture<Response> response = callExternalService()\n    .orTimeout(5, TimeUnit.SECONDS)  // Throw TimeoutException after 5 seconds\n    .exceptionally(ex -> {\n        if (ex instanceof TimeoutException) {\n            return Response.serviceUnavailable();\n        }\n        return Response.error(ex);\n    });\n    \n// Alternative with default value\nCompletableFuture<String> data = fetchData()\n    .completeOnTimeout(\"Default data\", 3, TimeUnit.SECONDS);  // Provide default after 3 seconds\n```"
             },
             {
               "title": "Limitations for Reactive Streams",
-              "description": "While powerful, CompletableFuture lacks true streaming capabilities. It represents a single future value rather than a stream of values, doesn't support backpressure, and isn't designed for infinite streams, making it less suitable for full reactive programming."
+              "description": "While powerful, CompletableFuture lacks true streaming capabilities. It represents a single future value rather than a stream of values, doesn't support backpressure, and isn't designed for infinite streams, making it less suitable for full reactive programming. These limitations make CompletableFuture appropriate for one-shot async operations or coordinating a fixed set of parallel tasks, but unsuitable for scenarios like continuous event streams, real-time data processing, or cases where backpressure is needed to handle varying data rates."
             },
             {
               "title": "Integration with Reactive Libraries",
-              "description": "CompletableFuture can be integrated with full reactive solutions like RxJava using adapters (e.g., RxJava's `Single.fromFuture()` or Reactor's `Mono.fromFuture()`), allowing CompletableFuture to participate in broader reactive pipelines."
+              "description": "CompletableFuture can be integrated with full reactive solutions like RxJava using adapters (e.g., RxJava's `Single.fromFuture()` or Reactor's `Mono.fromFuture()`), allowing CompletableFuture to participate in broader reactive pipelines. This enables gradual migration to reactive programming and leveraging existing CompletableFuture-based code:\n```java\n// RxJava integration\nCompletableFuture<User> userFuture = userService.findUserAsync(id);\nSingle<User> userSingle = Single.fromFuture(userFuture);\n\n// Further process with RxJava operators\nObservable<Order> orders = userSingle\n    .flatMapObservable(user -> observeUserOrders(user));\n    \n// Reactor integration\nMono<User> userMono = Mono.fromFuture(userFuture);\n\n// Process with Reactor\nFlux<OrderEvent> orderEvents = userMono\n    .flatMapMany(user -> orderService.streamOrderEvents(user));\n```"
             }
           ]
         }
@@ -137,15 +137,15 @@
           "points": [
             {
               "title": "Introduction",
-              "description": "The **Flow API** was introduced in Java 9 as part of JDK Enhancement Proposal 266. It's Java's standard implementation of the Reactive Streams specification, directly incorporated into the JDK under the `java.util.concurrent.Flow` class."
+              "description": "The **Flow API** was introduced in Java 9 as part of JDK Enhancement Proposal 266. It's Java's standard implementation of the Reactive Streams specification, directly incorporated into the JDK under the `java.util.concurrent.Flow` class. This addition makes reactive programming a first-class citizen in Java's standard library, providing a common language for asynchronous stream processing."
             },
             {
               "title": "Core Interfaces",
-              "description": "The Flow class contains the four core interfaces as static nested interfaces: `Flow.Publisher<T>`, `Flow.Subscriber<T>`, `Flow.Subscription`, and `Flow.Processor<T,R>`, which correspond directly to the Reactive Streams specification interfaces."
+              "description": "The Flow class contains the four core interfaces as static nested interfaces: `Flow.Publisher<T>` (emits items to subscribers), `Flow.Subscriber<T>` (receives and processes items), `Flow.Subscription` (manages the subscription between Publisher and Subscriber), and `Flow.Processor<T,R>` (transforms items as both a Subscriber and Publisher), which correspond directly to the Reactive Streams specification interfaces with identical semantics and requirements."
             },
             {
               "title": "Purpose",
-              "description": "The primary purpose of the Flow API is to provide standard interfaces for reactive programming, enabling interoperability between different libraries implementing the Reactive Streams specification without requiring external dependencies."
+              "description": "The primary purpose of the Flow API is to provide standard interfaces for reactive programming, enabling interoperability between different libraries implementing the Reactive Streams specification without requiring external dependencies. By standardizing these interfaces in the JDK, Java enables a common vocabulary for reactive streams that all libraries can use, fostering a vibrant ecosystem of compatible implementations."
             }
           ]
         },
@@ -154,15 +154,15 @@
           "points": [
             {
               "title": "API Usage",
-              "description": "Unlike RxJava or Project Reactor, the Flow API provides only interfaces, not implementations. It's intended to be used by library developers as a common language for reactive streams rather than directly by application developers."
+              "description": "Unlike RxJava or Project Reactor, the Flow API provides only interfaces, not implementations. It's intended to be used by library developers as a common language for reactive streams rather than directly by application developers. This means you typically won't create your own Publishers or Subscribers directly with Flow, but instead use higher-level libraries that implement these interfaces and provide rich operational APIs built on top of them."
             },
             {
               "title": "SubmissionPublisher",
-              "description": "Java 9 does provide one concrete implementation: `SubmissionPublisher<T>`, which is a Publisher that asynchronously delivers submitted items to subscribers until closed, handling backpressure and supporting buffering of undelivered items."
+              "description": "Java 9 does provide one concrete implementation: `SubmissionPublisher<T>`, which is a Publisher that asynchronously delivers submitted items to subscribers until closed, handling backpressure and supporting buffering of undelivered items. This class acts as both an example implementation and a useful utility for simple publish-subscribe scenarios:\n```java\n// Create a publisher with default buffer size, executor, and handler\nSubmissionPublisher<String> publisher = new SubmissionPublisher<>();\n\n// Subscribe to receive items\npublisher.subscribe(new Flow.Subscriber<>() {\n    private Flow.Subscription subscription;\n    \n    @Override\n    public void onSubscribe(Flow.Subscription subscription) {\n        this.subscription = subscription;\n        subscription.request(1); // Request first item\n    }\n    \n    @Override\n    public void onNext(String item) {\n        System.out.println(\"Received: \" + item);\n        subscription.request(1); // Request next item\n    }\n    \n    @Override\n    public void onError(Throwable throwable) {\n        throwable.printStackTrace();\n    }\n    \n    @Override\n    public void onComplete() {\n        System.out.println(\"Done\");\n    }\n});\n\n// Publish items\npublisher.submit(\"Hello\");\npublisher.submit(\"World\");\npublisher.close(); // Signal completion\n```"
             },
             {
               "title": "Integration with Reactive Libraries",
-              "description": "Major reactive libraries like RxJava and Project Reactor provide adapters to convert between their types and Flow interfaces. For example, Reactor's `Flux.from(Publisher<? extends T>)` accepts any Flow.Publisher."
+              "description": "Major reactive libraries like RxJava and Project Reactor provide adapters to convert between their types and Flow interfaces. For example, Reactor's `Flux.from(Publisher<? extends T>)` accepts any Flow.Publisher. This enables building mixed systems using multiple libraries that all speak the same reactive language:\n```java\n// Convert from Flow Publisher to Reactor Flux\nFlow.Publisher<String> flowPublisher = getFlowPublisher();\nFlux<String> flux = Flux.from(flowPublisher);\n\n// Convert from Reactor Flux to Flow Publisher\nFlux<String> reactorFlux = Flux.just(\"a\", \"b\", \"c\");\nFlow.Publisher<String> publisher = reactorFlux;\n\n// Convert from RxJava Flowable to Flow Publisher\nFlowable<String> flowable = Flowable.just(\"x\", \"y\", \"z\");\nFlow.Publisher<String> flowPublisher = flowable;\n\n// Convert from Flow Publisher to RxJava Flowable\nFlow.Publisher<String> publisher = getFlowPublisher();\nFlowable<String> flowable = Flowable.fromPublisher(publisher);\n```"
             }
           ]
         },
@@ -171,15 +171,15 @@
           "points": [
             {
               "title": "Implementing Custom Components",
-              "description": "Creating custom Flow components requires careful attention to the Reactive Streams specification rules. For instance, a custom `Flow.Publisher` must handle backpressure properly, honor subscription requests, and follow proper signaling order."
+              "description": "Creating custom Flow components requires careful attention to the Reactive Streams specification rules. For instance, a custom `Flow.Publisher` must handle backpressure properly, honor subscription requests, and follow proper signaling order. Creating even a simple custom Publisher involves understanding the proper sequencing of signals, thread-safety considerations, and ensuring that demand from Subscribers is respected to avoid overwhelming them with data."
             },
             {
               "title": "Processor Implementations",
-              "description": "Building `Flow.Processor` implementations is particularly challenging as they must comply with both Publisher and Subscriber rules simultaneously. They must handle subscription state, downstream demand, upstream signals, and potential resource cleanup."
+              "description": "Building `Flow.Processor` implementations is particularly challenging as they must comply with both Publisher and Subscriber rules simultaneously. They must handle subscription state, downstream demand, upstream signals, and potential resource cleanup. Processors act as both consumers and producers, requiring careful management of both incoming requests from downstream components and outgoing requests to upstream components, while also transforming data passing through them. A typical implementation pattern involves separate tracking for upstream and downstream subscriptions:\n```java\npublic class TransformProcessor<T, R> implements Flow.Processor<T, R> {\n    private Flow.Subscription upstreamSubscription;\n    private final List<ProcessorSubscription> downstreamSubscriptions = new CopyOnWriteArrayList<>();\n    private final Function<T, R> transformFunction;\n    \n    public TransformProcessor(Function<T, R> transformFunction) {\n        this.transformFunction = transformFunction;\n    }\n    \n    @Override\n    public void subscribe(Flow.Subscriber<? super R> subscriber) {\n        ProcessorSubscription subscription = new ProcessorSubscription(subscriber);\n        downstreamSubscriptions.add(subscription);\n        subscriber.onSubscribe(subscription);\n    }\n    \n    @Override\n    public void onSubscribe(Flow.Subscription subscription) {\n        this.upstreamSubscription = subscription;\n        // Calculate and request initial demand based on downstream requests\n    }\n    \n    @Override\n    public void onNext(T item) {\n        R transformed = transformFunction.apply(item);\n        for (ProcessorSubscription subscription : downstreamSubscriptions) {\n            subscription.sendNext(transformed);\n        }\n    }\n    \n    // Implement onError, onComplete, and the ProcessorSubscription inner class\n}\n```"
             },
             {
               "title": "Future Direction",
-              "description": "While Java 9 standardized the interfaces, future JDK releases may add more built-in operators and utilities. The Flow API represents Java's long-term commitment to reactive programming as a first-class citizen in the language and standard library."
+              "description": "While Java 9 standardized the interfaces, future JDK releases may add more built-in operators and utilities. The Flow API represents Java's long-term commitment to reactive programming as a first-class citizen in the language and standard library. The Java platform team has indicated that reactive streams support will continue to evolve, potentially including more direct integration with JDK concurrency utilities, better support for structured concurrency, and possibly higher-level abstractions to simplify common use cases. The virtual threads introduced in Java 19+ also offer interesting potential synergies with reactive programming models."
             }
           ]
         }
@@ -199,15 +199,15 @@
           "points": [
             {
               "title": "Core Concepts",
-              "description": "**Project Reactor** is a fully non-blocking reactive programming library for the JVM, implementing the Reactive Streams specification. It focuses on efficient message passing and demand management (backpressure)."
+              "description": "**Project Reactor** is a fully non-blocking reactive programming library for the JVM, implementing the Reactive Streams specification. It focuses on efficient message passing and demand management (backpressure). Reactor is the foundation of Spring WebFlux and provides a rich set of operators for transforming, combining, and orchestrating asynchronous data streams while maintaining backpressure awareness throughout the processing pipeline."
             },
             {
               "title": "Primary Types",
-              "description": "Reactor provides two main reactive types: **Mono<T>** (represents 0 or 1 element) and **Flux<T>** (represents 0 to N elements). Both are implementations of the Publisher interface from Reactive Streams."
+              "description": "Reactor provides two main reactive types: **Mono<T>** (represents 0 or 1 element) and **Flux<T>** (represents 0 to N elements). Both are implementations of the Publisher interface from Reactive Streams. Mono is optimized for single-value scenarios (like HTTP requests/responses), while Flux handles streams of multiple values (like event streams or database query results):\n```java\n// Single-value example\nMono<User> userMono = userRepository.findById(userId);\n\n// Multi-value example\nFlux<Transaction> transactionFlux = transactionRepository.findByUserId(userId);\n```"
             },
             {
               "title": "Creating Streams",
-              "description": "Streams can be created using factory methods like `Flux.just()`, `Flux.fromIterable()`, `Mono.just()`, or with more dynamic sources like `Flux.create()`, `Flux.generate()`, and `Flux.interval()`."
+              "description": "Streams can be created using factory methods like `Flux.just()`, `Flux.fromIterable()`, `Mono.just()`, or with more dynamic sources like `Flux.create()`, `Flux.generate()`, and `Flux.interval()`. These factory methods accommodate various data sources and generation patterns:\n```java\n// Static values\nFlux<String> names = Flux.just(\"Alice\", \"Bob\", \"Charlie\");\nMono<Integer> count = Mono.just(42);\n\n// From collections\nList<User> userList = getUserList();\nFlux<User> users = Flux.fromIterable(userList);\n\n// Dynamic generation\nFlux<Long> ticks = Flux.interval(Duration.ofSeconds(1)); // Emits 0, 1, 2... every second\n\n// Programmatic creation with sink\nFlux<Event> events = Flux.create(sink -> {\n    eventSource.addListener(event -> {\n        sink.next(event);\n        if (event.isLast()) {\n            sink.complete();\n        }\n    });\n});\n```"
             }
           ]
         },
@@ -216,15 +216,15 @@
           "points": [
             {
               "title": "Operators",
-              "description": "Reactor offers rich transformation capabilities through operators like `map`, `flatMap`, `filter`, `reduce`, and `zip`. These operators follow a declarative style, allowing complex data flows to be expressed concisely."
+              "description": "Reactor offers rich transformation capabilities through operators like `map`, `flatMap`, `filter`, `reduce`, and `zip`. These operators follow a declarative style, allowing complex data flows to be expressed concisely. The operators are designed to be composable, enabling sophisticated processing pipelines:\n```java\nFlux<Order> orders = orderRepository.findAllOrders()\n    .filter(order -> order.getAmount() > 100) // Keep only large orders\n    .map(this::enrichOrderWithDetails)      // Transform each order\n    .flatMap(order -> Flux.fromIterable(    // Expand orders into line items\n        order.getLineItems())\n        .map(item -> enrichItemWithProductInfo(item))\n    )\n    .distinct()                             // Remove duplicates\n    .take(10)                               // Limit results\n    .sort(comparing(LineItem::getPrice));   // Sort by price\n```"
             },
             {
               "title": "Subscription Control",
-              "description": "Reactor provides explicit subscription control through methods like `subscribe()`, `subscribe(Consumer)`, or more comprehensive variants specifying behavior for data, errors, and completion signals."
+              "description": "Reactor provides explicit subscription control through methods like `subscribe()`, `subscribe(Consumer)`, or more comprehensive variants specifying behavior for data, errors, and completion signals. The subscription is the trigger that starts data flowing through the reactive pipeline:\n```java\n// Simple consumer\nuserFlux.subscribe(user -> System.out.println(user.getName()));\n\n// Handle data, errors, and completion\nuserFlux.subscribe(\n    user -> displayUser(user),                      // onNext\n    error -> logError(\"Failed to process users\", error), // onError\n    () -> showCompletionMessage()                     // onComplete\n);\n\n// With subscription control\nuserFlux.subscribe(new BaseSubscriber<User>() {\n    @Override\n    protected void hookOnSubscribe(Subscription subscription) {\n        request(1);  // Request first item\n    }\n    \n    @Override\n    protected void hookOnNext(User user) {\n        processUser(user);\n        request(1);  // Request next item\n    }\n});\n```"
             },
             {
               "title": "Schedulers",
-              "description": "The `Schedulers` class offers various execution contexts for operators that require scheduling, like `Schedulers.immediate()`, `Schedulers.single()`, `Schedulers.parallel()`, `Schedulers.boundedElastic()`, allowing fine-grained control over threading."
+              "description": "The `Schedulers` class offers various execution contexts for operators that require scheduling, like `Schedulers.immediate()`, `Schedulers.single()`, `Schedulers.parallel()`, `Schedulers.boundedElastic()`, allowing fine-grained control over threading. This enables optimizing different parts of the pipeline for different workloads:\n```java\n// For CPU-intensive operations\nFlux<Data> results = dataFlux\n    .publishOn(Schedulers.parallel())  // Switch to computation optimized threads\n    .map(this::cpuIntensiveTransformation);\n\n// For I/O operations\nFlux<User> users = Flux.fromIterable(userIds)\n    .flatMap(id -> Mono.fromCallable(() -> userRepository.findById(id))\n        .subscribeOn(Schedulers.boundedElastic())  // Use different thread for each I/O operation\n    );\n\n// For immediate execution in the current thread\nFlux<String> names = userFlux\n    .publishOn(Schedulers.immediate())\n    .map(User::getName);\n```"
             }
           ]
         },
@@ -233,19 +233,19 @@
           "points": [
             {
               "title": "Backpressure Strategies",
-              "description": "Reactor offers various strategies to handle backpressure: `onBackpressureBuffer()`, `onBackpressureDrop()`, `onBackpressureError()`, `onBackpressureLatest()`, each providing different approaches for scenarios where producers outpace consumers."
+              "description": "Reactor offers various strategies to handle backpressure: `onBackpressureBuffer()`, `onBackpressureDrop()`, `onBackpressureError()`, `onBackpressureLatest()`, each providing different approaches for scenarios where producers outpace consumers. These strategies help maintain system stability under varying loads:\n```java\n// Buffer strategy - store excess items in a buffer\nFlux<SensorReading> readings = sensorReadings\n    .onBackpressureBuffer(10000, BufferOverflowStrategy.DROP_OLDEST); // Keep at most 10000 readings\n\n// Drop strategy - discard excess items\nFlux<Event> events = eventSource\n    .onBackpressureDrop(event -> logger.warn(\"Dropped event: {}\", event));\n\n// Latest strategy - keep only the most recent item\nFlux<StockPrice> prices = stockPriceStream\n    .onBackpressureLatest(); // When consumer is slow, only keep most recent price\n\n// Error strategy - signal an error on overflow\nFlux<SystemMetric> metrics = systemMonitor\n    .onBackpressureError(); // Fail fast when consumer can't keep up\n```"
             },
             {
               "title": "Error Handling",
-              "description": "Advanced error handling is provided through operators like `onErrorReturn`, `onErrorResume`, `onErrorMap`, `doOnError`, and the `retry` family of operators, offering flexible recovery strategies for different failure scenarios."
+              "description": "Advanced error handling is provided through operators like `onErrorReturn`, `onErrorResume`, `onErrorMap`, `doOnError`, and the `retry` family of operators, offering flexible recovery strategies for different failure scenarios. These operators enable building resilient systems that can handle failures gracefully:\n```java\n// Provide fallback value on error\nMono<User> userMono = userService.findById(userId)\n    .onErrorReturn(User.GUEST_USER); // Return guest user on failure\n\n// Switch to alternate publisher on error\nMono<User> userWithFallback = primaryUserService.findById(userId)\n    .onErrorResume(e -> {\n        if (e instanceof ServiceUnavailableException) {\n            return backupUserService.findById(userId); // Try backup service\n        }\n        return Mono.error(e); // Propagate other errors\n    });\n\n// Transform the error\nMono<Document> document = documentService.findById(docId)\n    .onErrorMap(DatabaseException.class,\n        e -> new DocumentAccessException(\"Failed to load document: \" + docId, e));\n\n// Retry with exponential backoff\nFlux<Data> resilientData = dataService.fetchData()\n    .retryWhen(Retry.backoff(3, Duration.ofMillis(100))\n        .maxBackoff(Duration.ofSeconds(5))\n        .filter(e -> e instanceof TransientException));\n```"
             },
             {
               "title": "Testing Support",
-              "description": "Reactor includes a comprehensive testing framework in `reactor-test` with `StepVerifier` for step-by-step verification of reactive sequences, `TestPublisher` for controlled emissions in tests, and virtual time support for time-based operations testing."
+              "description": "Reactor includes a comprehensive testing framework in `reactor-test` with `StepVerifier` for step-by-step verification of reactive sequences, `TestPublisher` for controlled emissions in tests, and virtual time support for time-based operations testing. This framework enables precise testing of reactive flows:\n```java\n// Verify sequence elements and completion\nStepVerifier.create(userService.getTopUsers(5))\n    .expectNext(user1, user2, user3) // Expect these specific users\n    .expectNextCount(2)              // Then expect two more users\n    .expectComplete()                // Expect completion\n    .verify();                       // Trigger verification\n\n// Test with virtual time for time-based operations\nStepVerifier.withVirtualTime(() -> Flux.interval(Duration.ofHours(1))\n                                      .take(24))\n    .thenAwait(Duration.ofDays(1))   // Simulate waiting a day\n    .expectNextCount(24)             // Expect 24 emissions\n    .expectComplete()\n    .verify();\n\n// Test using a controlled publisher\nTestPublisher<String> testPublisher = TestPublisher.create();\nFlux<String> flux = testPublisher.flux();\n// Setup subscriber or verification\ntestPublisher.next(\"A\", \"B\"); // Emit values\ntestPublisher.complete();     // Signal completion\n```"
             },
             {
               "title": "Context Propagation",
-              "description": "The `Context` API allows propagating data through the reactive chain that isn't part of the data stream itself, useful for cross-cutting concerns like tracing, security tokens, or correlation IDs."
+              "description": "The `Context` API allows propagating data through the reactive chain that isn't part of the data stream itself, useful for cross-cutting concerns like tracing, security tokens, or correlation IDs. Context behaves like a thread-local for reactive streams:\n```java\n// Reading from Context\nFlux<Response> responseFlux = requestFlux\n    .flatMap(request -> {\n        return Mono.deferContextual(ctx -> {\n            String userId = ctx.get(\"userId\");  // Get value from Context\n            return service.processRequest(request, userId);\n        });\n    });\n\n// Writing to Context\nresponseFlux\n    .contextWrite(ctx -> ctx.put(\"requestId\", UUID.randomUUID().toString()))\n    .contextWrite(ctx -> ctx.put(\"userId\", currentUser.getId()))\n    .subscribe(response -> handleResponse(response));\n\n// Context is immutable - each write creates a new Context\n// Context travels opposite to data flow (from subscriber to publisher)\n```"
             }
           ]
         }
@@ -265,15 +265,15 @@
           "points": [
             {
               "title": "Overview",
-              "description": "**RxJava** is an implementation of the ReactiveX (Reactive Extensions) API for Java. It extends the observer pattern to support sequences of data/events and adds operators that allow composing sequences declaratively while abstracting concerns about synchronization, thread-safety, and concurrent data structures."
+              "description": "**RxJava** is an implementation of the ReactiveX (Reactive Extensions) API for Java. It extends the observer pattern to support sequences of data/events and adds operators that allow composing sequences declaratively while abstracting concerns about synchronization, thread-safety, and concurrent data structures. RxJava originated from Netflix and has evolved through several major versions, with RxJava 3 being the current major version."
             },
             {
               "title": "Core Types",
-              "description": "The fundamental types in RxJava 3 are: **Observable** (standard push-based stream), **Flowable** (backpressure-aware observable), **Single** (emits one item or error), **Maybe** (emits one item, error, or nothing), and **Completable** (emits completion or error signal only)."
+              "description": "The fundamental types in RxJava 3 are: **Observable** (standard push-based stream), **Flowable** (backpressure-aware observable), **Single** (emits one item or error), **Maybe** (emits one item, error, or nothing), and **Completable** (emits completion or error signal only). These specialized types allow more precise modeling of different data stream patterns:\n```java\n// Multiple values without backpressure\nObservable<String> names = Observable.just(\"Alice\", \"Bob\", \"Charlie\");\n\n// Multiple values with backpressure\nFlowable<User> users = userRepository.findAllAsFlowable();\n\n// Single value\nSingle<User> user = userRepository.findById(userId);\n\n// Optional single value\nMaybe<User> maybeUser = userRepository.findByEmail(email);\n\n// Completion signal only\nCompletable saveOperation = userRepository.saveAsCompletable(user);\n```"
             },
             {
               "title": "Creating Streams",
-              "description": "RxJava provides factory methods to create streams: `Observable.just()`, `Observable.fromIterable()`, `Observable.create()`, with similar methods for other types. More complex creation methods include `Observable.interval()` for time-based emissions."
+              "description": "RxJava provides factory methods to create streams: `Observable.just()`, `Observable.fromIterable()`, `Observable.create()`, with similar methods for other types. More complex creation methods include `Observable.interval()` for time-based emissions:\n```java\n// Static values\nObservable<Integer> numbers = Observable.just(1, 2, 3, 4, 5);\n\n// From existing collections\nList<User> userList = getUserList();\nObservable<User> users = Observable.fromIterable(userList);\n\n// Custom source\nObservable<Event> events = Observable.create(emitter -> {\n    EventListener listener = new EventListener() {\n        @Override\n        public void onEvent(Event event) {\n            emitter.onNext(event);\n            if (event.isLast()) {\n                emitter.onComplete();\n            }\n        }\n        \n        @Override\n        public void onError(Throwable t) {\n            emitter.onError(t);\n        }\n    };\n    \n    eventSource.addListener(listener);\n    \n    // Cleanup when unsubscribed\n    emitter.setCancellable(() -> eventSource.removeListener(listener));\n});\n\n// Time-based emissions\nObservable<Long> ticks = Observable.interval(1, TimeUnit.SECONDS); // Emit 0, 1, 2... every second\n```"
             }
           ]
         },
@@ -282,15 +282,15 @@
           "points": [
             {
               "title": "Rich Operator Set",
-              "description": "RxJava offers over 100 operators for transforming, filtering, and combining streams: `map`, `flatMap`, `filter`, `zip`, `combineLatest`, `reduce`, `scan`, and many more. This extensive operator set is one of RxJava's most powerful features."
+              "description": "RxJava offers over 100 operators for transforming, filtering, and combining streams: `map`, `flatMap`, `filter`, `zip`, `combineLatest`, `reduce`, `scan`, and many more. This extensive operator set is one of RxJava's most powerful features, enabling complex data transformations with concise code:\n```java\n// Transforming data\nObservable<UserDTO> userDtos = userObservable\n    .filter(user -> user.isActive())\n    .map(user -> convertToDTO(user));\n\n// FlatMap for one-to-many transformations\nObservable<Order> userOrders = userObservable\n    .flatMap(user -> orderService.getOrdersForUser(user.getId()));\n\n// Combining streams\nObservable<User> users = Observable.just(user1, user2);\nObservable<Order> orders = Observable.just(order1, order2);\n\nObservable<UserOrders> combined = Observable.zip(\n    users, orders, (user, order) -> new UserOrders(user, order));\n    \n// Processing windows of events\nusersObservable\n    .window(10) // Groups of 10 users\n    .flatMap(window -> window.reduce(0, (count, user) -> count + 1))\n    .subscribe(count -> System.out.println(\"Processed batch of \" + count + \" users\"));\n```"
             },
             {
               "title": "Backpressure Handling",
-              "description": "Backpressure is explicitly addressed in RxJava with the `Flowable` type, which implements Reactive Streams and offers strategies like `onBackpressureBuffer()`, `onBackpressureDrop()`, and `onBackpressureLatest()` to handle overflow situations."
+              "description": "Backpressure is explicitly addressed in RxJava with the `Flowable` type, which implements Reactive Streams and offers strategies like `onBackpressureBuffer()`, `onBackpressureDrop()`, and `onBackpressureLatest()` to handle overflow situations. These strategies help manage situations where producers emit faster than consumers can process:\n```java\n// Buffer strategy - store events in a bounded buffer\nFlowable<SensorData> sensorData = sensorSource.toFlowable(BackpressureStrategy.BUFFER)\n    .onBackpressureBuffer(1000, // Buffer size\n        () -> log.warn(\"Buffer full\"), // Buffer overflow action\n        BackpressureOverflowStrategy.DROP_OLDEST); // Strategy when buffer is full\n\n// Drop strategy - discard events when consumer is slow\nFlowable<ClickEvent> clickEvents = clickSource.toFlowable(BackpressureStrategy.DROP);\n\n// Latest strategy - only keep most recent event\nFlowable<StockTick> stockTicks = tickSource.toFlowable(BackpressureStrategy.LATEST);\n\n// Error strategy - signal error when backpressure occurs\nFlowable<CriticalEvent> criticalEvents = criticalSource.toFlowable(BackpressureStrategy.ERROR);\n\n// Converting between Observable and Flowable\nFlowable<Data> dataFlowable = dataObservable.toFlowable(BackpressureStrategy.BUFFER);\nObservable<Data> dataObservable = dataFlowable.toObservable(); // Loses backpressure\n```"
             },
             {
               "title": "Scheduler System",
-              "description": "RxJava provides a flexible `Schedulers` system for controlling concurrency, with options like `Schedulers.io()` (for I/O-bound work), `Schedulers.computation()` (for CPU-bound work), and `Schedulers.newThread()` (creating new threads as needed)."
+              "description": "RxJava provides a flexible `Schedulers` system for controlling concurrency, with options like `Schedulers.io()` (for I/O-bound work), `Schedulers.computation()` (for CPU-bound work), and `Schedulers.newThread()` (creating new threads as needed). This system enables fine-grained control over which threads execute different parts of your reactive pipeline:\n```java\n// Specify which scheduler to subscribe on (where the source runs)\nObservable<Data> data = sourceObservable\n    .subscribeOn(Schedulers.io()); // Source runs on I/O thread\n\n// Change scheduler for downstream operations\ndata\n    .observeOn(Schedulers.computation()) // Switch to computation thread pool\n    .map(item -> computeIntensiveTransform(item))\n    .observeOn(Schedulers.io()) // Switch back to I/O thread pool\n    .flatMap(result -> saveToDatabase(result))\n    .observeOn(AndroidSchedulers.mainThread()) // RxAndroid example - UI thread\n    .subscribe(result -> updateUserInterface(result));\n\n// Custom scheduler from executor\nExecutorService executor = Executors.newFixedThreadPool(10);\nScheduler customScheduler = Schedulers.from(executor);\n```"
             }
           ]
         },
@@ -299,19 +299,19 @@
           "points": [
             {
               "title": "Comparison with Project Reactor",
-              "description": "RxJava and Project Reactor are similar but have key differences: Reactor is more focused on the Reactive Streams specification and integration with Spring, while RxJava has a longer history and broader adoption. Reactor has `Mono`/`Flux` to RxJava's multiple specialized types. Both libraries can interoperate through Reactive Streams interfaces."
+              "description": "RxJava and Project Reactor are similar but have key differences: Reactor is more focused on the Reactive Streams specification and integration with Spring, while RxJava has a longer history and broader adoption. Reactor has `Mono`/`Flux` to RxJava's multiple specialized types. Both libraries can interoperate through Reactive Streams interfaces. Other differences include: RxJava has a larger community and more third-party extensions; Reactor has better integration with Spring ecosystem; RxJava offers more specialized stream types for different use cases; and Reactor's context propagation is more advanced than RxJava's approach."
             },
             {
               "title": "Error Handling Models",
-              "description": "RxJava provides extensive error handling capabilities: `onErrorReturn` (substitute a value), `onErrorResumeNext` (switch to another stream), `onErrorRetryWhen` (sophisticated retry logic), and `doOnError` (side effects without recovery), allowing nuanced error management strategies."
+              "description": "RxJava provides extensive error handling capabilities: `onErrorReturn` (substitute a value), `onErrorResumeNext` (switch to another stream), `onErrorRetryWhen` (sophisticated retry logic), and `doOnError` (side effects without recovery), allowing nuanced error management strategies:\n```java\n// Return a default value on error\nObservable<User> userWithFallback = userObservable\n    .onErrorReturn(error -> User.GUEST_USER);\n\n// Switch to alternate stream on error\nObservable<User> userWithBackup = primaryUserSource\n    .onErrorResumeNext(error -> {\n        if (error instanceof ServiceUnavailableException) {\n            return backupUserSource; // Use backup source\n        }\n        return Observable.error(error); // Propagate other errors\n    });\n\n// Retry with exponential backoff\nObservable<Data> resilientData = dataSource\n    .retryWhen(errors -> {\n        return errors\n            .zipWith(Observable.range(1, 3), (error, attempt) -> attempt) // Track retry count\n            .flatMap(attempt -> {\n                long delay = (long) Math.pow(2, attempt - 1) * 1000; // Exponential backoff\n                System.out.println(\"Retrying after \" + delay + \"ms\");\n                return Observable.timer(delay, TimeUnit.MILLISECONDS);\n            });\n    });\n```"
             },
             {
               "title": "Testing Support",
-              "description": "RxJava includes `TestObserver` and `TestSubscriber` classes for testing reactive code, allowing verification of emissions, errors, and completion. The `TestScheduler` enables deterministic time-based testing by manually advancing a virtual clock."
+              "description": "RxJava includes `TestObserver` and `TestSubscriber` classes for testing reactive code, allowing verification of emissions, errors, and completion. The `TestScheduler` enables deterministic time-based testing by manually advancing a virtual clock:\n```java\n// Testing emissions\nTestObserver<User> testObserver = userService.getUser(userId).test();\ntestObserver.assertValue(expectedUser)\n    .assertComplete()\n    .assertNoErrors();\n\n// Testing with virtual time\nTestScheduler testScheduler = new TestScheduler();\nObservable<Long> observable = Observable.interval(1, TimeUnit.MINUTES, testScheduler);\n\nTestObserver<Long> observer = observable.test();\n\n// Initial state - no emissions yet\nobserver.assertNoValues();\n\n// Advance time and verify emissions\ntestScheduler.advanceTimeBy(1, TimeUnit.MINUTES);\nobserver.assertValue(0L);\n\ntestScheduler.advanceTimeBy(3, TimeUnit.MINUTES);\nobserver.assertValues(0L, 1L, 2L, 3L);\n```"
             },
             {
               "title": "Domain-Specific Variants",
-              "description": "The RxJava ecosystem includes domain-specific extensions like RxAndroid (Android-specific schedulers and utilities), RxJava-JDBC (reactive database access), and RxNetty (reactive network programming), extending reactive patterns to various domains."
+              "description": "The RxJava ecosystem includes domain-specific extensions like RxAndroid (Android-specific schedulers and utilities), RxJava-JDBC (reactive database access), and RxNetty (reactive network programming), extending reactive patterns to various domains. These extensions provide specialized reactive interfaces for different platforms and technologies:\n```java\n// RxAndroid example - Observe on the Android main thread\nObservable.just(\"Data\")\n    .observeOn(AndroidSchedulers.mainThread())\n    .subscribe(data -> updateUI(data));\n\n// RxJava-JDBC example - Reactive database access\nDatabase db = Database.from(dataSource);\nObservable<User> users = db.select(\"SELECT * FROM users WHERE active = ?\")\n    .parameter(true)\n    .get(rs -> new User(rs.getLong(\"id\"), rs.getString(\"name\")));\n\n// RxNetty example - Reactive HTTP client\nHttpClient<ByteBuf, ByteBuf> client = HttpClient.newClient(\"example.com\", 80);\nclient.createGet(\"/api/data\")\n    .flatMap(response -> response.getContent())\n    .map(buf -> buf.toString(Charset.defaultCharset()))\n    .subscribe(content -> System.out.println(\"Received: \" + content));\n```"
             }
           ]
         }
@@ -331,15 +331,15 @@
           "points": [
             {
               "title": "Definition",
-              "description": "**Backpressure** is a feedback mechanism that allows data consumers to signal to data producers how much data they can handle, preventing overwhelming the consumer when the producer generates data faster than it can be processed."
+              "description": "**Backpressure** is a feedback mechanism that allows data consumers to signal to data producers how much data they can handle, preventing overwhelming the consumer when the producer generates data faster than it can be processed. It's a critical capability for building stable reactive systems that can handle varying loads and processing speeds without failure."
             },
             {
               "title": "The Problem",
-              "description": "Without backpressure, fast producers can overwhelm slow consumers, leading to resource exhaustion, out-of-memory errors, degraded performance, or unpredictable behavior in a reactive application."
+              "description": "Without backpressure, fast producers can overwhelm slow consumers, leading to resource exhaustion, out-of-memory errors, degraded performance, or unpredictable behavior in a reactive application. This problem is particularly acute in systems processing high-volume data streams, real-time events, or when there's a significant disparity between production and consumption rates."
             },
             {
               "title": "Reactive Streams Approach",
-              "description": "In the Reactive Streams specification, backpressure is implemented through the `request(n)` method on the `Subscription` interface, allowing subscribers to signal how many items they are ready to receive."
+              "description": "In the Reactive Streams specification, backpressure is implemented through the `request(n)` method on the `Subscription` interface, allowing subscribers to signal how many items they are ready to receive. This creates a demand-driven flow where consumers control the pace:\n```java\npublic interface Subscription {\n    public void request(long n); // Request n items\n    public void cancel();       // Cancel the subscription\n}\n\n// Example usage in a Subscriber\n@Override\npublic void onSubscribe(Subscription s) {\n    this.subscription = s;\n    subscription.request(10); // Request initial batch of 10 items\n}\n\n@Override\npublic void onNext(T item) {\n    // Process item\n    processItem(item);\n    \n    // Request next item when ready\n    subscription.request(1);\n}\n```"
             }
           ]
         },
@@ -348,15 +348,15 @@
           "points": [
             {
               "title": "Buffering Strategy",
-              "description": "**Buffering** temporarily stores excess items when the producer outpaces the consumer. Examples include `onBackpressureBuffer()` in RxJava and Reactor, possibly with size limits, overflow strategies, and eviction policies to prevent unlimited growth."
+              "description": "**Buffering** temporarily stores excess items when the producer outpaces the consumer. Examples include `onBackpressureBuffer()` in RxJava and Reactor, possibly with size limits, overflow strategies, and eviction policies to prevent unlimited growth. Buffering helps handle temporary bursts of data but requires careful memory management:\n```java\n// Project Reactor example with buffering\nFlux<SensorData> sensorData = sensorSource\n    .onBackpressureBuffer(\n        10000,                          // Buffer size\n        BufferOverflowStrategy.DROP_OLDEST  // When buffer is full, drop oldest items\n    );\n\n// RxJava example with advanced buffering\nFlowable<SensorData> sensorData = sensorSource\n    .onBackpressureBuffer(\n        10000,                         // Buffer size\n        () -> log.warn(\"Buffer full\"),  // Buffer overflow action\n        BackpressureOverflowStrategy.DROP_OLDEST  // Strategy when buffer is full\n    );\n```"
             },
             {
               "title": "Dropping Strategy",
-              "description": "**Dropping** discards excess items when the consumer can't keep up. Options include dropping latest items (`onBackpressureDrop()`), oldest items (`onBackpressureLatest()`), or using sampling techniques like `throttleLast()` or `sample()` to reduce the emission rate."
+              "description": "**Dropping** discards excess items when the consumer can't keep up. Options include dropping latest items (`onBackpressureDrop()`), oldest items (`onBackpressureLatest()`), or using sampling techniques like `throttleLast()` or `sample()` to reduce the emission rate. Dropping works well when processing only the most recent or periodic samples is acceptable:\n```java\n// Drop strategy in Project Reactor - discard when downstream is not ready\nFlux<MouseEvent> mouseEvents = mouseEventSource\n    .onBackpressureDrop(event -> log.debug(\"Dropped mouse event: {}\", event));\n\n// Latest strategy in RxJava - keep only most recent item\nFlowable<StockTick> stockTicks = tickSource\n    .onBackpressureLatest();\n\n// Sampling to reduce frequency\nFlux<SensorReading> sampledReadings = sensorReadings\n    .sample(Duration.ofSeconds(1)); // Take one reading per second\n\n// Throttling in RxJava\nObservable<ClickEvent> throttledClicks = clickEvents\n    .throttleLast(1, TimeUnit.SECONDS); // Take last event in each 1-second window\n```"
             },
             {
               "title": "Batching and Windowing",
-              "description": "Techniques like `buffer()`, `window()`, and `groupBy()` can transform high-frequency individual items into lower-frequency batches, reducing the number of downstream processing operations and helping manage backpressure."
+              "description": "Techniques like `buffer()`, `window()`, and `groupBy()` can transform high-frequency individual items into lower-frequency batches, reducing the number of downstream processing operations and helping manage backpressure. This approach shifts the granularity of processing from individual items to groups:\n```java\n// Buffering in Project Reactor - collect items into lists\nFlux<List<Event>> eventBatches = eventFlux\n    .buffer(100)         // Collect 100 events per batch\n    .buffer(Duration.ofSeconds(1)); // Or collect events in 1-second windows\n\n// Windowing in RxJava - create observable windows\nFlowable<Observable<SensorReading>> windows = sensorReadings\n    .window(500, TimeUnit.MILLISECONDS);\n\n// Combined approach - buffer by time or count, whichever comes first\nFlux<List<Order>> orderBatches = orderFlux\n    .bufferTimeout(50, Duration.ofMillis(100))\n    .flatMap(batch -> processBatch(batch)); // Process batches instead of individual orders\n```"
             }
           ]
         },
@@ -365,19 +365,19 @@
           "points": [
             {
               "title": "Push vs. Pull Models",
-              "description": "Reactive implementations use different models: **push-based** approaches (traditional Observables) emit data regardless of consumer readiness, while **pull-based** approaches (Flowable, Flux) respect demand signals. Push models often require explicit backpressure strategies, while pull models have it built in."
+              "description": "Reactive implementations use different models: **push-based** approaches (traditional Observables) emit data regardless of consumer readiness, while **pull-based** approaches (Flowable, Flux) respect demand signals. Push models often require explicit backpressure strategies, while pull models have it built in. Understanding this distinction helps choose the right type for your data flow patterns:\n```java\n// Push model (RxJava Observable) - no built-in backpressure\nObservable<Data> pushData = Observable.create(emitter -> {\n    // This will push data regardless of consumer readiness\n    for (int i = 0; i < 1_000_000; i++) {\n        if (emitter.isDisposed()) return;\n        emitter.onNext(new Data(i));\n    }\n    emitter.onComplete();\n});\n\n// Pull model (RxJava Flowable) - respects demand signals\nFlowable<Data> pullData = Flowable.create(emitter -> {\n    // This will respect backpressure\n    for (int i = 0; i < 1_000_000; i++) {\n        if (emitter.isCancelled()) return;\n        // Blocks until there's demand from downstream\n        emitter.onNext(new Data(i));\n    }\n    emitter.onComplete();\n}, BackpressureStrategy.BUFFER);\n```"
             },
             {
               "title": "Dynamic Throttling",
-              "description": "Advanced implementations can dynamically adjust production rates based on consumption metrics. This can involve custom operators that monitor queue sizes, processing times, or memory usage to adaptively control flow rates."
+              "description": "Advanced implementations can dynamically adjust production rates based on consumption metrics. This can involve custom operators that monitor queue sizes, processing times, or memory usage to adaptively control flow rates. Dynamic throttling enables self-regulating systems that optimize throughput while preventing resource exhaustion:\n```java\n// Custom dynamic throttling example\npublic static <T> Publisher<T> dynamicThrottle(Publisher<T> source, \n                                            Function<Integer, Duration> backoffStrategy) {\n    return Flux.from(source)\n        .publishOn(Schedulers.single()) // Single thread to measure processing\n        .map(item -> {\n            long startTime = System.nanoTime();\n            try {\n                return process(item);\n            } finally {\n                long processingTime = System.nanoTime() - startTime;\n                // Adjust request rate based on processing time\n                adjustRequestRate(processingTime);\n            }\n        });\n}\n\n// Adaptive request rate in a custom Subscriber\npublic class AdaptiveSubscriber<T> implements Subscriber<T> {\n    private Subscription subscription;\n    private final Queue<Long> processingTimes = new ConcurrentLinkedQueue<>();\n    private final int initialRequest = 32;\n    private int currentRequest = initialRequest;\n    \n    @Override\n    public void onSubscribe(Subscription s) {\n        this.subscription = s;\n        subscription.request(currentRequest);\n    }\n    \n    @Override\n    public void onNext(T item) {\n        long start = System.nanoTime();\n        process(item);  \n        recordProcessingTime(System.nanoTime() - start);\n        // Adjust next request based on recent processing times\n        int nextRequest = calculateOptimalRequestSize();\n        subscription.request(nextRequest);\n    }\n}\n```"
             },
             {
               "title": "Implementation Considerations",
-              "description": "When implementing custom `Publisher` or `Processor` components, proper backpressure handling requires careful state management: tracking requested counts, honoring `request(n)` signals, never sending more items than requested, and integrating with the containing scheduler or executor service."
+              "description": "When implementing custom `Publisher` or `Processor` components, proper backpressure handling requires careful state management: tracking requested counts, honoring `request(n)` signals, never sending more items than requested, and integrating with the containing scheduler or executor service. These implementations often involve thread-safe counters, queues, and synchronization to maintain the reactive contract."
             },
             {
               "title": "Error Propagation",
-              "description": "Backpressure can be treated as an error condition using strategies like `onBackpressureError()`, which signals an `OverflowException` when backpressure occurs, allowing the error to propagate through the reactive chain to be handled by error recovery mechanisms."
+              "description": "Backpressure can be treated as an error condition using strategies like `onBackpressureError()`, which signals an `OverflowException` when backpressure occurs, allowing the error to propagate through the reactive chain to be handled by error recovery mechanisms. This approach is useful in systems where backpressure indicates a critical failure rather than a temporary slowdown:\n```java\n// Fail fast on backpressure in Project Reactor\nFlux<Event> criticalEvents = eventSource\n    .onBackpressureError()\n    .doOnError(e -> {\n        if (e instanceof OverflowException) {\n            log.error(\"Critical backpressure failure\", e);\n            triggerAlarm();\n        }\n    })\n    .onErrorResume(e -> {\n        if (e instanceof OverflowException) {\n            return Flux.empty(); // Stop processing\n        }\n        return Flux.error(e); // Propagate other errors\n    });\n\n// Similar approach in RxJava\nFlowable<Event> criticalEvents = eventSource\n    .toFlowable(BackpressureStrategy.ERROR)\n    .doOnError(e -> {\n        if (e instanceof MissingBackpressureException) {\n            log.error(\"Consumer couldn't keep up\", e);\n            triggerAlarm();\n        }\n    });\n```"
             }
           ]
         }
@@ -397,15 +397,15 @@
           "points": [
             {
               "title": "Error Signals",
-              "description": "In reactive streams, errors are propagated as signals through the **onError** terminal event. When an error occurs, it travels downstream, terminating the stream at each step until handled or reaching a subscriber."
+              "description": "In reactive streams, errors are propagated as signals through the **onError** terminal event. When an error occurs, it travels downstream, terminating the stream at each step until handled or reaching a subscriber. This guarantees that errors are always propagated to subscribers and never silently swallowed, making error handling explicit rather than hidden."
             },
             {
               "title": "Basic Handling Patterns",
-              "description": "Common error handling patterns include: providing fallback values, switching to alternate streams on failure, retrying operations, and performing side effects like logging without altering the error flow."
+              "description": "Common error handling patterns include: providing fallback values, switching to alternate streams on failure, retrying operations, and performing side effects like logging without altering the error flow. These basic patterns form the building blocks of resilient reactive applications:\n```java\n// Fallback value (Project Reactor)\nMono<User> userMono = userService.findById(userId)\n    .onErrorReturn(User.GUEST_USER);  // Return a default on any error\n\n// Conditional fallback (RxJava)\nObservable<User> userObservable = userService.findById(userId)\n    .onErrorReturn(error -> {\n        if (error instanceof UserNotFoundException) {\n            return User.GUEST_USER;  // Specific fallback for missing user\n        }\n        throw new RuntimeException(error);  // Rethrow other errors\n    });\n    \n// Fallback stream (Project Reactor)\nFlux<Data> dataFlux = primaryDataSource.getData()\n    .onErrorResume(e -> backupDataSource.getData());  // Switch sources on error\n    \n// Side effects without recovery (Either library)\nstream\n    .doOnError(e -> log.error(\"Error in stream\", e))  // Log but don't recover\n    .subscribe(...);\n```"
             },
             {
               "title": "Subscription Lifecycle",
-              "description": "When an error occurs, the stream terminates—the subscription is canceled, and no further items are emitted. This differs from imperative try/catch, where execution can continue after handling an exception."
+              "description": "When an error occurs, the stream terminates—the subscription is canceled, and no further items are emitted. This differs from imperative try/catch, where execution can continue after handling an exception. The terminal nature of errors in reactive streams means that error recovery must be designed into the stream processing pipeline rather than applied afterward."
             }
           ]
         },
@@ -414,15 +414,15 @@
           "points": [
             {
               "title": "Error Recovery Operators",
-              "description": "Both Project Reactor and RxJava provide operators for error recovery:\n• `onErrorReturn`: Replace error with a default value\n• `onErrorResume`: Switch to an alternate stream on error\n• `onErrorMap`: Transform the error (e.g., from technical to domain exception)\n• `doOnError`: Perform side effects without changing error flow\n• `retry`: Resubscribe to the source on error"
+              "description": "Both Project Reactor and RxJava provide operators for error recovery:\n• `onErrorReturn`: Replace error with a default value\n• `onErrorResume`: Switch to an alternate stream on error\n• `onErrorMap`: Transform the error (e.g., from technical to domain exception)\n• `doOnError`: Perform side effects without changing error flow\n• `retry`: Resubscribe to the source on error\n\nThese operators enable sophisticated error handling strategies:\n```java\n// Reactor examples\nFlux<Data> dataFlux = sourceFlux\n    .onErrorReturn(e -> e instanceof TimeoutException,  // Conditional fallback\n                  Data.EMPTY)                 // Only for TimeoutException\n    .onErrorResume(DatabaseException.class,   // Type-specific alternate path\n                  e -> fetchFromBackup())\n    .onErrorMap(e -> new ApplicationException(\"Processing failed\", e))  // Transform\n    .doOnError(this::reportToMonitoringSystem)  // Side effect\n    .retry(3);  // Simple retry strategy\n\n// RxJava examples\nFlowable<Data> dataFlow = sourceFlow\n    .onErrorReturnItem(Data.EMPTY)   // Simple fallback\n    .onErrorResumeNext(e -> {        // Conditional alternate source\n        if (e instanceof NetworkException) {\n            return getCachedData();\n        }\n        return Flowable.error(e);    // Rethrow other errors\n    });\n```"
             },
             {
               "title": "Advanced Retry Patterns",
-              "description": "Sophisticated retry strategies are possible with operators like `retryWhen` (in RxJava) or `retryBackoff` (in Reactor), enabling exponential backoff, jitter, maximum attempts, and conditional retries based on error type."
+              "description": "Sophisticated retry strategies are possible with operators like `retryWhen` (in RxJava) or `retryBackoff` (in Reactor), enabling exponential backoff, jitter, maximum attempts, and conditional retries based on error type. These patterns help implement resilient systems that can recover from transient failures:\n```java\n// Reactor exponential backoff retry\nFlux<Data> resilientFlux = fluxSource\n    .retryWhen(Retry.backoff(3, Duration.ofMillis(100))  // Start with 100ms\n        .maxBackoff(Duration.ofSeconds(5))    // Cap at 5 seconds\n        .jitter(0.3)                           // Add 30% random jitter\n        .filter(e -> e instanceof NetworkException || e instanceof TimeoutException));\n\n// RxJava custom retry with backoff\nObservable<Data> resilientObservable = observable\n    .retryWhen(errors -> errors\n        .zipWith(Observable.range(1, 3), (error, attempt) -> {\n            if (!(error instanceof NetworkException)) {\n                return Observable.error(error);  // Don't retry other errors\n            }\n            long delay = (long) Math.pow(2, attempt - 1) * 100;  // Exponential\n            System.out.println(\"Retrying after \" + delay + \"ms\");\n            return Observable.timer(delay, TimeUnit.MILLISECONDS);\n        })\n        .flatMap(x -> x));\n```"
             },
             {
               "title": "Error Boundaries",
-              "description": "Establishing error boundaries is critical in reactive applications. Using `materialize`/`dematerialize` or compartmentalizing streams allows errors to be contained within subsystems rather than propagating through the entire reactive chain."
+              "description": "Establishing error boundaries is critical in reactive applications. Using `materialize`/`dematerialize` or compartmentalizing streams allows errors to be contained within subsystems rather than propagating through the entire reactive chain. This pattern is similar to error boundaries in UI frameworks, preventing one failure from taking down the entire system:\n```java\n// Error boundary in Reactor using materialize/dematerialize\nFlux<Data> protectedFlux = riskyFlux\n    .materialize()   // Convert to signal objects (includes errors)\n    .filter(signal -> !signal.isOnError() || isRecoverable(signal.getThrowable()))\n    .dematerialize() // Convert back to a normal stream\n    .onErrorResume(e -> Flux.just(Data.FALLBACK));\n\n// Compartmentalizing with merge in RxJava\nObservable<r> combined = Observable.mergeDelayError(\n    criticalSystem1.process().onErrorResumeNext(Observable.just(Result.SYSTEM1_FAILED)),\n    criticalSystem2.process().onErrorResumeNext(Observable.just(Result.SYSTEM2_FAILED)),\n    criticalSystem3.process().onErrorResumeNext(Observable.just(Result.SYSTEM3_FAILED))\n);\n// Even if one system fails, the others continue independently\n```"
             }
           ]
         },
@@ -431,19 +431,19 @@
           "points": [
             {
               "title": "Checked Exceptions",
-              "description": "Reactive streams don't support checked exceptions directly—they must be wrapped in runtime exceptions or explicitly handled. Custom operators or utility methods can help bridge this gap when integrating with APIs that throw checked exceptions."
+              "description": "Reactive streams don't support checked exceptions directly—they must be wrapped in runtime exceptions or explicitly handled. Custom operators or utility methods can help bridge this gap when integrating with APIs that throw checked exceptions:\n```java\n// Safely handle checked exceptions in Reactor\npublic static <T> Mono<T> fromCallable(CheckedCallable<T> callable) {\n    return Mono.fromCallable(() -> {\n        try {\n            return callable.call();\n        } catch (Exception e) {\n            if (e instanceof RuntimeException) {\n                throw (RuntimeException) e;\n            }\n            throw Exceptions.propagate(e); // Reactor utility to wrap checked exceptions\n        }\n    });\n}\n\n// Utility interface\n@FunctionalInterface\npublic interface CheckedCallable<T> {\n    T call() throws Exception;\n}\n\n// Usage\nMono<FileData> fileData = fromCallable(() -> readFile(path)); // readFile throws IOException\n```"
             },
             {
               "title": "Asynchronous Boundaries",
-              "description": "Error handling becomes complex across asynchronous boundaries. When operations span multiple threads or schedulers, stack traces may become fragmented. Both Reactor and RxJava provide tools like `Hooks.onOperatorError()` to enhance debugging capabilities."
+              "description": "Error handling becomes complex across asynchronous boundaries. When operations span multiple threads or schedulers, stack traces may become fragmented. Both Reactor and RxJava provide tools like `Hooks.onOperatorError()` to enhance debugging capabilities. Additionally, correlation IDs or context-based tracing can help connect related errors across async boundaries:\n```java\n// Reactor global hook for operator errors\nHooks.onOperatorError((error, value) -> {\n    log.error(\"Error processing value: {}\", value, error);\n    return error; // Return original error after logging\n});\n\n// Enhanced error context with correlation IDs\nContextView context = Context.of(\"correlationId\", UUID.randomUUID().toString());\n\nflux.contextWrite(context)\n    .flatMap(value -> \n        processAsync(value)\n            .doOnError(e -> log.error(\"Error for correlationId {}\", \n                context.get(\"correlationId\"), e))\n    )\n    .subscribe();\n```"
             },
             {
               "title": "Testing Error Scenarios",
-              "description": "Testing frameworks like StepVerifier (Reactor) and TestSubscriber (RxJava) offer specialized assertions for error conditions, including verifying error types, messages, and causes, as well as ensuring proper error propagation through operator chains."
+              "description": "Testing frameworks like StepVerifier (Reactor) and TestSubscriber (RxJava) offer specialized assertions for error conditions, including verifying error types, messages, and causes, as well as ensuring proper error propagation through operator chains:\n```java\n// Reactor error testing\nvoid testErrorHandling() {\n    Flux<String> flux = service.processData(invalidInput);\n    \n    StepVerifier.create(flux)\n        .expectNextCount(0)\n        .expectErrorSatisfies(error -> {\n            assertThat(error).isInstanceOf(InvalidInputException.class);\n            assertThat(error.getMessage()).contains(\"invalid format\");\n            assertThat(error.getCause()).isInstanceOf(ParseException.class);\n        })\n        .verify();\n}\n\n// RxJava error testing\n@Test\nvoid testRetryLogic() {\n    TestScheduler scheduler = new TestScheduler();\n    \n    Observable<Data> observable = service.getData()\n        .retryWhen(errors -> errors\n            .zipWith(Observable.range(1, 3), (e, i) -> i)\n            .flatMap(i -> Observable.timer(i * 100, TimeUnit.MILLISECONDS, scheduler)));\n    \n    TestObserver<Data> testObserver = observable.test();\n    \n    // Initial attempt fails\n    testObserver.assertNoValues().assertNotComplete().assertNoErrors();\n    \n    // Advance time to trigger retries\n    scheduler.advanceTimeBy(100, TimeUnit.MILLISECONDS); // First retry\n    scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS); // Second retry\n    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS); // Third retry\n    \n    testObserver.assertValueCount(1) // Succeeded on third retry\n        .assertComplete()\n        .assertNoErrors();\n}\n```"
             },
             {
               "title": "Resilience Patterns",
-              "description": "Advanced resilience patterns include:\n• Circuit Breaker: Prevent cascading failures by failing fast when error rates exceed thresholds\n• Bulkhead: Isolate components to contain failures\n• Timeout: Provide fallbacks when operations take too long\n• Cache: Serve stale data when fresh data can't be obtained\nThese can be implemented with custom operators or through integration with libraries like Resilience4j."
+              "description": "Advanced resilience patterns include:\n• Circuit Breaker: Prevent cascading failures by failing fast when error rates exceed thresholds\n• Bulkhead: Isolate components to contain failures\n• Timeout: Provide fallbacks when operations take too long\n• Cache: Serve stale data when fresh data can't be obtained\nThese can be implemented with custom operators or through integration with libraries like Resilience4j:\n```java\n// Circuit breaker with Resilience4j and Reactor\nCircuitBreaker circuitBreaker = CircuitBreaker.of(\"serviceA\", CircuitBreakerConfig.custom()\n    .failureRateThreshold(50)   // Open after 50% failure rate\n    .waitDurationInOpenState(Duration.ofSeconds(30)) // Stay open for 30 seconds\n    .build());\n\nFlux<Data> protectedFlux = Flux.defer(() -> serviceA.getData())\n    .transformDeferred(CircuitBreakerOperator.of(circuitBreaker))\n    .onErrorResume(CircuitBreakerOpenException.class, e -> \n        fallbackService.getData());\n\n// Bulkhead pattern with Reactor and Resilience4j\nBulkhead bulkhead = Bulkhead.of(\"databaseQueries\", BulkheadConfig.custom()\n    .maxConcurrentCalls(20)  // Maximum 20 concurrent calls\n    .maxWaitDuration(Duration.ofMillis(500)) // Wait 500ms before rejection\n    .build());\n\nMono<Data> protectedMono = Mono.defer(() -> databaseService.getData())\n    .transformDeferred(BulkheadOperator.of(bulkhead))\n    .onErrorResume(BulkheadFullException.class, e -> \n        Mono.just(Data.CACHED_COPY));\n```"
             }
           ]
         }
@@ -463,15 +463,15 @@
           "points": [
             {
               "title": "Testing Challenges",
-              "description": "Reactive code poses unique testing challenges: asynchronous execution, time-based operations, non-deterministic ordering, and complex event flows all make traditional unit testing approaches insufficient."
+              "description": "Reactive code poses unique testing challenges: asynchronous execution, time-based operations, non-deterministic ordering, and complex event flows all make traditional unit testing approaches insufficient. Testing reactive code requires specialized tools that understand the publish-subscribe nature of reactive streams and can handle asynchronous signals properly."
             },
             {
               "title": "Test Subscribers",
-              "description": "Both major reactive libraries provide specialized test subscribers: **TestSubscriber** in RxJava and **StepVerifier** in Project Reactor. These tools allow subscribing to streams and making assertions about emitted items, errors, and completion signals."
+              "description": "Both major reactive libraries provide specialized test subscribers: **TestSubscriber** in RxJava and **StepVerifier** in Project Reactor. These tools allow subscribing to streams and making assertions about emitted items, errors, and completion signals:\n```java\n// RxJava example\n@Test\nvoid testUserObservable() {\n    Observable<User> users = userService.getActiveUsers();\n    \n    // Create a test subscriber\n    TestObserver<User> testObserver = users.test();\n    \n    // Assert on emissions\n    testObserver.assertComplete()\n        .assertNoErrors()\n        .assertValueCount(3)\n        .assertValueAt(0, user -> \"john\".equals(user.getUsername()));\n}\n\n// Project Reactor example\n@Test\nvoid testUserFlux() {\n    Flux<User> users = userService.getActiveUsers();\n    \n    // Create a step verifier\n    StepVerifier.create(users)\n        .expectNextMatches(user -> \"john\".equals(user.getUsername()))\n        .expectNextCount(2)\n        .expectComplete()\n        .verify(Duration.ofSeconds(5)); // Timeout if it takes too long\n}\n```"
             },
             {
               "title": "Basic Verifications",
-              "description": "Common verifications in reactive tests include: asserting the correct number of emissions, validating emission values, checking for completion or error signals, and verifying the absence of errors."
+              "description": "Common verifications in reactive tests include: asserting the correct number of emissions, validating emission values, checking for completion or error signals, and verifying the absence of errors. These basic verifications form the foundation of reactive testing, ensuring that your reactive streams behave as expected in terms of data flow and signal propagation."
             }
           ]
         },
@@ -480,15 +480,15 @@
           "points": [
             {
               "title": "Time Manipulation",
-              "description": "For time-based operations, both libraries offer virtual time capabilities: **TestScheduler** in RxJava and **VirtualTimeScheduler** in Reactor. These allow advancing time artificially, making time-dependent tests deterministic and fast."
+              "description": "For time-based operations, both libraries offer virtual time capabilities: **TestScheduler** in RxJava and **VirtualTimeScheduler** in Reactor. These allow advancing time artificially, making time-dependent tests deterministic and fast:\n```java\n// RxJava with TestScheduler\n@Test\nvoid testInterval() {\n    TestScheduler testScheduler = new TestScheduler();\n    \n    Observable<Long> ticks = Observable.interval(1, TimeUnit.SECONDS, testScheduler);\n    \n    TestObserver<Long> testObserver = ticks.test();\n    testObserver.assertNoValues(); // No emissions yet\n    \n    testScheduler.advanceTimeBy(1, TimeUnit.SECONDS);\n    testObserver.assertValues(0L); // First tick\n    \n    testScheduler.advanceTimeBy(2, TimeUnit.SECONDS);\n    testObserver.assertValues(0L, 1L, 2L); // Three ticks total\n}\n\n// Project Reactor with VirtualTimeScheduler\n@Test\nvoid testInterval() {\n    StepVerifier.withVirtualTime(() -> Flux.interval(Duration.ofSeconds(1)).take(3))\n        .expectSubscription()\n        .expectNoEvent(Duration.ofSeconds(1))\n        .expectNext(0L)\n        .expectNoEvent(Duration.ofSeconds(1))\n        .expectNext(1L)\n        .expectNoEvent(Duration.ofSeconds(1))\n        .expectNext(2L)\n        .expectComplete()\n        .verify();\n}\n```"
             },
             {
               "title": "Test Publishers",
-              "description": "**TestPublisher** (Reactor) and similar tools in RxJava enable creating controlled sources that can emit predefined sequences, trigger errors on demand, or violate reactive streams contracts for negative testing."
+              "description": "**TestPublisher** (Reactor) and similar tools in RxJava enable creating controlled sources that can emit predefined sequences, trigger errors on demand, or violate reactive streams contracts for negative testing. These publishers give you fine-grained control over the test data flow:\n```java\n// Reactor TestPublisher example\n@Test\nvoid testWithTestPublisher() {\n    TestPublisher<String> testPublisher = TestPublisher.create();\n    \n    Flux<String> flux = testPublisher.flux();\n    \n    // Setup processor to test\n    Flux<Integer> processor = flux.map(String::length);\n    \n    // Create the verifier\n    StepVerifier.create(processor)\n        .then(() -> testPublisher.emit(\"a\", \"ab\", \"abc\"))\n        .expectNext(1, 2, 3)\n        .then(() -> testPublisher.error(new RuntimeException(\"test error\")))\n        .expectError(RuntimeException.class)\n        .verify();\n}\n\n// For testing error scenarios\n@Test\nvoid testErrorHandling() {\n    TestPublisher<String> testPublisher = TestPublisher.create();\n    \n    Flux<String> processedFlux = testPublisher.flux()\n        .onErrorReturn(\"fallback\");\n    \n    StepVerifier.create(processedFlux)\n        .then(() -> testPublisher.emit(\"normal\"))\n        .expectNext(\"normal\")\n        .then(() -> testPublisher.error(new RuntimeException()))\n        .expectNext(\"fallback\")\n        .expectComplete()\n        .verify();\n}\n```"
             },
             {
               "title": "Marble Diagrams",
-              "description": "Visual marble diagram syntax can be used in tests to represent expected sequences. RxJava's `TestObserver.assertValues()` and Reactor's `StepVerifier.expectNext()` allow comparing actual emissions against expected ones in a readable way."
+              "description": "Visual marble diagram syntax can be used in tests to represent expected sequences. RxJava's `TestObserver.assertValues()` and Reactor's `StepVerifier.expectNext()` allow comparing actual emissions against expected ones in a readable way. Marble diagrams offer a visual representation of reactive stream behavior that can make tests more intuitive:\n```java\n// RxJava marble testing (using RxJava 3 Test extensions)\n@Test\nvoid testMarbles() {\n    TestScheduler scheduler = new TestScheduler();\n    \n    TestObserver<String> testObserver = Observable\n        .interval(1, TimeUnit.SECONDS, scheduler)\n        .map(l -> \"item \" + l)\n        .take(3)\n        .test();\n    \n    scheduler.advanceTimeTo(3, TimeUnit.SECONDS);\n    \n    testObserver.assertValueSequence(Arrays.asList(\"item 0\", \"item 1\", \"item 2\"))\n        .assertComplete();\n}\n\n// Reactor marble syntax with expectNextCount and assertNext\n@Test\nvoid testReactorSequence() {\n    Flux<Integer> flux = Flux.just(1, 2, 3, 4, 5);\n    \n    StepVerifier.create(flux)\n        .expectNext(1)\n        .expectNextCount(3)\n        .assertNext(n -> assertThat(n).isEqualTo(5))\n        .expectComplete()\n        .verify();\n}\n```"
             }
           ]
         },
@@ -497,157 +497,25 @@
           "points": [
             {
               "title": "Context Propagation Testing",
-              "description": "Testing Context/ThreadLocal propagation requires specialized approaches. Reactor's StepVerifier provides `expectAccessibleContext()` and `assertThat(Context)` methods to verify context values are correctly propagated through the reactive chain."
+              "description": "Testing Context/ThreadLocal propagation requires specialized approaches. Reactor's StepVerifier provides `expectAccessibleContext()` and `assertThat(Context)` methods to verify context values are correctly propagated through the reactive chain. Context testing is important for ensuring that cross-cutting concerns like security credentials or trace IDs properly flow through your reactive pipeline:\n```java\n@Test\nvoid testContextPropagation() {\n    Mono<String> mono = Mono.just(\"data\")\n        .transformDeferredContextual((flux, ctx) -> \n            flux.map(data -> data + \" for user: \" + ctx.get(\"user\")))\n        .contextWrite(context -> context.put(\"user\", \"john\"));\n    \n    StepVerifier.create(mono)\n        .expectNext(\"data for user: john\")\n        .expectComplete()\n        .verify();\n    \n    // Testing context directly\n    StepVerifier.create(mono)\n        .expectAccessibleContext()\n        .contains(\"user\", \"john\")\n        .then() // Go back to verifying the data stream\n        .expectNext(\"data for user: john\")\n        .expectComplete()\n        .verify();\n}\n```"
             },
             {
               "title": "Concurrency Testing",
-              "description": "For truly concurrent scenarios, tools like **ConcurrentTestCase** or custom thread synchronization with CountDownLatch may be needed. Parameterized tests with different thread counts can help identify race conditions or concurrency issues."
+              "description": "For truly concurrent scenarios, tools like **ConcurrentTestCase** or custom thread synchronization with CountDownLatch may be needed. Parameterized tests with different thread counts can help identify race conditions or concurrency issues. Testing reactive code that intentionally runs on multiple threads requires careful synchronization to avoid flaky tests:\n```java\n@Test\nvoid testConcurrentPublisher() throws InterruptedException {\n    int subscriberCount = 10;\n    CountDownLatch latch = new CountDownLatch(subscriberCount);\n    AtomicInteger successCount = new AtomicInteger(0);\n    \n    // Create a single source that multiple subscribers will access\n    ConnectableFlux<Data> hotSource = dataService.getData()\n        .publish();\n    \n    // Create multiple subscribers\n    for (int i = 0; i < subscriberCount; i++) {\n        hotSource.subscribe(\n            data -> {\n                // Process data concurrently\n                if (validateData(data)) {\n                    successCount.incrementAndGet();\n                }\n            },\n            error -> latch.countDown(),\n            () -> latch.countDown()\n        );\n    }\n    \n    // Connect to start publishing\n    hotSource.connect();\n    \n    // Wait for all subscribers to complete (with timeout)\n    boolean completed = latch.await(5, TimeUnit.SECONDS);\n    assertTrue(\"Timed out waiting for subscribers\", completed);\n    assertEquals(\"All subscribers should receive valid data\", \n                subscriberCount, successCount.get());\n}\n```"
             },
             {
               "title": "Integration Testing",
-              "description": "Complete reactive applications often require integration testing. Spring's **WebTestClient** works well for testing reactive web endpoints, while databases like MongoDB and R2DBC offer reactive test utilities for data access layer testing."
+              "description": "Complete reactive applications often require integration testing. Spring's **WebTestClient** works well for testing reactive web endpoints, while databases like MongoDB and R2DBC offer reactive test utilities for data access layer testing. Integration testing verifies how your reactive components work together in a more realistic environment:\n```java\n// Spring WebFlux integration test\n@SpringBootTest\n@AutoConfigureWebTestClient\npublic class UserControllerTest {\n    \n    @Autowired\n    private WebTestClient webTestClient;\n    \n    @Test\n    void testGetUserEndpoint() {\n        webTestClient.get().uri(\"/users/{id}\", \"123\")\n            .exchange() // Execute the request\n            .expectStatus().isOk()\n            .expectBody(UserDto.class)\n            .value(userDto -> {\n                assertThat(userDto.getId()).isEqualTo(\"123\");\n                assertThat(userDto.getName()).isEqualTo(\"John Doe\");\n            });\n    }\n    \n    @Test\n    void testStreamingEndpoint() {\n        webTestClient.get().uri(\"/events\")\n            .accept(MediaType.TEXT_EVENT_STREAM)\n            .exchange()\n            .expectStatus().isOk()\n            .returnResult(EventDto.class)\n            .getResponseBody() // Get the Flux<EventDto>\n            .take(5) // Take the first 5 events\n            .as(StepVerifier::create)\n            .expectNextCount(5)\n            .verifyComplete();\n    }\n}\n```"
             },
             {
               "title": "Property-Based Testing",
-              "description": "Libraries like **jqwik** or QuickTheories can be combined with reactive testing to perform property-based testing, verifying that reactive streams maintain invariants across a wide range of inputs generated programmatically."
+              "description": "Libraries like **jqwik** or QuickTheories can be combined with reactive testing to perform property-based testing, verifying that reactive streams maintain invariants across a wide range of inputs generated programmatically. This approach tests the behavior of your reactive code against many different input variations:\n```java\n// Using jqwik for property-based testing of a reactive function\n@Property\nvoid transformationPreservesSize(@ForAll(\"userLists\") List<User> users) {\n    Flux<User> userFlux = Flux.fromIterable(users);\n    Flux<UserDto> dtoFlux = userService.transformToDto(userFlux);\n    \n    StepVerifier.create(dtoFlux.collectList())\n        .assertNext(dtos -> {\n            assertThat(dtos).hasSize(users.size());\n            \n            // Verify transformation properties\n            for (int i = 0; i < users.size(); i++) {\n                assertThat(dtos.get(i).getId()).isEqualTo(users.get(i).getId());\n            }\n        })\n        .verifyComplete();\n}\n\n@Provide\nArbitrary<List<User>> userLists() {\n    Arbitrary<String> ids = Arbitraries.strings().alpha().ofLength(5);\n    Arbitrary<String> names = Arbitraries.strings().alpha().ofMinLength(2).ofMaxLength(30);\n    \n    Arbitrary<User> users = Combinators.combine(ids, names)\n        .as((id, name) -> new User(id, name));\n    \n    return users.list().ofMinSize(0).ofMaxSize(100);\n}\n```"
             }
           ]
         }
       ],
       "relatedQuestions": [
         "java-reactive-error-handling-core-java-r-7"
-      ]
-    },
-    {
-      "id": "java-reactive-design-patterns-core-java-r-9",
-      "skillLevel": "advanced",
-      "shortTitle": "Reactive Design Patterns",
-      "question": "Could you describe common reactive design patterns and architectural approaches in Java applications?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Reactive Pipeline",
-              "description": "The fundamental pattern is the **Reactive Pipeline**: a declarative sequence of operations on data streams, composed using operators like map, filter, and flatMap. This contrasts with imperative code that uses loops, conditionals, and mutable state."
-            },
-            {
-              "title": "Publisher-Subscriber",
-              "description": "The **Publisher-Subscriber** pattern (pub-sub) is formalized in reactive programming through the Publisher and Subscriber interfaces. Publishers produce data, and Subscribers consume it, with backpressure providing flow control."
-            },
-            {
-              "title": "Producer-Consumer",
-              "description": "Reactive streams naturally implement the **Producer-Consumer** pattern, where producers emit items and consumers process them, with buffers and backpressure handling mediating between different production and consumption rates."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Splitter-Aggregator",
-              "description": "The **Splitter-Aggregator** pattern divides data streams into parts that can be processed independently, then recombines the results. Operators like flatMap (for splitting) and collect/reduce (for aggregating) implement this pattern."
-            },
-            {
-              "title": "Circuit Breaker",
-              "description": "The **Circuit Breaker** pattern prevents cascading failures by failing fast when error thresholds are exceeded. In reactive code, this can be implemented using custom operators or libraries like Resilience4j integrated with reactive streams."
-            },
-            {
-              "title": "Reactive Repository",
-              "description": "**Reactive Repositories** extend traditional data access patterns to return reactive types (Mono/Flux or Single/Flowable) instead of blocking or Future-based results, enabling end-to-end reactive flow from database to client."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Layered Reactive Architecture",
-              "description": "**Layered Reactive Architecture** applies traditional layers (presentation, business, data access) with reactive streams flowing between them, requiring careful management of asynchronous boundaries and backpressure propagation across layers."
-            },
-            {
-              "title": "Reactive Microservices",
-              "description": "**Reactive Microservices** combine reactive programming with microservice architecture, using reactive streams for internal processing and reactive communication between services (via HTTP, messaging, or gRPC) to create resilient, responsive distributed systems."
-            },
-            {
-              "title": "Orchestrator-Worker",
-              "description": "The **Orchestrator-Worker** pattern distributes work among reactive processors. An orchestrator splits work using operators like flatMap with concurrency parameters, while workers process segments in parallel with controlled resource consumption."
-            },
-            {
-              "title": "Back-Pressure Propagation",
-              "description": "**Back-Pressure Propagation** ensures that backpressure signals flow correctly through a multi-stage reactive system. This requires careful design of boundaries between components and often involves translating between different backpressure mechanisms (e.g., buffer sizes, request counts, or throttling)."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-reactive-performance-core-java-r-10"
-      ]
-    },
-    {
-      "id": "java-reactive-performance-core-java-r-10",
-      "skillLevel": "advanced",
-      "shortTitle": "Performance Considerations",
-      "question": "What performance considerations are important when building reactive applications in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Non-Blocking I/O",
-              "description": "Reactive programming delivers maximum performance benefits when used with non-blocking I/O operations. Using blocking calls within reactive streams negates much of the advantage, potentially causing thread starvation."
-            },
-            {
-              "title": "Operator Choice",
-              "description": "Different operators have varying performance characteristics. For example, `flatMap` with unbounded concurrency can cause excessive resource consumption, while `concat` processes sources sequentially, potentially underutilizing resources."
-            },
-            {
-              "title": "Subscription Management",
-              "description": "Properly managing subscriptions is crucial for performance. Unsubscribing when streams are no longer needed prevents resource leaks, while setting appropriate prefetch values controls memory usage and processing rate."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Scheduler Selection",
-              "description": "Choosing the right scheduler is critical: `boundedElastic` (Reactor) or `io()` (RxJava) for I/O operations, `parallel` or `computation` for CPU-bound work, and `immediate` or `single` for lightweight transformations. Using too many threads can lead to context switching overhead."
-            },
-            {
-              "title": "Buffer Sizing",
-              "description": "Buffer sizes affect throughput and memory usage. Larger buffers increase throughput but consume more memory and increase latency. Libraries like Reactor use prefetch sizes (default 32 or 256) that can be tuned with operators like `prefetch()` or `limitRate()`."
-            },
-            {
-              "title": "Hot vs. Cold Sources",
-              "description": "Understanding hot vs. cold publishers affects performance. Cold sources (re-executed for each subscriber) can duplicate work, while hot sources (share emissions among subscribers) may miss events if subscribers arrive late. Choose appropriately based on your use case."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Fusion Optimization",
-              "description": "Reactive libraries use operator fusion to optimize chains of operations. This reduces allocation overhead by combining operators that can be executed without intermediate steps. Understanding which operators can be fused helps write more efficient code."
-            },
-            {
-              "title": "Backpressure Strategy Selection",
-              "description": "Different backpressure strategies have different performance implications: buffering increases memory usage but maintains throughput, dropping loses data but maintains system stability, and erroring fails fast but requires error recovery. The choice significantly impacts system behavior under load."
-            },
-            {
-              "title": "Memory and GC Pressure",
-              "description": "Reactive streams can create significant garbage collection pressure through operator chaining, buffer allocations, and subscription objects. Using primitive specializations (in RxJava), reusing objects when possible, and properly sizing stages helps reduce GC impact."
-            },
-            {
-              "title": "Profiling and Monitoring",
-              "description": "Specialized reactive profiling tools like Reactor's Micrometer integration or RxJava's plugins system help identify bottlenecks. Metrics to monitor include: subscription counts, request counts, buffer utilization, processing time per stage, and scheduler thread pool saturation."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-reactive-design-patterns-core-java-r-9"
       ]
     }
   ]

@@ -593,7 +593,7 @@
     {
       "id": "java-transaction-management-frameworks-hibernate-10",
       "skillLevel": "intermediate",
-      "shortTitle": "Transaction Management",
+      "shortTitle": "Transaction Management in Hibernate",
       "question": "How should transactions be managed in Hibernate applications?",
       "answerInsights": [
         {
@@ -794,7 +794,7 @@
     {
       "id": "java-performance-optimization-frameworks-hibernate-13",
       "skillLevel": "intermediate",
-      "shortTitle": "Performance Optimization",
+      "shortTitle": "Performance Optimization for Hibernate",
       "question": "What strategies can be employed to optimize Hibernate performance in high-load applications?",
       "answerInsights": [
         {

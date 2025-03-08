@@ -194,7 +194,7 @@
     {
       "id": "java-copyonwrite-collections-cm-cc-4",
       "skillLevel": "intermediate",
-      "shortTitle": "Copy-On-Write Collections",
+      "shortTitle": "Copy-On-Write Collections Use Cases",
       "question": "What are Copy-On-Write collections in Java, and what specific use cases are they designed for?",
       "answerInsights": [
         {

@@ -824,7 +824,7 @@
     {
       "id": "iac-cicd-engineering-cicd-14",
       "skillLevel": "advanced",
-      "shortTitle": "Infrastructure as Code",
+      "shortTitle": "Infrastructure as Code for CI/CD",
       "question": "How does Infrastructure as Code (IaC) integrate with CI/CD pipelines?",
       "answerInsights": [
         {

@@ -794,7 +794,7 @@
     {
       "id": "security-cicd-engineering-practices-security-12",
       "skillLevel": "intermediate",
-      "shortTitle": "Security in CI/CD",
+      "shortTitle": "Security for CI/CD ",
       "question": "How would you integrate security into a CI/CD pipeline?",
       "answerInsights": [
         {
@@ -942,7 +942,7 @@
     {
       "id": "security-testing-engineering-practices-security-14",
       "skillLevel": "intermediate",
-      "shortTitle": "Security Testing",
+      "shortTitle": "Security Testing Program",
       "question": "What different types of security testing should be implemented in a comprehensive application security program?",
       "answerInsights": [
         {

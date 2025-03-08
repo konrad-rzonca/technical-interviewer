@@ -1429,7 +1429,7 @@
     {
       "id": "sql-transaction-isolation-levels-databases-sql-24",
       "skillLevel": "advanced",
-      "shortTitle": "Isolation Levels",
+      "shortTitle": "Isolation Levels in SQL",
       "question": "Could you explain the different transaction isolation levels in SQL and their implications?",
       "answerInsights": [
         {

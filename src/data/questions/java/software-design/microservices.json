@@ -563,7 +563,7 @@
     {
       "id": "microservices-distributed-transactions-software-design-m-10",
       "skillLevel": "advanced",
-      "shortTitle": "Distributed Transactions",
+      "shortTitle": "Distributed Transactions in Microservices",
       "question": "How do you handle transactions that span multiple microservices?",
       "answerInsights": [
         {
@@ -625,7 +625,7 @@
     {
       "id": "microservices-monitoring-software-design-m-11",
       "skillLevel": "intermediate",
-      "shortTitle": "Monitoring and Observability",
+      "shortTitle": "Monitoring and Observability in Microservices",
       "question": "What approaches and tools would you recommend for effectively monitoring microservices?",
       "answerInsights": [
         {
@@ -687,7 +687,7 @@
     {
       "id": "microservices-deployment-strategies-software-design-m-12",
       "skillLevel": "intermediate",
-      "shortTitle": "Deployment Strategies",
+      "shortTitle": "Deployment Strategies for Microservices",
       "question": "What deployment strategies are most effective for microservices architectures?",
       "answerInsights": [
         {

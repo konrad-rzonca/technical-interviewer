@@ -389,7 +389,7 @@
     {
       "id": "cap-theorem-databases-nosql-7",
       "skillLevel": "intermediate",
-      "shortTitle": "CAP Theorem",
+      "shortTitle": "CAP Theorem in NoSQL",
       "question": "Could you explain the CAP theorem and how it applies to different NoSQL databases?",
       "answerInsights": [
         {
@@ -643,7 +643,7 @@
     {
       "id": "nosql-consistency-models-databases-nosql-11",
       "skillLevel": "advanced",
-      "shortTitle": "Consistency Models",
+      "shortTitle": "Consistency Models NoSQL",
       "question": "Could you explain the different consistency models in NoSQL databases and their trade-offs?",
       "answerInsights": [
         {
@@ -835,7 +835,7 @@
     {
       "id": "nosql-performance-optimization-databases-nosql-14",
       "skillLevel": "advanced",
-      "shortTitle": "Performance Optimization",
+      "shortTitle": "Performance Optimization for NoSQL",
       "question": "What are the key performance optimization strategies for NoSQL databases?",
       "answerInsights": [
         {

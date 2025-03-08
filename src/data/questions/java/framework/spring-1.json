@@ -751,7 +751,7 @@
     {
       "id": "spring-transaction-management-frameworks-s-13",
       "skillLevel": "intermediate",
-      "shortTitle": "Transaction Management",
+      "shortTitle": "Transaction Management in Spring",
       "question": "How does Spring handle transaction management and what are the different propagation levels?",
       "answerInsights": [
         {

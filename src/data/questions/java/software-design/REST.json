@@ -698,7 +698,7 @@
     {
       "id": "rest-security-software-design-r-12",
       "skillLevel": "intermediate",
-      "shortTitle": "API Security",
+      "shortTitle": "REST API Security",
       "question": "What are important security considerations when designing and implementing REST APIs?",
       "answerInsights": [
         {

@@ -4,7 +4,7 @@
   "questions": [
     {
       "id": "java-jvm-architecture-core-java-f-1",
-      "skillLevel": "basic",
+      "skillLevel": "intermediate",
       "shortTitle": "JVM Architecture",
       "question": "Could you explain the JVM architecture and its role in Java's platform independence?",
       "answerInsights": [
@@ -744,7 +744,7 @@
     },
     {
       "id": "java-polymorphism-core-java-f-13",
-      "skillLevel": "intermediate",
+      "skillLevel": "basic",
       "shortTitle": "Polymorphism",
       "question": "How does polymorphism work in Java, and what are its different types?",
       "answerInsights": [
