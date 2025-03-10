@@ -52,11 +52,13 @@ const AnswerPoint = React.memo(({
               alignItems: 'center',
               minHeight: '2.5rem',
               height: '100%',
+              // Chrome acceleration optimizations
+              transform: 'translateZ(0)',
+              willChange: isSelected ? 'auto' : 'background-color, box-shadow',
               '&:hover': {
                 backgroundColor: answerStyles.hoverBg,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               },
-
             }}
         >
           {/* Learning mode: show placeholder only when not selected */}

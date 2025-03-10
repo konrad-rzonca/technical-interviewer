@@ -35,6 +35,10 @@ const SidebarPanel = ({
     width: isCollapsed ? collapsedWidth : expandedWidth,
     minWidth: isCollapsed ? collapsedWidth : expandedWidth,
     transition: 'width 0.3s ease, min-width 0.3s ease',
+    // Chrome optimization: Add will-change to hint upcoming transitions
+    willChange: 'width, min-width',
+    // Use transform for better performance in Chrome
+    transform: 'translateZ(0)',
     // Minimal margin based on position
     ...(position === 'left'
         ? {marginRight: 1}
