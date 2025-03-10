@@ -8,10 +8,11 @@
     "start": "react-scripts start",
     "start:base": "cross-env REACT_APP_THEME=base react-scripts start",
     "start:ubs": "cross-env REACT_APP_THEME=ubs react-scripts start",
-    "start:chrome-optimized": "cross-env REACT_APP_THEME=base npm run start -- --openssl-legacy-provider && open -a \"Google Chrome\" --args --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding",
+    "start:ubs-chrome-optimized": "cross-env REACT_APP_THEME=ubs npm run start -- --openssl-legacy-provider && open -a \"Google Chrome\" --args --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding",
     "build": "react-scripts build",
     "build:base": "cross-env REACT_APP_THEME=base react-scripts build",
     "build:ubs": "cross-env REACT_APP_THEME=ubs react-scripts build",
+    "build:ubs-optimized": "cross-env REACT_APP_THEME=ubs GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
