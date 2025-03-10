@@ -26,8 +26,10 @@ COPY --from=build /app/build /usr/share/nginx/html
 # Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Create temp directories and fix permissions
-RUN mkdir -p /tmp/nginx_client_temp \
+# Modify the main nginx.conf to use /tmp for the pid file
+RUN sed -i 's|pid        /var/run/nginx.pid;|pid        /tmp/nginx.pid;|g' /etc/nginx/nginx.conf && \
+    # Create temp directories and fix permissions
+    mkdir -p /tmp/nginx_client_temp \
     /tmp/nginx_proxy_temp \
     /tmp/nginx_fastcgi_temp \
     /tmp/nginx_uwsgi_temp \
@@ -41,5 +43,5 @@ RUN mkdir -p /tmp/nginx_client_temp \
 # Expose port
 EXPOSE 80
 
-# Start nginx with custom PID path
-CMD ["nginx", "-g", "daemon off; pid /tmp/nginx.pid;"]
+# Start nginx without duplicate pid directive
+CMD ["nginx", "-g", "daemon off;"]
