@@ -235,6 +235,11 @@ const CategorySidebar = ({
                   in={expandedCategory === category.id}
                   timeout={0} // Set timeout to 0 to disable animation
                   unmountOnExit // Fully unmount when collapsed for better performance
+                  style={{
+                    // Chrome-specific optimizations
+                    transform: 'translateZ(0)',
+                    willChange: 'height',
+                  }}
               >
                 <List dense sx={{ml: 2.5, mt: 0, mb: 1}}>
                   <ListItem

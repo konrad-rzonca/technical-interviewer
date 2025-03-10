@@ -136,6 +136,7 @@ export function useQuestionItemStyles(
       '&:hover': {
         backgroundColor: withOpacity(levelColor, '15'),
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        transform: 'translateZ(0)',
       },
       minHeight: COMPONENT_STYLES.questionItem.minHeight,
       marginBottom: SPACING.toUnits(COMPONENT_STYLES.questionItem.marginBottom),
