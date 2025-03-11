@@ -47,6 +47,7 @@ const PRISM_STYLING = {
     lineHeight: '1.5',
     tabSize: '4',
     hyphens: 'none',
+    fontFeatureSettings: '"liga" 0, "calt" 0', // Add this line to disable ligatures
   },
 };
 
