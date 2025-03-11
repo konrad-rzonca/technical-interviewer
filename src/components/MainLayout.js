@@ -1,4 +1,4 @@
-﻿// src/components/layout/MainLayout.js
+﻿// src/components/MainLayout.js
 import React, {useState} from 'react';
 import {Box} from '@mui/material';
 import TopNavbar from './TopNavbar';
@@ -20,6 +20,7 @@ const MainLayout = ({
   onCategorySelect,
   onExportData,
   onClearData,
+  interviewState,
 }) => {
   const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -56,6 +57,7 @@ const MainLayout = ({
             selectedCategory=""
             onExportData={onExportData}
             onClearData={onClearData}
+            interviewState={interviewState}
         />
 
         {/* Settings Menu - Shared across the application */}
