@@ -102,36 +102,26 @@ const HighlightedCode = React.memo(({code, language}) => {
   const codeRef = useRef(null);
 
   useEffect(() => {
-    // Add pre-styling to code block before Prism touches it
     if (codeRef.current) {
-      // Apply all Prism styling properties
       Object.entries(PRISM_STYLING.CODE).forEach(([property, value]) => {
         codeRef.current.style[property] = value;
       });
     }
 
-    // Use a setTimeout to defer Prism loading until after tooltip is shown
-    const timer = setTimeout(() => {
-      if (code && language) {
-        import('prismjs').then(Prism => {
-          // Import the theme
-          import('prismjs/themes/prism-tomorrow.css');
-
-          // Dynamically import the language if needed
-          if (language !== 'plaintext' && !Prism.languages[language]) {
-            import(`prismjs/components/prism-${language}`).catch(() => {
-              console.log(`Prism language '${language}' not available`);
-            }).finally(() => {
-              Prism.highlightAll();
-            });
-          } else {
+    if (code && language) {
+      import('prismjs').then(Prism => {
+        import('prismjs/themes/prism-tomorrow.css');
+        if (language !== 'plaintext' && !Prism.languages[language]) {
+          import(`prismjs/components/prism-${language}`).catch(() => {
+            console.log(`Prism language '${language}' not available`);
+          }).finally(() => {
             Prism.highlightAll();
-          }
-        });
-      }
-    }, 100); // Small delay to prioritize showing the tooltip first
-
-    return () => clearTimeout(timer);
+          });
+        } else {
+          Prism.highlightAll();
+        }
+      });
+    }
   }, [code, language]);
 
   return (
