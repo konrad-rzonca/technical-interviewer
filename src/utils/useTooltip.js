@@ -35,6 +35,7 @@ export function useTooltip(type = TOOLTIP_TYPES.DEFAULT, overrides = {}) {
             borderRadius: TOOLTIP_STYLING.BORDER_RADIUS,
             padding: TOOLTIP_STYLING.PADDING,
             maxWidth: TOOLTIP_STYLING.MAX_WIDTH,
+            transitionProperty: 'opacity',
           },
         },
         arrow: {
