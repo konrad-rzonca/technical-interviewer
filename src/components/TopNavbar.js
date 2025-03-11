@@ -1,5 +1,5 @@
 ﻿// src/components/TopNavbar.js
-import React from 'react';
+import React, {useState} from 'react';
 import {
   AppBar,
   Badge,
@@ -21,6 +21,7 @@ import {SPACING} from '../themes/baseTheme';
 import {NAVIGATION} from '../utils/constants';
 import GlobalSearch from './GlobalSearch';
 import Logo from './Logo';
+import ExportDialog from './ExportDialog';
 
 /**
  * Get the active tab index based on the current route path
@@ -52,10 +53,14 @@ const TopNavbar = ({
   selectedCategory,
   onExportData,
   onClearData,
+  interviewState,
 }) => {
   const theme = useTheme();
   const location = useLocation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Export dialog state
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   // Get active tab based on current route
   const currentTabIndex = getTabIndexFromPath(location.pathname);
@@ -74,6 +79,11 @@ const TopNavbar = ({
       // Force a page refresh immediately instead of showing an alert
       window.location.reload();
     }
+  };
+
+  // Handle export dialog
+  const handleExportClick = () => {
+    setExportDialogOpen(true);
   };
 
   return (
@@ -171,11 +181,11 @@ const TopNavbar = ({
             flexGrow: isSmallScreen ? 0 : 1,
             maxWidth: isSmallScreen ? 'auto' : '33%',
           }}>
-            {/* Download Data Button */}
-            <Tooltip title="Download Interview Data">
+            {/* Export Notes Button */}
+            <Tooltip title="Export Interview Notes">
               <IconButton
                   size="large"
-                  onClick={onExportData}
+                  onClick={handleExportClick}
                   color="primary"
                   sx={{
                     p: SPACING.toUnits(SPACING.sm),
@@ -253,6 +263,14 @@ const TopNavbar = ({
             </Tooltip>
           </Box>
         </Toolbar>
+
+        {/* Export Dialog */}
+        <ExportDialog
+            open={exportDialogOpen}
+            onClose={() => setExportDialogOpen(false)}
+            interviewState={interviewState}
+            allQuestions={questions}
+        />
       </AppBar>
   );
 };

@@ -153,6 +153,7 @@ function App() {
               onCategorySelect={handleCategorySelect}
               onExportData={handleExportData}
               onClearData={() => storageService.clearInterviewState()}
+              interviewState={interviewState}
           >
             <Routes>
               <Route path={NAVIGATION.ROUTES.INTERVIEW} element={
