@@ -1,9 +1,12 @@
-﻿// src/components/AnswerPoint.js
-import React, {useMemo} from 'react';
+﻿// src/components/AnswerPoint.js - Simplified precomputation approach
+import React, {useEffect, useRef} from 'react';
 import {Box, Tooltip, Typography} from '@mui/material';
 import {useItemTextStyles} from '../utils/styles';
 import {COLORS, SPACING} from '../themes/baseTheme';
-import {formatTooltipContent} from '../utils/formatTooltipContent';
+import {
+  formatTooltipContent,
+  precomputeTooltip,
+} from '../utils/formatTooltipContent';
 
 const AnswerPoint = React.memo(({
   point,
@@ -18,21 +21,30 @@ const AnswerPoint = React.memo(({
 }) => {
   // Use hooks unconditionally at the top level
   const textStyles = useItemTextStyles(isSelected, isSmallScreen);
-
-  // Memoize formatted description for tooltip to improve performance
-  const formattedDescription = useMemo(() =>
-          point?.description ? formatTooltipContent(point.description) : null,
-      [point?.description],
-  );
+  const tooltipPrecomputedRef = useRef(false);
 
   // Only render if we have valid point data
   if (!point || !point.title) {
     return null;
   }
 
+  // Precompute tooltip content as soon as component is visible
+  // This happens only once per point via the ref flag
+  useEffect(() => {
+    if (point?.description && !tooltipPrecomputedRef.current) {
+      tooltipPrecomputedRef.current = true;
+      // Queue this tooltip for precomputation
+      precomputeTooltip(point.description);
+    }
+  }, [point?.description]);
+
   return (
-      <Tooltip {...tooltipProps}
-               title={formattedDescription}>
+      <Tooltip
+          {...tooltipProps}
+          title={point?.description
+              ? formatTooltipContent(point.description)
+              : ''}
+      >
         <Box
             onClick={() => onPointClick(categoryIndex, pointIndex)}
             sx={{

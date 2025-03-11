@@ -1,7 +1,6 @@
-﻿// src/utils/formatTooltipContent.js
-import React, {useEffect, useRef} from 'react';
+﻿// src/utils/formatTooltipContent.js - With background precomputation
+import React, {memo, useEffect, useRef} from 'react';
 import {Box, Typography} from '@mui/material';
-// Remove eager loading of Prism and all languages - we'll load them dynamically
 import {TYPOGRAPHY} from '../themes/baseTheme';
 
 // Constants for styling
@@ -20,8 +19,8 @@ const PRISM_STYLING = {
   // Code block container styling
   CONTAINER: {
     borderRadius: '4px',
-    backgroundColor: 'rgba(45, 45, 45, 1)', // Original darker background
-    margin: '8px 0', // Keep original margin
+    backgroundColor: 'rgba(45, 45, 45, 1)',
+    margin: '8px 0',
     overflow: 'auto',
     border: '1px solid rgba(255, 255, 255, 0.1)',
   },
@@ -34,11 +33,11 @@ const PRISM_STYLING = {
   },
   // Code element styling - matching Prism's tomorrow theme
   CODE: {
-    padding: '1em', // Original Prism padding
+    padding: '1em',
     display: 'block',
     overflow: 'auto',
     backgroundColor: 'rgba(45, 45, 45, 1)',
-    color: '#ccc', // Original text color
+    color: '#ccc',
     textShadow: '0 1px rgba(0, 0, 0, 0.3)',
     fontFamily: '"JetBrains Mono", monospace',
     fontSize: '1.15em',
@@ -91,34 +90,69 @@ const detectLanguage = (codeBlock) => {
   return {language, code};
 };
 
-/**
- * Format code using Prism.js with pre-styling to prevent flicker
- * @param {string} code - Code to highlight
- * @param {string} language - Programming language
- * @returns {JSX.Element} - Highlighted code
- */
-const HighlightedCode = React.memo(({code, language}) => {
-  // Reference to code element for direct style manipulation
+// Preload Prism.js
+let prismLoaded = false;
+const loadPrism = () => {
+  if (prismLoaded) return Promise.resolve();
+
+  return import('prismjs').then(() => {
+    prismLoaded = true;
+    import('prismjs/themes/prism-tomorrow.css');
+  }).catch(err => {
+    console.error('Failed to load Prism:', err);
+  });
+};
+
+// Start loading Prism immediately
+loadPrism();
+
+// Optimized code highlighting component with memoization
+const HighlightedCode = memo(({code, language}) => {
   const codeRef = useRef(null);
+  const isHighlighted = useRef(false);
 
   useEffect(() => {
-    if (codeRef.current) {
-      Object.entries(PRISM_STYLING.CODE).forEach(([property, value]) => {
-        codeRef.current.style[property] = value;
-      });
+    if (!codeRef.current) return;
+
+    // Apply base styling immediately
+    Object.entries(PRISM_STYLING.CODE).forEach(([property, value]) => {
+      codeRef.current.style[property] = value;
+    });
+
+    // Set content immediately
+    codeRef.current.textContent = code;
+
+    // Skip if already highlighted
+    if (isHighlighted.current) return;
+
+    // Load Prism if needed
+    if (!prismLoaded) {
+      loadPrism().then(() => highlightCode());
+    } else {
+      highlightCode();
     }
 
-    if (code && language) {
-      import('prismjs').then(Prism => {
-        import('prismjs/themes/prism-tomorrow.css');
+    function highlightCode() {
+      if (!codeRef.current) return;
+
+      import('prismjs').then(async Prism => {
+        // Load language if needed
         if (language !== 'plaintext' && !Prism.languages[language]) {
-          import(`prismjs/components/prism-${language}`).catch(() => {
+          try {
+            await import(`prismjs/components/prism-${language}`);
+          } catch (err) {
             console.log(`Prism language '${language}' not available`);
-          }).finally(() => {
-            Prism.highlightAll();
-          });
-        } else {
-          Prism.highlightAll();
+          }
+        }
+
+        // Apply highlighting
+        if (codeRef.current) {
+          try {
+            Prism.highlightElement(codeRef.current);
+            isHighlighted.current = true;
+          } catch (err) {
+            console.error('Error highlighting code:', err);
+          }
         }
       });
     }
@@ -126,25 +160,26 @@ const HighlightedCode = React.memo(({code, language}) => {
 
   return (
       <pre style={PRISM_STYLING.PRE}>
-        <code
-            ref={codeRef}
-            className={`language-${language}`}
-        >
-          {code}
-        </code>
-      </pre>
+      <code
+          ref={codeRef}
+          className={`language-${language}`}
+      >
+        {code}
+      </code>
+    </pre>
   );
 });
 
 /**
  * Process text formatting for bold and inline code
- * @param {string} text - Text to format
- * @returns {JSX.Element} Formatted text with bold and inline code
  */
-const processTextFormatting = (text) => {
-  if (!text ||
-      (!text.includes('**') && !text.includes('`'))) return <span>{text ||
-      ''}</span>;
+const TextWithFormatting = memo(({text}) => {
+  if (!text) return null;
+
+  // Quick check if formatting is needed at all
+  if (!text.includes('**') && !text.includes('`')) {
+    return <span>{text}</span>;
+  }
 
   // First handle inline code with backticks
   const codeSegments = text.split(/(`[^`]+`)/g);
@@ -178,7 +213,7 @@ const processTextFormatting = (text) => {
                     const boldText = boldSegment.slice(2, -2);
                     return <span key={j} style={{
                       fontWeight: 'bold',
-                      color: '#ffffff', // Soft cyan color that works well on dark backgrounds
+                      color: '#ffffff',
                     }}>{boldText}</span>;
                   }
                   return <span key={j}>{boldSegment}</span>;
@@ -188,16 +223,68 @@ const processTextFormatting = (text) => {
         })}
       </>
   );
+});
+
+// Global cache for formatted tooltips
+const tooltipCache = new Map();
+
+// Background processing queue for tooltips
+const tooltipQueue = [];
+let isProcessingQueue = false;
+
+// Process tooltips in the background without blocking UI
+const processTooltipQueue = () => {
+  if (tooltipQueue.length === 0) {
+    isProcessingQueue = false;
+    return;
+  }
+
+  isProcessingQueue = true;
+  const nextDescription = tooltipQueue.shift();
+
+  // Process in a non-blocking way
+  setTimeout(() => {
+    if (nextDescription) {
+      formatTooltipContent(nextDescription);
+    }
+
+    // Continue with next item
+    processTooltipQueue();
+  }, 10); // Short delay to allow UI updates
 };
 
 /**
- * Formats content for tooltips with proper handling of newlines, code blocks, inline code, and Markdown-style bold formatting
+ * Queue a tooltip for background precomputation
+ * @param {string} description - The tooltip content to precompute
+ */
+export const precomputeTooltip = (description) => {
+  if (!description || tooltipCache.has(description)) return;
+
+  // Add to queue if not already processed
+  tooltipQueue.push(description);
+
+  // Start processing if not already running
+  if (!isProcessingQueue) {
+    processTooltipQueue();
+  }
+};
+
+/**
+ * Formats content for tooltips with proper handling of newlines, code blocks,
+ * inline code, and Markdown-style bold formatting.
+ * Uses caching to speed up repeated calls.
+ *
  * @param {string} content - The text content to format
  * @param {object} options - Additional formatting options
  * @returns {JSX.Element} Formatted content ready for tooltip display
  */
 export const formatTooltipContent = (content, options = {}) => {
   if (!content) return '';
+
+  // Use cached version if available
+  if (tooltipCache.has(content)) {
+    return tooltipCache.get(content);
+  }
 
   const {
     fontSize = TYPOGRAPHY.fontSize.regularText,
@@ -206,11 +293,13 @@ export const formatTooltipContent = (content, options = {}) => {
     maxWidth = '1200px',
   } = options;
 
+  let result;
+
   // Handle content with code blocks
   if (content.includes('```')) {
     const parts = content.split(/```([\s\S]*?)```/);
 
-    return (
+    result = (
         <Box sx={{maxWidth}}>
           {parts.map((part, idx) => {
             // Regular text parts (even indices)
@@ -226,7 +315,7 @@ export const formatTooltipContent = (content, options = {}) => {
                         lineHeight,
                       }}
                   >
-                    {processTextFormatting(part)}
+                    <TextWithFormatting text={part}/>
                   </Typography>
               ) : null;
             }
@@ -248,23 +337,27 @@ export const formatTooltipContent = (content, options = {}) => {
           })}
         </Box>
     );
+  } else {
+    // For regular text with no code blocks - much simpler path
+    result = (
+        <Typography
+            variant="body1"
+            sx={{
+              my: 0.5,
+              mx: 0.5,
+              fontSize,
+              lineHeight,
+              whiteSpace: 'pre-line', // Preserve line breaks
+            }}
+        >
+          <TextWithFormatting text={content}/>
+        </Typography>
+    );
   }
 
-  // For regular text with no code blocks
-  return (
-      <Typography
-          variant="body1"
-          sx={{
-            my: 0.5,
-            mx: 0.5,
-            fontSize,
-            lineHeight,
-            whiteSpace: 'pre-line', // Preserve line breaks
-          }}
-      >
-        {processTextFormatting(content)}
-      </Typography>
-  );
+  // Cache the result
+  tooltipCache.set(content, result);
+  return result;
 };
 
 export default formatTooltipContent;
