@@ -8,7 +8,7 @@ import {categories} from '../data/questionLoader';
 const MAX_ROWS_PER_COLUMN = 2;
 const MIN_ITEMS_FOR_SUBCOLUMNS = 3;
 const CONTAINER_WIDTH = '1200px';
-const POINT_HEIGHT = '32px'; // Slightly shorter
+const POINT_HEIGHT = '28px';
 const CATEGORY_WIDTH = '33.33%';
 const EMPTY_OPACITY = '0.4'; // Opacity for no-selected-content sections
 
@@ -52,6 +52,33 @@ const createStarRating = (rating = 0) => {
   }
 
   return html;
+};
+
+/**
+ * Check if a question has any actual content
+ * @param {string} questionId - The question ID
+ * @param {Object} notesMap - Map of questionId to notes
+ * @param {Object} gradesMap - Map of questionId to grades
+ * @param {Object} selectedAnswerPointsMap - Map of questionId to selected points
+ * @returns {boolean} - Whether the question has any content
+ */
+const hasContent = (
+    questionId, notesMap, gradesMap, selectedAnswerPointsMap) => {
+  // Check if it has a non-empty note
+  const hasNotes = notesMap && notesMap[questionId] &&
+      notesMap[questionId].trim() !== '';
+
+  // Check if it has a rating above 0
+  const hasRating = gradesMap && gradesMap[questionId] &&
+      gradesMap[questionId] > 0;
+
+  // Check if it has at least one selected answer point
+  const selectedPoints = selectedAnswerPointsMap &&
+      selectedAnswerPointsMap[questionId];
+  const hasSelectedPoints = selectedPoints &&
+      Object.values(selectedPoints).some(Boolean);
+
+  return hasNotes || hasRating || hasSelectedPoints;
 };
 
 /**
@@ -274,13 +301,62 @@ const createReportHTML = (exportData) => {
     ...Object.keys(selectedAnswerPointsMap || {}),
   ]);
 
-  // Filter out questions with no data
-  const questionIds = Array.from(allQuestionIds).filter(id => {
-    return (notesMap && notesMap[id]) ||
-        (gradesMap && gradesMap[id]) ||
-        (selectedAnswerPointsMap &&
-            Object.keys(selectedAnswerPointsMap[id] || {}).length > 0);
-  });
+  // Filter out questions with no actual content
+  const questionIds = Array.from(allQuestionIds).filter(id =>
+      hasContent(id, notesMap, gradesMap, selectedAnswerPointsMap),
+  );
+
+  // If no questions have content, display a message
+  if (questionIds.length === 0) {
+    return `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <title>Technical Review Notes</title>
+        <style>
+          body {
+            font-family: ${isUbsTheme()
+        ? '"UBS Sans", "Helvetica Neue", Arial, sans-serif'
+        : TYPOGRAPHY.fontFamily};
+            background-color: ${COLORS.background.light};
+            color: ${COLORS.text.primary};
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+          .empty-container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            max-width: 500px;
+          }
+          h1 {
+            color: ${isUbsTheme() ? '#EC0016' : COLORS.primary.main};
+            margin-bottom: 16px;
+          }
+          p {
+            color: ${COLORS.text.secondary};
+            margin-bottom: 8px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="empty-container">
+          <h1>Technical Review Notes</h1>
+          <p>Generated on ${new Date(
+        timestamp).toLocaleDateString()} at ${new Date(
+        timestamp).toLocaleTimeString()}</p>
+          <p>No evaluated questions to display. Add ratings, notes, or select answer points to include questions in this report.</p>
+        </div>
+      </body>
+      </html>
+    `;
+  }
 
   // Group questions by category then subcategory
   const questionsByCategoryAndSubcategory = {};
@@ -495,7 +571,7 @@ const createReportHTML = (exportData) => {
           padding: 8px 10px;
           border-radius: 4px;
           border: 1px solid ${COLORS.grey[200]};
-          min-height: 22px;
+          min-height: 12px;
         }
         
         /* Answer insights horizontal layout - STREAMLINED */
@@ -563,7 +639,7 @@ const createReportHTML = (exportData) => {
         }
         
         .point-item {
-          padding: 0 8px;
+          padding: 0 6px;
           border-radius: 6px;
           display: flex;
           align-items: center;
@@ -592,7 +668,7 @@ const createReportHTML = (exportData) => {
           height: 8px;
           min-width: 8px;
           border-radius: 2px;
-          margin-right: 8px;
+          margin-right: 6px;
           flex-shrink: 0;
         }
         
@@ -637,7 +713,7 @@ const createReportHTML = (exportData) => {
     <body>
       <div class="container">
         <header class="header">
-          <h1 class="title">Technical Review Notes</h1>
+          <h1 class="title">Technical Interview Notes</h1>
           <p class="subtitle">Generated on ${new Date(
       timestamp).toLocaleDateString()} at ${new Date(
       timestamp).toLocaleTimeString()}</p>
@@ -733,7 +809,7 @@ const createReportHTML = (exportData) => {
 
   html += `
         <footer class="footer">
-          <p>Technical Interview Platform</p>
+          <p>Technical Interviewer Platform</p>
         </footer>
       </div>
     </body>
