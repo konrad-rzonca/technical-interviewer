@@ -1,21 +1,10 @@
 ﻿// src/utils/formatTooltipContent.js
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Box, Typography} from '@mui/material';
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css'; // Dark theme for code blocks
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-jsx';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-css';
-import 'prismjs/components/prism-sql';
+// Remove eager loading of Prism and all languages - we'll load them dynamically
 import {TYPOGRAPHY} from '../themes/baseTheme';
-import {globalStyles} from './styles';
 
-// Constants
+// Constants for styling
 const INLINE_CODE_STYLES = {
   backgroundColor: 'rgba(255, 255, 255, 0.1)',
   padding: '2px 4px',
@@ -26,25 +15,50 @@ const INLINE_CODE_STYLES = {
   lineHeight: 1.4,
 };
 
-const CODE_BLOCK_STYLES = {
-  ...globalStyles.pre,
-  borderRadius: '4px',
-  padding: '0', // Removed padding
-  margin: '0', // Remove margin
-  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-  fontFamily: '"JetBrains Mono", monospace',
-  fontSize: '0.95rem', // Increased font size
-  overflowX: 'auto',
-  lineHeight: 1.4,
-  color: '#e6e6e6',
+// Original Prism-tomorrow theme styling extracted to constants
+const PRISM_STYLING = {
+  // Code block container styling
+  CONTAINER: {
+    borderRadius: '4px',
+    backgroundColor: 'rgba(45, 45, 45, 1)', // Original darker background
+    margin: '8px 0', // Keep original margin
+    overflow: 'auto',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+  },
+  // Pre element styling
+  PRE: {
+    margin: 0,
+    padding: 0,
+    backgroundColor: 'transparent',
+    overflow: 'auto',
+  },
+  // Code element styling - matching Prism's tomorrow theme
+  CODE: {
+    padding: '1em', // Original Prism padding
+    display: 'block',
+    overflow: 'auto',
+    backgroundColor: 'rgba(45, 45, 45, 1)',
+    color: '#ccc', // Original text color
+    textShadow: '0 1px rgba(0, 0, 0, 0.3)',
+    fontFamily: '"JetBrains Mono", monospace',
+    fontSize: '1.15em',
+    whiteSpace: 'pre',
+    wordSpacing: 'normal',
+    wordBreak: 'normal',
+    lineHeight: '1.5',
+    tabSize: '4',
+    hyphens: 'none',
+  },
 };
+
 /**
  * Detects programming language from code block
  * @param {string} codeBlock - Code block content with optional language identifier
  * @returns {Object} - Language identifier and clean code
  */
 const detectLanguage = (codeBlock) => {
+  if (!codeBlock) return {language: 'plaintext', code: ''};
+
   // Check if the first line contains a language identifier
   const firstLine = codeBlock.trim().split('\n')[0];
   let language = 'plaintext';
@@ -78,22 +92,111 @@ const detectLanguage = (codeBlock) => {
 };
 
 /**
- * Format code using Prism.js
+ * Format code using Prism.js with pre-styling to prevent flicker
  * @param {string} code - Code to highlight
  * @param {string} language - Programming language
  * @returns {JSX.Element} - Highlighted code
  */
-const HighlightedCode = ({code, language}) => {
+const HighlightedCode = React.memo(({code, language}) => {
+  // Reference to code element for direct style manipulation
+  const codeRef = useRef(null);
+
   useEffect(() => {
-    Prism.highlightAll();
+    // Add pre-styling to code block before Prism touches it
+    if (codeRef.current) {
+      // Apply all Prism styling properties
+      Object.entries(PRISM_STYLING.CODE).forEach(([property, value]) => {
+        codeRef.current.style[property] = value;
+      });
+    }
+
+    // Use a setTimeout to defer Prism loading until after tooltip is shown
+    const timer = setTimeout(() => {
+      if (code && language) {
+        import('prismjs').then(Prism => {
+          // Import the theme
+          import('prismjs/themes/prism-tomorrow.css');
+
+          // Dynamically import the language if needed
+          if (language !== 'plaintext' && !Prism.languages[language]) {
+            import(`prismjs/components/prism-${language}`).catch(() => {
+              console.log(`Prism language '${language}' not available`);
+            }).finally(() => {
+              Prism.highlightAll();
+            });
+          } else {
+            Prism.highlightAll();
+          }
+        });
+      }
+    }, 100); // Small delay to prioritize showing the tooltip first
+
+    return () => clearTimeout(timer);
   }, [code, language]);
 
   return (
-      <pre style={{margin: 0}}>
-      <code className={`language-${language}`}>
-        {code}
-      </code>
-    </pre>
+      <pre style={PRISM_STYLING.PRE}>
+        <code
+            ref={codeRef}
+            className={`language-${language}`}
+        >
+          {code}
+        </code>
+      </pre>
+  );
+});
+
+/**
+ * Process text formatting for bold and inline code
+ * @param {string} text - Text to format
+ * @returns {JSX.Element} Formatted text with bold and inline code
+ */
+const processTextFormatting = (text) => {
+  if (!text ||
+      (!text.includes('**') && !text.includes('`'))) return <span>{text ||
+      ''}</span>;
+
+  // First handle inline code with backticks
+  const codeSegments = text.split(/(`[^`]+`)/g);
+
+  return (
+      <>
+        {codeSegments.map((segment, i) => {
+          // Handle inline code (wrapped in single backticks)
+          if (segment.startsWith('`') && segment.endsWith('`')) {
+            const codeText = segment.slice(1, -1);
+            return (
+                <Box
+                    key={i}
+                    component="code"
+                    sx={INLINE_CODE_STYLES}
+                >
+                  {codeText}
+                </Box>
+            );
+          }
+
+          // For non-code segments, process bold formatting
+          if (!segment.includes('**')) return <span key={i}>{segment}</span>;
+
+          const boldSegments = segment.split(/(\*\*.*?\*\*)/g);
+          return (
+              <React.Fragment key={i}>
+                {boldSegments.map((boldSegment, j) => {
+                  if (boldSegment.startsWith('**') &&
+                      boldSegment.endsWith('**')) {
+                    const boldText = boldSegment.slice(2, -2);
+                    return <span key={j} style={{
+                      fontWeight: 'bold',
+                      color: '#ffffff', // Soft cyan color that works well on dark backgrounds
+                    }}>{boldText}</span>;
+                  }
+                  return <span key={j}>{boldSegment}</span>;
+                })}
+              </React.Fragment>
+          );
+        })}
+      </>
   );
 };
 
@@ -113,54 +216,6 @@ export const formatTooltipContent = (content, options = {}) => {
     maxWidth = '1200px',
   } = options;
 
-  // Process both bold and inline code formatting in a text segment
-  const processTextFormatting = (text) => {
-    if (!text.includes('**') && !text.includes('`')) return <span>{text}</span>;
-
-    // First handle inline code with backticks
-    const codeSegments = text.split(/(`[^`]+`)/g);
-
-    return (
-        <>
-          {codeSegments.map((segment, i) => {
-            // Handle inline code (wrapped in single backticks)
-            if (segment.startsWith('`') && segment.endsWith('`')) {
-              const codeText = segment.slice(1, -1);
-              return (
-                  <Box
-                      key={i}
-                      component="code"
-                      sx={INLINE_CODE_STYLES}
-                  >
-                    {codeText}
-                  </Box>
-              );
-            }
-
-            // For non-code segments, process bold formatting
-            if (!segment.includes('**')) return <span key={i}>{segment}</span>;
-
-            const boldSegments = segment.split(/(\*\*.*?\*\*)/g);
-            return (
-                <React.Fragment key={i}>
-                  {boldSegments.map((boldSegment, j) => {
-                    if (boldSegment.startsWith('**') &&
-                        boldSegment.endsWith('**')) {
-                      const boldText = boldSegment.slice(2, -2);
-                      return <span key={j} style={{
-                        fontWeight: 'bold',
-                        color: '#ffffff', // Soft cyan color that works well on dark backgrounds
-                      }}>{boldText}</span>;
-                    }
-                    return <span key={j}>{boldSegment}</span>;
-                  })}
-                </React.Fragment>
-            );
-          })}
-        </>
-    );
-  };
-
   // Handle content with code blocks
   if (content.includes('```')) {
     const parts = content.split(/```([\s\S]*?)```/);
@@ -175,8 +230,8 @@ export const formatTooltipContent = (content, options = {}) => {
                       key={idx}
                       variant="body1"
                       sx={{
-                        mb: 1,
-                        whiteSpace: 'pre-line', // Preserve line breaks
+                        my: 1.5,
+                        mx: 0.5,
                         fontSize,
                         lineHeight,
                       }}
@@ -192,9 +247,8 @@ export const formatTooltipContent = (content, options = {}) => {
                   <Box
                       key={idx}
                       sx={{
-                        ...CODE_BLOCK_STYLES,
+                        ...PRISM_STYLING.CONTAINER,
                         maxHeight: codeMaxHeight,
-                        margin: '8px 0',
                       }}
                   >
                     <HighlightedCode code={code} language={language}/>

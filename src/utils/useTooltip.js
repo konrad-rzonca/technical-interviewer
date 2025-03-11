@@ -21,7 +21,11 @@ export function useTooltip(type = TOOLTIP_TYPES.DEFAULT, overrides = {}) {
       arrow: TOOLTIP_STYLING.ARROW,
       enterDelay: TOOLTIP_TIMING.ENTER_DELAY,
       leaveDelay: TOOLTIP_TIMING.LEAVE_DELAY,
+      enterTouchDelay: 0, // Ensure mobile device tooltips appear quickly
       // This is the key part - use slotProps to style the tooltip content
+      TransitionProps: {
+        timeout: TOOLTIP_TIMING.TRANSITION_DURATION,
+      },
       slotProps: {
         tooltip: {
           sx: {

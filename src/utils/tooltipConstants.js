@@ -21,6 +21,8 @@ export const TOOLTIP_PLACEMENT = {
 export const TOOLTIP_TIMING = {
   ENTER_DELAY: 300,
   LEAVE_DELAY: 0,
+  TRANSITION_DURATION: 150,
+
 };
 
 export const TOOLTIP_STYLING = {
