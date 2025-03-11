@@ -2,7 +2,6 @@
 import React from 'react';
 import {
   Box,
-  Divider,
   Menu,
   MenuItem,
   Switch,
@@ -14,7 +13,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffOutlinedIcon
   from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import storageService from '../services/storageService';
 
 const SettingsMenu = ({
@@ -220,52 +218,6 @@ const SettingsMenu = ({
           />
         </MenuItem>
 
-        {/* Data Management Section */}
-        <Divider sx={{my: 1}}/>
-
-        <Typography
-            variant="caption"
-            sx={{
-              display: 'block',
-              px: 2,
-              pt: 1,
-              pb: 0.5,
-              color: 'text.secondary',
-              fontWeight: 500,
-              fontSize: '0.75rem',
-            }}
-        >
-          DATA MANAGEMENT
-        </Typography>
-
-        {/* Clear Saved Data */}
-        <MenuItem
-            sx={{
-              minWidth: 320,
-              display: 'flex',
-              justifyContent: 'space-between',
-              py: 1.5,
-              px: 2,
-              color: theme.palette.error.main,
-              '&:hover': {
-                backgroundColor: `${theme.palette.error.main}10`,
-              },
-            }}
-            onClick={handleClearSavedData}
-        >
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
-            <DeleteOutlineIcon fontSize="small" sx={{
-              mr: 1.5,
-              color: theme.palette.error.main,
-            }}/>
-            <Typography variant="body2" sx={{
-              fontSize: '0.9rem',
-              color: theme.palette.error.main,
-            }}>
-              Clear Saved Interview Data
-            </Typography>
-          </Box>
-        </MenuItem>
       </Menu>
   );
 };
