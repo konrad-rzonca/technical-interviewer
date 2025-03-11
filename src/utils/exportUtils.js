@@ -2,110 +2,15 @@
 import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 import {isUbsTheme} from '../themes/themeUtils';
 import {getSkillLevelStyles} from './styles';
+import {categories} from '../data/questionLoader';
 
-/**
- * Transforms interview state into human-readable format for export
- * @param {Object} interviewState - Current interview state
- * @param {Array} allQuestions - All available questions
- * @returns {Object} - Transformed data ready for export
- */
-export const prepareInterviewDataForExport = (interviewState, allQuestions) => {
-  // Create lookup maps for transforming IDs to readable names
-  const questionTitleMap = {};
-  const insightPointMap = {};
-  const questionDetailsMap = {};
-
-  // Store the selectedAnswerPointsMap for use in HTML generation
-  const selectedAnswerPointsMap = interviewState.selectedAnswerPointsMap || {};
-
-  // Process all questions to build lookup maps
-  allQuestions.forEach(question => {
-    // For question title lookup
-    questionTitleMap[question.id] = question.shortTitle ||
-        question.question.substring(0, 40);
-
-    // Store full question details
-    questionDetailsMap[question.id] = {
-      title: question.shortTitle || question.question,
-      fullQuestion: question.question,
-      skillLevel: question.skillLevel,
-      categoryId: question.categoryId,
-      subcategoryName: question.subcategoryName,
-    };
-
-    // For answer point lookup - create map of categoryIndex-pointIndex to point title
-    insightPointMap[question.id] = {};
-    if (question.answerInsights && Array.isArray(question.answerInsights)) {
-      question.answerInsights.forEach((category, categoryIndex) => {
-        if (category && category.points && Array.isArray(category.points)) {
-          category.points.forEach((point, pointIndex) => {
-            if (point && point.title) {
-              const key = `${categoryIndex}-${pointIndex}`;
-              insightPointMap[question.id][key] = point.title;
-            }
-          });
-        }
-      });
-    }
-  });
-
-  // Transform maps to use descriptive keys instead of IDs
-  const transformedNotesMap = {};
-  const transformedGradesMap = {};
-  const transformedPointsMap = {};
-
-  // Transform notesMap
-  Object.entries(interviewState.notesMap).forEach(([questionId, notes]) => {
-    if (notes && notes.trim() !== '') { // Only include non-empty notes
-      transformedNotesMap[questionId] = notes;
-    }
-  });
-
-  // Transform gradesMap
-  Object.entries(interviewState.gradesMap).forEach(([questionId, grade]) => {
-    if (grade !== undefined && grade !== 0 && grade !== null) { // Only include non-zero grades
-      transformedGradesMap[questionId] = grade;
-    }
-  });
-
-  // Transform selectedAnswerPointsMap to arrays of point titles
-  Object.entries(interviewState.selectedAnswerPointsMap).
-      forEach(([questionId, pointData]) => {
-        const questionTitle = questionTitleMap[questionId] || questionId;
-        const pointMap = insightPointMap[questionId] || {};
-
-        // Only include questions with selected points
-        if (Object.keys(pointData).length > 0) {
-          // Create an array of selected point titles
-          const selectedPointTitles = [];
-
-          // Find selected points and add their titles to the array
-          Object.entries(pointData).forEach(([pointKey, isSelected]) => {
-            if (isSelected) {
-              const pointTitle = pointMap[pointKey] || pointKey;
-              selectedPointTitles.push(pointTitle);
-            }
-          });
-
-          // Only add if there are selected points
-          if (selectedPointTitles.length > 0) {
-            transformedPointsMap[questionId] = selectedPointTitles;
-          }
-        }
-      });
-
-  return {
-    timestamp: new Date().toISOString(),
-    data: {
-      notesMap: transformedNotesMap,
-      gradesMap: transformedGradesMap,
-      selectedAnswerPoints: transformedPointsMap,
-      questionDetails: questionDetailsMap,
-      allQuestions: allQuestions, // Include full question data for answer insights
-      selectedAnswerPointsMap: selectedAnswerPointsMap, // Pass the original selected points map
-    },
-  };
-};
+// Constants
+const MAX_ROWS_PER_COLUMN = 2;
+const MIN_ITEMS_FOR_SUBCOLUMNS = 3;
+const CONTAINER_WIDTH = '1200px';
+const POINT_HEIGHT = '32px'; // Slightly shorter
+const CATEGORY_WIDTH = '33.33%';
+const EMPTY_OPACITY = '0.4'; // Opacity for no-selected-content sections
 
 /**
  * Get the color for a skill level
@@ -118,23 +23,13 @@ const getSkillLevelColor = (skillLevel) => {
 };
 
 /**
- * Get the category name from the category ID
+ * Get the category name from the category ID using the imported categories
  * @param {string} categoryId - The category ID
  * @returns {string} - The category name
  */
 const getCategoryName = (categoryId) => {
-  // Map of category IDs to readable names
-  const categoryMap = {
-    'core-java': 'Core Java',
-    'concurrency-multithreading': 'Concurrency and Multithreading',
-    'software-design': 'Software Design',
-    'databases': 'Databases',
-    'frameworks': 'Frameworks',
-    'dsa': 'Data Structures & Algorithms',
-    'engineering-practices': 'Engineering Practices',
-  };
-
-  return categoryMap[categoryId] || categoryId;
+  const category = categories.find(c => c.id === categoryId);
+  return category ? category.name : categoryId;
 };
 
 /**
@@ -160,7 +55,82 @@ const createStarRating = (rating = 0) => {
 };
 
 /**
- * Creates HTML for answer insights, highlighting selected points
+ * Transforms interview state into human-readable format for export
+ * @param {Object} interviewState - Current interview state
+ * @param {Array} allQuestions - All available questions
+ * @returns {Object} - Transformed data ready for export
+ */
+const prepareInterviewDataForExport = (interviewState, allQuestions) => {
+  // Create lookup maps for transforming IDs to readable names
+  const questionTitleMap = {};
+  const questionDetailsMap = {};
+
+  // Store the selectedAnswerPointsMap for use in HTML generation
+  const selectedAnswerPointsMap = interviewState.selectedAnswerPointsMap || {};
+
+  // Process all questions to build lookup maps
+  allQuestions.forEach(question => {
+    // For question title lookup
+    questionTitleMap[question.id] = question.shortTitle ||
+        question.question.substring(0, 40);
+
+    // Store full question details
+    questionDetailsMap[question.id] = {
+      title: question.shortTitle || question.question,
+      fullQuestion: question.question,
+      skillLevel: question.skillLevel,
+      categoryId: question.categoryId,
+      subcategoryName: question.subcategoryName,
+    };
+  });
+
+  // Transform maps to use descriptive keys instead of IDs
+  const transformedNotesMap = {};
+  const transformedGradesMap = {};
+
+  // Transform notesMap
+  Object.entries(interviewState.notesMap || {}).
+      forEach(([questionId, notes]) => {
+        if (notes && notes.trim() !== '') { // Only include non-empty notes
+          transformedNotesMap[questionId] = notes;
+        }
+      });
+
+  // Transform gradesMap
+  Object.entries(interviewState.gradesMap || {}).
+      forEach(([questionId, grade]) => {
+        if (grade !== undefined && grade !== 0 && grade !== null) { // Only include non-zero grades
+          transformedGradesMap[questionId] = grade;
+        }
+      });
+
+  return {
+    timestamp: new Date().toISOString(),
+    data: {
+      notesMap: transformedNotesMap,
+      gradesMap: transformedGradesMap,
+      questionDetails: questionDetailsMap,
+      allQuestions: allQuestions, // Include full question data for answer insights
+      selectedAnswerPointsMap: selectedAnswerPointsMap, // Pass the original selected points map
+    },
+  };
+};
+
+/**
+ * Check if a category has any selected points
+ * @param {number} categoryIndex - The index of the category
+ * @param {Object} selectedPoints - Object mapping categoryIndex-pointIndex to boolean
+ * @returns {boolean} - Whether the category has any selected points
+ */
+const hasCategorySelectedPoints = (categoryIndex, selectedPoints) => {
+  return Object.keys(selectedPoints || {}).some(key => {
+    const [catIdx, _] = key.split('-');
+    return parseInt(catIdx) === categoryIndex && selectedPoints[key];
+  });
+};
+
+/**
+ * Creates HTML for answer insights with a horizontal layout matching the app's UI
  * @param {Array} answerInsights - Array of answer insights
  * @param {Object} selectedPoints - Object mapping categoryIndex-pointIndex to boolean
  * @returns {string} - HTML for answer insights
@@ -171,7 +141,14 @@ const createAnswerInsightsHTML = (answerInsights = [], selectedPoints = {}) => {
     return '';
   }
 
-  let html = '<div class="answer-insights">';
+  // Check if there are any selected points at all
+  const hasAnySelectedPoints = Object.values(selectedPoints || {}).
+      some(Boolean);
+  const containerClass = hasAnySelectedPoints
+      ? 'has-selections'
+      : 'no-selections';
+
+  let html = `<div class="answer-insights-container ${containerClass}">`;
 
   // Process each category (Basic, Intermediate, Advanced)
   answerInsights.forEach((category, categoryIndex) => {
@@ -182,45 +159,96 @@ const createAnswerInsightsHTML = (answerInsights = [], selectedPoints = {}) => {
 
     const categoryName = category.category || 'Unknown';
     const levelClass = categoryName.toLowerCase();
+    const levelColor = getSkillLevelColor(levelClass);
 
-    html += `
-      <div class="insight-category">
-        <div class="insight-header">
-          <span class="insight-level insight-level-${levelClass}">${categoryName}</span>
-        </div>
-        <div class="points-container">
-    `;
+    // Check if this category has any selected points
+    const hasSelectedPoints = hasCategorySelectedPoints(categoryIndex,
+        selectedPoints);
+    const categoryClass = hasSelectedPoints
+        ? 'has-selections'
+        : 'no-selections';
 
-    // Process each point in this category
-    category.points.forEach((point, pointIndex) => {
-      if (!point || !point.title) {
-        return;
+    html += `<div class="insight-category insight-level-${levelClass} ${categoryClass}">`;
+
+    // Calculate layout for points - matching AnswerCategory.js logic
+    const validPoints = category.points.filter(p => p && p.title);
+    const needsSubColumns = validPoints.length >= MIN_ITEMS_FOR_SUBCOLUMNS;
+
+    if (needsSubColumns) {
+      // Calculate number of columns needed for a balanced layout
+      const columnCount = Math.ceil(validPoints.length / MAX_ROWS_PER_COLUMN);
+      const pointsPerColumn = Math.ceil(validPoints.length / columnCount);
+
+      // Create a grid for multiple columns
+      html += '<div class="points-grid">';
+
+      // Distribute points into columns
+      for (let i = 0; i < columnCount; i++) {
+        const startIdx = i * pointsPerColumn;
+        const endIdx = Math.min(startIdx + pointsPerColumn, validPoints.length);
+        const columnPoints = validPoints.slice(startIdx, endIdx);
+
+        html += '<div class="points-column">';
+
+        // Add points to this column
+        columnPoints.forEach((point, pointIndex) => {
+          const originalIndex = point.originalIndex !== undefined
+              ? point.originalIndex
+              : pointIndex;
+          const key = `${categoryIndex}-${originalIndex}`;
+          const isSelected = !!selectedPoints[key];
+
+          html += `
+            <div class="point-item ${isSelected ? 'selected' : 'unselected'}">
+              <div class="point-indicator" style="background-color: ${levelColor};"></div>
+              ${point.title}
+            </div>
+          `;
+        });
+
+        // Add placeholders if needed to ensure consistent height
+        const placeholdersNeeded = pointsPerColumn - columnPoints.length;
+        for (let j = 0; j < Math.max(0, placeholdersNeeded); j++) {
+          html += '<div class="point-placeholder"></div>';
+        }
+
+        html += '</div>'; // Close points-column
       }
 
-      const key = `${categoryIndex}-${pointIndex}`;
-      const isSelected = !!selectedPoints[key];
-      const levelColor = getSkillLevelColor(levelClass);
+      html += '</div>'; // Close points-grid
+    } else {
+      // Simple single column layout
+      html += '<div class="points-container">';
 
-      html += `
-        <div class="point-item ${isSelected ? 'selected' : 'unselected'}">
-          <div class="point-indicator" style="background-color: ${levelColor};"></div>
-          ${point.title}
-        </div>
-      `;
-    });
+      validPoints.forEach((point, pointIndex) => {
+        const originalIndex = point.originalIndex !== undefined
+            ? point.originalIndex
+            : pointIndex;
+        const key = `${categoryIndex}-${originalIndex}`;
+        const isSelected = !!selectedPoints[key];
 
-    html += `
-        </div>
-      </div>
-    `;
+        html += `
+          <div class="point-item ${isSelected ? 'selected' : 'unselected'}">
+            <div class="point-indicator" style="background-color: ${levelColor};"></div>
+            ${point.title}
+          </div>
+        `;
+      });
 
-    // Add divider if not the last category
-    if (categoryIndex < answerInsights.length - 1) {
-      html += '<div class="insights-divider"></div>';
+      // Add placeholders if needed to maintain consistent height
+      const placeholderCount = Math.max(0,
+          MAX_ROWS_PER_COLUMN - validPoints.length);
+      for (let i = 0; i < placeholderCount; i++) {
+        html += '<div class="point-placeholder"></div>';
+      }
+
+      html += '</div>'; // Close points-container
     }
+
+    html += '</div>'; // Close insight-category
   });
 
-  html += '</div>';
+  html += '</div>'; // Close answer-insights-container
   return html;
 };
 
@@ -234,7 +262,6 @@ const createReportHTML = (exportData) => {
   const {
     notesMap,
     gradesMap,
-    selectedAnswerPoints,
     questionDetails,
     allQuestions,
     selectedAnswerPointsMap,
@@ -244,14 +271,15 @@ const createReportHTML = (exportData) => {
   const allQuestionIds = new Set([
     ...Object.keys(notesMap || {}),
     ...Object.keys(gradesMap || {}),
-    ...Object.keys(selectedAnswerPoints || {}),
+    ...Object.keys(selectedAnswerPointsMap || {}),
   ]);
 
   // Filter out questions with no data
   const questionIds = Array.from(allQuestionIds).filter(id => {
     return (notesMap && notesMap[id]) ||
         (gradesMap && gradesMap[id]) ||
-        (selectedAnswerPoints && selectedAnswerPoints[id]);
+        (selectedAnswerPointsMap &&
+            Object.keys(selectedAnswerPointsMap[id] || {}).length > 0);
   });
 
   // Group questions by category then subcategory
@@ -297,49 +325,49 @@ const createReportHTML = (exportData) => {
           padding: 20px;
         }
         
-        /* Container styles */
+        /* Container styles - EXTRA WIDE */
         .container {
-          max-width: 800px;
+          max-width: ${CONTAINER_WIDTH};
           margin: 0 auto;
           background-color: ${COLORS.background.paper};
           box-shadow: 0 1px 3px rgba(0,0,0,0.08);
           border-radius: ${useUbsTheme ? '4px' : `${SPACING.borderRadius}px`};
-          padding: 30px;
+          padding: 20px;
         }
         
         /* Header styles */
         .header {
           text-align: center;
-          margin-bottom: 20px;
-          padding-bottom: 10px;
+          margin-bottom: 16px;
+          padding-bottom: 8px;
           border-bottom: 1px solid ${COLORS.grey[200]};
         }
         
         .title {
           color: ${primaryColor};
-          font-size: 22px;
+          font-size: 20px;
           font-weight: ${TYPOGRAPHY.fontWeight.medium};
-          margin: 0 0 8px 0;
+          margin: 0 0 4px 0;
         }
         
         .subtitle {
           color: ${COLORS.text.secondary};
-          font-size: 12px;
+          font-size: 11px;
           margin: 0;
         }
         
         /* Category styles */
         .category {
-          margin-bottom: 35px;
+          margin-bottom: 24px;
         }
         
         .category-title {
           color: ${COLORS.text.primary};
           font-size: 18px;
           font-weight: ${TYPOGRAPHY.fontWeight.medium};
-          margin: 0 0 15px 0;
+          margin: 0 0 10px 0;
           border-bottom: 1px solid ${COLORS.grey[300]};
-          padding-bottom: 8px;
+          padding-bottom: 6px;
         }
         
         /* Subcategory styles */
@@ -347,13 +375,13 @@ const createReportHTML = (exportData) => {
           background-color: ${COLORS.grey[50]};
           border: 1px solid ${COLORS.grey[200]};
           border-radius: 8px;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
           overflow: hidden;
         }
         
         .subcategory-header {
           background-color: ${COLORS.grey[100]};
-          padding: 8px 12px;
+          padding: 6px 10px;
           border-bottom: 1px solid ${COLORS.grey[200]};
         }
         
@@ -365,10 +393,10 @@ const createReportHTML = (exportData) => {
         }
         
         .questions-container {
-          padding: 12px;
+          padding: 10px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 10px;
         }
         
         /* Question card styles */
@@ -383,7 +411,7 @@ const createReportHTML = (exportData) => {
         .question-header {
           display: flex;
           align-items: center;
-          padding: 14px 16px;
+          padding: 10px 12px;
           background-color: ${COLORS.grey[50]};
           border-bottom: 1px solid ${COLORS.grey[200]};
         }
@@ -406,17 +434,21 @@ const createReportHTML = (exportData) => {
         }
         
         .question-content {
-          padding: 16px;
+          padding: 12px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 8px;
         }
         
         /* Rating styles */
         .rating-container {
-          min-height: 24px;
+          min-height: 22px;
           display: flex;
           align-items: center;
+        }
+        
+        .rating-container.empty {
+          opacity: ${EMPTY_OPACITY};
         }
         
         .rating {
@@ -439,114 +471,139 @@ const createReportHTML = (exportData) => {
         
         /* Notes styles */
         .notes-container {
-          min-height: 24px;
+          min-height: 22px;
+        }
+        
+        .notes-container.empty {
+          opacity: ${EMPTY_OPACITY};
         }
         
         .notes {
           background-color: ${COLORS.grey[50]};
-          padding: 12px 14px;
+          padding: 8px 10px;
           border-radius: 4px;
           border: 1px solid ${COLORS.grey[200]};
           white-space: pre-line;
-          font-size: 14px;
+          font-size: 13px;
           margin: 0;
-          min-height: 24px;
+          min-height: 22px;
         }
         
         /* Empty notes placeholder */
         .notes-placeholder {
           background-color: ${COLORS.grey[50]};
-          padding: 12px 14px;
+          padding: 8px 10px;
           border-radius: 4px;
           border: 1px solid ${COLORS.grey[200]};
-          min-height: 24px;
+          min-height: 22px;
         }
         
-        /* Points styles */
-        .points-container {
+        /* Answer insights horizontal layout - STREAMLINED */
+        .answer-insights-container {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: row;
+          gap: 8px;
+          width: 100%;
+        }
+        
+        .answer-insights-container.no-selections {
+          opacity: ${EMPTY_OPACITY};
+        }
+        
+        .insight-category {
+          flex: 1;
+          padding: 6px;
+          border-radius: 6px;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          background-color: rgba(0, 0, 0, 0.01);
+          min-width: 0;
+          width: ${CATEGORY_WIDTH};
+        }
+        
+        .insight-category.no-selections {
+          opacity: 0.7;
+        }
+        
+        .insight-category.insight-level-basic {
+          border-color: ${COLORS.basic.main}60;
+          background-color: ${COLORS.basic.main}06;
+        }
+        
+        .insight-category.insight-level-intermediate {
+          border-color: ${COLORS.intermediate.main}70;
+          background-color: ${COLORS.intermediate.main}06;
+        }
+        
+        .insight-category.insight-level-advanced {
+          border-color: ${COLORS.advanced.main}60;
+          background-color: ${COLORS.advanced.main}06;
+        }
+        
+        /* Points display - STREAMLINED */
+        .points-container, .points-column {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          height: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        
+        .points-grid {
+          display: flex;
+          flex-direction: row;
           gap: 6px;
-          min-height: 24px;
+          height: 100%;
+        }
+        
+        .points-column {
+          flex: 1;
+          height: 100%;
         }
         
         .point-item {
+          padding: 0 8px;
+          border-radius: 6px;
           display: flex;
           align-items: center;
-          background-color: ${COLORS.grey[50]};
-          padding: 4px 10px;
-          border-radius: 4px;
+          height: ${POINT_HEIGHT};
+          line-height: ${POINT_HEIGHT};
           font-size: 13px;
-          border: 1px solid ${COLORS.grey[200]};
+          background-color: rgba(255, 255, 255, 0.5);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: clip;
+          color: #000000;
         }
         
         .point-item.selected {
-          background-color: ${COLORS.grey[50]};
+          background-color: rgba(255, 255, 255, 0.8);
+          font-weight: 500;
         }
         
         .point-item.unselected {
-          background-color: ${COLORS.grey[50]};
-          color: ${COLORS.grey[400]};
           opacity: 0.5;
         }
         
         .point-indicator {
           width: 8px;
           height: 8px;
+          min-width: 8px;
           border-radius: 2px;
-          margin-right: 6px;
+          margin-right: 8px;
           flex-shrink: 0;
         }
         
-        /* Answer insights styles */
-        .answer-insights {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          margin-top: 8px;
-        }
-        
-        .insight-category {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        
-        .insight-header {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 4px;
-        }
-        
-        .insight-level {
-          font-size: 13px;
-          font-weight: ${TYPOGRAPHY.fontWeight.medium};
-          color: ${COLORS.text.secondary};
-        }
-        
-        .insight-level-basic {
-          color: ${COLORS.basic.main};
-        }
-        
-        .insight-level-intermediate {
-          color: ${COLORS.intermediate.main};
-        }
-        
-        .insight-level-advanced {
-          color: ${COLORS.advanced.main};
-        }
-        
-        .insights-divider {
-          height: 1px;
-          background-color: ${COLORS.grey[200]};
-          margin-top: 4px;
-          margin-bottom: 8px;
+        .point-placeholder {
+          height: ${POINT_HEIGHT};
+          visibility: hidden;
         }
         
         /* Footer styles */
         .footer {
-          margin-top: 30px;
+          margin-top: 24px;
           text-align: center;
           font-size: 11px;
           color: ${COLORS.text.secondary};
@@ -623,9 +680,8 @@ const createReportHTML = (exportData) => {
       questionIds.forEach(questionId => {
         const details = questionDetails[questionId] || {};
         const hasNotes = notesMap && notesMap[questionId];
-        const hasGrade = gradesMap && gradesMap[questionId];
-        const hasPoints = selectedAnswerPoints &&
-            selectedAnswerPoints[questionId];
+        const hasGrade = gradesMap && gradesMap[questionId] &&
+            gradesMap[questionId] > 0;
         const skillLevelColor = getSkillLevelColor(details.skillLevel);
 
         // Find the full question with answer insights
@@ -639,49 +695,26 @@ const createReportHTML = (exportData) => {
             </div>
             
             <div class="question-content">
-              <!-- Rating section (always show stars) -->
-              <div class="rating-container">
+              <!-- Answer Insights in horizontal layout -->
+              ${fullQuestion ? createAnswerInsightsHTML(
+            fullQuestion.answerInsights || [],
+            selectedAnswerPointsMap[questionId] || {},
+        ) : ''}
+              
+              <!-- Rating section - Add 'empty' class if no rating -->
+              <div class="rating-container ${!hasGrade ? 'empty' : ''}">
                 <div class="rating">${createStarRating(
             gradesMap[questionId] || 0)}</div>
               </div>
               
-              <!-- Notes section (empty box if no notes) -->
-              <div class="notes-container">
+              <!-- Notes section - Add 'empty' class if no notes -->
+              <div class="notes-container ${!hasNotes ? 'empty' : ''}">
                 ${hasNotes
             ? `<p class="notes">${notesMap[questionId].trim().
                 replace(/\n/g, '<br>')}</p>`
             : `<div class="notes-placeholder"></div>`
         }
               </div>
-              
-              <!-- Selected Points section -->
-              <div class="points-container">
-        `;
-
-        // Add selected points if they exist
-        if (hasPoints && Array.isArray(selectedAnswerPoints[questionId])) {
-          const pointColors = ['basic', 'intermediate', 'advanced'];
-          selectedAnswerPoints[questionId].forEach((point, idx) => {
-            // Cycle through colors for visual variety
-            const levelColor = getSkillLevelColor(
-                pointColors[idx % pointColors.length]);
-            html += `
-              <div class="point-item selected">
-                <div class="point-indicator" style="background-color: ${levelColor};"></div>
-                ${point}
-              </div>
-            `;
-          });
-        }
-
-        html += `
-              </div>
-              
-              <!-- All Answer Insights grouped by level -->
-              ${fullQuestion ? createAnswerInsightsHTML(
-            fullQuestion.answerInsights || [],
-            selectedAnswerPointsMap[questionId] || {},
-        ) : ''}
             </div>
           </div>
         `;
@@ -740,7 +773,8 @@ export const exportInterviewData = (interviewState, allQuestions) => {
   setTimeout(() => URL.revokeObjectURL(url), 100);
 };
 
+// Export both the named and default export
 export default {
-  prepareInterviewDataForExport,
   exportInterviewData,
+  prepareInterviewDataForExport,
 };
