@@ -12,6 +12,7 @@ const INLINE_CODE_STYLES = {
   display: 'inline-block',
   color: '#e6e6e6',
   lineHeight: 1.4,
+  fontFeatureSettings: '"liga" 0, "calt" 0', // Add this line to disable ligatures
 };
 
 // Original Prism-tomorrow theme styling extracted to constants
