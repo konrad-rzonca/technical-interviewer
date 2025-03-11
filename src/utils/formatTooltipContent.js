@@ -220,7 +220,7 @@ export const formatTooltipContent = (content, options = {}) => {
                       key={idx}
                       variant="body1"
                       sx={{
-                        my: 1.5,
+                        my: 1,
                         mx: 0.5,
                         fontSize,
                         lineHeight,
@@ -255,6 +255,8 @@ export const formatTooltipContent = (content, options = {}) => {
       <Typography
           variant="body1"
           sx={{
+            my: 0.5,
+            mx: 0.5,
             fontSize,
             lineHeight,
             whiteSpace: 'pre-line', // Preserve line breaks
