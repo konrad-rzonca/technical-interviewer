@@ -10,8 +10,6 @@ import {
   Grid,
   IconButton,
   Paper,
-  Tab,
-  Tabs,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -21,6 +19,7 @@ import {
   Code as CodeIcon,
   ContactSupport as SupportIcon,
   Engineering as EngineeringIcon,
+  ErrorOutline as PitfallIcon,
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
   Insights as InsightsIcon,
@@ -28,7 +27,6 @@ import {
   Person as PersonIcon,
   Psychology as PsychologyIcon,
   QuestionAnswer as QuestionIcon,
-  School as SchoolIcon,
   Timeline as TimelineIcon,
 } from '@mui/icons-material';
 
@@ -44,10 +42,10 @@ const BestPracticesPanel = () => {
 
   // State for expanded sections
   const [expandedSections, setExpandedSections] = useState({
-    philosophy: true,
+    timeline: true,
+    philosophy: false,
     technical: false,
-    timeline: false,
-    examples: false,
+    interaction: false,
   });
 
   // Handle tab change
@@ -194,7 +192,7 @@ const BestPracticesPanel = () => {
                   mb: 1,
                   color: theme.palette.primary.main,
                 }}>
-                  Effective Questions:
+                  Effective Examples:
                 </Typography>
 
                 {examples.map((example, idx) => (
@@ -405,88 +403,91 @@ const BestPracticesPanel = () => {
       </Card>
   );
 
-  // Experience level tab panel component
-  const ExperienceLevelTabPanel = ({value, index, children}) => (
-      <div
-          role="tabpanel"
-          hidden={value !== index}
-          id={`experience-level-tabpanel-${index}`}
-          aria-labelledby={`experience-level-tab-${index}`}
-      >
-        {value === index && (
-            <Box sx={{py: 2}}>
-              {children}
-            </Box>
-        )}
-      </div>
-  );
-
   // Define interview phases for timeline
   const interviewPhases = [
     {
-      phase: 'Opening',
-      time: '5-10 min',
-      description: 'Build rapport and set expectations',
-      details: 'Start with a warm welcome and brief introductions. Explain the interview format and set a collaborative tone. This helps reduce candidate anxiety and creates a better environment for genuine responses.',
-      tips: [
-        'Share something about yourself to establish connection',
-        'Explain the structure: "We\'ll talk about your experience, work through some problems, then leave time for your questions"',
-        'Consider a light technical warm-up question to ease in',
-      ],
-    },
-    {
-      phase: 'Technical Background',
+      phase: 'Preparation',
       time: '10-15 min',
-      description: 'Explore past projects and experience',
-      details: 'Ask about recent technical work and challenges they\'ve overcome. Listen for how they articulate complex technical concepts and their specific contributions to projects.',
+      description: 'Review candidate materials and plan your approach',
+      details: 'Thoughtful preparation significantly improves interview quality. Review the candidate\'s resume, portfolio or code samples, focusing on areas relevant to your team\'s needs. Prepare specific questions based on their background.',
       tips: [
-        'Ask what they\'re most proud of technically',
-        'Focus on technologies relevant to the position',
-        'Note how they explain their role vs. team contributions',
+        'Identify 1-2 projects in their background to dig into technically',
+        'Prepare a calibrated coding/system design problem that fits their level',
+        'Note potential areas of concern to address in the interview',
+        'Consider how their background might complement your team\'s current composition',
       ],
     },
     {
-      phase: 'Problem Solving',
-      time: '20-30 min',
-      description: 'Work through technical scenarios',
-      details: 'Present practical problems related to your team\'s work. The goal is to observe their thinking process, how they approach ambiguity, and communication style when tackling technical challenges.',
+      phase: 'Introduction & Rapport',
+      time: '5-7 min',
+      description: 'Establish psychological safety and set expectations',
+      details: 'The first few minutes dramatically impact interview quality. A relaxed candidate will demonstrate their true capabilities better. Introduce yourself, explain the interview structure, and start with easy questions to build confidence.',
       tips: [
-        'Start with a straightforward problem then increase complexity',
-        'Use real scenarios you\'ve encountered in your work',
-        'Ask "How would you approach..." rather than expecting perfect answers',
+        'Share something authentic about your role to establish connection',
+        'Telegraph the structure: "We\'ll explore your experience, work through some problems, then leave time for your questions"',
+        'Start with a low-stakes technical warm-up that lets them experience early success',
+        'Watch for and address signs of anxiety to improve response quality',
       ],
     },
     {
-      phase: 'System Design',
+      phase: 'Experience Exploration',
       time: '15-20 min',
-      description: 'Discuss architectural approaches',
-      details: 'For mid-level and senior roles, explore how they think about larger system design questions. Focus on trade-offs, scalability considerations, and their reasoning process.',
+      description: 'Assess past work through targeted questioning',
+      details: 'Dig deep into one or two recent projects instead of superficially covering many. Ask progressively more detailed questions to distinguish between genuine expertise and surface-level knowledge.',
       tips: [
-        'Start with a simple requirement then gradually add constraints',
-        'Ask about trade-offs between different approaches',
-        'For junior roles, keep this section lighter or theoretical',
+        'Ask for a specific technical challenge they overcame and follow the STAR method (Situation, Task, Action, Result)',
+        'Probe decisions they made by asking "Why did you choose X over alternatives?"',
+        'Look for ownership signals: "I designed/implemented/advocated for..." vs. "We used/the team decided..."',
+        'Note how they explain technical concepts - can they adjust to your level of understanding?',
+      ],
+    },
+    {
+      phase: 'Technical Assessment',
+      time: '25-35 min',
+      description: 'Evaluate problem-solving approach and technical depth',
+      details: 'Focus on the candidate\'s problem-solving process rather than whether they reach a perfect solution. Pay close attention to how they respond to hints, structure their approach, and communicate their thinking.',
+      tips: [
+        'Choose problems relevant to your actual work - avoid algorithm puzzles unless directly applicable',
+        'Normalize thinking out loud: "I\'m more interested in your thought process than a perfect answer"',
+        'Provide incremental hints when needed rather than letting candidates struggle too long',
+        'Evaluate code quality factors: organization, naming, error handling, and edge cases',
+        'For senior roles, push on scalability, maintainability, and system design considerations',
+      ],
+    },
+    {
+      phase: 'Collaborative Scenario',
+      time: '10-15 min',
+      description: 'Evaluate teamwork and communication through simulation',
+      details: 'Create a scenario that simulates real collaboration to evaluate how the candidate might actually work with your team. This reveals communication style, openness to feedback, and how they might collaborate day-to-day.',
+      tips: [
+        'Present a scenario: "Let\'s say I\'m a junior teammate asking for help with..."',
+        'Create a code review scenario: "How would you give feedback on this approach?"',
+        'Introduce a constraint halfway through to see adaptability: "What if we suddenly needed to..."',
+        'Note how they receive your input - do they integrate it or dismiss it?',
       ],
     },
     {
       phase: 'Candidate Questions',
       time: '10-15 min',
-      description: 'Answer their questions about the role/team',
-      details: 'Reserve adequate time for their questions. This shows respect and allows you to assess what\'s important to them. The questions they ask can reveal a lot about their priorities and interests.',
+      description: 'Reciprocal evaluation and closing impressions',
+      details: 'The questions candidates ask reveal their priorities, values, and what they\'ve understood about your team. Reserve adequate time for this phase and take their questions as seriously as their answers.',
       tips: [
-        'Be transparent about team challenges and culture',
-        'Note if they ask thoughtful questions about the work itself',
-        'This is often when candidates are most genuine',
+        'Note the focus of questions: technical challenges, growth opportunities, team dynamics',
+        'Provide honest answers that give real insight into your team culture',
+        'Watch for red flags: no questions, only questions about perks, or hostile/defensive questions',
+        'End with clear next steps and timeline to maintain candidate interest',
       ],
     },
     {
-      phase: 'Closing',
-      time: '5 min',
-      description: 'Thank them and explain next steps',
-      details: 'End on a positive note regardless of your assessment. Clearly communicate the next steps in the process and timeline for feedback. This creates a good candidate experience.',
+      phase: 'Post-Interview Evaluation',
+      time: '5-10 min',
+      description: 'Document observations while fresh',
+      details: 'Discipline in recording your observations immediately after the interview significantly improves hiring decisions. Focus on specific behavioral examples rather than vague impressions.',
       tips: [
-        'Thank them for their time and insights',
-        'Be specific about when they\'ll hear back',
-        'Ask yourself: "Would I want this person on my team?"',
+        'Structure feedback in consistent categories: technical skills, problem solving, communication, collaboration',
+        'Cite specific examples: "When tackling the database problem, they immediately identified the indexing issue"',
+        'Separate objective observations from subjective impressions',
+        'Make a clear hire/no-hire recommendation with confidence level',
       ],
     },
   ];
@@ -510,19 +511,42 @@ const BestPracticesPanel = () => {
                 }}
             >
               <EngineeringIcon sx={{mr: 1}}/>
-              Interview Best Practises
+              Interview Excellence
+            </Typography>
+            <Typography variant="body1" sx={{color: COLORS.text.secondary}}>
+              Proven techniques to conduct powerful technical interviews that
+              identify the best talent for your team.
+              Focus on assessing technical ability, problem-solving, and
+              determining if the candidate is someone you'd want to work with.
             </Typography>
           </Box>
+
+          {/* Interview Timeline Section */}
+          <Section id="timeline" title="Interview Structure & Timeline"
+                   icon={<TimelineIcon/>}>
+            <Box sx={{px: 1, maxWidth: 900, mx: 'auto', pt: 3}}>
+              {interviewPhases.map((phase, index) => (
+                  <PhaseCard
+                      key={index}
+                      phase={phase.phase}
+                      time={phase.time}
+                      description={phase.description}
+                      details={phase.details}
+                      tips={phase.tips}
+                  />
+              ))}
+            </Box>
+          </Section>
 
           {/* Core Interview Philosophy Section */}
           <Section id="philosophy" title="Core Interview Philosophy"
                    icon={<InsightsIcon/>}>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} sx={{pt: 3}}>
               <Grid item xs={12} md={4}>
                 <TechniqueCard
                     title="The No Maybe Rule"
                     icon={<PersonIcon/>}
-                    content="Trust your intuition. If you can't confidently say 'yes' to having them on your team, it's a no. There are no maybes in hiring."
+                    content="Trust your intuition. If you can\'t confidently say \'yes\' to having them on your team, it\'s a no. There are no maybes in hiring."
                     examples={[
                       'Would I personally want to work with this person?',
                       'Would I be confident assigning important work to them?',
@@ -546,7 +570,7 @@ const BestPracticesPanel = () => {
                 <TechniqueCard
                     title="Technical Intuition"
                     icon={<IdeaIcon/>}
-                    content="Trust your technical judgment. You can sense when someone truly understands a technology versus when they're reciting memorized concepts."
+                    content="Trust your technical judgment. You can sense when someone truly understands a technology versus when they\'re reciting memorized concepts."
                     examples={[
                       'Tell me about a technical decision you made that you later regretted',
                       'How would you explain [complex concept] to a junior developer?',
@@ -560,458 +584,105 @@ const BestPracticesPanel = () => {
           {/* Technical Evaluation Section */}
           <Section id="technical" title="Technical Questioning Strategies"
                    icon={<CodeIcon/>}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Card
-                    elevation={0}
-                    sx={{
-                      height: '100%',
-                      border: `1px solid ${COLORS.grey[200]}`,
-                      borderRadius: 2,
-                    }}
-                >
-                  <CardContent>
-                    <Typography variant="subtitle1" sx={{
-                      fontWeight: 600,
-                      mb: 2,
-                      color: theme.palette.primary.main,
-                    }}>
-                      Depth Probe Technique
-                    </Typography>
-
-                    <Typography sx={{mb: 2}}>
-                      Use open-ended questions to expose decision-making
-                      rationale and technical understanding. These questions
-                      reveal depth beyond surface knowledge.
-                    </Typography>
-
-                    <Box
-                        sx={{
-                          bgcolor: alpha(theme.palette.primary.main, 0.05),
-                          p: 2,
-                          borderRadius: 1,
-                        }}
-                    >
-                      <Typography variant="body2" sx={{fontWeight: 500, mb: 1}}>
-                        Example Questions:
-                      </Typography>
-
-                      <ul style={{margin: 0, paddingLeft: '1.5rem'}}>
-                        <li>
-                          <Typography variant="body2" sx={{mb: 1}}>
-                            "Walk me through your approach to troubleshooting
-                            the Kafka producer shutdown issue"
-                          </Typography>
-                        </li>
-                        <li>
-                          <Typography variant="body2" sx={{mb: 1}}>
-                            "You mentioned 'eventual consistency'—what
-                            trade-offs did you consider?"
-                          </Typography>
-                        </li>
-                        <li>
-                          <Typography variant="body2">
-                            "What led you to choose that particular data
-                            structure?"
-                          </Typography>
-                        </li>
-                      </ul>
-                    </Box>
-                  </CardContent>
-                </Card>
+            <Grid container spacing={3} sx={{pt: 3}}>
+              <Grid item xs={12} md={4}>
+                <TechniqueCard
+                    title="Depth Probe Technique"
+                    icon={<CodeIcon/>}
+                    content="Use open-ended questions to expose decision-making rationale and technical understanding. These questions reveal depth beyond surface knowledge."
+                    examples={[
+                      'Walk me through your approach to troubleshooting the Kafka producer shutdown issue',
+                      'You mentioned \'eventual consistency\'—what trade-offs did you consider?',
+                      'What led you to choose that particular data structure?',
+                    ]}
+                />
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <Card
-                    elevation={0}
-                    sx={{
-                      height: '100%',
-                      border: `1px solid ${COLORS.grey[200]}`,
-                      borderRadius: 2,
-                    }}
-                >
-                  <CardContent>
-                    <Typography variant="subtitle1" sx={{
-                      fontWeight: 600,
-                      mb: 2,
-                      color: theme.palette.primary.main,
-                    }}>
-                      Scenario Adaptation
-                    </Typography>
-
-                    <Typography sx={{mb: 2}}>
-                      Introduce hypothetical constraints to test adaptability
-                      and deeper understanding. This reveals how candidates
-                      handle changing requirements.
-                    </Typography>
-
-                    <Box
-                        sx={{
-                          bgcolor: alpha(theme.palette.primary.main, 0.05),
-                          p: 2,
-                          borderRadius: 1,
-                        }}
-                    >
-                      <Typography variant="body2" sx={{fontWeight: 500, mb: 1}}>
-                        Example Questions:
-                      </Typography>
-
-                      <ul style={{margin: 0, paddingLeft: '1.5rem'}}>
-                        <li>
-                          <Typography variant="body2" sx={{mb: 1}}>
-                            "How would your solution change if the Kafka cluster
-                            were horizontally scaled?"
-                          </Typography>
-                        </li>
-                        <li>
-                          <Typography variant="body2" sx={{mb: 1}}>
-                            "What if we suddenly had a 10x increase in traffic
-                            to this service?"
-                          </Typography>
-                        </li>
-                        <li>
-                          <Typography variant="body2">
-                            "Imagine we need to ensure exactly-once message
-                            processing. How would that change your approach?"
-                          </Typography>
-                        </li>
-                      </ul>
-                    </Box>
-                  </CardContent>
-                </Card>
+              <Grid item xs={12} md={4}>
+                <TechniqueCard
+                    title="Scenario Adaptation"
+                    icon={<CodeIcon/>}
+                    content="Introduce hypothetical constraints to test adaptability and deeper understanding. This reveals how candidates handle changing requirements."
+                    examples={[
+                      'How would your solution change if the Kafka cluster were horizontally scaled?',
+                      'What if we suddenly had a 10x increase in traffic to this service?',
+                      'Imagine we need to ensure exactly-once message processing. How would that change your approach?',
+                    ]}
+                />
               </Grid>
 
-              <Grid item xs={12}>
-                <Typography variant="h6" sx={{mt: 2, mb: 3, fontWeight: 600}}>
-                  Technical Mentoring Scenario
-                </Typography>
-
-                <DialogExample
-                    title="Database Performance Problem"
-                    exchanges={[
-                      {
-                        you: true,
-                        text: 'Let\'s say I\'m a developer on your team. We have a REST API endpoint that\'s suddenly much slower than usual. What would you suggest I look at first?',
-                      },
-                      {
-                        you: false,
-                        text: 'I\'d start by checking if the database queries changed. Maybe we\'re doing a table scan now instead of using an index.',
-                      },
-                      {
-                        you: true,
-                        text: 'Good thought. What metrics or tools would you use to confirm that?',
-                      },
-                      {
-                        you: false,
-                        text: 'I\'d look at the query execution plan and check for \'Seq Scan\' operations or high-cost operations that should be using indexes.',
-                      },
-                      {
-                        note: 'This technique quickly reveals their troubleshooting approach and technical depth without being a quiz. Look for structured thinking, clear communication, and command of their domain.',
-                      },
+              <Grid item xs={12} md={4}>
+                <TechniqueCard
+                    title="Technical Mentoring"
+                    icon={<CodeIcon/>}
+                    content="Create a scenario where the candidate has to explain a technical concept or solution to a colleague. This reveals teaching ability and depth of understanding."
+                    examples={[
+                      'Let\'s say I\'m a junior developer. Could you explain how database indexing impacts query performance?',
+                      'Pretend I\'m a new team member. How would you explain our message queue architecture to me?',
+                      'If a colleague was confused about microservices, how would you describe the key benefits and challenges?',
                     ]}
                 />
               </Grid>
             </Grid>
           </Section>
 
-          {/* Interview Timeline Section */}
-          <Section id="timeline" title="Interview Structure & Timeline"
-                   icon={<TimelineIcon/>}>
-            <Box sx={{px: 1, maxWidth: 900, mx: 'auto'}}>
-              {interviewPhases.map((phase, index) => (
-                  <PhaseCard
-                      key={index}
-                      phase={phase.phase}
-                      time={phase.time}
-                      description={phase.description}
-                      details={phase.details}
-                      tips={phase.tips}
-                  />
-              ))}
-            </Box>
+
+          {/* Common Pitfalls Section */}
+          <Section id="pitfalls" title="Common Interview Pitfalls"
+                   icon={<PitfallIcon/>}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={4}>
+                <TechniqueCard
+                    title="The Knowledge Quiz"
+                    icon={<PitfallIcon/>}
+                    content="Asking trivia-like questions about language features or API details. This tests memorization, not problem-solving ability or deeper understanding."
+                    examples={[
+                      'Instead of \'Name 5 HTTP status codes\', ask \'How would you troubleshoot this 403 error?\'',
+                      'Replace \'Explain Big O notation\' with \'Why might this function become slow with large inputs?\'',
+                      'Focus on applied knowledge: \'How would you refactor this to be more maintainable?\'',
+                    ]}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TechniqueCard
+                    title="The Sherlock Syndrome"
+                    icon={<PitfallIcon/>}
+                    content="Creating unnecessarily complex or trick-based problems designed to stump candidates rather than reveal their capabilities."
+                    examples={[
+                      'Choose problems representative of your actual day-to-day challenges',
+                      'Test problem-solving process rather than ability to find the one clever trick',
+                      'When a candidate struggles, consider whether the problem itself is unreasonable',
+                    ]}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TechniqueCard
+                    title="Interrogation Mode"
+                    icon={<PitfallIcon/>}
+                    content="Rapid-fire questioning without building rapport creates anxiety and prevents candidates from showing their best work."
+                    examples={[
+                      'Allocate time for casual conversation to establish psychological safety',
+                      'Signal your interest in their success: \'I\'m hoping to see how you approach problems\'',
+                      'Share something about yourself first to create reciprocity and connection',
+                    ]}
+                />
+              </Grid>
+            </Grid>
           </Section>
 
-          {/* Example Scenarios Section */}
-          <Section id="examples" title="Experience-Tailored Questions"
-                   icon={<SchoolIcon/>}>
-            <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-              <Tabs
-                  value={activeTab}
-                  onChange={handleTabChange}
-                  sx={{
-                    '& .MuiTab-root': {
-                      fontWeight: 500,
-                      fontSize: '0.9rem',
-                      textTransform: 'none',
-                      minWidth: 120,
-                    },
-                  }}
-              >
-                <Tab
-                    label={
-                      <Box sx={{display: 'flex', alignItems: 'center'}}>
-                        <Box
-                            sx={{
-                              width: 8,
-                              height: 8,
-                              bgcolor: theme.palette.primary.dark,
-                              borderRadius: '50%',
-                              mr: 1,
-                            }}
-                        />
-                        Senior / Lead
-                      </Box>
-                    }
-                />
-                <Tab
-                    label={
-                      <Box sx={{display: 'flex', alignItems: 'center'}}>
-                        <Box
-                            sx={{
-                              width: 8,
-                              height: 8,
-                              bgcolor: theme.palette.primary.main,
-                              borderRadius: '50%',
-                              mr: 1,
-                            }}
-                        />
-                        Mid-Level
-                      </Box>
-                    }
-                />
-                <Tab
-                    label={
-                      <Box sx={{display: 'flex', alignItems: 'center'}}>
-                        <Box
-                            sx={{
-                              width: 8,
-                              height: 8,
-                              bgcolor: COLORS.basic.main,
-                              borderRadius: '50%',
-                              mr: 1,
-                            }}
-                        />
-                        Junior
-                      </Box>
-                    }
-                />
-              </Tabs>
-            </Box>
-
-            {/* Senior Level Panel */}
-            <ExperienceLevelTabPanel value={activeTab} index={0}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <DialogExample
-                      title="System Design & Architecture"
-                      exchanges={[
-                        {
-                          you: true,
-                          text: 'We need to redesign our notification service to handle 10x growth. How would you approach this?',
-                        },
-                        {
-                          you: false,
-                          text: 'I\'d first analyze the current bottlenecks. Are we limited by database throughput, message broker capacity, or something else?',
-                        },
-                        {
-                          you: true,
-                          text: 'Assume our message broker is the main bottleneck.',
-                        },
-                        {
-                          you: false,
-                          text: 'In that case, I\'d recommend moving to a distributed streaming platform like Kafka or Pulsar. We could shard by customer ID to distribute load and ensure ordered delivery within each customer\'s context.',
-                        },
-                        {
-                          you: true,
-                          text: 'What operational challenges would you anticipate with that approach?',
-                        },
-                        {
-                          note: 'This tests both technical depth and the ability to consider real-world operational implications. Look for discussions of monitoring, scaling challenges, and disaster recovery.',
-                        },
-                      ]}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <DialogExample
-                      title="Team Leadership & Technical Direction"
-                      exchanges={[
-                        {
-                          you: true,
-                          text: 'Tell me about a time when you had to change technical direction mid-project.',
-                        },
-                        {
-                          you: false,
-                          text: 'We were building a real-time analytics dashboard using a traditional RDBMS, but as the data volume grew, query performance degraded significantly.',
-                        },
-                        {
-                          you: true,
-                          text: 'How did you handle the transition?',
-                        },
-                        {
-                          you: false,
-                          text: 'First, I gathered metrics to quantify the problem. Then I prototyped two alternative approaches: one using a columnar database and another with a time-series DB. After testing with our actual workload, I presented the options with tradeoffs to the team.',
-                        },
-                        {
-                          you: true,
-                          text: 'How did you manage the team through this change?',
-                        },
-                        {
-                          note: 'Listen for their approach to both the technical and people aspects of leadership. Strong candidates will discuss how they communicated the change, addressed resistance, and managed the transition risks.',
-                        },
-                      ]}
-                  />
-                </Grid>
-              </Grid>
-            </ExperienceLevelTabPanel>
-
-            {/* Mid-Level Panel */}
-            <ExperienceLevelTabPanel value={activeTab} index={1}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <DialogExample
-                      title="Systems Design & Scaling"
-                      exchanges={[
-                        {
-                          you: true,
-                          text: 'So I see you\'ve worked on scaling that payment processing system. What kind of challenges did you run into?',
-                        },
-                        {
-                          you: false,
-                          text: 'Yeah, that was tricky. We kept hitting these weird latency spikes during peak hours. We initially thought it was our database, but...',
-                        },
-                        {
-                          you: true,
-                          text: 'What made you realize it wasn\'t the database?',
-                        },
-                        {
-                          you: false,
-                          text: 'Well, we added some monitoring and saw that the DB utilization was actually fine. Turned out our message broker was the real bottleneck.',
-                        },
-                        {
-                          you: true,
-                          text: 'That\'s a good catch. How did your team end up addressing that?',
-                        },
-                        {
-                          note: 'Look for practical experience, how they collaborated with others, and their ability to explain technical concepts in a conversational way.',
-                        },
-                      ]}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <DialogExample
-                      title="Code Quality & Refactoring"
-                      exchanges={[
-                        {
-                          you: true,
-                          text: 'Tell me about a time you had to refactor poorly written code. How did you approach it?',
-                        },
-                        {
-                          you: false,
-                          text: 'We inherited this authentication module that was a 3000-line class with multiple responsibilities. It had poor error handling and duplicated code everywhere.',
-                        },
-                        {
-                          you: true,
-                          text: 'That sounds painful. What strategy did you use to tackle it?',
-                        },
-                        {
-                          you: false,
-                          text: 'First, I added comprehensive tests to capture current behavior. Then, I identified the different responsibilities and created smaller, single-purpose classes. I refactored incrementally, keeping the code working at each step.',
-                        },
-                        {
-                          you: true,
-                          text: 'How did you ensure you didn\'t introduce new bugs?',
-                        },
-                        {
-                          note: 'Look for disciplined approaches to refactoring, understanding of testing as a safety net, and pragmatic decision-making about what to change vs. leave alone.',
-                        },
-                      ]}
-                  />
-                </Grid>
-              </Grid>
-            </ExperienceLevelTabPanel>
-
-            {/* Junior Panel */}
-            <ExperienceLevelTabPanel value={activeTab} index={2}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <DialogExample
-                      title="Troubleshooting & Fundamentals"
-                      exchanges={[
-                        {
-                          you: true,
-                          text: 'Let\'s talk about a situation you might encounter. Say you pushed some code that\'s supposed to process messages, but nothing seems to be happening. How would you start troubleshooting?',
-                        },
-                        {
-                          you: false,
-                          text: 'First thing I\'d do is check the logs to see if there are any errors or exceptions being thrown.',
-                        },
-                        {
-                          you: true,
-                          text: 'That\'s a good start. Let\'s say the logs show the application is starting fine, but just not processing anything.',
-                        },
-                        {
-                          you: false,
-                          text: 'I\'d probably check if the messages are actually making it to the queue. Maybe there\'s a connection issue?',
-                        },
-                        {
-                          you: true,
-                          text: 'Good thinking. What tools would help you verify that?',
-                        },
-                        {
-                          note: 'Focus on their troubleshooting approach and logical progression through a problem, not specific technical details. Look for curiosity and eagerness to learn.',
-                        },
-                      ]}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <DialogExample
-                      title="Learning & Growth Mindset"
-                      exchanges={[
-                        {
-                          you: true,
-                          text: 'Tell me about the most challenging thing you\'ve learned recently in programming.',
-                        },
-                        {
-                          you: false,
-                          text: 'I was struggling with understanding how promises and async/await work in JavaScript. I kept running into race conditions in my code.',
-                        },
-                        {
-                          you: true,
-                          text: 'That\'s something many developers find challenging. How did you go about learning it?',
-                        },
-                        {
-                          you: false,
-                          text: 'I started by reading MDN docs, but what really helped was building a small project where I deliberately used different patterns. I also drew diagrams to visualize the execution flow.',
-                        },
-                        {
-                          you: true,
-                          text: 'Nice approach. What\'s one insight that finally made it click for you?',
-                        },
-                        {
-                          note: 'Listen for their learning process, not just what they learned. Great junior candidates will show persistence, creativity in their learning approaches, and the ability to apply concepts practically.',
-                        },
-                      ]}
-                  />
-                </Grid>
-              </Grid>
-            </ExperienceLevelTabPanel>
-          </Section>
-
+          {/* Effective Interaction Guidelines */}
           <Section id="interaction" title="Effective Interaction Guidelines"
                    icon={<SupportIcon/>}>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} sx={{pt: 3}}>
               <Grid item xs={12} md={6}>
                 <TechniqueCard
-                    title="Proactive Clarification"
+                    title="Active Communication"
                     icon={<QuestionIcon/>}
-                    content="Don't let confusion or ambiguity persist. Politely interrupt to clarify points when needed."
+                    content="Manage the conversation flow effectively. Clarify when needed, but also recognize when a candidate has sufficiently answered and move forward."
                     examples={[
-                      'Let me pause you here—could you clarify how you validated the consumer offset?',
-                      'I want to make sure I understand your approach correctly. Are you suggesting...?',
-                      'Before we move on, I\'d like to clarify what you mean by \'optimized\' in this context.',
+                      'That\'s an excellent answer, thank you. Let\'s move on to discuss...',
+                      'I appreciate that thorough explanation. Now I\'d like to explore a different area...',
+                      'I see your approach clearly now. To be mindful of our time, let\'s shift to...',
                     ]}
                 />
               </Grid>
