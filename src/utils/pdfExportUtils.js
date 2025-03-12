@@ -2,7 +2,6 @@
 import {exportInterviewData as exportToHtml} from './htmlExportUtils';
 import {jsPDF} from 'jspdf';
 import html2canvas from 'html2canvas';
-import {isUbsTheme} from '../themes/themeUtils';
 
 /**
  * Convert HTML content to PDF and export
@@ -20,7 +19,10 @@ const convertHtmlToPdf = async (htmlContent, filename) => {
         `      <style>
         body {
           visibility: hidden;
-          padding-top: 50px !important; /* Increase padding for better page breaks */
+          padding: 50px 0 100px !important; /* Add more padding at bottom to prevent cuts */
+          max-width: 1200px !important; /* Match container width */
+          width: 1200px !important;
+          margin: 0 auto !important;
         }
         @page {
           margin: 10mm 5mm !important; /* Very small margins to maximize content */
@@ -28,15 +30,30 @@ const convertHtmlToPdf = async (htmlContent, filename) => {
         /* Page break hints */
         .question-card {
           page-break-inside: avoid !important;
+          break-inside: avoid !important;
         }
         .subcategory {
           page-break-before: auto !important;
           page-break-after: auto !important;
           page-break-inside: avoid !important;
+          break-inside: avoid !important;
         }
         .category {
           page-break-before: auto !important;
           page-break-after: auto !important;
+        }
+        .container {
+          max-width: 1200px !important;
+          width: 1200px !important;
+          padding: 20px !important;
+          margin: 0 auto !important;
+        }
+        /* Ensure content opacity is correct */
+        .answer-insights-container.no-selections,
+        .notes-container.empty,
+        .rating-container.empty,
+        .point-item.unselected {
+          opacity: 0.4 !important;
         }
       </style>
       <script>
@@ -51,8 +68,8 @@ const convertHtmlToPdf = async (htmlContent, filename) => {
     iframe.style.position = 'absolute';
     iframe.style.left = '-9999px';
     iframe.style.top = '0';
-    iframe.style.width = '794px'; // A4 width in pixels at 96 DPI
-    iframe.style.height = '1123px'; // A4 height in pixels
+    iframe.style.width = '1200px'; // Match container width from HTML
+    iframe.style.height = '1500px'; // Taller for better rendering
     iframe.style.border = 'none';
     document.body.appendChild(iframe);
 
@@ -81,37 +98,51 @@ const convertHtmlToPdf = async (htmlContent, filename) => {
 
     // Function to render a page
     const renderPage = async (pageNum, totalPages) => {
-      // Set scroll position for this page
-      iframe.contentWindow.scrollTo(0, pageNum * 1123);
+      // Calculate height of each page (assuming A4 aspect ratio but with 1200px width)
+      const pageHeight = 1200 * 1.414; // A4 aspect ratio is 1:1.414 (width:height)
 
-      await new Promise(resolve => setTimeout(resolve, 100)); // Allow time to scroll
+      // Set scroll position for this page
+      iframe.contentWindow.scrollTo(0, pageNum * pageHeight);
+
+      await new Promise(resolve => setTimeout(resolve, 200)); // Allow more time to scroll
 
       // Create canvas from content
       const canvas = await html2canvas(iframe.contentWindow.document.body, {
         scale: 2, // Higher resolution
-        windowWidth: 794,
-        windowHeight: 1123,
-        y: pageNum * 1123,
-        height: 1123,
+        windowWidth: 1200,
+        windowHeight: pageHeight,
+        y: pageNum * pageHeight,
+        height: pageHeight,
         allowTaint: true,
         useCORS: true,
         logging: false,
+        onclone: (clonedDoc) => {
+          // Add extra checks for page breaks in cloned document
+          const questionCards = clonedDoc.querySelectorAll('.question-card');
+          questionCards.forEach(card => {
+            card.style.pageBreakInside = 'avoid';
+            card.style.breakInside = 'avoid';
+          });
+        },
       });
 
       // Add image to PDF
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use highest quality
 
       if (pageNum > 0) {
         pdf.addPage();
       }
 
-      // Add image with minimal margins
-      pdf.addImage(imgData, 'JPEG', 5, 5, 200, 287); // A4 dimensions in mm with small margins
+      // Add image with minimal margins - use aspect ratio to fill the page
+      pdf.addImage(imgData, 'JPEG', 5, 5, 200, 282); // A4 dimensions in mm with small margins
     };
 
     // Determine the total height of the content
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait longer for content to render
+
     const bodyHeight = iframe.contentWindow.document.body.scrollHeight;
-    const pages = Math.ceil(bodyHeight / 1123);
+    const pageHeight = 1200 * 1.414; // A4 aspect ratio
+    const pages = Math.ceil(bodyHeight / pageHeight);
 
     // Render each page
     for (let i = 0; i < pages; i++) {
@@ -140,11 +171,6 @@ const convertHtmlToPdf = async (htmlContent, filename) => {
 export const exportInterviewData = async (
     interviewState, allQuestions, metadata = {}) => {
   try {
-    // Notify about local logo - we're adding this note for developers
-    if (isUbsTheme()) {
-      console.info(
-          'Note: UBS logo should be saved at "/public/assets/images/ubs-logo.png" for proper export');
-    }
 
     // First generate HTML content
     // We'll use a special flag to indicate we're preparing for PDF export

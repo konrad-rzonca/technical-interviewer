@@ -71,14 +71,14 @@ const createCandidateDetailsHTML = (metadata) => {
 
   let recommendationHTML = '';
   if (recommendation === 'recommended') {
-    recommendationHTML = `<div class="detail-row">
+    recommendationHTML = `<div class="recommendation-container">
       <div class="detail-value recommendation positive">
         <div class="recommendation-icon positive">✓</div>
         <span class="recommendation-text positive">Recommend</span>
       </div>
     </div>`;
   } else if (recommendation === 'not_recommended') {
-    recommendationHTML = `<div class="detail-row">
+    recommendationHTML = `<div class="recommendation-container">
       <div class="detail-value recommendation negative">
         <div class="recommendation-icon negative">✕</div>
         <span class="recommendation-text negative">Do Not Recommend</span>
@@ -92,8 +92,6 @@ const createCandidateDetailsHTML = (metadata) => {
         ${candidateName ? `
           <div class="detail-value candidate-name">${candidateName}</div>
         ` : ''}
-        
-        ${recommendationHTML}
       </div>
       
       ${comments ? `
@@ -101,6 +99,8 @@ const createCandidateDetailsHTML = (metadata) => {
           <div class="detail-value comments">${comments.replace(/\n/g, '<br>')}</div>
         </div>
       ` : ''}
+      
+      ${recommendationHTML}
     </div>
   `;
 };
@@ -508,9 +508,7 @@ const createReportHTML = (exportData, options = {}) => {
         }
         
         .candidate-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+          margin-bottom: 6px;
         }
         
         .detail-row {
@@ -524,6 +522,10 @@ const createReportHTML = (exportData, options = {}) => {
         .candidate-name {
           font-weight: 500;
           font-size: 16px;
+        }
+        
+        .recommendation-container {
+          margin-top: 8px;
         }
         
         .detail-value.recommendation {
@@ -865,7 +867,7 @@ const createReportHTML = (exportData, options = {}) => {
           </div>
           ${useUbsTheme ? `
             <div class="logo">
-              <img src="/public/assets/images/ubs-logo.png" alt="UBS" style="height: 32px;">
+              <img src="${window.location.origin}/assets/images/ubs-logo.png" alt="UBS" style="height: 32px;">
             </div>
           ` : ''}
         </header>
