@@ -1,7 +1,7 @@
 ﻿// src/components/Logo.js
 import React from 'react';
 import {Box, Typography} from '@mui/material';
-import {isCorporateTheme} from '../themes/themeUtils';
+import {isCorporateTheme} from '../themes';
 
 /**
  * Logo component that displays either the Corporate logo or application name
@@ -20,7 +20,7 @@ const Logo = ({variant = 'default'}) => {
           mr: 2,
         }}>
           <img
-              src={process.env.PUBLIC_URL + '/assets/images/corporate-logo.png'}
+              src={`${process.env.PUBLIC_URL}/assets/images/corporate-logo.png`}
               alt="Corporate"
               height={logoHeight}
               style={{display: 'block'}}
