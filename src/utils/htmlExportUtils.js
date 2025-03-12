@@ -214,6 +214,31 @@ const hasCategorySelectedPoints = (categoryIndex, selectedPoints) => {
 };
 
 /**
+ * Attempts to get the UBS logo as a data URL for embedding in exports
+ * @returns {string} - Data URL of the logo or empty string if not found
+ */
+const getLogoDataUrl = () => {
+  try {
+    // Find the UBS logo in the document
+    const logoImg = document.querySelector('img[src*="ubs-logo"]');
+    if (logoImg && logoImg.complete) {
+      // Create a canvas and draw the image onto it
+      const canvas = document.createElement('canvas');
+      canvas.width = logoImg.naturalWidth || 64;
+      canvas.height = logoImg.naturalHeight || 32;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(logoImg, 0, 0);
+      // Convert canvas to data URL
+      return canvas.toDataURL('image/png');
+    }
+  } catch (e) {
+    console.error('Error generating logo data URL:', e);
+  }
+  // Fallback to a base64 encoded UBS logo or transparent placeholder
+  return ''; // Empty string will make the logo not show
+};
+
+/**
  * Creates HTML for answer insights with a horizontal layout matching the app's UI
  * @param {Array} answerInsights - Array of answer insights
  * @param {Object} selectedPoints - Object mapping categoryIndex-pointIndex to boolean
@@ -369,6 +394,7 @@ const createReportHTML = (exportData, options = {}) => {
   const primaryColor = useUbsTheme ? '#EC0016' : COLORS.primary.main;
   const reportDate = new Date(timestamp).toLocaleDateString();
   const reportTime = new Date(timestamp).toLocaleTimeString();
+  const logoDataUrl = getLogoDataUrl();
 
   // If no questions have content, display a message
   if (questionIds.length === 0) {
@@ -504,15 +530,15 @@ const createReportHTML = (exportData, options = {}) => {
         
         /* Candidate details styles */
         .candidate-details {
-          margin-bottom: 16px;
+          margin-bottom: 20px;
         }
         
         .candidate-header {
-          margin-bottom: 6px;
+          margin-bottom: 10px;
         }
         
         .detail-row {
-          margin-bottom: 6px;
+          margin-bottom: 10px;
         }
         
         .detail-value {
@@ -525,7 +551,7 @@ const createReportHTML = (exportData, options = {}) => {
         }
         
         .recommendation-container {
-          margin-top: 8px;
+          margin-top: 12px;
         }
         
         .detail-value.recommendation {
@@ -866,10 +892,11 @@ const createReportHTML = (exportData, options = {}) => {
             <p class="subtitle">Generated on ${reportDate} at ${reportTime}</p>
           </div>
           ${useUbsTheme ? `
-            <div class="logo">
-              <img src="${window.location.origin}/assets/images/ubs-logo.png" alt="UBS" style="height: 32px;">
-            </div>
-          ` : ''}
+  <div class="logo">
+    <img src="${logoDataUrl || window.location.origin +
+  '/assets/images/ubs-logo.png'}" alt="UBS" style="height: 32px;">
+  </div>
+` : ''}
         </header>
         
         ${metadata ? createCandidateDetailsHTML(metadata) : ''}

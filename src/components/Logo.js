@@ -1,7 +1,7 @@
 ﻿// src/components/Logo.js
 import React from 'react';
 import {Box, Typography} from '@mui/material';
-import {isUbsTheme} from '../themes/themeUtils';
+import {isUbsTheme} from '../themes';
 
 /**
  * Logo component that displays either the UBS logo or application name
@@ -20,7 +20,7 @@ const Logo = ({variant = 'default'}) => {
           mr: 2,
         }}>
           <img
-              src={process.env.PUBLIC_URL + '/assets/images/ubs-logo.png'}
+              src={`${process.env.PUBLIC_URL}/assets/images/ubs-logo.png`}
               alt="UBS"
               height={logoHeight}
               style={{display: 'block'}}
