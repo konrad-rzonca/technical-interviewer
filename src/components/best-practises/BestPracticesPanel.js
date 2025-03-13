@@ -1,11 +1,9 @@
-﻿// src/components/best-practises/BestPracticesPanel.js
-import React, {useState} from 'react';
+﻿import React, {useState} from 'react';
 import {
   alpha,
   Box,
   Card,
   CardContent,
-  Chip,
   Divider,
   Grid,
   IconButton,
@@ -32,13 +30,11 @@ import {
 
 import {COLORS} from '../../themes/baseTheme';
 import {usePanelStyles} from '../../utils/styles';
+import InterviewTimeline from './InterviewTimeline';
 
 const BestPracticesPanel = () => {
   const theme = useTheme();
   const panelStyles = usePanelStyles(false, true);
-
-  // State for active tab
-  const [activeTab, setActiveTab] = useState(0);
 
   // State for expanded sections
   const [expandedSections, setExpandedSections] = useState({
@@ -46,12 +42,8 @@ const BestPracticesPanel = () => {
     philosophy: false,
     technical: false,
     interaction: false,
+    pitfalls: false,
   });
-
-  // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-  };
 
   // Toggle section expansion
   const toggleSection = (section) => {
@@ -319,179 +311,6 @@ const BestPracticesPanel = () => {
       </Card>
   );
 
-  // Phase card component for timeline
-  const PhaseCard = ({phase, time, description, details, tips}) => (
-      <Card
-          elevation={0}
-          sx={{
-            mb: 2,
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-            borderLeft: `4px solid ${theme.palette.primary.main}`,
-            borderRadius: 1,
-            '&:hover': {
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-              transform: 'translateX(4px)',
-            },
-            transition: 'all 0.2s ease',
-          }}
-      >
-        <CardContent>
-          <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 1}}>
-            <Typography variant="subtitle1" sx={{
-              fontWeight: 600,
-              color: theme.palette.primary.main,
-            }}>
-              {phase}
-            </Typography>
-            <Chip
-                label={time}
-                size="small"
-                sx={{
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
-                  color: theme.palette.primary.main,
-                  fontWeight: 500,
-                  fontSize: '0.7rem',
-                }}
-            />
-          </Box>
-
-          <Typography variant="body2"
-                      sx={{fontWeight: 500, mb: 1, color: COLORS.text.primary}}>
-            {description}
-          </Typography>
-
-          <Typography variant="body2" sx={{
-            mb: 2,
-            color: COLORS.text.secondary,
-            fontSize: '0.85rem',
-          }}>
-            {details}
-          </Typography>
-
-          {tips && (
-              <Box
-                  sx={{
-                    bgcolor: alpha(theme.palette.primary.main, 0.05),
-                    p: 1.5,
-                    borderRadius: 1,
-                  }}
-              >
-                <Typography variant="body2" sx={{
-                  fontWeight: 600,
-                  mb: 0.5,
-                  color: theme.palette.primary.main,
-                  fontSize: '0.8rem',
-                }}>
-                  Effective Approaches:
-                </Typography>
-
-                <ul style={{margin: '0.5rem 0', paddingLeft: '1.5rem'}}>
-                  {tips.map((tip, idx) => (
-                      <li key={idx}>
-                        <Typography variant="body2" sx={{
-                          fontSize: '0.8rem',
-                          color: COLORS.text.primary,
-                        }}>
-                          {tip}
-                        </Typography>
-                      </li>
-                  ))}
-                </ul>
-              </Box>
-          )}
-        </CardContent>
-      </Card>
-  );
-
-  // Define interview phases for timeline
-  const interviewPhases = [
-    {
-      phase: 'Preparation',
-      time: '10-15 min',
-      description: 'Review candidate materials and plan your approach',
-      details: 'Thoughtful preparation significantly improves interview quality. Review the candidate\'s resume, portfolio or code samples, focusing on areas relevant to your team\'s needs. Prepare specific questions based on their background.',
-      tips: [
-        'Identify 1-2 projects in their background to dig into technically',
-        'Prepare a calibrated coding/system design problem that fits their level',
-        'Note potential areas of concern to address in the interview',
-        'Consider how their background might complement your team\'s current composition',
-      ],
-    },
-    {
-      phase: 'Introduction & Rapport',
-      time: '5-7 min',
-      description: 'Establish psychological safety and set expectations',
-      details: 'The first few minutes dramatically impact interview quality. A relaxed candidate will demonstrate their true capabilities better. Introduce yourself, explain the interview structure, and start with easy questions to build confidence.',
-      tips: [
-        'Share something authentic about your role to establish connection',
-        'Telegraph the structure: "We\'ll explore your experience, work through some problems, then leave time for your questions"',
-        'Start with a low-stakes technical warm-up that lets them experience early success',
-        'Watch for and address signs of anxiety to improve response quality',
-      ],
-    },
-    {
-      phase: 'Experience Exploration',
-      time: '15-20 min',
-      description: 'Assess past work through targeted questioning',
-      details: 'Dig deep into one or two recent projects instead of superficially covering many. Ask progressively more detailed questions to distinguish between genuine expertise and surface-level knowledge.',
-      tips: [
-        'Ask for a specific technical challenge they overcame and follow the STAR method (Situation, Task, Action, Result)',
-        'Probe decisions they made by asking "Why did you choose X over alternatives?"',
-        'Look for ownership signals: "I designed/implemented/advocated for..." vs. "We used/the team decided..."',
-        'Note how they explain technical concepts - can they adjust to your level of understanding?',
-      ],
-    },
-    {
-      phase: 'Technical Assessment',
-      time: '25-35 min',
-      description: 'Evaluate problem-solving approach and technical depth',
-      details: 'Focus on the candidate\'s problem-solving process rather than whether they reach a perfect solution. Pay close attention to how they respond to hints, structure their approach, and communicate their thinking.',
-      tips: [
-        'Choose problems relevant to your actual work - avoid algorithm puzzles unless directly applicable',
-        'Normalize thinking out loud: "I\'m more interested in your thought process than a perfect answer"',
-        'Provide incremental hints when needed rather than letting candidates struggle too long',
-        'Evaluate code quality factors: organization, naming, error handling, and edge cases',
-        'For senior roles, push on scalability, maintainability, and system design considerations',
-      ],
-    },
-    {
-      phase: 'Collaborative Scenario',
-      time: '10-15 min',
-      description: 'Evaluate teamwork and communication through simulation',
-      details: 'Create a scenario that simulates real collaboration to evaluate how the candidate might actually work with your team. This reveals communication style, openness to feedback, and how they might collaborate day-to-day.',
-      tips: [
-        'Present a scenario: "Let\'s say I\'m a junior teammate asking for help with..."',
-        'Create a code review scenario: "How would you give feedback on this approach?"',
-        'Introduce a constraint halfway through to see adaptability: "What if we suddenly needed to..."',
-        'Note how they receive your input - do they integrate it or dismiss it?',
-      ],
-    },
-    {
-      phase: 'Candidate Questions',
-      time: '10-15 min',
-      description: 'Reciprocal evaluation and closing impressions',
-      details: 'The questions candidates ask reveal their priorities, values, and what they\'ve understood about your team. Reserve adequate time for this phase and take their questions as seriously as their answers.',
-      tips: [
-        'Note the focus of questions: technical challenges, growth opportunities, team dynamics',
-        'Provide honest answers that give real insight into your team culture',
-        'Watch for red flags: no questions, only questions about perks, or hostile/defensive questions',
-        'End with clear next steps and timeline to maintain candidate interest',
-      ],
-    },
-    {
-      phase: 'Post-Interview Evaluation',
-      time: '5-10 min',
-      description: 'Document observations while fresh',
-      details: 'Discipline in recording your observations immediately after the interview significantly improves hiring decisions. Focus on specific behavioral examples rather than vague impressions.',
-      tips: [
-        'Structure feedback in consistent categories: technical skills, problem solving, communication, collaboration',
-        'Cite specific examples: "When tackling the database problem, they immediately identified the indexing issue"',
-        'Separate objective observations from subjective impressions',
-        'Make a clear hire/no-hire recommendation with confidence level',
-      ],
-    },
-  ];
-
   return (
       <Box sx={{
         p: 3,
@@ -511,31 +330,18 @@ const BestPracticesPanel = () => {
                 }}
             >
               <EngineeringIcon sx={{mr: 1}}/>
-              Interview Excellence
+              Next-Level Interviews
             </Typography>
             <Typography variant="body1" sx={{color: COLORS.text.secondary}}>
-              Proven techniques to conduct powerful technical interviews that
-              identify the best talent for your team.
-              Focus on assessing technical ability, problem-solving, and
-              determining if the candidate is someone you'd want to work with.
+              Discover effective methods to confidently evaluate engineering
+              candidates through genuine, dynamic conversations.
             </Typography>
           </Box>
 
-          {/* Interview Timeline Section */}
+          {/* Interview Timeline Section - Using the new InterviewTimeline component */}
           <Section id="timeline" title="Interview Structure & Timeline"
                    icon={<TimelineIcon/>}>
-            <Box sx={{px: 1, maxWidth: 900, mx: 'auto', pt: 3}}>
-              {interviewPhases.map((phase, index) => (
-                  <PhaseCard
-                      key={index}
-                      phase={phase.phase}
-                      time={phase.time}
-                      description={phase.description}
-                      details={phase.details}
-                      tips={phase.tips}
-                  />
-              ))}
-            </Box>
+            <InterviewTimeline/>
           </Section>
 
           {/* Core Interview Philosophy Section */}
@@ -626,11 +432,41 @@ const BestPracticesPanel = () => {
             </Grid>
           </Section>
 
+          {/* Effective Interaction Guidelines */}
+          <Section id="interaction" title="Effective Interaction Guidelines"
+                   icon={<SupportIcon/>}>
+            <Grid container spacing={3} sx={{pt: 3}}>
+              <Grid item xs={12} md={6}>
+                <TechniqueCard
+                    title="Active Communication"
+                    icon={<QuestionIcon/>}
+                    content="Manage the conversation flow effectively. Clarify when needed, but also recognize when a candidate has sufficiently answered and move forward."
+                    examples={[
+                      'That\'s an excellent answer, thank you. Let\'s move on to discuss...',
+                      'I appreciate that thorough explanation. Now I\'d like to explore a different area...',
+                      'I see your approach clearly now. To be mindful of our time, let\'s shift to...',
+                    ]}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TechniqueCard
+                    title="Genuine Engagement"
+                    icon={<InsightsIcon/>}
+                    content="Create space for candidates to be authentic. Open-ended follow-ups invite them to share real experiences and demonstrate their true capabilities."
+                    examples={[
+                      'That\'s an interesting approach. What led you to that solution?',
+                      'I\'d love to hear more about your experience with that technology',
+                      'What aspects of this problem do you find most interesting to explore?',
+                    ]}
+                />
+              </Grid>
+            </Grid>
+          </Section>
 
           {/* Common Pitfalls Section */}
           <Section id="pitfalls" title="Common Interview Pitfalls"
                    icon={<PitfallIcon/>}>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} sx={{pt: 3}}>
               <Grid item xs={12} md={4}>
                 <TechniqueCard
                     title="The Knowledge Quiz"
@@ -670,36 +506,6 @@ const BestPracticesPanel = () => {
             </Grid>
           </Section>
 
-          {/* Effective Interaction Guidelines */}
-          <Section id="interaction" title="Effective Interaction Guidelines"
-                   icon={<SupportIcon/>}>
-            <Grid container spacing={3} sx={{pt: 3}}>
-              <Grid item xs={12} md={6}>
-                <TechniqueCard
-                    title="Active Communication"
-                    icon={<QuestionIcon/>}
-                    content="Manage the conversation flow effectively. Clarify when needed, but also recognize when a candidate has sufficiently answered and move forward."
-                    examples={[
-                      'That\'s an excellent answer, thank you. Let\'s move on to discuss...',
-                      'I appreciate that thorough explanation. Now I\'d like to explore a different area...',
-                      'I see your approach clearly now. To be mindful of our time, let\'s shift to...',
-                    ]}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TechniqueCard
-                    title="Genuine Engagement"
-                    icon={<InsightsIcon/>}
-                    content="Create space for candidates to be authentic. Open-ended follow-ups invite them to share real experiences and demonstrate their true capabilities."
-                    examples={[
-                      'That\'s an interesting approach. What led you to that solution?',
-                      'I\'d love to hear more about your experience with that technology',
-                      'What aspects of this problem do you find most interesting to explore?',
-                    ]}
-                />
-              </Grid>
-            </Grid>
-          </Section>
         </Paper>
       </Box>
   );
