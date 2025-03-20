@@ -251,68 +251,6 @@
       ]
     },
     {
-      "id": "java-method-references-core-java-f-25",
-      "skillLevel": "intermediate",
-      "shortTitle": "Method References",
-      "question": "Could you explain method references in Java and how they relate to lambda expressions?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Definition",
-              "description": "**Method references** are a shorthand notation for lambda expressions that call a single existing method. They use the `::` operator syntax and provide a more readable alternative when a lambda simply forwards its parameters."
-            },
-            {
-              "title": "Basic Syntax",
-              "description": "The basic syntax is `ContainingClass::methodName` or `object::methodName`. For example: \n```java\n// Lambda expression\nConsumer<String> printer = s -> System.out.println(s);\n\n// Equivalent method reference\nConsumer<String> printer = System.out::println;\n```"
-            },
-            {
-              "title": "Context",
-              "description": "Like lambdas, method references are used in contexts that expect a functional interface (an interface with a single abstract method). The method reference must match the signature of the abstract method in the functional interface."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Types of Method References",
-              "description": "There are four types of method references:\n\n1. **Static method reference**: `ClassName::staticMethod`\n   ```java\n   Function<String, Integer> parser = Integer::parseInt;\n   ```\n\n2. **Instance method reference of a particular object**: `object::instanceMethod`\n   ```java\n   String greeting = \"Hello\";\n   Supplier<String> greeter = greeting::toUpperCase;\n   ```\n\n3. **Instance method reference of an arbitrary object of a particular type**: `ClassName::instanceMethod`\n   ```java\n   Function<String, Integer> lengthFinder = String::length;\n   ```\n\n4. **Constructor reference**: `ClassName::new`\n   ```java\n   Supplier<List<String>> listFactory = ArrayList::new;\n   ```"
-            },
-            {
-              "title": "Parameter Matching",
-              "description": "The JVM automatically matches parameters between the functional interface method and the referenced method. This can sometimes be non-intuitive, especially with instance methods:\n\n```java\n// For a static method or constructor, parameters map directly:\nBiFunction<Integer, Integer, Integer> min = Math::min;\n// Equivalent to: (a, b) -> Math.min(a, b)\n\n// For an instance method of an arbitrary object,\n// the first parameter becomes the receiver of the method call:\nBiFunction<String, String, Boolean> contains = String::contains;\n// Equivalent to: (s1, s2) -> s1.contains(s2)\n```"
-            },
-            {
-              "title": "Varargs Support",
-              "description": "Method references work with varargs methods as well:\n\n```java\n// Method with varargs\nstatic void printAll(String... messages) {\n    for (String message : messages) {\n        System.out.println(message);\n    }\n}\n\n// Method reference to varargs method\nConsumer<String[]> printer = YourClass::printAll;\n```"
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Overloaded Methods",
-              "description": "When referencing overloaded methods, the compiler determines which overloaded method to use based on the functional interface's method signature:\n\n```java\nclass Processor {\n    static String process(String s) { return s.toUpperCase(); }\n    static Integer process(Integer i) { return i * 2; }\n}\n\n// This works because the compiler knows which overload to use\n// based on the Function<String, String> context\nFunction<String, String> stringProcessor = Processor::process;\n\n// Similarly, this uses the Integer overload\nFunction<Integer, Integer> intProcessor = Processor::process;\n```"
-            },
-            {
-              "title": "Generic Methods",
-              "description": "Method references can refer to generic methods, with appropriate type inference:\n\n```java\nclass Utilities {\n    public static <T> T getFirst(List<T> list) {\n        return list.isEmpty() ? null : list.get(0);\n    }\n}\n\n// The compiler infers the appropriate type\nFunction<List<String>, String> firstGetter = Utilities::getFirst;\n```"
-            },
-            {
-              "title": "Performance Considerations",
-              "description": "Method references and lambdas have similar runtime performance characteristics since they share the same underlying implementation. However, method references can sometimes be more efficient because:\n\n1. They directly invoke an existing method without creating an intermediate anonymous function\n2. The JVM can more easily identify and optimize direct method calls\n3. They potentially avoid capturing variables from the enclosing scope\n\nIn performance-critical code, method references should be preferred over equivalent lambdas where possible. However, both are subject to JVM optimizations, and the practical difference is often negligible in typical applications."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-lambda-expressions-core-java-f-24"
-      ]
-    },
-    {
       "id": "java-stream-api-core-java-f-26",
       "skillLevel": "basic",
       "shortTitle": "Stream API",
