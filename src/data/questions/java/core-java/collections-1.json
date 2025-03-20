@@ -3,68 +3,6 @@
   "subcategory": "Collections",
   "questions": [
     {
-      "id": "java-collections-framework-core-java-c-1",
-      "skillLevel": "basic",
-      "shortTitle": "Collections Framework",
-      "question": "Could you explain the Java Collections Framework and its core interfaces?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Definition",
-              "description": "The **Java Collections Framework** is a unified architecture for representing and manipulating collections of objects, providing interfaces, implementations, and algorithms. It standardizes how developers work with groups of objects, significantly reducing programming effort while improving program quality and performance."
-            },
-            {
-              "title": "Core Interfaces",
-              "description": "The primary interfaces are **Collection** (parent), **List** (ordered collection), **Set** (no duplicates), **Queue** (processes elements before access), and **Map** (key-value pairs). Each interface defines a contract that implementing classes must fulfill, providing consistency across different collection types."
-            },
-            {
-              "title": "Common Implementations",
-              "description": "**ArrayList**, **LinkedList**, **HashSet**, **TreeSet**, **HashMap**, and **TreeMap** are frequently used concrete implementations. Each implementation offers different performance characteristics and functionality tradeoffs, allowing developers to choose the most appropriate collection for specific use cases."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Interface Hierarchy",
-              "description": "**Collection** extends **Iterable**, while **List**, **Set**, and **Queue** extend **Collection**. **Map** stands separate from **Collection**. This hierarchical design enables polymorphic method implementations and promotes code reuse through inheritance of common behaviors."
-            },
-            {
-              "title": "Iterator Pattern",
-              "description": "Collections use the **Iterator pattern** to provide a uniform way to traverse elements regardless of the underlying structure. This pattern abstracts the traversal mechanism from the collection implementation, allowing for consistent element access without exposing internal details."
-            },
-            {
-              "title": "Utility Classes",
-              "description": "The **Collections** class provides static methods for sorting, searching, and synchronizing collection implementations. It also offers methods for creating unmodifiable wrappers, singleton collections, and empty collections, as well as algorithms for common operations like binary search, frequency counting, and finding min/max elements."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Design Principles",
-              "description": "The framework follows **interface-based design**, allowing polymorphic manipulation and making it easy to switch implementations. This approach separates what collections do (their contract) from how they do it (their implementation), enabling flexibility, extensibility, and maintainability in application design."
-            },
-            {
-              "title": "Thread Safety Considerations",
-              "description": "Most collections are **not thread-safe** by default, requiring explicit synchronization or concurrent implementations for multi-threaded access. The framework offers several options for thread-safe collections: synchronized wrappers via Collections utility methods, legacy thread-safe classes like Vector and Hashtable, and dedicated concurrent collections in java.util.concurrent."
-            },
-            {
-              "title": "Performance Characteristics",
-              "description": "Each implementation offers different **time and space complexity** trade-offs for various operations, making collection choice crucial for performance-critical applications. For example, ArrayList offers O(1) random access but O(n) insertion at arbitrary positions, while HashMap provides O(1) average-case lookup but may degrade to O(n) in worst-case scenarios with poor hash functions or excessive collisions."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-collection-vs-collections-core-java-c-10"
-      ]
-    },
-    {
       "id": "java-arraylist-vs-linkedlist-core-java-c-2",
       "skillLevel": "basic",
       "shortTitle": "ArrayList vs LinkedList",
@@ -725,22 +663,22 @@
       "id": "java-set-implementation-choice-core-java-c-12",
       "skillLevel": "intermediate",
       "shortTitle": "Set Implementation Choice",
-      "question": "How would you decide which Set implementation to use for a particular application?",
+      "question": "You need to store a collection of unique elements. Which Java Set implementation would you choose and why?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Common Implementations",
-              "description": "Primary Set implementations are **HashSet** (fastest, unordered), **LinkedHashSet** (preserves insertion order), and **TreeSet** (sorted). Each serves different needs with HashSet optimizing for speed, LinkedHashSet balancing speed with predictable iteration order, and TreeSet maintaining elements in a sorted order at the cost of slower operations."
+              "title": "Set Implementations Overview",
+              "description": "Java offers several Set implementations with different characteristics:\n- **HashSet**: Fastest general-purpose implementation with O(1) operations, unordered\n- **LinkedHashSet**: Maintains insertion order with slightly slower performance than HashSet\n- **TreeSet**: Keeps elements sorted by natural ordering or Comparator, with O(log n) operations\n- **EnumSet**: Specialized for enum values, extremely efficient\n- **CopyOnWriteArraySet**: Thread-safe for concurrent access with infrequent modifications\n- **ConcurrentSkipListSet**: Thread-safe sorted set for concurrent environments\n- **Collections.synchronizedSet()**: Simple synchronized wrapper for thread safety"
             },
             {
-              "title": "Performance Considerations",
-              "description": "**HashSet** offers **O(1)** operations, **LinkedHashSet** is slightly slower with predictable iteration, and **TreeSet** has **O(log n)** operations. These time complexity differences become particularly significant with large collections, where the performance gap between O(1) and O(log n) operations can be substantial."
+              "title": "General-Purpose: HashSet",
+              "description": "**HashSet** is ideal for most applications where order doesn't matter and maximum performance is desired. For example, in a web application tracking unique visitor IPs or in a spell-checker storing dictionary words, HashSet provides the fastest lookups. It's the default choice when you simply need to check if something exists in a collection without caring about ordering."
             },
             {
-              "title": "Memory Usage",
-              "description": "**HashSet** uses the least memory, while **LinkedHashSet** needs additional references for order maintenance, and **TreeSet** requires more structure for the tree. Memory consumption differences can be significant for large collections, with TreeSet typically using about twice the memory per element compared to HashSet due to its red-black tree implementation."
+              "title": "Order-Preserving: LinkedHashSet",
+              "description": "**LinkedHashSet** is perfect when you need both uniqueness and insertion order. For instance, in a user interface displaying recently accessed items, LinkedHashSet maintains the chronological order while ensuring no duplicates. It's only slightly slower than HashSet but provides the significant benefit of predictable iteration order for debugging or user-facing displays."
             }
           ]
         },
@@ -748,16 +686,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Ordering Requirements",
-              "description": "If element order doesn't matter, use **HashSet**; if insertion order is important, use **LinkedHashSet**; if sorting is needed, use **TreeSet**. This order-based decision is often the primary criterion for selecting a Set implementation, as it directly impacts both the functional behavior of your code and the performance characteristics you'll experience."
+              "title": "Sorted Collection: TreeSet",
+              "description": "**TreeSet** automatically keeps elements sorted, making it ideal for applications requiring ordered data. For example, in a leaderboard system showing top scores, a TreeSet would automatically maintain the correct ordering as new scores are added. However, its O(log n) operation time makes it less efficient than HashSet for very large collections or performance-critical code."
             },
             {
-              "title": "Element Characteristics",
-              "description": "**TreeSet** requires elements to be comparable or a Comparator; **HashSet** and **LinkedHashSet** need proper `hashCode()` and `equals()` implementations. These requirements constrain which implementation can be used with specific element types, particularly for custom classes where you must ensure the appropriate methods are correctly implemented."
+              "title": "Enum-Based Collection: EnumSet",
+              "description": "For sets of enum constants, **EnumSet** provides exceptional performance and memory efficiency. In a permissions system using enum flags (`READ`, `WRITE`, `EXECUTE`), EnumSet can track a user's permissions with minimal overhead. Its bit-vector implementation makes operations like union and intersection extremely fast, often hundreds of times more efficient than HashSet for enum values."
             },
             {
-              "title": "Specialized Sets",
-              "description": "Consider **EnumSet** for enum values (very efficient), **CopyOnWriteArraySet** for concurrent access with few writes, or **ConcurrentSkipListSet** for concurrent sorted sets. These specialized implementations offer significant performance or behavioral advantages for specific scenarios, with EnumSet in particular being hundreds of times more efficient than general-purpose sets when working with enum values."
+              "title": "Element Requirements",
+              "description": "Your element types influence implementation choice: For HashSet and LinkedHashSet, elements need proper `equals()` and `hashCode()` implementations. For TreeSet, elements must be comparable or you must provide a Comparator. For custom objects in a HashSet, ensure hash codes distribute well to prevent clustering:\n```java\npublic class Customer {\n    private String id;\n    private String name;\n    \n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (o == null || getClass() != o.getClass()) return false;\n        Customer customer = (Customer) o;\n        return id.equals(customer.id);\n    }\n    \n    @Override\n    public int hashCode() {\n        return id.hashCode();\n    }\n}\n```"
             }
           ]
         },
@@ -765,20 +703,20 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Range Operations",
-              "description": "If range queries (like finding elements within a range) are needed, **TreeSet** provides methods like `subSet()`, `headSet()`, and `tailSet()`. These operations are uniquely supported by TreeSet and make it essential for applications that need to efficiently extract portions of a set based on element ordering, such as finding all elements between two values."
+              "title": "Concurrent Usage Patterns",
+              "description": "For thread-safe applications, choose based on access patterns: **CopyOnWriteArraySet** for read-heavy workloads with rare modifications (e.g., application configuration settings read by many threads), **ConcurrentSkipListSet** for frequent concurrent modifications with sorting (e.g., real-time event processing with timestamp ordering), or **Collections.synchronizedSet** for basic thread safety with moderate contention (e.g., shared session data)."
             },
             {
-              "title": "Thread Safety",
-              "description": "For concurrent access, use **ConcurrentSkipListSet** (for sorted needs) or **CopyOnWriteArraySet** (for small sets with infrequent updates), or synchronize standard sets. Thread safety considerations are crucial in multi-threaded applications to prevent data corruption, with different implementations offering different trade-offs between thread safety, performance, and memory usage."
+              "title": "Range Operations with TreeSet",
+              "description": "**TreeSet** uniquely supports range-based queries, making it invaluable for certain applications. For example, in a scheduling system, you could find all appointments between two dates using `subSet(startDate, endDate)`. Similarly, in a product database, you might use `headSet(priceThreshold)` to find all products below a certain price point. These operations run in O(log n) time rather than requiring a full traversal."
             },
             {
-              "title": "Load Factor Tuning",
-              "description": "For **HashSet** and **LinkedHashSet** with known size requirements, initialize with appropriate capacity and load factor to minimize rehashing. The load factor (default 0.75) determines when the set's internal table will resize, with lower values reducing collision probability but increasing memory usage. For large sets or performance-critical code, tuning these parameters can provide significant performance improvements."
+              "title": "Performance Tuning",
+              "description": "For large HashSets, consider initializing with known capacity to avoid expensive resizing operations. If you know you'll be storing roughly 10,000 elements:\n```java\n// Capacity = expected size / load factor\nSet<String> optimizedSet = new HashSet<>(13333); // 10000/0.75\n\n// For even better control, specify both capacity and load factor\nSet<String> finetuned = new HashSet<>(10000, 0.8f);\n```\nA lower load factor reduces collision probability but increases memory usage, while a higher value saves memory but may increase collision frequency and lookup times."
             },
             {
-              "title": "Immutability Needs",
-              "description": "For data that shouldn't change, use immutable set implementations via `Set.of()` (Java 9+) or `Collections.unmodifiableSet()`. Immutable sets provide thread safety without synchronization overhead and prevent accidental modifications, making them ideal for constants, configuration data, or collections that need to be safely shared between components without defensive copying."
+              "title": "Immutable Sets for Security",
+              "description": "When exposing sets from APIs or passing data between components, consider immutable implementations to prevent modification. For example, in a security framework returning user roles, an immutable set prevents accidental or malicious modification:\n```java\n// Modern approach (Java 9+)\npublic Set<Role> getUserRoles() {\n    return Set.of(Role.USER, Role.EDITOR);\n}\n\n// Pre-Java 9 approach\npublic Set<Role> getUserRoles() {\n    return Collections.unmodifiableSet(roleSet);\n}\n```\nThis approach eliminates an entire category of bugs related to unexpected collection mutations."
             }
           ]
         }
@@ -791,22 +729,22 @@
       "id": "java-queue-implementation-choice-core-java-c-13",
       "skillLevel": "intermediate",
       "shortTitle": "Queue Implementation Choice",
-      "question": "Can you compare different Queue implementations in Java and when to use each?",
+      "question": "You're designing a task processing system. Which Java queue implementation would you choose and why?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Common Implementations",
-              "description": "Primary Queue implementations include **LinkedList** (general-purpose), **ArrayDeque** (efficient double-ended queue), and **PriorityQueue** (maintains element ordering). These implementations serve different needs, with LinkedList offering flexibility, ArrayDeque providing efficient FIFO operations, and PriorityQueue ensuring that the highest-priority element is always available for retrieval."
+              "title": "Queue Implementations Overview",
+              "description": "Java offers several Queue implementations with different characteristics:\n- **LinkedList**: General-purpose, implements both List and Deque interfaces\n- **ArrayDeque**: Efficient resizable-array implementation, faster than LinkedList for queue operations\n- **PriorityQueue**: Heap-based priority queue where elements are ordered by natural ordering or Comparator\n- **ConcurrentLinkedQueue**: Non-blocking thread-safe queue for concurrent access\n- **LinkedBlockingQueue**: Optionally-bounded blocking queue based on linked nodes\n- **ArrayBlockingQueue**: Bounded blocking queue backed by an array\n- **PriorityBlockingQueue**: Thread-safe version of PriorityQueue\n- **DelayQueue**: Blocking queue of delayed elements, only released when their delay expires\n- **SynchronousQueue**: Blocking queue with no capacity, each insert operation must wait for a remove"
             },
             {
-              "title": "Interface Hierarchy",
-              "description": "**Queue** extends **Collection**, while **Deque** (double-ended queue) extends **Queue**, adding operations at both ends. This hierarchy provides a progression of capabilities, with Queue supporting basic FIFO operations and Deque adding the ability to work from both ends, supporting both queue and stack behaviors."
+              "title": "General-Purpose: LinkedList",
+              "description": "**LinkedList** is suitable for simple task queues with moderate usage and when you need flexibility. For example, in a small application processing form submissions where simplicity is valued over performance optimization, LinkedList provides a straightforward queue implementation that's easy to understand and debug. It's also ideal when your queue needs to support both FIFO operations and occasional random access."
             },
             {
-              "title": "Basic Operations",
-              "description": "Queue offers `add()`/`offer()` for insertion, `remove()`/`poll()` for removal, and `element()`/`peek()` for examination, with slight behavioral differences between each pair. The primary distinction is in exception handling: the first method in each pair throws exceptions when operations fail, while the second returns a special value (null or false), making them more suitable for different error-handling approaches."
+              "title": "Core Queue Operations",
+              "description": "Queue offers methods for different scenarios: `add()/offer()` for adding items, `remove()/poll()` for removing items, and `element()/peek()` for examining the queue. For beginners, remember that `offer()`, `poll()`, and `peek()` are safer as they don't throw exceptions when the queue is empty or full, making your code more robust and easier to maintain."
             }
           ]
         },
@@ -814,16 +752,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "LinkedList as Queue",
-              "description": "**LinkedList** implements both **Queue** and **Deque**, making it versatile but less efficient than specialized implementations. Its node-based structure makes it well-suited for queues that need frequent insertion and removal at both ends, but it lacks the performance optimizations of purpose-built queue implementations."
+              "title": "Efficient FIFO: ArrayDeque",
+              "description": "**ArrayDeque** offers better performance than LinkedList for standard queue operations, making it ideal for simple in-memory task queues. For instance, in a document processing application where tasks flow through multiple stages, ArrayDeque provides efficient add/remove operations with excellent memory locality. It's a great default choice when you need a non-blocking, non-thread-safe queue."
             },
             {
-              "title": "ArrayDeque Advantages",
-              "description": "**ArrayDeque** is faster than **LinkedList** for most operations, with no capacity restrictions and better memory locality, making it the preferred general Deque implementation. It uses a resizable circular array that offers more efficient memory usage and better cache performance than LinkedList's node-based structure, typically resulting in better overall performance for queue operations."
+              "title": "Priority-Based: PriorityQueue",
+              "description": "**PriorityQueue** is perfect when tasks have different importance levels. For example, in a customer support ticket system, urgent customer issues could be processed before standard requests by assigning priority values to each ticket. PriorityQueue automatically maintains this ordering so that `poll()` always returns the highest-priority task, simplifying your processing logic."
             },
             {
-              "title": "PriorityQueue Usage",
-              "description": "**PriorityQueue** maintains a natural order or custom ordering via Comparator, useful for scheduling, simulations, and algorithms like Dijkstra's or Huffman coding. It doesn't sort all elements but maintains a heap structure that ensures the smallest (or largest, with a reverse comparator) element is always available in constant time, making it ideal for applications that need to repeatedly process the highest-priority item."
+              "title": "Thread-Safe Options",
+              "description": "For concurrent scenarios, choose based on needs: 1) **ConcurrentLinkedQueue** for high-throughput non-blocking access, 2) **LinkedBlockingQueue** when producers/consumers need to wait on full/empty conditions, 3) Simple **Collections.synchronizedCollection** wrapper for basic thread safety with low contention. Each offers different trade-offs between throughput, blocking behavior, and memory usage."
             }
           ]
         },
@@ -831,25 +769,27 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Concurrent Queues",
-              "description": "For thread-safe operations, use **ConcurrentLinkedQueue** (unbounded, non-blocking), **LinkedBlockingQueue** (optionally bounded, blocking), or **ArrayBlockingQueue** (bounded, blocking). These implementations from the java.util.concurrent package support different concurrency models, with non-blocking queues emphasizing throughput and blocking queues providing flow control through operations that wait when a queue is full or empty."
+              "title": "Backpressure Support: LinkedBlockingQueue",
+              "description": "**LinkedBlockingQueue** helps manage producer-consumer scenarios where producers might outpace consumers. For example, in an image processing service where uploads can spike but processing is CPU-bound, this queue can be bounded to prevent memory issues. When the queue fills up, producers are naturally slowed down by the blocking `put()` operation, providing automatic flow control."
             },
             {
-              "title": "Special Purpose Queues",
-              "description": "**DelayQueue** for delayed execution, **SynchronousQueue** for handoffs between threads, and **PriorityBlockingQueue** for concurrent priority queues serve specific use cases. DelayQueue holds elements until their delay expires; SynchronousQueue has no internal capacity and requires a concurrent consumer for each producer; PriorityBlockingQueue combines priority ordering with blocking behavior for concurrent applications."
+              "title": "Time-Based Execution: DelayQueue",
+              "description": "For scheduled tasks, **DelayQueue** holds elements until their delay expires. Imagine a reminder system that needs to send notifications at specific times—tasks are added to the queue but only become available for processing when their scheduled time arrives. It's essentially a priority queue where the priority is based on time rather than an arbitrary value."
             },
             {
-              "title": "Performance Considerations",
-              "description": "Choose based on concurrency needs, bounded vs. unbounded requirements, blocking behavior, and ordering requirements. Benchmark with realistic workloads for critical applications. Different queue implementations can have dramatically different performance characteristics under specific workloads, with factors like contention level, operation mix, and element count significantly impacting which implementation performs best."
+              "title": "Specialized Transfer Patterns",
+              "description": "For direct producer-to-consumer handoffs, consider **SynchronousQueue** (forces producers to wait for consumers) or **LinkedTransferQueue** (allows optional waiting for consumers). These are useful in scenarios like work-stealing task schedulers or real-time data processing where you want tasks handed directly to waiting worker threads without intermediate buffering."
             },
             {
-              "title": "Memory and GC Impact",
-              "description": "Queue implementation choice affects memory usage patterns and garbage collection behavior. Node-based queues like LinkedList generate more individual objects for garbage collection, while array-based queues like ArrayDeque create fewer, larger objects. Blocking queues may retain references to elements until they're consumed, potentially affecting object lifecycle and memory pressure compared to non-blocking alternatives."
+              "title": "Multi-Queue Pipelines",
+              "description": "Advanced systems often combine multiple queue types in a pipeline. For instance, a video processing service might use: 1) **LinkedBlockingQueue** for incoming uploads, 2) **PriorityQueue** to prioritize premium customer content, and 3) **DelayQueue** for scheduling delivery. This approach lets each stage use the most appropriate queue implementation for its specific requirements."
             }
           ]
         }
       ],
-      "relatedQuestions": []
+      "relatedQuestions": [
+        "java-concurrent-collections-core-java-c-5"
+      ]
     },
     {
       "id": "java-linkedhashmap-features-core-java-c-14",

@@ -70,73 +70,6 @@
       ]
     },
     {
-      "id": "java-collection-performance-core-java-c-17",
-      "skillLevel": "intermediate",
-      "shortTitle": "Collection Performance",
-      "question": "Could you compare the performance characteristics of different Java collection implementations?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "List Implementations",
-              "description": "**ArrayList** offers **O(1)** random access but **O(n)** insertions/deletions in the middle, while **LinkedList** has **O(1)** insertions/deletions but **O(n)** random access. This fundamental difference means ArrayList excels at random access patterns and append operations, while LinkedList theoretically performs better for frequent insertions or removals at known positions (though this advantage is often negated by the need to first locate those positions)."
-            },
-            {
-              "title": "Set Implementations",
-              "description": "**HashSet** provides **O(1)** operations but no ordering, **TreeSet** has **O(log n)** operations with sorting, and **LinkedHashSet** offers **O(1)** operations with insertion ordering. The choice between them involves trade-offs between raw performance (HashSet), ordering guarantees (TreeSet for sorted order, LinkedHashSet for insertion order), and memory consumption, with HashSet generally being the most efficient for pure set operations."
-            },
-            {
-              "title": "Map Implementations",
-              "description": "**HashMap** has **O(1)** operations without ordering, **TreeMap** offers **O(log n)** operations with key sorting, and **LinkedHashMap** provides **O(1)** operations with insertion or access ordering. As with sets, the choice involves similar trade-offs between performance, ordering, and memory usage, making HashMap the default choice for pure key-value storage and the others valuable when specific ordering semantics are needed."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Memory Consumption",
-              "description": "**ArrayList** uses less memory than **LinkedList** for the same number of elements; **HashSet**/**HashMap** use less than their Tree or Linked variants. LinkedList requires additional memory for node pointers (typically 16 bytes per element on 64-bit JVM), while tree-based collections need extra space for maintaining the tree structure. Hash-based collections with high load factors can minimize overhead but at the cost of potentially more collisions."
-            },
-            {
-              "title": "Iteration Performance",
-              "description": "**ArrayList** is faster for iteration due to memory locality, while **LinkedList**, **TreeMap**, and other pointer-based structures may cause more cache misses. Modern CPU architecture heavily favors contiguous memory access patterns, giving ArrayList a significant real-world performance advantage for operations that need to process all elements, even though the theoretical time complexity (O(n)) is the same for all list implementations."
-            },
-            {
-              "title": "Initial Capacity Impact",
-              "description": "For **ArrayList**, **HashMap**, and **HashSet**, initializing with an appropriate capacity can avoid costly resize operations. Resizing involves creating a new, larger backing array and copying all elements, which is an O(n) operation. Starting with a capacity close to the expected maximum size eliminates these resizing costs, providing substantial performance benefits for collections that grow to a predictable size."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Load Factor Effects",
-              "description": "For hash-based collections, the **load factor** affects the trade-off between space efficiency and lookup performance. A lower load factor reduces collision probability but increases memory usage. Hash collisions force elements into the same bucket, requiring additional comparisons during lookup operations. The default load factor of 0.75 represents a balance point that works well for most use cases, but performance-critical applications may benefit from tuning this value."
-            },
-            {
-              "title": "Compound Operations",
-              "description": "Consider the entire operation sequence: for frequent traversal with rare modifications, **ArrayList** outperforms **LinkedList** despite theoretical advantages of the latter for modifications. This occurs because finding the position for modification in a LinkedList often requires an O(n) traversal, negating its O(1) modification advantage. In practice, ArrayList's superior memory locality typically makes it faster for most real-world usage patterns."
-            },
-            {
-              "title": "Concurrent Performance",
-              "description": "Concurrent collections like **ConcurrentHashMap** sacrifice some single-thread performance for scalability under contention, while synchronized collections can become bottlenecks under high concurrency. The synchronization mechanisms add overhead that's unnecessary in single-threaded contexts but essential for correctness in concurrent environments. This overhead varies based on implementation details, with fine-grained locking approaches generally scaling better than global locks."
-            },
-            {
-              "title": "JVM Optimizations",
-              "description": "The JVM applies various runtime optimizations that can affect collection performance beyond theoretical complexity. Just-in-time compilation, method inlining, dead code elimination, and escape analysis can significantly impact actual performance, sometimes reducing the practical difference between collection types for small datasets. These optimizations can make microbenchmark results misleading compared to real-world application behavior."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-arraylist-vs-linkedlist-core-java-c-2",
-        "java-hashset-vs-treeset-core-java-c-4"
-      ]
-    },
-    {
       "id": "java-arraylist-capacity-core-java-c-18",
       "skillLevel": "intermediate",
       "shortTitle": "ArrayList Sizing",
@@ -269,25 +202,25 @@
       ]
     },
     {
-      "id": "java-enumset-core-java-c-20",
+      "id": "java-list-implementation-choice-core-java-c-20",
       "skillLevel": "basic",
-      "shortTitle": "EnumSet",
-      "question": "How does EnumSet work and when should you use it?",
+      "shortTitle": "List Implementation Choice",
+      "question": "You need to store an ordered sequence of elements. Which Java List implementation would you choose and why?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Purpose",
-              "description": "**EnumSet** is a specialized Set implementation designed specifically for use with enum types. It provides a type-safe, high-performance way to represent sets of enum constants, with an implementation optimized for the unique characteristics of enum values, such as their limited, fixed universe of possible values."
+              "title": "List Implementations Overview",
+              "description": "Java offers several List implementations with different characteristics:\n- **ArrayList**: Dynamic array-based implementation with fast random access\n- **LinkedList**: Doubly-linked list implementation with fast insertions/deletions at both ends\n- **Vector**: Synchronized legacy array-based implementation (thread-safe)\n- **CopyOnWriteArrayList**: Thread-safe list optimized for reading operations\n- **Collections.unmodifiableList()**: Creates a read-only view of any list\n- **List.of()**, **List.copyOf()** (Java 9+): Creates immutable lists"
             },
             {
-              "title": "Performance",
-              "description": "It's much faster than **HashSet** when used with enums and has a smaller memory footprint. Because EnumSet can represent enum values as bits in a long value (or array of longs for larger enums), it provides extremely efficient set operations with minimal memory overhead and excellent performance characteristics."
+              "title": "General-Purpose: ArrayList",
+              "description": "**ArrayList** is the default choice for most scenarios due to its overall performance and low memory overhead. For instance, in a shopping cart application where items are primarily added at the end and accessed by index, ArrayList provides optimal performance. Its contiguous memory storage also benefits from CPU cache locality, making iterations faster than node-based alternatives."
             },
             {
-              "title": "Factory Methods",
-              "description": "**EnumSet** is created via factory methods like `EnumSet.of()`, `EnumSet.allOf()`, or `EnumSet.noneOf()` rather than constructors. These methods ensure that the correct implementation is chosen based on the number of enum constants, and they provide a concise syntax for creating sets with specific initial contents."
+              "title": "Core List Operations",
+              "description": "All List implementations support indexed access (`get(int)`, `set(int, E)`), positional insertion (`add(int, E)`), search operations (`indexOf(Object)`, `contains(Object)`), and iteration. For applications primarily doing lookups and occasional additions at the end, this common API allows starting with ArrayList and changing implementations later if performance profiling indicates a need."
             }
           ]
         },
@@ -295,16 +228,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Internal Implementation",
-              "description": "**EnumSet** is backed by a bit vector representation, using a single long (or array of longs for larger enums) to track set membership. Each enum constant corresponds to a specific bit position based on its ordinal value, allowing membership testing, addition, and removal to be implemented as simple bitwise operations that execute in constant time."
+              "title": "Queue-Like Operations: LinkedList",
+              "description": "**LinkedList** excels when you need frequent additions/removals at both ends. For a document editing history feature that tracks user actions for undo/redo functionality, LinkedList allows efficient operations at both ends. Since LinkedList also implements Queue and Deque interfaces, it can serve dual purposes without needing separate collection types for queue behavior."
             },
             {
-              "title": "Order Guarantee",
-              "description": "**EnumSet** maintains elements in their natural order (the order they're declared in the enum). This predictable iteration order corresponds to the increasing ordinal values of enum constants, making EnumSet suitable for applications where processing enum values in declaration order is important."
+              "title": "Concurrent Scenarios: CopyOnWriteArrayList",
+              "description": "For thread-safe lists with many reads and few writes, **CopyOnWriteArrayList** offers excellent performance. In a user interface displaying a relatively stable list of items (like application settings) that many threads might read simultaneously but rarely update, this implementation provides thread safety without synchronization bottlenecks for readers."
             },
             {
-              "title": "Range Operations",
-              "description": "`EnumSet.range(E from, E to)` efficiently creates a set containing elements from 'from' to 'to' inclusive. This operation is implemented as a bitwise operation that sets all bits corresponding to enum constants within the specified range, making it much more efficient than individually adding each element in the range."
+              "title": "Performance Trade-offs",
+              "description": "ArrayList and LinkedList have opposite performance profiles: ArrayList excels at random access (O(1)) but is slower for insertions/removals in the middle (O(n)), while LinkedList is slower for random access (O(n)) but faster for insertions/removals when you already have a position reference (O(1)). For example, an application processing a stream of data that only needs sequential access might benefit from LinkedList if elements are frequently inserted or removed."
             }
           ]
         },
@@ -312,48 +245,48 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Bitwise Operations",
-              "description": "**EnumSet** is ideal for representing and manipulating sets of flags or options, with near-constant time for add, remove, and contains operations. Its internal bit vector representation makes set-theoretic operations like union, intersection, and difference extremely efficient, typically involving just a few bitwise operations regardless of the number of elements in the sets."
+              "title": "Memory Considerations",
+              "description": "ArrayList typically uses less memory than LinkedList for the same number of elements due to LinkedList's node overhead. Each LinkedList node requires additional memory for prev/next references (typically 16 bytes extra per element). For a mobile app working with thousands of items, this difference can significantly impact memory usage. ArrayList is also more cache-friendly due to its contiguous memory layout."
             },
             {
-              "title": "Limitations",
-              "description": "All elements must come from the same enum type, and null elements are not permitted. These constraints allow EnumSet to achieve its performance optimizations but restrict its use to scenarios where all set members are non-null constants from a single enum type. For mixed-type collections or sets that might contain null, other Set implementations must be used."
+              "title": "Custom Implementation Scenarios",
+              "description": "Sometimes standard implementations don't fit specific needs. For example, if you need a large, sparse list where most indices contain null, a custom sparse implementation may be more efficient. Similarly, if you have strictly append-only needs with rare random access, a modified ArrayList that only grows and never shrinks might improve performance by eliminating resize operations."
             },
             {
-              "title": "Memory Efficiency",
-              "description": "EnumSet typically uses just a single long value (64 bits) for enums with up to 64 constants, making it extremely memory-efficient compared to other Set implementations. For larger enums, it uses an array of longs, still maintaining excellent memory efficiency with just a few bytes of overhead per 64 possible enum values."
+              "title": "Capacity Management",
+              "description": "For ArrayList with known final size, initialize with proper capacity to avoid resizing:\n```java\n// If you know you'll add exactly 10,000 elements\nList<Customer> customers = new ArrayList<>(10000);\n\n// Vs. default which might resize multiple times\nList<Customer> customersDefault = new ArrayList<>(); // Initial capacity of 10\n```\nThis optimization can significantly improve performance when bulk-loading large datasets, as each resize operation requires copying all existing elements to a new, larger array."
             },
             {
-              "title": "Thread Safety",
-              "description": "Like most collection implementations, EnumSet is not thread-safe by default. For concurrent access scenarios, synchronize access externally or consider using Collections.synchronizedSet(EnumSet) for thread safety. However, since EnumSet operations are typically very fast, the synchronization overhead may be proportionally higher than for other collection types, potentially impacting scalability under high contention."
+              "title": "Immutability Benefits",
+              "description": "For data that shouldn't change, Java 9+ offers efficient immutable lists through factory methods:\n```java\n// For small lists\nList<String> status = List.of(\"PENDING\", \"APPROVED\", \"REJECTED\");\n\n// For defensive copies\npublic List<Transaction> getTransactions() {\n    return List.copyOf(transactions); // Returns immutable copy\n}\n```\nImmutable lists prevent accidental modifications, are inherently thread-safe, and can be internally optimized by the JVM. They're ideal for configuration values, constants, or when returning collection references from public methods."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-set-implementation-choice-core-java-c-12"
+        "java-arraylist-vs-linkedlist-core-java-c-2"
       ]
     },
     {
-      "id": "java-enummap-core-java-c-21",
+      "id": "java-map-implementation-choice-core-java-c-21",
       "skillLevel": "intermediate",
-      "shortTitle": "EnumMap",
-      "question": "What advantages does EnumMap offer over other Map implementations?",
+      "shortTitle": "Map Implementation Choice",
+      "question": "You're building a system that needs key-value lookup functionality. Which Java Map implementation would you choose and why?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Specialized Implementation",
-              "description": "**EnumMap** is a specialized Map implementation that uses enum constants as keys. It's designed specifically for the unique characteristics of enum types, leveraging their fixed set of possible values and ordinal-based structure to provide optimized performance and memory usage compared to general-purpose maps."
+              "title": "Map Implementations Overview",
+              "description": "Java offers several Map implementations with different characteristics:\n- **HashMap**: General-purpose implementation with O(1) operations, unordered\n- **LinkedHashMap**: Maintains insertion order with predictable iteration\n- **TreeMap**: Keeps entries sorted by keys using natural ordering or Comparator\n- **Hashtable**: Legacy synchronized implementation (thread-safe)\n- **ConcurrentHashMap**: High-performance thread-safe implementation\n- **EnumMap**: Specialized for enum keys, very efficient\n- **WeakHashMap**: Special map with weak references to keys\n- **IdentityHashMap**: Uses reference equality (==) instead of equals()"
             },
             {
-              "title": "Performance",
-              "description": "It's much faster than **HashMap** for enum keys and uses less memory due to its array-based implementation. Since enums have a fixed, known range of possible values identified by their ordinal position, EnumMap can use a simple array indexed by ordinal values rather than a hash table, eliminating the overhead of hash computation and collision handling."
+              "title": "General-Purpose: HashMap",
+              "description": "**HashMap** offers the best overall performance for most applications. For example, in a product catalog where you need to look up product details by ID, HashMap provides near-constant time access regardless of size. It's the standard choice when you need a simple mapping between keys and values without ordering requirements."
             },
             {
-              "title": "Order Guarantee",
-              "description": "**EnumMap** maintains keys in their natural order (the order they're declared in the enum). This predictable iteration order corresponds to the increasing ordinal values of enum constants, making EnumMap suitable for applications where processing enum values in declaration order is important."
+              "title": "Order-Preserving: LinkedHashMap",
+              "description": "**LinkedHashMap** is ideal when iteration order matters. For instance, in a web session cache storing recently accessed user data, LinkedHashMap can maintain the order in which items were added or accessed. This makes it useful for implementing simple LRU caches or when displaying entries in the same order they were inserted."
             }
           ]
         },
@@ -361,16 +294,16 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Internal Structure",
-              "description": "**EnumMap** uses a simple array structure indexed by the enum ordinal values, making operations extremely efficient. Each key's position in the backing array is determined by its ordinal() value, allowing for direct indexed access without any key comparison or hash calculation. This structure provides constant-time performance for all basic operations regardless of map size."
+              "title": "Sorted Maps: TreeMap",
+              "description": "**TreeMap** automatically sorts entries by key, which is perfect for scenarios requiring ordered data. In a reporting system that needs to display transactions by date, TreeMap naturally maintains chronological order. It's also useful for range operations like finding all entries between two keys (e.g., all orders between two dates) using its `subMap()`, `headMap()`, and `tailMap()` methods."
             },
             {
-              "title": "Type Safety",
-              "description": "**EnumMap** enforces that all keys belong to the specified enum type at compile time. This type safety helps prevent programming errors by ensuring that only valid enum constants can be used as keys, with the Java compiler providing verification that prevents attempting to use incompatible types."
+              "title": "Concurrent Applications: ConcurrentHashMap",
+              "description": "For multi-threaded environments, **ConcurrentHashMap** provides thread safety with high concurrency. In a web server's session store accessed by many simultaneous requests, it allows multiple threads to read and write concurrently without blocking each other. Unlike the older synchronized Hashtable, it achieves this using modern concurrency techniques like lock striping and atomic operations."
             },
             {
-              "title": "No Null Keys",
-              "description": "EnumMap does not allow null keys, enforcing that all keys must be valid enum constants. This restriction, while limiting in some contexts, allows the implementation to avoid null checks and special case handling, contributing to its performance efficiency and helping to prevent null pointer exceptions at runtime."
+              "title": "LRU Cache Implementation",
+              "description": "**LinkedHashMap** can easily implement a Least Recently Used (LRU) cache by using its access-order mode:\n```java\npublic class LRUCache<K, V> extends LinkedHashMap<K, V> {\n    private final int maxSize;\n    \n    public LRUCache(int maxSize) {\n        // true for access-order, false for insertion-order\n        super(16, 0.75f, true);\n        this.maxSize = maxSize;\n    }\n    \n    @Override\n    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {\n        return size() > maxSize;\n    }\n}\n```\nThis implementation automatically evicts the least recently accessed entries when the cache reaches its maximum size."
             }
           ]
         },
@@ -378,27 +311,94 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Memory Efficiency",
-              "description": "No need to store hash codes or handle collisions, resulting in minimal overhead per mapping. The compact array representation typically requires just an object header, a reference to the enum class, and an array sized to the number of possible enum values, plus storage for present values. This can be dramatically more memory-efficient than HashMap for small to medium-sized maps."
+              "title": "Special Purpose: EnumMap",
+              "description": "For maps using enum keys, **EnumMap** provides exceptional performance and memory efficiency. In a state machine implementation tracking transitions between enum states, EnumMap uses a simple array internally (since enums have a finite, known range of values). This makes operations faster and reduces memory overhead compared to HashMap for enum keys."
             },
             {
-              "title": "Use Cases",
-              "description": "Ideal for associating data with enum constants or implementing state machines where states are represented by enums. EnumMap is particularly valuable for scenarios like maintaining per-state configurations, implementing enum-based dispatching systems, storing enum-specific attributes, or building transition tables for finite state machines."
+              "title": "Memory-Sensitive: WeakHashMap",
+              "description": "**WeakHashMap** is specialized for caching scenarios where entries should be garbage-collected when keys are no longer referenced elsewhere. For example, in an image processing application caching rendered images by their file paths, WeakHashMap would allow the cache to automatically release memory when no other code holds references to those file paths, preventing memory leaks."
             },
             {
-              "title": "Iteration Performance",
-              "description": "EnumMap offers excellent iteration performance due to its compact array structure and lack of unused buckets or linked lists. Unlike HashMap, which must scan potentially empty buckets and traverse collision chains, EnumMap iteration simply progresses through the backing array, checking for present values. This makes it very efficient for operations that need to process all entries in the map."
+              "title": "Performance Tuning",
+              "description": "For HashMap and LinkedHashMap with predictable sizes, initialize with appropriate capacity to avoid rehashing:\n```java\n// For ~1000 elements with default 0.75 load factor\nMap<String, Customer> customerMap = new HashMap<>(1334); // 1000/0.75\n\n// For even better control\nMap<String, Order> orderMap = new HashMap<>(1000, 0.8f);\n```\nThis optimization is particularly beneficial in data processing applications that load a large, known number of entries at startup and then primarily perform lookups."
             },
             {
-              "title": "Serialization Benefits",
-              "description": "EnumMap has a more efficient serialization form than general-purpose maps since it only needs to store the enum class and present values, not the entire structure. This can significantly reduce serialized size compared to HashMap when working with distributed applications or persistence mechanisms that rely on Java serialization."
+              "title": "Multi-level Maps",
+              "description": "For complex data structures, consider nested maps. For instance, in a geographic service tracking users by country and city:\n```java\nMap<String, Map<String, List<User>>> usersByLocation = new HashMap<>();\n\n// Adding a user\nString country = user.getCountry();\nString city = user.getCity();\nusersByLocation\n    .computeIfAbsent(country, k -> new HashMap<>())\n    .computeIfAbsent(city, k -> new ArrayList<>())\n    .add(user);\n```\nThe `computeIfAbsent` method (Java 8+) elegantly handles creating intermediate maps and lists as needed, simplifying complex nested structure management."
             }
           ]
         }
       ],
       "relatedQuestions": [
-        "java-enumset-core-java-c-20",
-        "java-map-interface-core-java-c-9"
+        "java-hashmap-internal-core-java-c-3",
+        "java-linkedhashmap-features-core-java-c-14"
+      ]
+    },
+    {
+      "id": "java-collection-api-tools-core-java-c-22",
+      "skillLevel": "intermediate",
+      "shortTitle": "Collection API Utility Methods",
+      "question": "Which utility methods from the Collections API do you find most useful in everyday development?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Essential Collections Utilities",
+              "description": "The Collections class provides key utility methods for collection manipulation:\n- **sort()**: Sorts List elements using natural ordering or Comparator\n- **binarySearch()**: Searches a sorted List efficiently (O(log n))\n- **reverse()**: Reverses the order of List elements\n- **shuffle()**: Randomizes the order of List elements\n- **max()/min()**: Finds maximum or minimum element\n- **frequency()**: Counts occurrences of an element\n- **disjoint()**: Checks if two collections have no elements in common\n- **addAll()**: Adds all specified elements to a collection"
+            },
+            {
+              "title": "Sorting Operations",
+              "description": "**Collections.sort()** is one of the most frequently used utilities for ordering data. For example, in a customer management application, you might sort customers by different criteria as needed:\n```java\n// Sort by last name (assuming Customer implements Comparable)\nCollections.sort(customerList);\n\n// Sort by customer ID using a Comparator\nCollections.sort(customerList, Comparator.comparing(Customer::getId));\n```\nIn Java 8+, this can also be written as `customerList.sort(Comparator.comparing(Customer::getId))`."
+            },
+            {
+              "title": "Unmodifiable Views",
+              "description": "Methods like **Collections.unmodifiableList()** create read-only views of existing collections. These are invaluable for defensive programming, preventing callers from modifying internal data structures. For instance, in a product service returning a list of categories, wrapping the return value protects internal state:\n```java\nprivate final List<Category> categories = new ArrayList<>();\n\npublic List<Category> getCategories() {\n    return Collections.unmodifiableList(categories);\n}\n```\nAttempts to modify the returned list will throw UnsupportedOperationException."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Specialized Collections",
+              "description": "Factory methods for creating specialized collections can simplify code. For example, when you need a collection with exactly one element, use **Collections.singleton()** (or singletonList/singletonMap):\n```java\n// Instead of creating and populating a new list\nList<String> tags = Collections.singletonList(\"important\");\n\n// For empty collections\nList<Customer> noCustomers = Collections.emptyList();\nMap<String, Integer> noMappings = Collections.emptyMap();\n```\nThese specialized implementations are immutable and often more memory-efficient than their general-purpose counterparts."
+            },
+            {
+              "title": "Synchronized Wrappers",
+              "description": "For basic thread safety, **Collections.synchronizedXxx()** methods wrap standard collections with synchronization. In legacy code or simple multi-threaded scenarios, these provide an easy way to make existing collections thread-safe:\n```java\nList<Transaction> transactions = Collections.synchronizedList(new ArrayList<>());\nMap<String, User> userCache = Collections.synchronizedMap(new HashMap<>());\n```\nRemember that while individual operations are thread-safe, compound operations may require external synchronization."
+            },
+            {
+              "title": "Binary Search",
+              "description": "**Collections.binarySearch()** provides efficient searching in sorted lists. For large datasets where performance matters, like a dictionary application searching through thousands of words, binary search offers O(log n) performance compared to linear search's O(n):\n```java\n// Must be sorted first\nCollections.sort(wordList);\n\n// Fast lookup\nint index = Collections.binarySearch(wordList, targetWord);\nif (index >= 0) {\n    // Word found at index\n} else {\n    // Word not found, insertion point is -(index + 1)\n}\n```\nThe negative return value cleverly encodes where the element would be inserted if it's not found."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Java 8+ Stream Integration",
+              "description": "Modern Java development often combines Collections utilities with Stream API operations for powerful data processing pipelines. This hybrid approach leverages the strengths of both APIs:\n```java\n// Find top 5 customers by order value\nList<Customer> topCustomers = customerList.stream()\n    .sorted(Comparator.comparing(Customer::getTotalOrderValue).reversed())\n    .limit(5)\n    .collect(Collectors.toList());\n    \n// Group customers by country\nMap<String, List<Customer>> customersByCountry = customerList.stream()\n    .collect(Collectors.groupingBy(Customer::getCountry));\n```\nStream operations often replace direct calls to Collections utilities while providing more expressive, chain-friendly syntax."
+            },
+            {
+              "title": "Checked Collections",
+              "description": "**Collections.checkedXxx()** methods create type-safe views that throw ClassCastException if incorrect types are inserted. These are useful when passing collections to legacy code or third-party libraries where type safety might be compromised:\n```java\n// Create a type-safe list\nList<String> safeStringList = Collections.checkedList(\n    new ArrayList<String>(), String.class);\n    \n// This will compile but throw ClassCastException at runtime\n// if someone tries to insert non-String elements\npassToUntrustedCode(safeStringList);\n```\nThese runtime checks complement the compile-time generics system."
+            },
+            {
+              "title": "Custom Collection Operations",
+              "description": "For specialized operations not covered by standard utilities, consider implementing reusable helper methods. For example, a method to find duplicates in a collection:\n```java\npublic static <T> Set<T> findDuplicates(Collection<T> collection) {\n    Set<T> uniques = new HashSet<>();\n    return collection.stream()\n        .filter(item -> !uniques.add(item)) // add() returns false if already present\n        .collect(Collectors.toSet());\n}\n\n// Usage\nSet<String> duplicateEmails = findDuplicates(allEmails);\n```\nSuch utility methods extend the Collections framework with domain-specific functionality while maintaining consistent design patterns."
+            },
+            {
+              "title": "Collection Performance Monitoring",
+              "description": "For performance-critical applications, consider wrapping collections with instrumentation to monitor usage patterns. This can help identify bottlenecks and optimize collection choice:\n```java\npublic class InstrumentedMap<K, V> implements Map<K, V> {\n    private final Map<K, V> delegate;\n    private final AtomicLong getCount = new AtomicLong();\n    private final AtomicLong putCount = new AtomicLong();\n    \n    public InstrumentedMap(Map<K, V> delegate) {\n        this.delegate = delegate;\n    }\n    \n    @Override\n    public V get(Object key) {\n        getCount.incrementAndGet();\n        return delegate.get(key);\n    }\n    \n    // Other methods with similar instrumentation\n    \n    public long getGetCount() { return getCount.get(); }\n    public long getPutCount() { return putCount.get(); }\n}\n```\nThis pattern provides valuable insights into actual usage patterns, which can inform better collection choices."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-collection-vs-collections-core-java-c-10",
+        "java-sorting-collections-core-java-c-15"
       ]
     },
     {

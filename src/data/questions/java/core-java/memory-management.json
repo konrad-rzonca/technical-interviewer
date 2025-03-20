@@ -278,7 +278,7 @@
     },
     {
       "id": "java-jvm-memory-structure-core-java-m-5",
-      "skillLevel": "intermediate",
+      "skillLevel": "advanced",
       "shortTitle": "JVM Memory Structure",
       "question": "Could you describe the memory structure of the JVM in detail?",
       "answerInsights": [
@@ -404,7 +404,7 @@
     },
     {
       "id": "java-object-lifecycle-core-java-m-7",
-      "skillLevel": "intermediate",
+      "skillLevel": "advanced",
       "shortTitle": "Object Lifecycle",
       "question": "Can you explain the lifecycle of a Java object from creation to garbage collection?",
       "answerInsights": [
@@ -589,68 +589,6 @@
       "relatedQuestions": [
         "java-memory-leaks-core-java-m-4",
         "java-gc-tuning-core-java-m-6"
-      ]
-    },
-    {
-      "id": "java-autoboxing-performance-core-java-m-10",
-      "skillLevel": "basic",
-      "shortTitle": "Autoboxing & Performance",
-      "question": "How does autoboxing impact Java application performance and memory usage?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Autoboxing Definition",
-              "description": "**Autoboxing** is the automatic conversion of primitive types to their corresponding wrapper classes (e.g., `int` to `Integer`), while **unboxing** is the reverse process. This feature, introduced in Java 5, simplifies code by removing the need for explicit conversions between primitive types and their wrapper classes."
-            },
-            {
-              "title": "Memory Overhead",
-              "description": "Wrapper objects require significantly more memory than primitives—an `Integer` requires 16 bytes (in most JVMs) compared to 4 bytes for an `int`, plus additional overhead for object headers. This overhead increases memory usage and can impact cache efficiency due to reduced locality. In large collections, this overhead can multiply dramatically, potentially leading to significant memory consumption."
-            },
-            {
-              "title": "Common Scenarios",
-              "description": "Autoboxing occurs when: adding primitives to collections (which require objects), using primitives with generic types (which cannot use primitive types), passing primitives to methods expecting wrapper types, returning primitives from methods defined to return wrapper types, and using primitives in conditional expressions expecting wrapper types."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Performance Impact",
-              "description": "Frequent autoboxing/unboxing in performance-critical code (especially in loops) can create significant overhead due to object creation, potential garbage collection pressure, and additional dereferencing steps. Each autoboxing operation creates a new object, which requires memory allocation and subsequent garbage collection. The performance impact is particularly noticeable in tight loops or high-throughput processing."
-            },
-            {
-              "title": "Integer Cache",
-              "description": "Java maintains an `Integer` cache for small values (typically -128 to 127, configurable with `-XX:AutoBoxCacheMax`). Within this range, boxing returns cached instances rather than creating new objects. Similar caching exists for other wrapper types: Boolean (always cached), Byte (all values), Short and Character (0 to 127). Understanding these caching mechanisms can help predict and optimize autoboxing behavior."
-            },
-            {
-              "title": "Collection Alternatives",
-              "description": "For large collections of primitives, consider specialized libraries like **Trove**, **Eclipse Collections**, or **Primitive Collections for Java** that offer primitive-specific collections to avoid boxing overhead. These libraries provide implementations like `TIntArrayList` instead of `ArrayList<Integer>`, significantly reducing memory usage and improving performance for collections holding millions of primitive values."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Hidden Autoboxing",
-              "description": "Watch for hidden autoboxing in operations like: comparing a primitive with a wrapper using `==` (which unboxes the wrapper), using wrapper types in mathematical expressions (leading to repeated boxing/unboxing), mixing primitive and wrapper types in varargs methods, or in stream operations with primitive streams vs object streams. These subtle cases can lead to unexpected performance issues that are difficult to diagnose."
-            },
-            {
-              "title": "Optimizations",
-              "description": "The JIT compiler can sometimes eliminate autoboxing overhead through **escape analysis**, particularly when the wrapper objects don't escape the method scope, though this shouldn't be relied upon for critical code. The JIT's ability to optimize depends on code patterns, method size, and runtime behavior, making its effectiveness unpredictable. For performance-critical code, explicitly use primitives where possible."
-            },
-            {
-              "title": "Measurement and Tuning",
-              "description": "Profile applications to identify excessive boxing/unboxing hotspots. For critical paths, explicitly use primitives where possible, avoid unnecessary conversions, and consider primitive-specialized libraries or JNI for computationally intensive operations. When measuring impact, use microbenchmarking tools like JMH rather than simple timers, as JIT optimizations can significantly affect results."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-object-lifecycle-core-java-m-7"
       ]
     },
     {
