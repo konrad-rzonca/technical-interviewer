@@ -6,22 +6,26 @@
       "id": "java-inheritance-vs-composition-core-java-f-8",
       "skillLevel": "intermediate",
       "shortTitle": "Inheritance vs Composition",
-      "question": "In Java, when would you use inheritance versus composition?",
+      "question": "You're designing a music player app with different types of audio content. How would you decide between inheritance and composition for your class structure?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Inheritance Definition",
-              "description": "**Inheritance** creates an 'is-a' relationship between classes, where a subclass inherits fields and methods from a superclass using the `extends` keyword."
+              "title": "Inheritance for Audio Content Types",
+              "description": "```java\n// Use inheritance when there's an \"is-a\" relationship\npublic abstract class AudioContent {\n    private String title;\n    private int durationInSeconds;\n    private String creator;\n    \n    public abstract void play();\n    public abstract void pause();\n}\n\n// Song is-a AudioContent\npublic class Song extends AudioContent {\n    private String album;\n    private String genre;\n    \n    @Override\n    public void play() { /* Song-specific playback */ }\n}\n\n// Podcast is-a AudioContent\npublic class Podcast extends AudioContent {\n    private int episodeNumber;\n    private String seriesName;\n    \n    @Override\n    public void play() { /* Podcast-specific playback */ }\n}\n```"
             },
             {
-              "title": "Composition Definition",
-              "description": "**Composition** creates a 'has-a' relationship, where a class contains an instance of another class as a field, using that object's functionality rather than inheriting it."
+              "title": "Composition for Features and Capabilities",
+              "description": "```java\n// Use composition for \"has-a\" relationships\npublic class MusicPlayer {\n    // Player has-a playlist, has-an audio engine\n    private Playlist currentPlaylist;        // Composition\n    private AudioEngine audioEngine;         // Composition\n    private EqualizerSettings equalizer;     // Composition\n    \n    public void playContent(AudioContent content) {\n        audioEngine.process(content, equalizer);\n    }\n}\n\n// AudioContent has-a PlaybackStrategy (more flexible than inheritance)\npublic class Song {\n    private String title;\n    private PlaybackStrategy playbackStrategy;  // Composition\n    \n    public void play() {\n        // Delegate to the strategy\n        playbackStrategy.play(this);\n    }\n    \n    // Can swap strategies at runtime\n    public void setPlaybackStrategy(PlaybackStrategy strategy) {\n        this.playbackStrategy = strategy;\n    }\n}\n```"
             },
             {
-              "title": "Basic Decision Factor",
-              "description": "Use inheritance when a subclass truly 'is a' specialized version of the superclass. Use composition when a class 'has a' or 'uses a' relationship with another class's functionality."
+              "title": "Composition for Extensibility",
+              "description": "```java\n// Composition makes it easy to add new features\npublic class AudioContent {\n    private String title;\n    private List<ContentFeature> features = new ArrayList<>();  // Composition\n    \n    // Add features dynamically\n    public void addFeature(ContentFeature feature) {\n        features.add(feature);\n    }\n    \n    // Check for specific features\n    public boolean hasFeature(Class<? extends ContentFeature> featureType) {\n        return features.stream()\n            .anyMatch(feature -> featureType.isInstance(feature));\n    }\n}\n\n// Create different feature implementations\npublic class OfflinePlaybackFeature implements ContentFeature { /* ... */ }\npublic class LyricsFeature implements ContentFeature { /* ... */ }\npublic class VisualizerFeature implements ContentFeature { /* ... */ }\n\n// Usage\nSong song = new Song(\"My Song\");\n// We can add any combination of features\nsong.addFeature(new OfflinePlaybackFeature());\nsong.addFeature(new LyricsFeature());\n```"
+            },
+            {
+              "title": "Hybrid Approach",
+              "description": "```java\n// Often best to use both approaches together\n\n// Inheritance for the content type hierarchy\npublic abstract class AudioContent { /* ... */ }\npublic class Song extends AudioContent { /* ... */ }\npublic class Podcast extends AudioContent { /* ... */ }\n\n// Composition for the player features\npublic class MusicPlayer {\n    // Components that can be swapped\n    private PlaybackEngine engine;         // Composition\n    private UserInterface ui;              // Composition\n    private AudioLibrary library;          // Composition\n    \n    // Switch playback mode at runtime\n    public void setPlaybackMode(PlaybackMode mode) {\n        switch (mode) {\n            case OFFLINE -> engine.setStrategy(new OfflinePlaybackStrategy());\n            case STREAMING -> engine.setStrategy(new StreamingPlaybackStrategy());\n            case HI_FIDELITY -> engine.setStrategy(new HiFiPlaybackStrategy());\n        }\n    }\n}\n```"
             }
           ]
         },
@@ -29,16 +33,20 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Advantages of Composition",
-              "description": "Composition offers greater flexibility as you can change behavior at runtime (by swapping component objects), reduces coupling, avoids the fragile base class problem, and doesn't break encapsulation."
-            },
-            {
               "title": "Inheritance Limitations",
-              "description": "Inheritance can lead to tight coupling, makes the code less flexible to change, may violate encapsulation, and is vulnerable to the fragile base class problem (changes in the superclass may unexpectedly break subclasses)."
+              "description": "```java\n// Inheritance creates a rigid hierarchy\npublic class AudioBook extends AudioContent { /* ... */ }\n\n// What if we have interactive audio that's both a book and podcast?\n// Java doesn't support multiple inheritance\n// public class InteractiveAudioStory extends AudioBook, Podcast { /* ... */ }\n\n// Composition solves this cleanly\npublic class InteractiveContent {\n    private AudioContent baseContent;            // Composition\n    private InteractiveElements interactions;     // Composition\n    private NarrationEngine narrator;            // Composition\n    \n    // Can combine behaviors from different sources\n    public void play() {\n        narrator.start();\n        baseContent.play();\n        interactions.activate();\n    }\n}\n```"
             },
             {
-              "title": "Multiple Inheritance",
-              "description": "Java doesn't support multiple inheritance of classes but does support multiple interface implementation. Composition can simulate multiple inheritance by including instances of multiple classes."
+              "title": "Testing Considerations",
+              "description": "```java\n// Inheritance makes testing harder\npublic abstract class BasePlayer {\n    protected abstract AudioContent getCurrentContent();\n    \n    public void play() {\n        AudioContent content = getCurrentContent();  // Hard to test - depends on subclass\n        content.play();\n    }\n}\n\n// Composition is easier to test\npublic class Player {\n    private PlaybackEngine engine;  // Can mock this in tests\n    \n    public void play(AudioContent content) {\n        engine.play(content);\n    }\n    \n    // Dependency injection for testing\n    public void setEngine(PlaybackEngine engine) {\n        this.engine = engine;\n    }\n}\n```"
+            },
+            {
+              "title": "Changing Behavior at Runtime",
+              "description": "```java\n// With inheritance, behavior is fixed at compile time\npublic class StandardSong extends Song { /* fixed behavior */ }\npublic class HighQualitySong extends Song { /* fixed behavior */ }\n\n// With composition, behavior can change dynamically\npublic class Song {\n    private PlaybackQuality quality;\n    \n    // Change quality at runtime based on network conditions\n    public void adaptToNetworkCondition(NetworkStatus status) {\n        if (status == NetworkStatus.LIMITED) {\n            quality = PlaybackQuality.LOW;\n        } else if (status.getBandwidth() > 10) {\n            quality = PlaybackQuality.HIGH;\n        } else {\n            quality = PlaybackQuality.MEDIUM;\n        }\n    }\n}\n```"
+            },
+            {
+              "title": "Encapsulating Variation",
+              "description": "```java\n// Each content type needs different metadata\n\n// Inheritance approach - metadata methods spread throughout hierarchy\npublic abstract class AudioContent {\n    public abstract Map<String, String> getMetadata();\n}\n\npublic class Song extends AudioContent {\n    private String artist;\n    private String album;\n    \n    @Override\n    public Map<String, String> getMetadata() {  // Song-specific implementation\n        Map<String, String> metadata = new HashMap<>();\n        metadata.put(\"artist\", artist);\n        metadata.put(\"album\", album);\n        return metadata;\n    }\n}\n\n// Composition approach - metadata handlers encapsulated\npublic class AudioContent {\n    private MetadataProvider metadataProvider;  // Strategy pattern\n    \n    public Map<String, String> getMetadata() {\n        return metadataProvider.getMetadata();\n    }\n}\n\n// Different implementations for different content types\npublic class SongMetadataProvider implements MetadataProvider { /* ... */ }\npublic class PodcastMetadataProvider implements MetadataProvider { /* ... */ }\n```"
             }
           ]
         },
@@ -46,44 +54,45 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Design Principles",
-              "description": "The principle \"**favor composition over inheritance**\" from the Gang of Four Design Patterns book suggests preferring composition in most cases, as it leads to more flexible and maintainable designs."
+              "title": "Evolution and Maintenance",
+              "description": "```java\n// Inheritance is harder to evolve\npublic abstract class AudioContent {\n    // Adding a new method forces all subclasses to implement it\n    public abstract void generateThumbnail();\n}\n\n// Composition is easier to evolve\npublic class AudioContent {\n    private List<ContentFeature> features = new ArrayList<>();\n    \n    // New features can be added without changing existing classes\n    public void addFeature(ContentFeature feature) {\n        features.add(feature);\n    }\n}\n\n// Add new feature later without modifying AudioContent\npublic class ThumbnailGenerator implements ContentFeature {\n    public void generateThumbnail(AudioContent content) { /* ... */ }\n}\n\n// Existing content works with new feature\nexistingContent.addFeature(new ThumbnailGenerator());\n```"
             },
             {
-              "title": "Testability",
-              "description": "Composition generally improves testability since dependencies can be mocked or replaced with test doubles. Inherited behavior is harder to isolate for testing."
+              "title": "Decorator Pattern with Composition",
+              "description": "```java\n// Composition enables the decorator pattern\npublic interface AudioStream {\n    byte[] getNextChunk();\n    boolean hasMoreData();\n}\n\n// Base implementation\npublic class BasicAudioStream implements AudioStream { /* ... */ }\n\n// Decorators add behavior through composition\npublic class BufferedAudioStream implements AudioStream {\n    private final AudioStream wrapped;  // Composition\n    private final byte[] buffer;\n    \n    public BufferedAudioStream(AudioStream stream) {\n        this.wrapped = stream;\n        this.buffer = new byte[8192];\n    }\n    \n    @Override\n    public byte[] getNextChunk() {\n        // Add buffering behavior to any stream\n        if (bufferIsEmpty()) {\n            fillBuffer(wrapped.getNextChunk());\n        }\n        return getFromBuffer();\n    }\n}\n\n// Stack decorators to add multiple behaviors\nAudioStream stream = new EncryptedAudioStream(\n                      new CompressedAudioStream(\n                        new BufferedAudioStream(\n                          new BasicAudioStream(file))));\n```"
             },
             {
-              "title": "Hybrid Approach",
-              "description": "Often, the best designs use a combination of inheritance and composition. For example, using abstract classes or interfaces to define types and contract (inheritance), while using composition to implement behaviors and manage relationships between components."
+              "title": "Interface Segregation",
+              "description": "```java\n// With inheritance, interfaces become bloated\npublic interface FullFeaturedAudioContent {\n    void play();\n    void pause();\n    byte[] getAudioData();\n    Map<String, String> getMetadata();\n    void displayLyrics();         // Not all content has lyrics\n    void showAlbumArt();          // Not all content has album art\n    void loadRelatedContent();    // Not all content has related content\n}\n\n// With composition + interfaces, each feature is separate\npublic interface Playable {\n    void play();\n    void pause();\n}\n\npublic interface HasMetadata {\n    Map<String, String> getMetadata();\n}\n\npublic interface HasLyrics {\n    String getLyrics();\n    void displayLyrics();\n}\n\n// Classes implement only what they need\npublic class Song implements Playable, HasMetadata, HasLyrics { /* ... */ }\npublic class Podcast implements Playable, HasMetadata { /* ... */ }  // No lyrics\n\n// Utility code can work with any combination\npublic void displayInfo(HasMetadata content) { /* ... */ }\npublic void addToPlaylist(Playable content) { /* ... */ }\n```"
             }
           ]
         }
-      ],
-      "relatedQuestions": [
-        "java-oop-principles-core-java-f-7"
       ]
     },
     {
       "id": "java-constructors-core-java-f-10",
       "skillLevel": "basic",
       "shortTitle": "Constructors",
-      "question": "How do constructors work in Java, and what are their special characteristics?",
+      "question": "When creating a User class for your application, how would you design its constructors to handle different ways users might be created?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Definition",
-              "description": "A **constructor** is a special method that is called when an object is created using the `new` keyword. It has the same name as the class and no return type (not even void)."
+              "title": "Multiple Constructor Options",
+              "description": "For a User class, you would typically create several constructors to handle different creation scenarios:\n```java\npublic class User {\n    private String username;\n    private String email;\n    private String fullName;\n    private boolean active;\n    \n    // Minimal constructor for quick creation\n    public User(String username, String email) {\n        this.username = username;\n        this.email = email;\n        this.active = true; // Default value\n    }\n    \n    // Full constructor with all fields\n    public User(String username, String email, String fullName, boolean active) {\n        this.username = username;\n        this.email = email;\n        this.fullName = fullName;\n        this.active = active;\n    }\n}\n```"
             },
             {
-              "title": "Default Constructor",
-              "description": "If no constructor is explicitly defined, Java provides a **default constructor** with no parameters that calls the superclass constructor."
+              "title": "Constructor Chaining",
+              "description": "You can use constructor chaining to avoid code duplication and ensure consistent initialization:\n```java\npublic class User {\n    private String username;\n    private String email;\n    private String fullName;\n    private boolean active;\n    \n    // Minimal constructor\n    public User(String username, String email) {\n        this(username, email, null, true); // Call the full constructor\n    }\n    \n    // Full constructor with all fields\n    public User(String username, String email, String fullName, boolean active) {\n        this.username = username;\n        this.email = email;\n        this.fullName = fullName;\n        this.active = active;\n    }\n}\n```"
             },
             {
-              "title": "Constructor Overloading",
-              "description": "Like methods, constructors can be **overloaded** by defining multiple constructors with different parameter lists, allowing objects to be created in various ways."
+              "title": "Validation in Constructors",
+              "description": "User constructors should validate input parameters to maintain data integrity:\n```java\npublic User(String username, String email) {\n    if (username == null || username.trim().isEmpty()) {\n        throw new IllegalArgumentException(\"Username cannot be empty\");\n    }\n    if (email == null || !email.contains(\"@\")) {\n        throw new IllegalArgumentException(\"Invalid email address\");\n    }\n    this.username = username;\n    this.email = email;\n    this.active = true;\n}\n```"
+            },
+            {
+              "title": "Default Values",
+              "description": "Establish sensible defaults for optional fields that aren't provided in simpler constructors:\n```java\npublic User(String username, String email) {\n    this.username = username;\n    this.email = email;\n    this.fullName = username; // Default to username if full name not provided\n    this.active = true;      // New users are active by default\n    this.createdDate = new Date(); // Automatically set creation timestamp\n}\n```"
             }
           ]
         },
@@ -91,16 +100,20 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Constructor Chaining",
-              "description": "Constructors can call other constructors in the same class using `this()` or the parent class constructor using `super()`. These calls must be the first statement in the constructor."
+              "title": "Static Factory Methods",
+              "description": "For a User class, static factory methods can provide more expressive alternatives to constructors:\n```java\npublic class User {\n    // Private constructor used by factory methods\n    private User(String username, String email, String fullName, boolean active) {\n        // Initialize fields\n    }\n    \n    // Factory method for regular user creation\n    public static User createStandardUser(String username, String email) {\n        return new User(username, email, null, true);\n    }\n    \n    // Factory method for admin user creation\n    public static User createAdminUser(String username, String email) {\n        User admin = new User(username, email, null, true);\n        admin.setRoles(Collections.singleton(\"ADMIN\"));\n        return admin;\n    }\n}\n```"
             },
             {
-              "title": "Superclass Constructor Invocation",
-              "description": "Every constructor implicitly calls its superclass's constructor as its first action. If you don't explicitly call a superclass constructor using `super()`, the compiler inserts a call to the superclass's no-argument constructor."
+              "title": "Copy Constructor",
+              "description": "A copy constructor is useful for creating a new User based on an existing one:\n```java\npublic User(User otherUser) {\n    this.username = otherUser.username;\n    this.email = otherUser.email;\n    this.fullName = otherUser.fullName;\n    this.active = otherUser.active;\n    this.roles = new HashSet<>(otherUser.roles); // Deep copy of collections\n}\n\n// Usage\nUser originalUser = new User(\"john\", \"john@example.com\");\nUser newUser = new User(originalUser); // Create a copy\n```"
             },
             {
-              "title": "Access Modifiers",
-              "description": "Constructors can have any access modifier (public, private, protected, or default). A private constructor prevents instantiation from outside the class, often used in singleton patterns or utility classes."
+              "title": "Builder Pattern Integration",
+              "description": "For a User class with many optional fields, a builder pattern can work with a private constructor:\n```java\npublic class User {\n    private final String username; // Required\n    private final String email;    // Required\n    private String fullName;       // Optional\n    private boolean active;        // Optional\n    \n    private User(Builder builder) {\n        this.username = builder.username;\n        this.email = builder.email;\n        this.fullName = builder.fullName;\n        this.active = builder.active;\n    }\n    \n    public static class Builder {\n        // Required parameters\n        private final String username;\n        private final String email;\n        \n        // Optional parameters with defaults\n        private String fullName = \"\";\n        private boolean active = true;\n        \n        public Builder(String username, String email) {\n            this.username = username;\n            this.email = email;\n        }\n        \n        public Builder fullName(String fullName) {\n            this.fullName = fullName;\n            return this;\n        }\n        \n        public Builder active(boolean active) {\n            this.active = active;\n            return this;\n        }\n        \n        public User build() {\n            return new User(this);\n        }\n    }\n}\n\n// Usage\nUser user = new User.Builder(\"john\", \"john@example.com\")\n    .fullName(\"John Smith\")\n    .active(true)\n    .build();\n```"
+            },
+            {
+              "title": "Converting from DTOs or External Sources",
+              "description": "Special constructors can convert from DTOs or external data formats:\n```java\npublic class User {\n    // Fields...\n    \n    // Constructor from UserDTO\n    public User(UserDTO dto) {\n        this.username = dto.getUsername();\n        this.email = dto.getEmail();\n        this.fullName = dto.getFirstName() + \" \" + dto.getLastName();\n        this.active = true;\n    }\n    \n    // Constructor from JSON\n    public User(JSONObject json) {\n        this.username = json.getString(\"username\");\n        this.email = json.getString(\"email\");\n        this.fullName = json.optString(\"fullName\", null);\n        this.active = json.optBoolean(\"active\", true);\n    }\n}\n```"
             }
           ]
         },
@@ -108,16 +121,20 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "Initialization Blocks",
-              "description": "Java provides **instance initialization blocks** `{}` and **static initialization blocks** `static {}` that run before constructors. Static blocks run once when the class is loaded, while instance blocks run for each object creation before constructors."
+              "title": "Dependency Injection",
+              "description": "Advanced User classes might require dependencies like services in constructors:\n```java\npublic class User {\n    private String username;\n    private String email;\n    private final UserActivityService activityService;\n    \n    // Constructor with dependency injection\n    public User(String username, String email, UserActivityService activityService) {\n        this.username = username;\n        this.email = email;\n        this.activityService = activityService;\n    }\n    \n    public void login() {\n        // Use injected service\n        activityService.recordLogin(this.username);\n    }\n}\n```"
             },
             {
-              "title": "Constructor Exceptions",
-              "description": "Constructors can throw exceptions, including checked exceptions. If a constructor throws a checked exception, it must be declared in the constructor's `throws` clause, and calling code must handle or propagate it."
+              "title": "Lazy Initialization",
+              "description": "Some User properties may be expensive to initialize and can be deferred until needed:\n```java\npublic class User {\n    private String username;\n    private String email;\n    private volatile UserPreferences preferences;\n    private final Object preferencesLock = new Object();\n    \n    public User(String username, String email) {\n        this.username = username;\n        this.email = email;\n        // Preferences are expensive to load, so we'll defer initialization\n    }\n    \n    public UserPreferences getPreferences() {\n        if (preferences == null) {\n            synchronized (preferencesLock) {\n                if (preferences == null) {\n                    preferences = UserPreferencesLoader.loadForUser(username);\n                }\n            }\n        }\n        return preferences;\n    }\n}\n```"
             },
             {
-              "title": "Copy Constructors",
-              "description": "A **copy constructor** takes an object of the same class as a parameter and creates a new object by copying the parameter's values. Unlike some languages, Java doesn't provide automatic copy constructors, so they must be implemented manually when needed."
+              "title": "Domain-Specific Validation Logic",
+              "description": "Advanced User constructors may include complex validation logic or business rules:\n```java\npublic User(String username, String email, String password, Role role) {\n    // Basic validation\n    validateBasicFields(username, email);\n    \n    // Password strength validation\n    if (password.length() < 8 || !containsDigit(password) || !containsSpecialChar(password)) {\n        throw new WeakPasswordException(\"Password does not meet security requirements\");\n    }\n    \n    // Role-based validation\n    if (role == Role.ADMIN && !isEmailFromCompanyDomain(email)) {\n        throw new SecurityException(\"Admin users must use company email addresses\");\n    }\n    \n    // Initialize with encrypted password\n    this.username = username;\n    this.email = email;\n    this.passwordHash = passwordEncoder.encode(password);\n    this.role = role;\n}\n```"
+            },
+            {
+              "title": "Immutability Pattern",
+              "description": "For secure User representations, use constructors to create immutable instances:\n```java\npublic final class ImmutableUser {\n    private final String username;\n    private final String email;\n    private final Set<String> roles;\n    \n    public ImmutableUser(String username, String email, Set<String> roles) {\n        this.username = username;\n        this.email = email;\n        // Create defensive copy of mutable collections\n        this.roles = Collections.unmodifiableSet(new HashSet<>(roles));\n    }\n    \n    // Only getters, no setters\n    public String getUsername() { return username; }\n    public String getEmail() { return email; }\n    public Set<String> getRoles() { return roles; } // Returns unmodifiable view\n    \n    // To modify, create a new instance\n    public ImmutableUser withEmail(String newEmail) {\n        return new ImmutableUser(this.username, newEmail, this.roles);\n    }\n}\n```"
             }
           ]
         }
@@ -626,22 +643,26 @@
       "id": "java-enums-core-java-f-20",
       "skillLevel": "basic",
       "shortTitle": "Enums",
-      "question": "How do enums work in Java, and what advanced features do they offer?",
+      "question": "You need to represent fixed categories of products in your e-commerce system. What advantages would enums provide over using string constants?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Definition",
-              "description": "An **enum** (enumeration) is a special type that represents a group of constants (unchangeable variables). It's declared using the `enum` keyword: \n```java\nenum Season { WINTER, SPRING, SUMMER, FALL }\n```"
+              "title": "Type Safety",
+              "description": "```java\n// With string constants - error-prone\npublic class ProductWithStrings {\n    // String constants\n    public static final String CATEGORY_ELECTRONICS = \"electronics\";\n    public static final String CATEGORY_CLOTHING = \"clothing\";\n    \n    private String category;  // Can be ANY string\n    \n    public void setCategory(String category) {\n        this.category = category;  // No validation!\n    }\n}\n\n// Typos aren't caught by compiler\nproduct.setCategory(\"eletronics\");  // Misspelled but compiles\nproduct.setCategory(\"invalid\");     // Not a valid category but compiles\n\n// With enums - type-safe\npublic enum ProductCategory {\n    ELECTRONICS, CLOTHING, BOOKS, TOYS\n}\n\npublic class Product {\n    private ProductCategory category;  // Can ONLY be a valid enum value\n    \n    public void setCategory(ProductCategory category) {\n        this.category = category;  // Type-safe - compiler prevents errors\n    }\n}\n\n// Won't compile if invalid\nproduct.setCategory(ProductCategory.ELECTRONICS);  // Valid\n// product.setCategory(\"electronics\");  // Compile error\n// product.setCategory(null);  // Allowed, but obvious\n```"
             },
             {
-              "title": "Basic Usage",
-              "description": "Enum constants are accessed using the enum name: `Season.WINTER`. They can be used in switch statements, compared with `==`, and iterated over using `values()`: \n```java\nSeason current = Season.SUMMER;\nswitch (current) {\n    case WINTER: System.out.println(\"It's cold\"); break;\n    case SUMMER: System.out.println(\"It's hot\"); break;\n    // ...\n}\n```"
+              "title": "Switch Statement Completeness",
+              "description": "```java\n// Using strings - missing cases not detected\nswitch (product.getCategory()) {  // Returns a String\n    case \"electronics\":\n        applyElectronicsDiscount(product);\n        break;\n    case \"clothing\":\n        applyClothingDiscount(product);\n        break;\n    // Compiler can't warn about missing cases\n}\n\n// Using enums - compiler warns about missing cases\nswitch (product.getCategory()) {  // Returns a ProductCategory enum\n    case ELECTRONICS:\n        applyElectronicsDiscount(product);\n        break;\n    case CLOTHING:\n        applyClothingDiscount(product);\n        break;\n    // Compiler warns about missing BOOKS, TOYS\n}\n\n// Java 17+ pattern matching (more concise)\nswitch (product.getCategory()) {\n    case ELECTRONICS -> applyElectronicsDiscount(product);\n    case CLOTHING -> applyClothingDiscount(product);\n    case BOOKS -> applyBooksDiscount(product);\n    case TOYS -> applyToysDiscount(product);\n}\n```"
             },
             {
-              "title": "Built-in Methods",
-              "description": "All enums inherit methods from `java.lang.Enum`, including `name()` (returns the constant's name), `ordinal()` (returns the constant's position), and `valueOf()` (converts a string to the enum constant)."
+              "title": "Code Completion and IDE Support",
+              "description": "```java\n// String constants - limited IDE help\nproduct.setCategory(ProductConstants.CATEGORY_);  // IDE lists all constants, not just categories\n\n// Enums - IDE shows all valid options\nproduct.setCategory(ProductCategory.);  // IDE shows ELECTRONICS, CLOTHING, etc.\n\n// Auto-completion and discoverability\nProductCategory category = ProductCategory.ELECTRONICS;\n\n// Built-in helper methods\nProductCategory[] allCategories = ProductCategory.values();\nProductCategory fromString = ProductCategory.valueOf(\"ELECTRONICS\");\nString name = ProductCategory.BOOKS.name();\nint ordinal = ProductCategory.TOYS.ordinal();  // Position in enum declaration (0-based)\n\n// Enum membership test\nif (category == ProductCategory.ELECTRONICS) {\n    // Safe comparison with ==\n}\n```"
+            },
+            {
+              "title": "Namespace Protection",
+              "description": "```java\n// String constants - potential naming conflicts\npublic static final String TYPE_BOOK = \"book\";  // Book product type\npublic static final String FORMAT_BOOK = \"book\";  // Book format type (vs eBook)\n\n// String comparison is ambiguous\nif (product.getType().equals(\"book\")) {  // Which \"book\" constant was intended?\n    // Handle book\n}\n\n// Enums prevent name collisions by namespace\npublic enum ProductType { PHYSICAL, DIGITAL, SUBSCRIPTION }\npublic enum ProductFormat { BOOK, EBOOK, AUDIOBOOK }\n\n// Type-safe and clear\nif (product.getType() == ProductType.PHYSICAL && \n    product.getFormat() == ProductFormat.BOOK) {\n    // Handle physical book\n}\n```"
             }
           ]
         },
@@ -649,16 +670,20 @@
           "category": "Intermediate",
           "points": [
             {
-              "title": "Enums with Properties",
-              "description": "Enums can have fields, constructors, and methods, making them more powerful than simple constants: \n```java\nenum Planet {\n    MERCURY(3.303e+23, 2.4397e6),\n    VENUS(4.869e+24, 6.0518e6),\n    EARTH(5.976e+24, 6.37814e6);\n    \n    private final double mass;\n    private final double radius;\n    \n    Planet(double mass, double radius) {\n        this.mass = mass;\n        this.radius = radius;\n    }\n    \n    public double getMass() { return mass; }\n    public double getRadius() { return radius; }\n}\n```"
+              "title": "Adding Properties to Categories",
+              "description": "```java\n// With string constants, need separate maps\npublic static final String CATEGORY_ELECTRONICS = \"electronics\";\npublic static final String CATEGORY_CLOTHING = \"clothing\";\n\n// Separate maps for different properties\nprivate static final Map<String, Double> CATEGORY_TAX_RATES = Map.of(\n    CATEGORY_ELECTRONICS, 0.085,\n    CATEGORY_CLOTHING, 0.055\n);\n\n// Must look up in map\ndouble taxRate = CATEGORY_TAX_RATES.get(product.getCategory());\n\n// With enums, properties are built-in\npublic enum ProductCategory {\n    ELECTRONICS(0.085, \"Tech\", true),\n    CLOTHING(0.055, \"Apparel\", true),\n    BOOKS(0.0, \"Media\", false),\n    GROCERY(0.03, \"Food\", false);\n    \n    private final double taxRate;\n    private final String department;\n    private final boolean requiresWarranty;\n    \n    // Constructor\n    ProductCategory(double taxRate, String department, boolean requiresWarranty) {\n        this.taxRate = taxRate;\n        this.department = department;\n        this.requiresWarranty = requiresWarranty;\n    }\n    \n    // Getters\n    public double getTaxRate() { return taxRate; }\n    public String getDepartment() { return department; }\n    public boolean requiresWarranty() { return requiresWarranty; }\n}\n\n// Access properties directly\ndouble taxRate = product.getCategory().getTaxRate();\nString dept = product.getCategory().getDepartment();\n```"
             },
             {
-              "title": "Enum Methods",
-              "description": "Enums can have instance and static methods. You can even override methods for specific constants: \n```java\nenum Operation {\n    PLUS { \n        public double apply(double x, double y) { return x + y; } \n    },\n    MINUS { \n        public double apply(double x, double y) { return x - y; } \n    };\n    \n    public abstract double apply(double x, double y);\n}\n```"
+              "title": "Adding Behavior to Categories",
+              "description": "```java\n// With strings, behavior must be in external methods\npublic double calculateTax(Product product) {\n    String category = product.getCategory();\n    double amount = product.getPrice();\n    \n    if (\"electronics\".equals(category)) {\n        return amount * 0.085;\n    } else if (\"clothing\".equals(category)) {\n        return amount * 0.055;\n    }\n    // More if/else conditions...\n    return 0;\n}\n\n// With enums, behavior is encapsulated\npublic enum ProductCategory {\n    ELECTRONICS {\n        @Override\n        public double calculateTax(double amount) {\n            return amount * 0.085;\n        }\n        \n        @Override\n        public boolean requiresShippingInsurance() {\n            return true;\n        }\n    },\n    CLOTHING {\n        @Override\n        public double calculateTax(double amount) {\n            return amount * 0.055;\n        }\n        \n        @Override\n        public boolean requiresShippingInsurance() {\n            return false;\n        }\n    },\n    BOOKS {\n        @Override\n        public double calculateTax(double amount) {\n            return 0; // Tax exempt\n        }\n        \n        @Override\n        public boolean requiresShippingInsurance() {\n            return false;\n        }\n    };\n    \n    // Abstract methods that each category must implement\n    public abstract double calculateTax(double amount);\n    public abstract boolean requiresShippingInsurance();\n}\n\n// Call methods directly on the enum\ndouble tax = product.getCategory().calculateTax(product.getPrice());\n```"
             },
             {
-              "title": "Implementing Interfaces",
-              "description": "Enums can implement interfaces, providing a way to ensure that a group of constants all implement certain behaviors: \n```java\npublic interface Describable {\n    String getDescription();\n}\n\nenum Status implements Describable {\n    PENDING { \n        public String getDescription() { return \"Waiting for processing\"; } \n    },\n    PROCESSING { \n        public String getDescription() { return \"Currently being processed\"; } \n    },\n    COMPLETED { \n        public String getDescription() { return \"Processing finished\"; } \n    };\n}\n```"
+              "title": "Category Hierarchies",
+              "description": "```java\n// Representing category hierarchy with enums\npublic enum ProductCategory {\n    // Main categories\n    ELECTRONICS(null),\n    CLOTHING(null),\n    BOOKS(null),\n    \n    // Electronics subcategories\n    COMPUTERS(ELECTRONICS),\n    PHONES(ELECTRONICS),\n    CAMERAS(ELECTRONICS),\n    \n    // Clothing subcategories\n    MENS_CLOTHING(CLOTHING),\n    WOMENS_CLOTHING(CLOTHING),\n    KIDS_CLOTHING(CLOTHING);\n    \n    private final ProductCategory parent;\n    \n    ProductCategory(ProductCategory parent) {\n        this.parent = parent;\n    }\n    \n    public ProductCategory getParent() {\n        return parent;\n    }\n    \n    public boolean isMainCategory() {\n        return parent == null;\n    }\n    \n    public boolean isSubcategoryOf(ProductCategory category) {\n        return this.parent == category;\n    }\n}\n\n// Usage\nif (category.isSubcategoryOf(ProductCategory.ELECTRONICS)) {\n    // Handle electronics subcategory\n}\n\n// Find all subcategories\npublic Set<ProductCategory> getSubcategories(ProductCategory parent) {\n    return EnumSet.allOf(ProductCategory.class).stream()\n        .filter(c -> c.isSubcategoryOf(parent))\n        .collect(Collectors.toSet());\n}\n```"
+            },
+            {
+              "title": "EnumSet and EnumMap",
+              "description": "```java\n// EnumSet - optimized Set for enums\n\n// Create a set of specific categories\nEnumSet<ProductCategory> taxExemptCategories = EnumSet.of(\n    ProductCategory.BOOKS,\n    ProductCategory.GROCERY\n);\n\n// Check membership (very efficient)\nboolean isTaxExempt = taxExemptCategories.contains(product.getCategory());\n\n// EnumMap - optimized Map with enum keys\nEnumMap<ProductCategory, DiscountStrategy> discountsByCategory =\n    new EnumMap<>(ProductCategory.class);\n\ndiscountsByCategory.put(ProductCategory.ELECTRONICS, new PercentageDiscount(0.05));\ndiscountsByCategory.put(ProductCategory.CLOTHING, new SeasonalDiscount());\n\n// Apply the right discount strategy\nDiscountStrategy strategy = discountsByCategory.get(product.getCategory());\ndouble discountedPrice = strategy.applyDiscount(product.getPrice());\n\n// Both EnumSet and EnumMap are more efficient than HashSet/HashMap\n// because they're backed by arrays indexed by the enum's ordinal\n```"
             }
           ]
         },
@@ -666,21 +691,24 @@
           "category": "Advanced",
           "points": [
             {
-              "title": "EnumSet and EnumMap",
-              "description": "Java provides specialized collections for enums: **EnumSet** and **EnumMap**, which are more efficient than general-purpose collections when working with enums: \n```java\nEnumSet<Season> warmSeasons = EnumSet.of(Season.SPRING, Season.SUMMER);\nEnumMap<Season, String> seasonDescriptions = new EnumMap<>(Season.class);\n```"
+              "title": "Strategy Pattern Implementation",
+              "description": "```java\n// Elegant strategy pattern with enums\npublic enum ProductCategory {\n    ELECTRONICS {\n        @Override\n        public double calculateShipping(Product product, Address destination) {\n            double base = 5.99;\n            // Higher shipping cost for heavier electronics\n            return base + (product.getWeight() * 0.5);\n        }\n        \n        @Override\n        public List<String> getRequiredAttributes() {\n            return Arrays.asList(\"brand\", \"model\", \"warranty\", \"voltage\");\n        }\n    },\n    \n    CLOTHING {\n        @Override\n        public double calculateShipping(Product product, Address destination) {\n            // Flat rate shipping for clothing + weight surcharge\n            return 3.99 + (product.getWeight() * 0.1);\n        }\n        \n        @Override\n        public List<String> getRequiredAttributes() {\n            return Arrays.asList(\"size\", \"color\", \"material\", \"care\");\n        }\n    },\n    \n    BOOKS {\n        @Override\n        public double calculateShipping(Product product, Address destination) {\n            // Books have media mail rate\n            return 2.99 + (product.getWeight() * 0.2);\n        }\n        \n        @Override\n        public List<String> getRequiredAttributes() {\n            return Arrays.asList(\"isbn\", \"author\", \"publisher\", \"edition\");\n        }\n    };\n    \n    // Abstract methods (strategies) all categories must implement\n    public abstract double calculateShipping(Product product, Address destination);\n    public abstract List<String> getRequiredAttributes();\n}\n\n// Usage\ndouble shippingCost = product.getCategory().calculateShipping(product, customerAddress);\nList<String> required = product.getCategory().getRequiredAttributes();\n```"
             },
             {
-              "title": "Singleton and Strategy Patterns",
-              "description": "Enums make excellent singletons and can implement the strategy pattern elegantly due to their built-in singleton nature and ability to override methods: \n```java\nenum ConnectionManager { // Singleton pattern\n    INSTANCE;\n    \n    private Connection connection;\n    \n    public Connection getConnection() {\n        if (connection == null) {\n            connection = createConnection();\n        }\n        return connection;\n    }\n    \n    private Connection createConnection() { /* ... */ }\n}\n```"
+              "title": "Database and Serialization Integration",
+              "description": "```java\n// JPA entity with enum category\n@Entity\npublic class Product {\n    @Id\n    private Long id;\n    \n    private String name;\n    \n    // Store as string in database (more readable)\n    @Enumerated(EnumType.STRING)\n    private ProductCategory category;\n    \n    // Or store as integer for efficiency (less readable)\n    // @Enumerated(EnumType.ORDINAL)\n    // private ProductCategory category;\n}\n\n// Repository queries\npublic interface ProductRepository extends JpaRepository<Product, Long> {\n    // Query by category\n    List<Product> findByCategory(ProductCategory category);\n    \n    // Query by multiple categories\n    List<Product> findByCategoryIn(Collection<ProductCategory> categories);\n}\n\n// JSON serialization with Jackson (defaults to name)\n{\n    \"id\": 1,\n    \"name\": \"Smartphone\",\n    \"category\": \"ELECTRONICS\"\n}\n\n// Custom JSON serialization\npublic enum ProductCategory {\n    ELECTRONICS(\"Electronics\"),\n    CLOTHING(\"Clothing\"),\n    BOOKS(\"Books\");\n    \n    private final String displayName;\n    \n    ProductCategory(String displayName) {\n        this.displayName = displayName;\n    }\n    \n    @JsonValue  // Use this for serialization\n    public String getDisplayName() {\n        return displayName;\n    }\n    \n    // For deserialization\n    @JsonCreator\n    public static ProductCategory fromDisplayName(String displayName) {\n        for (ProductCategory category : values()) {\n            if (category.displayName.equals(displayName)) {\n                return category;\n            }\n        }\n        throw new IllegalArgumentException(\"Unknown category: \" + displayName);\n    }\n}\n```"
             },
             {
-              "title": "Serialization and Thread Safety",
-              "description": "Enums have built-in serialization support, and the JVM guarantees that enum values are instantiated only once, making them inherently thread-safe. This makes them ideal for implementing thread-safe singletons and constants that need to be serialized."
+              "title": "Internationalization",
+              "description": "```java\n// Support for internationalization with enums\npublic enum ProductCategory {\n    ELECTRONICS,\n    CLOTHING,\n    BOOKS,\n    GROCERY;\n    \n    // Get localized name from resource bundle\n    public String getLocalizedName(Locale locale) {\n        ResourceBundle bundle = ResourceBundle.getBundle(\"categories\", locale);\n        String key = \"category.\" + name().toLowerCase();\n        return bundle.getString(key);\n    }\n}\n\n// Resource bundles\n// categories_en.properties\ncategory.electronics=Electronics\ncategory.clothing=Clothing\ncategory.books=Books\n\n// categories_es.properties\ncategory.electronics=Electrónica\ncategory.clothing=Ropa\ncategory.books=Libros\n\n// Usage\nString localizedName = product.getCategory().getLocalizedName(userLocale);\n\n// For UI display\npublic void buildCategoryDropdown(Locale locale) {\n    for (ProductCategory category : ProductCategory.values()) {\n        String displayName = category.getLocalizedName(locale);\n        dropdown.addItem(displayName, category);\n    }\n}\n```"
+            },
+            {
+              "title": "Runtime Category Discovery",
+              "description": "```java\n// Dynamic discovery of enum properties\n\n// Reflection to get all enum values\npublic List<Map<String, Object>> getCategoryInfo() {\n    List<Map<String, Object>> result = new ArrayList<>();\n    for (ProductCategory category : ProductCategory.values()) {\n        Map<String, Object> categoryInfo = new HashMap<>();\n        categoryInfo.put(\"id\", category.name());\n        categoryInfo.put(\"displayName\", category.getDisplayName());\n        categoryInfo.put(\"taxRate\", category.getTaxRate());\n        categoryInfo.put(\"department\", category.getDepartment());\n        result.add(categoryInfo);\n    }\n    return result;\n}\n\n// Lookup enum by name\npublic ProductCategory getCategoryByName(String name) {\n    try {\n        return ProductCategory.valueOf(name.toUpperCase());\n    } catch (IllegalArgumentException e) {\n        throw new CategoryNotFoundException(\"Unknown category: \" + name);\n    }\n}\n\n// Typed constant lookup without hardcoding\npublic <T extends Enum<T>> T getEnumConstant(Class<T> enumClass, String name) {\n    return Enum.valueOf(enumClass, name);\n}\n\n// Usage\nProductCategory category = getEnumConstant(ProductCategory.class, \"BOOKS\");\n```"
             }
           ]
         }
-      ],
-      "relatedQuestions": []
+      ]
     }
   ]
 }
