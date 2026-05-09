@@ -1,5 +1,5 @@
 // src/components/InterviewPanel.js
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Box, Paper, useMediaQuery, useTheme} from '@mui/material';
 
 import {
@@ -13,6 +13,7 @@ import {
 } from '../data/questionLoader';
 
 import {scrollbarStyles, usePanelStyles} from '../utils/styles';
+import {filterQuestionsBySelectedSets} from '../utils/questionFilters';
 import {LAYOUT} from '../themes/baseTheme';
 import CategorySidebar from './CategorySidebar';
 import QuestionDetailsPanel from './QuestionDetailsPanel';
@@ -31,6 +32,10 @@ const InterviewPanel = ({
   onAnswerPointSelect,
   settings,
   onSettingChange,
+  selectedCategory = categories[0]?.id || '',
+  onCategorySelect = () => {},
+  mobileDrawerOpen = false,
+  onMobileDrawerClose = () => {},
 }) => {
   const {
     currentQuestion,
@@ -48,11 +53,9 @@ const InterviewPanel = ({
 
   // Mobile navigation state
   const [mobileView, setMobileView] = useState('question'); // 'category', 'question', 'related'
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   // Category state
   const [activeCategories, setActiveCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
@@ -61,6 +64,7 @@ const InterviewPanel = ({
   const [selectedSets, setSelectedSets] = useState({});
   const [selectedSubcategories, setSelectedSubcategories] = useState({});
   const [subcategoryFilter, setSubcategoryFilter] = useState(null);
+  const previousSelectedCategoryRef = useRef(selectedCategory);
 
   // Navigation state - Added for ordered navigation
   const [navigationState, setNavigationState] = useState({
@@ -77,11 +81,23 @@ const InterviewPanel = ({
   // Initialize active categories
   useEffect(() => {
     setActiveCategories(categories);
-
-    if (categories.length > 0 && !selectedCategory) {
-      setSelectedCategory(categories[0].id);
-    }
   }, []);
+
+  // Reset local category filters when app-level category changes directly
+  useEffect(() => {
+    if (!selectedCategory ||
+        previousSelectedCategoryRef.current === selectedCategory) {
+      return;
+    }
+
+    setExpandedCategory(selectedCategory);
+
+    if (currentQuestion?.categoryId !== selectedCategory) {
+      setSubcategoryFilter(null);
+    }
+
+    previousSelectedCategoryRef.current = selectedCategory;
+  }, [selectedCategory, currentQuestion]);
 
   // Update selected category and expand it when current question changes
   useEffect(() => {
@@ -90,7 +106,7 @@ const InterviewPanel = ({
       if (category) {
         // Update selected category if different
         if (category.id !== selectedCategory) {
-          setSelectedCategory(category.id);
+          onCategorySelect(category.id, {preserveCurrentQuestion: true});
 
           // Ensure the category is expanded
           setExpandedCategory(category.id);
@@ -101,7 +117,7 @@ const InterviewPanel = ({
         }
       }
     }
-  }, [currentQuestion, selectedCategory]);
+  }, [currentQuestion, selectedCategory, onCategorySelect]);
 
   // Initialize subcategory selection
   useEffect(() => {
@@ -137,11 +153,6 @@ const InterviewPanel = ({
   // Load questions based on selected category, subcategories, and sets
   useEffect(() => {
     if (selectedCategory) {
-      // Get the list of selected set IDs
-      const activeSets = Object.entries(selectedSets).
-          filter(([_, isSelected]) => isSelected).
-          map(([setId, _]) => setId);
-
       // Filter questions
       let baseQuestions;
 
@@ -180,12 +191,25 @@ const InterviewPanel = ({
         baseQuestions = getQuestionsByCategory(selectedCategory);
       }
 
-      // Use a brand new array to ensure React detects state change
-      setQuestions(Array.from(baseQuestions));
+      const setsForCategory = getQuestionSets(selectedCategory);
+      const questionsForActiveSets = filterQuestionsBySelectedSets(
+          baseQuestions,
+          selectedSets,
+          setsForCategory,
+      );
 
-      // If we have questions but no current question selected, select the first one
-      if (baseQuestions.length > 0 && !currentQuestion) {
-        updateInterviewState({currentQuestion: baseQuestions[0]});
+      // Use a brand new array to ensure React detects state change
+      setQuestions(Array.from(questionsForActiveSets));
+
+      const hasVisibleCurrentQuestion = currentQuestion &&
+          questionsForActiveSets.some(question =>
+              question.id === currentQuestion.id);
+
+      // Keep the selected question inside the active set/subcategory filters
+      if (questionsForActiveSets.length > 0 && !hasVisibleCurrentQuestion) {
+        updateInterviewState({currentQuestion: questionsForActiveSets[0]});
+      } else if (questionsForActiveSets.length === 0 && currentQuestion) {
+        updateInterviewState({currentQuestion: null});
       }
     } else {
       // If no category is selected, clear questions
@@ -309,8 +333,8 @@ const InterviewPanel = ({
       return;
     }
 
-    setSelectedCategory(categoryId);
     const category = categories.find(c => c.id === categoryId);
+    onCategorySelect(categoryId);
 
     // If explicitExpandedState is provided, use it, otherwise use default logic
     if (explicitExpandedState !== null) {
@@ -322,7 +346,6 @@ const InterviewPanel = ({
     }
 
     setSubcategoryFilter(null);
-    updateInterviewState({currentQuestion: null});
 
     // In mobile, switch to question view after selecting a category
     if (isMobile) {
@@ -359,7 +382,7 @@ const InterviewPanel = ({
 
     if (category && category.id !== selectedCategory) {
       // If question is from a different category, update category selection
-      setSelectedCategory(category.id);
+      onCategorySelect(category.id, {preserveCurrentQuestion: true});
     }
 
     updateInterviewState({currentQuestion: question});
@@ -495,7 +518,7 @@ const InterviewPanel = ({
         {isMobile && (
             <MobileDrawer
                 open={mobileDrawerOpen}
-                onClose={() => setMobileDrawerOpen(false)}
+                onClose={onMobileDrawerClose}
                 onNavigationChange={setMobileView}
                 settings={settings}
                 onSettingChange={handleSettingChange}

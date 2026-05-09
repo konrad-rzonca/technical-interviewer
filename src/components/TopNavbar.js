@@ -1,5 +1,5 @@
 ﻿// src/components/TopNavbar.js
-import React, {useState} from 'react';
+import React, {lazy, Suspense, useState} from 'react';
 import {
   AppBar,
   Badge,
@@ -21,7 +21,8 @@ import {SPACING} from '../themes/baseTheme';
 import {NAVIGATION} from '../utils/constants';
 import GlobalSearch from './GlobalSearch';
 import Logo from './Logo';
-import ExportDialog from './ExportDialog';
+
+const ExportDialog = lazy(() => import('./ExportDialog'));
 
 /**
  * Get the active tab index based on the current route path
@@ -51,7 +52,6 @@ const TopNavbar = ({
   onCategorySelect,
   gradesMap,
   selectedCategory,
-  onExportData,
   onClearData,
   interviewState,
 }) => {
@@ -105,6 +105,7 @@ const TopNavbar = ({
                 <IconButton
                     edge="start"
                     color="inherit"
+                    aria-label="Open mobile navigation"
                     onClick={onMobileDrawerOpen}
                     sx={{mr: 1}}
                 >
@@ -265,12 +266,16 @@ const TopNavbar = ({
         </Toolbar>
 
         {/* Export Dialog */}
-        <ExportDialog
-            open={exportDialogOpen}
-            onClose={() => setExportDialogOpen(false)}
-            interviewState={interviewState}
-            allQuestions={questions}
-        />
+        {exportDialogOpen && (
+            <Suspense fallback={null}>
+              <ExportDialog
+                  open={exportDialogOpen}
+                  onClose={() => setExportDialogOpen(false)}
+                  interviewState={interviewState}
+                  allQuestions={questions}
+              />
+            </Suspense>
+        )}
       </AppBar>
   );
 };

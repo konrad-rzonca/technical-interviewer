@@ -1,5 +1,5 @@
 // src/App.js
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {CssBaseline, ThemeProvider} from '@mui/material';
 import {
   BrowserRouter as Router,
@@ -17,7 +17,6 @@ import {categories, getAllQuestions} from './data/questionLoader';
 import {createAppTheme} from './themes';
 import {NAVIGATION} from './utils/constants';
 import storageService from './services/storageService';
-import {exportInterviewData} from './utils/exportUtils';
 
 // Create the application theme using the theme system
 const theme = createAppTheme();
@@ -31,6 +30,9 @@ function App() {
     selectedAnswerPointsMap: {}, // Map of questionId -> {categoryIndex-pointIndex: boolean}
   });
   const [allQuestions, setAllQuestions] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(
+      categories[0]?.id || '');
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   // App-wide settings
   const [settings, setSettings] = useState({
@@ -61,7 +63,7 @@ function App() {
     }
   }, []);
 
-  const updateInterviewState = (updates) => {
+  const updateInterviewState = useCallback((updates) => {
     setInterviewState(prevState => {
       const newState = {
         ...prevState,
@@ -81,18 +83,12 @@ function App() {
 
       return newState;
     });
-  };
+  }, []);
 
   // Handle question selection from global search
-  const handleQuestionSelect = (question) => {
+  const handleQuestionSelect = useCallback((question) => {
     updateInterviewState({currentQuestion: question});
-  };
-
-  const handleExportData = () => {
-    if (storageService.isStorageAvailable()) {
-      exportInterviewData(interviewState, allQuestions);
-    }
-  };
+  }, [updateInterviewState]);
 
   // Handle answer point selection - improved with direct state update
   const handleAnswerPointSelect = (questionId, categoryPointKey) => {
@@ -125,11 +121,16 @@ function App() {
     });
   };
 
-  // Handle category selection from global search
-  const handleCategorySelect = (categoryId) => {
-    // This will be passed to InterviewPanel
-    // We're not setting it here to avoid state duplication
-  };
+  // Handle category selection from global search and sidebar navigation
+  const handleCategorySelect = useCallback((categoryId, options = {}) => {
+    if (!categoryId) return;
+
+    setSelectedCategory(categoryId);
+
+    if (!options.preserveCurrentQuestion) {
+      updateInterviewState({currentQuestion: null});
+    }
+  }, [updateInterviewState]);
 
   // Handle settings changes
   const handleSettingChange = (setting) => {
@@ -151,9 +152,10 @@ function App() {
               onSettingChange={handleSettingChange}
               onQuestionSelect={handleQuestionSelect}
               onCategorySelect={handleCategorySelect}
-              onExportData={handleExportData}
               onClearData={() => storageService.clearInterviewState()}
               interviewState={interviewState}
+              selectedCategory={selectedCategory}
+              onMobileDrawerOpen={() => setMobileDrawerOpen(true)}
           >
             <Routes>
               <Route path={NAVIGATION.ROUTES.INTERVIEW} element={
@@ -164,6 +166,10 @@ function App() {
                       onAnswerPointSelect={handleAnswerPointSelect}
                       settings={settings}
                       onSettingChange={handleSettingChange}
+                      selectedCategory={selectedCategory}
+                      onCategorySelect={handleCategorySelect}
+                      mobileDrawerOpen={mobileDrawerOpen}
+                      onMobileDrawerClose={() => setMobileDrawerOpen(false)}
                   />
                 </ErrorBoundary>
               }/>

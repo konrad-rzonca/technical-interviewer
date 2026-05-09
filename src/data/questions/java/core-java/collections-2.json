@@ -727,9 +727,7 @@
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-collections-framework-core-java-c-1"
-      ]
+      "relatedQuestions": []
     },
     {
       "id": "java-custom-collections-core-java-c-29",
@@ -793,9 +791,7 @@
           ]
         }
       ],
-      "relatedQuestions": [
-        "java-collections-framework-core-java-c-1"
-      ]
+      "relatedQuestions": []
     }
   ]
 }

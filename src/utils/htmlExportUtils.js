@@ -12,6 +12,26 @@ const POINT_HEIGHT = '28px';
 const CATEGORY_WIDTH = '33.33%';
 const EMPTY_OPACITY = '0.4'; // Opacity for no-selected-content sections
 
+export const escapeHtml = (value = '') => String(value ?? '').replace(
+    /[&<>"']/g,
+    character => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      '\'': '&#39;',
+    }[character]),
+);
+
+export const formatMultilineHtml = (value = '') =>
+    escapeHtml(value).replace(/\r\n|\r|\n/g, '<br>');
+
+export const createFilenameSlug = (value = '') => String(value ?? '').
+    trim().
+    toLowerCase().
+    replace(/[^a-z0-9]+/g, '-').
+    replace(/^-+|-+$/g, '');
+
 /**
  * Get the color for a skill level
  * @param {string} skillLevel - The skill level (basic, intermediate, advanced)
@@ -90,13 +110,15 @@ const createCandidateDetailsHTML = (metadata) => {
     <div class="candidate-details">
       <div class="candidate-header">
         ${candidateName ? `
-          <div class="detail-value candidate-name">${candidateName}</div>
+          <div class="detail-value candidate-name">${escapeHtml(
+      candidateName)}</div>
         ` : ''}
       </div>
       
       ${comments ? `
         <div class="detail-row comments-row">
-          <div class="detail-value comments">${comments.replace(/\n/g, '<br>')}</div>
+          <div class="detail-value comments">${formatMultilineHtml(
+      comments)}</div>
         </div>
       ` : ''}
       
@@ -310,7 +332,7 @@ const createAnswerInsightsHTML = (answerInsights = [], selectedPoints = {}) => {
           html += `
             <div class="point-item ${isSelected ? 'selected' : 'unselected'}">
               <div class="point-indicator" style="background-color: ${levelColor};"></div>
-              ${point.title}
+              ${escapeHtml(point.title)}
             </div>
           `;
         });
@@ -339,7 +361,7 @@ const createAnswerInsightsHTML = (answerInsights = [], selectedPoints = {}) => {
         html += `
           <div class="point-item ${isSelected ? 'selected' : 'unselected'}">
             <div class="point-indicator" style="background-color: ${levelColor};"></div>
-            ${point.title}
+            ${escapeHtml(point.title)}
           </div>
         `;
       });
@@ -909,7 +931,7 @@ const createReportHTML = (exportData, options = {}) => {
 
     html += `
       <div class="category">
-        <h2 class="category-title">${categoryName}</h2>
+        <h2 class="category-title">${escapeHtml(categoryName)}</h2>
     `;
 
     // Process subcategories within this category
@@ -919,7 +941,7 @@ const createReportHTML = (exportData, options = {}) => {
       html += `
         <div class="subcategory">
           <div class="subcategory-header">
-            <h3 class="subcategory-title">${subcategory}</h3>
+            <h3 class="subcategory-title">${escapeHtml(subcategory)}</h3>
           </div>
           
           <div class="questions-container">
@@ -949,7 +971,8 @@ const createReportHTML = (exportData, options = {}) => {
           <div class="question-card">
             <div class="question-header">
               <div class="skill-indicator" style="background-color: ${skillLevelColor};"></div>
-              <h4 class="question-title">${details.fullQuestion || questionId}</h4>
+              <h4 class="question-title">${escapeHtml(
+            details.fullQuestion || questionId)}</h4>
             </div>
             
             <div class="question-content">
@@ -968,8 +991,8 @@ const createReportHTML = (exportData, options = {}) => {
               <!-- Notes section - Add 'empty' class if no notes -->
               <div class="notes-container ${!hasNotes ? 'empty' : ''}">
                 ${hasNotes
-            ? `<p class="notes">${notesMap[questionId].trim().
-                replace(/\n/g, '<br>')}</p>`
+            ? `<p class="notes">${formatMultilineHtml(
+                notesMap[questionId].trim())}</p>`
             : `<div class="notes-placeholder"></div>`
         }
               </div>
@@ -1032,8 +1055,8 @@ export const exportInterviewData = async (
   a.href = url;
 
   // Create a filename with candidate name if present
-  const candidateName = metadata.candidateName ?
-      `-${metadata.candidateName.toLowerCase().replace(/\s+/g, '-')}` : '';
+  const candidateNameSlug = createFilenameSlug(metadata.candidateName);
+  const candidateName = candidateNameSlug ? `-${candidateNameSlug}` : '';
 
   a.download = `technical-interview-notes${candidateName}-${new Date().toISOString().
       split('T')[0]}.html`;

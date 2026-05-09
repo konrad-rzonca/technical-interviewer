@@ -1,5 +1,8 @@
 ﻿// src/utils/pdfExportUtils.js
-import {exportInterviewData as exportToHtml} from './htmlExportUtils';
+import {
+  createFilenameSlug,
+  exportInterviewData as exportToHtml,
+} from './htmlExportUtils';
 import {jsPDF} from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -46,8 +49,8 @@ export const exportInterviewData = async (
         });
 
     // Create filename
-    const candidateName = metadata.candidateName ?
-        `-${metadata.candidateName.toLowerCase().replace(/\s+/g, '-')}` : '';
+    const candidateNameSlug = createFilenameSlug(metadata.candidateName);
+    const candidateName = candidateNameSlug ? `-${candidateNameSlug}` : '';
     const filename = `technical-interview-notes${candidateName}-${new Date().toISOString().
         split('T')[0]}.pdf`;
 

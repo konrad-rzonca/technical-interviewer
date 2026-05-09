@@ -1,6 +1,4 @@
-﻿// src/utils/exportUtils.js
-import exportToHtml from './htmlExportUtils';
-import exportToPdf from './pdfExportUtils';
+// src/utils/exportUtils.js
 
 /**
  * Export interview data in the specified format
@@ -13,17 +11,17 @@ export const exportInterviewData = async (
     interviewState, allQuestions, metadata = {}, format = 'html') => {
   try {
     if (format === 'pdf') {
-      return await exportToPdf(interviewState, allQuestions, metadata);
-    } else {
-      // Default to HTML
-      return await exportToHtml(interviewState, allQuestions, metadata);
+      const {default: exportToPdf} = await import('./pdfExportUtils');
+      return exportToPdf(interviewState, allQuestions, metadata);
     }
+
+    // Default to HTML
+    const {default: exportToHtml} = await import('./htmlExportUtils');
+    return exportToHtml(interviewState, allQuestions, metadata);
   } catch (error) {
     console.error(`Error exporting to ${format}:`, error);
     throw error;
   }
 };
-
-export {exportToHtml, exportToPdf};
 
 export default exportInterviewData;

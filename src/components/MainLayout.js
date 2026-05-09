@@ -1,6 +1,6 @@
 ﻿// src/components/MainLayout.js
 import React, {useState} from 'react';
-import {Box} from '@mui/material';
+import {Box, useMediaQuery, useTheme} from '@mui/material';
 import TopNavbar from './TopNavbar';
 import SettingsMenu from './SettingsMenu';
 import {COLORS} from '../themes/baseTheme';
@@ -18,13 +18,14 @@ const MainLayout = ({
   onSettingChange,
   onQuestionSelect,
   onCategorySelect,
-  onExportData,
   onClearData,
   interviewState,
+  selectedCategory,
+  onMobileDrawerOpen,
 }) => {
   const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const isMobile = window.innerWidth < 960; // Simple mobile detection
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   // Settings menu handlers
   const handleSettingsMenuOpen = (event) => {
@@ -46,7 +47,7 @@ const MainLayout = ({
         {/* Top Navigation Bar - Rendered once at the top level */}
         <TopNavbar
             isMobile={isMobile}
-            onMobileDrawerOpen={() => setMobileDrawerOpen(true)}
+            onMobileDrawerOpen={onMobileDrawerOpen}
             onSettingsMenuOpen={handleSettingsMenuOpen}
             settings={settings}
             questions={questions}
@@ -54,8 +55,7 @@ const MainLayout = ({
             onQuestionSelect={onQuestionSelect}
             onCategorySelect={onCategorySelect}
             gradesMap={gradesMap}
-            selectedCategory=""
-            onExportData={onExportData}
+            selectedCategory={selectedCategory}
             onClearData={onClearData}
             interviewState={interviewState}
         />

@@ -23,11 +23,6 @@ const AnswerPoint = React.memo(({
   const textStyles = useItemTextStyles(isSelected, isSmallScreen);
   const tooltipPrecomputedRef = useRef(false);
 
-  // Only render if we have valid point data
-  if (!point || !point.title) {
-    return null;
-  }
-
   // Precompute tooltip content as soon as component is visible
   // This happens only once per point via the ref flag
   useEffect(() => {
@@ -37,6 +32,11 @@ const AnswerPoint = React.memo(({
       precomputeTooltip(point.description);
     }
   }, [point?.description]);
+
+  // Only render if we have valid point data
+  if (!point || !point.title) {
+    return null;
+  }
 
   return (
       <Tooltip

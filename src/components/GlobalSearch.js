@@ -8,7 +8,7 @@ import {
   IconButton,
   InputAdornment,
   List,
-  ListItem,
+  ListItemButton,
   Paper,
   TextField,
   Typography,
@@ -24,6 +24,37 @@ import TagIcon from '@mui/icons-material/Tag';
 import {getSkillLevelStyles} from '../utils/styles';
 import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 
+export const escapeRegExp = (value) =>
+    String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+export const getHighlightedParts = (text, term) => {
+  if (!term || !text) {
+    return [{text, highlighted: false}];
+  }
+
+  const escapedTerm = escapeRegExp(term);
+  if (!escapedTerm) {
+    return [{text, highlighted: false}];
+  }
+
+  return text.split(new RegExp(`(${escapedTerm})`, 'gi')).map(part => ({
+    text: part,
+    highlighted: part.toLowerCase() === term.toLowerCase(),
+  }));
+};
+
+const renderHighlightedText = (text, term) => getHighlightedParts(
+    text,
+    term,
+).map((part, i) =>
+    part.highlighted
+        ? <span key={i} style={{
+          backgroundColor: `${COLORS.intermediate.light}`,
+          fontWeight: 'bold',
+        }}>{part.text}</span>
+        : part.text,
+);
+
 // SearchResultItem component for questions
 const QuestionResultItem = React.memo(
     ({question, searchTerm, onClick, answered, categories}) => {
@@ -38,24 +69,8 @@ const QuestionResultItem = React.memo(
       // Get subcategory name
       const subcategoryName = question.subcategoryName || 'Unknown';
 
-      // Highlight matching text in search results
-      const highlightMatch = (text, term) => {
-        if (!term || !text) return text;
-
-        const parts = text.split(new RegExp(`(${term})`, 'gi'));
-        return parts.map((part, i) =>
-            part.toLowerCase() === term.toLowerCase()
-                ? <span key={i} style={{
-                  backgroundColor: `${COLORS.intermediate.light}`,
-                  fontWeight: 'bold',
-                }}>{part}</span>
-                : part,
-        );
-      };
-
       return (
-          <ListItem
-              button
+          <ListItemButton
               onClick={() => onClick(question)}
               sx={{
                 py: SPACING.toUnits(SPACING.sm),
@@ -78,7 +93,7 @@ const QuestionResultItem = React.memo(
                       fontSize: TYPOGRAPHY.fontSize.regularText,
                     }}
                 >
-                  {highlightMatch(question.shortTitle || question.question,
+                  {renderHighlightedText(question.shortTitle || question.question,
                       searchTerm)}
                 </Typography>
                 {answered && (
@@ -121,7 +136,7 @@ const QuestionResultItem = React.memo(
                 </Typography>
               </Box>
             </Box>
-          </ListItem>
+          </ListItemButton>
       );
     });
 
@@ -217,21 +232,6 @@ const GlobalSearch = ({
     setShowResults(false);
   };
 
-  // Highlight matching text in search results
-  const highlightMatch = (text, term) => {
-    if (!term || !text) return text;
-
-    const parts = text.split(new RegExp(`(${term})`, 'gi'));
-    return parts.map((part, i) =>
-        part.toLowerCase() === term.toLowerCase()
-            ? <span key={i} style={{
-              backgroundColor: `${COLORS.intermediate.light}`,
-              fontWeight: 'bold',
-            }}>{part}</span>
-            : part,
-    );
-  };
-
   return (
       <ClickAwayListener onClickAway={() => setShowResults(false)}>
         <Box ref={searchContainerRef}
@@ -325,9 +325,8 @@ const GlobalSearch = ({
                       </Box>
                       <List disablePadding>
                         {searchHistory.map((term, index) => (
-                            <ListItem
+                            <ListItemButton
                                 key={index}
-                                button
                                 onClick={() => setSearchTerm(term)}
                                 sx={{py: SPACING.toUnits(SPACING.sm)}}
                             >
@@ -337,7 +336,7 @@ const GlobalSearch = ({
                               >
                                 {term}
                               </Typography>
-                            </ListItem>
+                            </ListItemButton>
                         ))}
                       </List>
                       <Divider/>
@@ -405,9 +404,8 @@ const GlobalSearch = ({
                       </Box>
                       <List disablePadding>
                         {searchResults.categories.map((category) => (
-                            <ListItem
+                            <ListItemButton
                                 key={category.id}
-                                button
                                 onClick={() => handleSelectCategory(
                                     category.id)}
                                 sx={{
@@ -426,9 +424,10 @@ const GlobalSearch = ({
                                     fontSize: TYPOGRAPHY.fontSize.regularText,
                                   }}
                               >
-                                {highlightMatch(category.name, searchTerm)}
+                                {renderHighlightedText(category.name,
+                                    searchTerm)}
                               </Typography>
-                            </ListItem>
+                            </ListItemButton>
                         ))}
                       </List>
                     </>
