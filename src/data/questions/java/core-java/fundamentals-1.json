@@ -206,6 +206,70 @@
       ]
     },
     {
+      "id": "java-polymorphism-core-java-f-13",
+      "skillLevel": "basic",
+      "shortTitle": "Polymorphism",
+      "question": "What is polymorphism in Java, and how does it appear in everyday object-oriented design?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Idea",
+              "description": "Polymorphism means the same operation can behave differently depending on the actual runtime type or the overload selected at compile time. It lets code work with abstractions while concrete implementations provide specific behavior."
+            },
+            {
+              "title": "Runtime Polymorphism",
+              "description": "Runtime polymorphism happens through overriding. A variable of a base type or interface can reference a subtype, and method dispatch chooses the overriding implementation on the actual object."
+            },
+            {
+              "title": "Compile-Time Polymorphism",
+              "description": "Compile-time polymorphism appears through method overloading, where multiple methods share a name but have different parameter lists. The compiler chooses the target method from the static argument types."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Interfaces and Substitution",
+              "description": "Interfaces are a common way to design for polymorphism. Code can depend on a PaymentProcessor, Repository, or Strategy interface while tests and production code supply different implementations."
+            },
+            {
+              "title": "Overriding Rules",
+              "description": "Correct overriding requires compatible signatures, covariant return types where applicable, no weaker access, and compatible checked exceptions. The Override annotation helps catch accidental overloads."
+            },
+            {
+              "title": "Design Benefits",
+              "description": "Polymorphism reduces conditional branching, enables extension through new implementations, improves testability, and supports patterns such as Strategy, Template Method, and Adapter."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Dispatch Boundaries",
+              "description": "Static, private, and final methods are not overridden in the same way as virtual instance methods. Fields are hidden rather than polymorphically dispatched, which can surprise candidates who only know the slogan."
+            },
+            {
+              "title": "Generics and Bridge Methods",
+              "description": "Type erasure can require compiler-generated bridge methods so overridden generic methods still dispatch correctly after type parameters are erased. This connects polymorphism with Java generics internals."
+            },
+            {
+              "title": "Architecture Trade-offs",
+              "description": "Good polymorphic design keeps abstractions cohesive and avoids deep inheritance hierarchies. Composition plus interfaces is often cleaner than inheriting behavior just to reuse code."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-method-overloading-overriding-core-java-f-12",
+        "java-inheritance-vs-composition-core-java-f-8",
+        "java-interfaces-abstract-classes-core-java-f-21"
+      ]
+    },
+    {
       "id": "java-method-overloading-overriding-core-java-f-12",
       "skillLevel": "basic",
       "shortTitle": "Overloading vs Overriding",

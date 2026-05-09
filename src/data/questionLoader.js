@@ -7,6 +7,10 @@ import fundamentals2Questions
   from './questions/java/core-java/fundamentals-2.json';
 import memoryManagementQuestions
   from './questions/java/core-java/memory-management.json';
+import modernJavaQuestions
+  from './questions/java/core-java/modern-java.json';
+import jvmPerformanceQuestions
+  from './questions/java/core-java/jvm-performance.json';
 import concurrentCollectionsQuestions
   from './questions/java/concurrency-multithreading/concurrent-collections.json';
 import executorsQuestions
@@ -15,6 +19,8 @@ import synchronizationQuestions
   from './questions/java/concurrency-multithreading/synchronization.json';
 import threadFundamentalsQuestions
   from './questions/java/concurrency-multithreading/thread-fundamentals.json';
+import modernConcurrencyQuestions
+  from './questions/java/concurrency-multithreading/modern-concurrency.json';
 import reactiveQuestions1 from './questions/java/core-java/reactive-1.json';
 
 import reactiveQuestions2 from './questions/java/core-java/reactive-2.json';
@@ -66,6 +72,8 @@ import cloudQuestions from './questions/java/engineering/cloud-azure.json';
 import securityQuestions from './questions/java/engineering/security.json';
 import openQuestions from './questions/java/engineering/open.json';
 import aiQuestions from './questions/java/engineering/AI.json';
+import buildDependencyQuestions
+  from './questions/java/engineering/build-dependency-management.json';
 
 // Question sets with author information
 const questionSets = {
@@ -82,6 +90,8 @@ const questionSets = {
             ...fundamentals2Questions.questions],
         },
         'Memory Management': memoryManagementQuestions,
+        'Modern Java': modernJavaQuestions,
+        'JVM & Performance': jvmPerformanceQuestions,
         'Collections': {
           category: collectionsQuestions1.category,
           subcategory: collectionsQuestions1.subcategory,
@@ -159,6 +169,7 @@ const questionSets = {
         'Executors': executorsQuestions,
         'Synchronization': synchronizationQuestions,
         'Thread Fundamentals': threadFundamentalsQuestions,
+        'Modern Concurrency': modernConcurrencyQuestions,
       },
     },
   ],
@@ -207,6 +218,7 @@ const questionSets = {
         'Cloud': cloudQuestions,
         'Security': securityQuestions,
         'AI': aiQuestions,
+        'Build & Dependency Management': buildDependencyQuestions,
         'Open Questions': openQuestions,
       },
     },
@@ -302,6 +314,8 @@ export const categories = [
     subcategories: [
       'Fundamentals',
       'Memory Management',
+      'Modern Java',
+      'JVM & Performance',
       'Collections',
       'Exceptions',
       'Reactive',
@@ -337,6 +351,7 @@ export const categories = [
       'Synchronization',
       'Concurrent Collections',
       'Executors',
+      'Modern Concurrency',
     ],
   },
   {
@@ -360,6 +375,7 @@ export const categories = [
       'Cloud',
       'Security',
       'AI',
+      'Build & Dependency Management',
       'Open Questions',
     ],
   }];

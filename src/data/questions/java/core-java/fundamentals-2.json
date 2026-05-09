@@ -344,8 +344,8 @@
     {
       "id": "java-optional-core-java-f-27",
       "skillLevel": "basic",
-      "shortTitle": "Null Handling",
-      "question": "How do you handle a situation where a method might return null in your code? What approaches help avoid null pointer exceptions?",
+      "shortTitle": "Java Null Handling",
+      "question": "How should Java code model absent values, and when should you use null checks, Optional, exceptions, or domain-specific result types?",
       "answerInsights": [
         {
           "category": "Basic",
@@ -412,7 +412,8 @@
         }
       ],
       "relatedQuestions": [
-        "java-stream-api-core-java-f-26"
+        "java-stream-api-core-java-f-26",
+        "java-modern-null-error-core-java-mj-8"
       ]
     },
     {
@@ -534,67 +535,6 @@
         }
       ],
       "relatedQuestions": []
-    },
-    {
-      "id": "java-exceptions-hierarchy-core-java-f-30",
-      "skillLevel": "basic",
-      "shortTitle": "Exceptions Hierarchy",
-      "question": "Could you explain the Java exceptions hierarchy and the difference between checked and unchecked exceptions?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Exception Hierarchy",
-              "description": "Java's exception hierarchy:\n- `Throwable` (root class)\n  - `Error`: Serious problems the application shouldn't try to handle (e.g., `OutOfMemoryError`)\n  - `Exception`: Conditions applications might want to handle\n    - **Checked exceptions**: Must be declared or caught (e.g., `IOException`)\n    - **Unchecked exceptions** (`RuntimeException` and its subclasses): Not required to be declared or caught (e.g., `NullPointerException`)"
-            },
-            {
-              "title": "Checked vs. Unchecked",
-              "description": "The key differences:\n- **Checked exceptions**: Must be either caught in a try-catch block or declared in the method's `throws` clause. Represent recoverable conditions.\n- **Unchecked exceptions**: Do not need to be declared or caught. Represent programming errors or unrecoverable states."
-            },
-            {
-              "title": "Common Exceptions",
-              "description": "Commonly encountered exceptions:\n- **Checked**: `IOException`, `SQLException`, `ClassNotFoundException`, `InterruptedException`\n- **Unchecked**: `NullPointerException`, `ArrayIndexOutOfBoundsException`, `IllegalArgumentException`, `ArithmeticException`"
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Handling Exceptions",
-              "description": "Exception handling patterns:\n```java\n// Basic try-catch-finally\ntry {\n    // Code that might throw exceptions\n    FileReader file = new FileReader(\"file.txt\");\n    // Process file...\n} catch (FileNotFoundException e) {\n    // Handle the specific exception\n    System.err.println(\"File not found: \" + e.getMessage());\n} catch (IOException e) {\n    // Handle a broader exception\n    System.err.println(\"IO error: \" + e.getMessage());\n} finally {\n    // Always executed, regardless of exception\n    // Close resources, clean up, etc.\n}\n\n// Try-with-resources (Java 7+)\ntry (FileReader reader = new FileReader(\"file.txt\");\n     BufferedReader buffered = new BufferedReader(reader)) {\n    String line;\n    while ((line = buffered.readLine()) != null) {\n        System.out.println(line);\n    }\n} catch (IOException e) {\n    System.err.println(\"Error reading file: \" + e.getMessage());\n}\n// Resources automatically closed, even with exceptions\n```"
-            },
-            {
-              "title": "Throwing Exceptions",
-              "description": "Throwing exceptions:\n```java\n// Declaring checked exceptions\npublic void readFile(String path) throws IOException {\n    // Method code...\n}\n\n// Throwing an exception\npublic void validateAge(int age) {\n    if (age < 0) {\n        throw new IllegalArgumentException(\"Age cannot be negative\");\n    }\n}\n\n// Rethrowing exceptions\npublic void processFile(String path) throws IOException {\n    try {\n        // Code that might throw IOException\n    } catch (IOException e) {\n        // Log the exception\n        logger.log(\"Error processing file\", e);\n        // Rethrow it\n        throw e;\n    }\n}\n```"
-            },
-            {
-              "title": "Exception Chaining",
-              "description": "Exception chaining preserves the original cause:\n```java\npublic void processData() throws ServiceException {\n    try {\n        // Code that might throw various exceptions\n        repository.fetchData();\n    } catch (SQLException e) {\n        // Wrap in an application-specific exception\n        throw new ServiceException(\"Data processing failed\", e);\n    }\n}\n\n// Later, both exceptions are available\ntry {\n    service.processData();\n} catch (ServiceException e) {\n    System.err.println(\"Service error: \" + e.getMessage());\n    Throwable cause = e.getCause();\n    if (cause != null) {\n        System.err.println(\"Caused by: \" + cause.getMessage());\n    }\n}\n```"
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Custom Exceptions",
-              "description": "Creating custom exceptions:\n```java\n// Checked custom exception\npublic class ResourceNotFoundException extends Exception {\n    private String resourceId;\n    \n    public ResourceNotFoundException(String resourceId) {\n        super(\"Resource not found: \" + resourceId);\n        this.resourceId = resourceId;\n    }\n    \n    public ResourceNotFoundException(String resourceId, Throwable cause) {\n        super(\"Resource not found: \" + resourceId, cause);\n        this.resourceId = resourceId;\n    }\n    \n    public String getResourceId() {\n        return resourceId;\n    }\n}\n\n// Unchecked custom exception\npublic class BusinessRuleViolationException extends RuntimeException {\n    private String rule;\n    \n    public BusinessRuleViolationException(String rule, String message) {\n        super(message);\n        this.rule = rule;\n    }\n    \n    public String getRule() {\n        return rule;\n    }\n}\n```"
-            },
-            {
-              "title": "Exception Design Patterns",
-              "description": "Exception handling patterns and best practices:\n\n1. **Exception Translation**: Convert lower-level exceptions to ones that make sense in your API\n```java\ntry {\n    // Low-level database code\n} catch (SQLException e) {\n    throw new DataAccessException(\"Failed to fetch user\", e);\n}\n```\n\n2. **Exception Enrichment**: Add context to exceptions as they propagate up the stack\n```java\ntry {\n    processOrder(order);\n} catch (ValidationException e) {\n    throw new OrderProcessingException(\"Order #\" + order.getId() + \": \" + e.getMessage(), e);\n}\n```\n\n3. **Selective Catching**: Catch only exceptions you can handle meaningfully\n```java\n// Bad practice\ntry {\n    // Code\n} catch (Exception e) { // Too broad\n    // Generic handling that might miss important distinctions\n}\n\n// Good practice\ntry {\n    // Code\n} catch (FileNotFoundException e) {\n    // Specific handling\n} catch (IOException e) {\n    // More general handling\n}\n```"
-            },
-            {
-              "title": "Java 7+ Features",
-              "description": "Modern exception handling features:\n\n1. **Multi-catch**: Catch multiple exception types in one clause\n```java\ntry {\n    // Code\n} catch (IOException | SQLException e) {\n    // Handle both types the same way\n}\n```\n\n2. **Try-with-resources**: Automatically close resources that implement `AutoCloseable`\n```java\ntry (InputStream in = new FileInputStream(src);\n     OutputStream out = new FileOutputStream(dest)) {\n    // Use resources\n} // Resources automatically closed\n```\n\n3. **Suppressed Exceptions**: When an exception occurs in try and another in try-with-resources close\n```java\ntry (Resource res = new Resource()) {\n    throw new FirstException();\n} // If res.close() throws SecondException, it's suppressed\n\n// Access suppressed exceptions\ncatch (FirstException e) {\n    Throwable[] suppressed = e.getSuppressed();\n    // Process suppressed exceptions\n}\n```"
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-      ]
     },
     {
       "id": "java-generics-core-java-f-32",

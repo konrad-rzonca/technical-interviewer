@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Databases",
   "subcategory": "SQL",
   "questions": [
@@ -442,15 +442,15 @@
     {
       "id": "sql-transactions-acid-databases-sql-8",
       "skillLevel": "intermediate",
-      "shortTitle": "Transactions and ACID",
-      "question": "Could you explain database transactions and the ACID properties?",
+      "shortTitle": "SQL Transaction Control",
+      "question": "How do SQL transaction controls such as BEGIN, COMMIT, ROLLBACK, and savepoints protect data correctness?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
               "title": "Transaction Definition",
-              "description": "A **database transaction** is a sequence of operations performed as a single logical unit of work, which either completely succeeds or completely fails."
+              "description": "A SQL transaction groups statements into one logical unit of work. The database either commits all successful changes or rolls them back so partial updates do not leave data in an invalid state."
             },
             {
               "title": "Basic Syntax",
@@ -458,7 +458,7 @@
             },
             {
               "title": "ACID Acronym",
-              "description": "**ACID** stands for **Atomicity** (all or nothing), **Consistency** (valid state transitions), **Isolation** (concurrent transactions don't interfere), and **Durability** (committed changes survive system failures)."
+              "description": "ACID is still relevant, but this SQL-focused question should emphasize concrete transaction boundaries, constraint enforcement, rollback behavior, savepoints, and how application code coordinates with the database."
             }
           ]
         },
@@ -498,7 +498,8 @@
         }
       ],
       "relatedQuestions": [
-        "sql-transaction-isolation-levels-databases-sql-24"
+        "sql-transaction-isolation-levels-databases-sql-24",
+        "databases-transactions-acid-1"
       ]
     },
     {
@@ -1061,7 +1062,7 @@
     {
       "id": "sql-database-design-principles-databases-sql-18",
       "skillLevel": "intermediate",
-      "shortTitle": "Sql Design Principles",
+      "shortTitle": "SQL Design Principles",
       "question": "What are the key principles of good relational database design?",
       "answerInsights": [
         {
@@ -1369,7 +1370,7 @@
     {
       "id": "sql-null-handling-databases-sql-23",
       "skillLevel": "intermediate",
-      "shortTitle": "NULL Handling",
+      "shortTitle": "SQL NULL Handling",
       "question": "How should NULL values be handled in SQL, and what are some common pitfalls?",
       "answerInsights": [
         {
@@ -1429,8 +1430,8 @@
     {
       "id": "sql-transaction-isolation-levels-databases-sql-24",
       "skillLevel": "advanced",
-      "shortTitle": "Isolation Levels in SQL",
-      "question": "Could you explain the different transaction isolation levels in SQL and their implications?",
+      "shortTitle": "SQL Isolation Semantics",
+      "question": "How do SQL isolation choices affect read phenomena, locking, MVCC behavior, and application correctness?",
       "answerInsights": [
         {
           "category": "Basic",
@@ -1485,13 +1486,14 @@
         }
       ],
       "relatedQuestions": [
-        "sql-transactions-acid-databases-sql-8"
+        "sql-transactions-acid-databases-sql-8",
+        "databases-transactions-isolation-levels-2"
       ]
     },
     {
       "id": "sql-database-comparison-databases-sql-25",
       "skillLevel": "intermediate",
-      "shortTitle": "Sql System Comparison",
+      "shortTitle": "SQL System Comparison",
       "question": "What are the key differences between major SQL database systems like MySQL, PostgreSQL, SQL Server, and Oracle?",
       "answerInsights": [
         {

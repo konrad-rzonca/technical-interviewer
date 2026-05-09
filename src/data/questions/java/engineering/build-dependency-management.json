@@ -1,0 +1,635 @@
+{
+  "category": "Engineering Practices",
+  "subcategory": "Build & Dependency Management",
+  "questions": [
+    {
+      "id": "java-maven-gradle-engineering-build-1",
+      "skillLevel": "basic",
+      "shortTitle": "Maven vs Gradle",
+      "question": "How do Maven and Gradle build Java projects, and how would you choose between them?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Maven Model",
+              "description": "Maven uses a declarative POM, standard lifecycle phases, plugins, and convention over configuration. It is predictable and widely understood across Java teams."
+            },
+            {
+              "title": "Gradle Model",
+              "description": "Gradle uses a programmable build model with Kotlin or Groovy DSLs, strong task configuration, incremental builds, and flexible multi-project support."
+            },
+            {
+              "title": "Common Responsibilities",
+              "description": "Both manage compilation, tests, dependency resolution, packaging, publishing, and plugin integration for Java backend projects."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Choice Factors",
+              "description": "Choose based on team familiarity, build complexity, performance needs, ecosystem plugins, enterprise standards, and how much custom build logic is actually required."
+            },
+            {
+              "title": "Maintainability",
+              "description": "A simple Maven build is often easier for broad teams, while Gradle can be cleaner for complex monorepos when build logic is well-structured and tested."
+            },
+            {
+              "title": "Wrapper Usage",
+              "description": "Use Maven Wrapper or Gradle Wrapper so local and CI builds use the same build tool version. This improves reproducibility."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Build Logic Discipline",
+              "description": "Custom build logic is production code. Keep it versioned, reviewed, documented, and tested rather than letting scripts become unowned infrastructure."
+            },
+            {
+              "title": "Performance",
+              "description": "Gradle offers configuration cache and incremental task execution; Maven can be optimized with parallel builds and remote caches through extensions. Measure before switching tools."
+            },
+            {
+              "title": "Migration Risk",
+              "description": "Migrating between Maven and Gradle should preserve dependency versions, plugin behavior, generated sources, publishing coordinates, and CI release workflows."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-build-lifecycle-engineering-build-3"
+      ]
+    },
+    {
+      "id": "java-maven-dependencies-engineering-build-2",
+      "skillLevel": "basic",
+      "shortTitle": "Dependency Basics",
+      "question": "How does dependency management work in Java build tools, and what problems should teams watch for?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Coordinates",
+              "description": "Java dependencies are usually identified by group, artifact, and version. Build tools resolve these coordinates from repositories into a classpath or module path."
+            },
+            {
+              "title": "Transitive Dependencies",
+              "description": "Dependencies can bring their own dependencies. This saves configuration but can introduce unexpected versions, duplicate libraries, or vulnerable packages."
+            },
+            {
+              "title": "Repositories",
+              "description": "Artifacts are resolved from repositories such as Maven Central, internal artifact stores, or vendor repositories. Repository policy affects security and reproducibility."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Version Mediation",
+              "description": "Maven and Gradle resolve conflicts differently. Candidates should know how to inspect the dependency tree and why the selected version may not be the one they expected."
+            },
+            {
+              "title": "Scopes and Configurations",
+              "description": "Compile, runtime, test, provided, implementation, and api-style configurations control where dependencies are visible and packaged. Incorrect scope choices cause runtime failures or API leakage."
+            },
+            {
+              "title": "Exclusions",
+              "description": "Exclusions can solve conflicts but should be used carefully. Removing a transitive dependency may break a library at runtime if it expected that dependency to exist."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Dependency Hygiene",
+              "description": "Keep dependencies minimal, updated, and justified. Remove unused libraries, pin critical versions, and avoid pulling large frameworks for small utilities."
+            },
+            {
+              "title": "Security",
+              "description": "Use vulnerability scanning, SBOMs, repository allowlists, checksum verification, and controlled upgrade processes to reduce supply-chain risk."
+            },
+            {
+              "title": "Runtime Alignment",
+              "description": "The build classpath, test classpath, container image, and production runtime must agree. Many linkage errors come from environment drift."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-version-conflicts-engineering-build-6",
+        "java-sbom-engineering-build-9"
+      ]
+    },
+    {
+      "id": "java-build-lifecycle-engineering-build-3",
+      "skillLevel": "intermediate",
+      "shortTitle": "Build Lifecycle",
+      "question": "What happens during a typical Java build lifecycle from source code to deployable artifact?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Main Stages",
+              "description": "A build usually validates inputs, compiles source, processes resources, runs tests, packages artifacts, verifies quality gates, and publishes or deploys the result."
+            },
+            {
+              "title": "Generated Sources",
+              "description": "Annotation processors, OpenAPI generators, protobuf compilers, and ORM metamodel generators may create sources that need deterministic paths and lifecycle integration."
+            },
+            {
+              "title": "Artifacts",
+              "description": "Common outputs include jars, bootable jars, wars, test reports, coverage reports, source jars, Docker images, and metadata such as checksums or SBOMs."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Phase Ownership",
+              "description": "Maven phases and Gradle tasks should have clear responsibilities. Mixing publishing, code generation, tests, and deployment in ad hoc scripts makes builds brittle."
+            },
+            {
+              "title": "CI Mapping",
+              "description": "CI pipelines should call the same build commands developers use locally, with environment-specific parameters injected through documented inputs."
+            },
+            {
+              "title": "Quality Gates",
+              "description": "Static analysis, formatting checks, unit tests, integration tests, vulnerability scans, and license checks should fail early with actionable messages."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Hermeticity",
+              "description": "A robust build avoids hidden machine state, network surprises, floating versions, and undeclared tools. Inputs should be explicit and reproducible."
+            },
+            {
+              "title": "Incrementality",
+              "description": "Large projects need incremental compilation, test selection, caching, and module boundaries to keep feedback fast without skipping required checks."
+            },
+            {
+              "title": "Release Readiness",
+              "description": "The build should produce traceable artifacts with version metadata, source revision, dependency metadata, and a repeatable promotion path."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "cicd-pipeline-design-engineering-cicd-5",
+        "java-reproducible-builds-engineering-build-7"
+      ]
+    },
+    {
+      "id": "java-bom-platform-engineering-build-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "BOMs and Platforms",
+      "question": "What are BOMs and dependency platforms, and how do they help manage Java dependency versions?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "BOM Definition",
+              "description": "A bill of materials in Maven dependency management declares recommended versions for a set of related artifacts without necessarily adding them as direct dependencies."
+            },
+            {
+              "title": "Platform Concept",
+              "description": "Gradle platforms and version catalogs provide similar central version control, allowing teams to align dependency versions across modules."
+            },
+            {
+              "title": "Common Examples",
+              "description": "Spring Boot, Spring Cloud, cloud SDKs, and enterprise platform teams often publish BOMs to keep compatible dependency sets together."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Version Alignment",
+              "description": "BOMs reduce accidental version drift between related libraries such as framework modules, starters, plugins, and integrations."
+            },
+            {
+              "title": "Override Discipline",
+              "description": "Overriding BOM-managed versions may be necessary for security fixes, but it should be documented and tested because compatibility assumptions can break."
+            },
+            {
+              "title": "Multiple BOMs",
+              "description": "Importing several BOMs can create precedence issues. Teams should know which platform owns each dependency family."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Enterprise Governance",
+              "description": "A company platform BOM can encode approved versions, security policy, and framework alignment. This reduces repeated decisions across services."
+            },
+            {
+              "title": "Upgrade Strategy",
+              "description": "Upgrade platform versions intentionally and review release notes, transitive changes, and deprecations. The BOM is a coordination point, not a magic safety guarantee."
+            },
+            {
+              "title": "Publishing Contracts",
+              "description": "Libraries should distinguish API dependencies from internal implementation dependencies so downstream projects are not forced into unnecessary version constraints."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "spring-boot-starters-frameworks-s-9",
+        "java-version-conflicts-engineering-build-6"
+      ]
+    },
+    {
+      "id": "java-multimodule-builds-engineering-build-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Multi-module Builds",
+      "question": "How should a Java multi-module build be structured for maintainability and fast feedback?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Module Boundaries",
+              "description": "Modules should represent meaningful ownership or architectural boundaries such as API, domain, infrastructure, application, test support, or adapters."
+            },
+            {
+              "title": "Dependency Direction",
+              "description": "Dependencies should flow in a controlled direction. Cycles between modules make builds slower, testing harder, and architecture less clear."
+            },
+            {
+              "title": "Shared Code",
+              "description": "Shared utilities should be small and stable. A catch-all common module often becomes a dumping ground and increases coupling."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Build Performance",
+              "description": "Separate modules can speed feedback through incremental builds and targeted tests, but too many tiny modules add configuration overhead."
+            },
+            {
+              "title": "Test Fixtures",
+              "description": "Use dedicated test-fixture modules or build-tool support for shared test helpers instead of leaking test code into production artifacts."
+            },
+            {
+              "title": "API Stability",
+              "description": "Internal modules can evolve quickly; published modules need semantic versioning, compatibility checks, and clear public contracts."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Architecture Enforcement",
+              "description": "Use dependency analysis, module rules, or architecture tests to prevent unwanted coupling. Build structure should support the intended architecture."
+            },
+            {
+              "title": "Release Strategy",
+              "description": "Decide whether modules are versioned together or independently. Independent releases add flexibility but require stronger compatibility discipline."
+            },
+            {
+              "title": "Monorepo Fit",
+              "description": "Large monorepos need build caching, affected-module detection, ownership metadata, and clear module naming to stay manageable."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-build-cache-engineering-build-10",
+        "git-enterprise-practices-engineering-practices-g-13"
+      ]
+    },
+    {
+      "id": "java-version-conflicts-engineering-build-6",
+      "skillLevel": "advanced",
+      "shortTitle": "Version Conflicts",
+      "question": "How would you diagnose and resolve dependency version conflicts in a Java backend service?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Symptoms",
+              "description": "Version conflicts often appear as NoSuchMethodError, ClassNotFoundException, NoClassDefFoundError, linkage errors, serialization failures, or behavior changes after an upgrade."
+            },
+            {
+              "title": "Inspect the Tree",
+              "description": "Use Maven dependency:tree, Gradle dependencies, dependencyInsight, lockfiles, and build scans to see selected versions and why they were chosen."
+            },
+            {
+              "title": "Minimal Reproduction",
+              "description": "Create a small reproduction or focused test when possible. It is easier to reason about one conflicting API than a full service startup failure."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Resolution Options",
+              "description": "Use dependency constraints, BOM alignment, explicit versions, exclusions, dependency substitution, or library upgrades. Prefer alignment over random exclusions."
+            },
+            {
+              "title": "Binary Compatibility",
+              "description": "Compilation can pass while runtime fails if the packaged classpath differs. Verify the actual artifact or container contents, not only the IDE classpath."
+            },
+            {
+              "title": "Transitive Ownership",
+              "description": "Understand which direct dependency introduced the conflict and whether upgrading that dependency is safer than forcing a transitive version."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Preventive Controls",
+              "description": "Use dependency convergence checks, lockfiles, renovate-style automated updates, SBOM review, and CI rules that detect duplicate or banned dependencies."
+            },
+            {
+              "title": "Classloader Complexity",
+              "description": "Application servers, plugin systems, shading, and test runners can add classloader behavior that simple dependency trees do not reveal."
+            },
+            {
+              "title": "Documentation",
+              "description": "When forcing or excluding versions, leave a clear reason and removal condition. Undocumented overrides become long-term technical debt."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-class-loading-core-java-jvm-1",
+        "java-bom-platform-engineering-build-4"
+      ]
+    },
+    {
+      "id": "java-reproducible-builds-engineering-build-7",
+      "skillLevel": "advanced",
+      "shortTitle": "Reproducible Builds",
+      "question": "What makes a Java build reproducible, and why does it matter for backend delivery?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A reproducible build can produce the same artifact from the same source, dependencies, tools, and configuration. This makes releases traceable and verifiable."
+            },
+            {
+              "title": "Pinned Inputs",
+              "description": "Pin JDK versions, build tool versions, plugin versions, dependency versions, container base images, and generated-code tools. Floating versions reduce confidence."
+            },
+            {
+              "title": "Environment Control",
+              "description": "Builds should not depend on local machine paths, timezone surprises, current timestamps in artifacts, undeclared environment variables, or network state."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Lockfiles and Checksums",
+              "description": "Dependency locks, checksums, artifact verification, and repository mirrors help ensure that the same declared dependency resolves to the same content."
+            },
+            {
+              "title": "Generated Artifacts",
+              "description": "Generated sources, OpenAPI clients, protobuf classes, and resource filtering should be deterministic and included in the build lifecycle."
+            },
+            {
+              "title": "CI Consistency",
+              "description": "Local and CI builds should use wrappers and documented commands. CI should fail if generated files or formatting differ from committed state."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Supply Chain Security",
+              "description": "Reproducibility supports provenance, artifact signing, SBOM accuracy, and incident response when a dependency or build system is compromised."
+            },
+            {
+              "title": "Release Debugging",
+              "description": "If a production artifact can be rebuilt and matched, teams can diagnose incidents without guessing what code or dependency set was deployed."
+            },
+            {
+              "title": "Practical Balance",
+              "description": "Perfect byte-for-byte reproducibility may be hard, but reducing undeclared inputs and drift still improves delivery quality significantly."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-sbom-engineering-build-9",
+        "cicd-versioning-engineering-cicd-18"
+      ]
+    },
+    {
+      "id": "java-toolchains-engineering-build-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Java Toolchains",
+      "question": "How do Java toolchains help teams manage compilation and runtime versions across services?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Toolchain Purpose",
+              "description": "Build toolchains let projects declare which JDK should compile, test, and run build tasks, independent of the developer machine default."
+            },
+            {
+              "title": "Source vs Target",
+              "description": "Java source, target, and release settings control language features and bytecode compatibility. The release flag is safer because it also checks platform APIs."
+            },
+            {
+              "title": "CI Alignment",
+              "description": "Toolchains reduce local and CI drift by making the expected JDK explicit in the build configuration."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Multiple JDKs",
+              "description": "Some projects compile libraries for older runtimes while testing on newer JDKs. Toolchains make those combinations explicit and repeatable."
+            },
+            {
+              "title": "Container Runtime",
+              "description": "The JDK used to build and the JRE used to run in containers must be compatible. A mismatch can hide issues until deployment."
+            },
+            {
+              "title": "Developer Experience",
+              "description": "Wrappers plus toolchains reduce setup friction, especially in repositories with many services or mixed Java versions."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Migration Support",
+              "description": "Toolchains make Java migrations safer by allowing controlled test matrices across current and target JDKs."
+            },
+            {
+              "title": "Vendor Policy",
+              "description": "Teams should document vendor choices, LTS policies, security update cadence, and container image sources rather than treating every JDK distribution as identical."
+            },
+            {
+              "title": "Governance",
+              "description": "Centralized toolchain conventions help enforce supported versions while still allowing controlled exceptions for legacy services."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-modern-migration-core-java-mj-10",
+        "java-reproducible-builds-engineering-build-7"
+      ]
+    },
+    {
+      "id": "java-sbom-engineering-build-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "SBOM and Supply Chain",
+      "question": "What is an SBOM, and how does it fit into Java dependency and release management?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "SBOM Definition",
+              "description": "A software bill of materials lists components included in an application, typically including names, versions, suppliers, licenses, and relationships."
+            },
+            {
+              "title": "Java Relevance",
+              "description": "Java services often include many transitive dependencies, making an SBOM useful for vulnerability response, license review, and release traceability."
+            },
+            {
+              "title": "Common Formats",
+              "description": "Common SBOM formats include CycloneDX and SPDX. Build plugins can generate them during CI or release packaging."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Vulnerability Response",
+              "description": "When a CVE is published, an SBOM helps identify affected services and dependency paths faster than manual repository searches."
+            },
+            {
+              "title": "Accuracy",
+              "description": "An SBOM should reflect the shipped artifact, not just declared direct dependencies. Container images may add operating-system packages too."
+            },
+            {
+              "title": "Policy Gates",
+              "description": "CI can enforce vulnerability severity thresholds, license policy, banned dependencies, and repository origin checks based on dependency metadata."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Provenance",
+              "description": "SBOMs are stronger when paired with artifact signing, build provenance, checksums, and reproducible build practices."
+            },
+            {
+              "title": "Operational Ownership",
+              "description": "Generating an SBOM is not enough. Teams need a process for storing it, querying it, and acting on vulnerability intelligence."
+            },
+            {
+              "title": "False Positives",
+              "description": "Security scans can produce noise. Mature teams triage reachability, exploitability, compensating controls, and upgrade risk without ignoring real exposure."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "dependency-management-engineering-practices-security-13",
+        "java-reproducible-builds-engineering-build-7"
+      ]
+    },
+    {
+      "id": "java-build-cache-engineering-build-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Build Caching",
+      "question": "How can build caching speed Java CI pipelines without hiding correctness problems?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Cache Goal",
+              "description": "Build caching reuses outputs from previous work when inputs are unchanged. It can reduce compilation, test, packaging, and code-generation time."
+            },
+            {
+              "title": "Local and Remote",
+              "description": "Local caches help developer machines, while remote caches help CI and teams share reusable outputs across branches and machines."
+            },
+            {
+              "title": "Input Tracking",
+              "description": "A cache is only correct when all task inputs are declared, including source files, compiler flags, environment, tool versions, generated resources, and relevant configuration."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Test Caching Risk",
+              "description": "Caching test outputs is risky when tests depend on time, random data, network calls, external services, or shared mutable state. Flaky tests reduce cache trust."
+            },
+            {
+              "title": "Cache Keys",
+              "description": "Good cache keys include dependency versions, JDK version, build tool version, plugin versions, source inputs, and task configuration."
+            },
+            {
+              "title": "CI Design",
+              "description": "Use caches to speed feedback but keep clean builds or scheduled verification jobs to detect cache poisoning and undeclared inputs."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Architecture Impact",
+              "description": "Clean module boundaries make caching more effective because small changes invalidate fewer downstream tasks. Build speed is partly an architecture outcome."
+            },
+            {
+              "title": "Security",
+              "description": "Remote caches should be authenticated, isolated as needed, and protected from untrusted branches if cached outputs can affect release builds."
+            },
+            {
+              "title": "Measurement",
+              "description": "Track cache hit rate, avoided task time, cache size, and correctness incidents. Disable caching for tasks that are not deterministic."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-multimodule-builds-engineering-build-5",
+        "cicd-pipeline-design-engineering-cicd-5"
+      ]
+    }
+  ]
+}
