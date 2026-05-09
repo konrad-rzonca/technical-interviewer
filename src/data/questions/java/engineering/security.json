@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Engineering Practices",
   "subcategory": "Security",
   "questions": [
@@ -794,7 +794,7 @@
     {
       "id": "security-cicd-engineering-practices-security-12",
       "skillLevel": "intermediate",
-      "shortTitle": "Security for CI/CD ",
+      "shortTitle": "Security for CI/CD",
       "question": "How would you integrate security into a CI/CD pipeline?",
       "answerInsights": [
         {

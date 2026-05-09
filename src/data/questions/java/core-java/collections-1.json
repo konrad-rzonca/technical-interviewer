@@ -1,7 +1,71 @@
-﻿{
+{
   "category": "Core Java",
   "subcategory": "Collections",
   "questions": [
+    {
+      "id": "java-collections-framework-core-java-c-1",
+      "skillLevel": "basic",
+      "shortTitle": "Collections Framework",
+      "question": "What is the Java Collections Framework, and how are its main interfaces and implementations organized?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Framework Purpose",
+              "description": "The Java Collections Framework provides standard interfaces, implementations, and algorithms for storing and manipulating groups of objects. It gives developers a common vocabulary for lists, sets, queues, maps, iteration, sorting, and bulk operations."
+            },
+            {
+              "title": "Core Interfaces",
+              "description": "The central interfaces are Collection, List, Set, Queue, Deque, and Map. Map is part of the framework but does not extend Collection because it represents key-value associations rather than a sequence of individual elements."
+            },
+            {
+              "title": "Common Implementations",
+              "description": "Typical implementations include ArrayList, LinkedList, HashSet, TreeSet, HashMap, LinkedHashMap, TreeMap, ArrayDeque, and PriorityQueue. Each implementation has different ordering, uniqueness, lookup, and mutation characteristics."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Choosing Implementations",
+              "description": "Selection should be based on access pattern, ordering requirements, duplicate handling, null handling, concurrency needs, and expected data size. For example, ArrayList favors indexed reads, HashMap favors key lookup, and TreeMap favors sorted key navigation."
+            },
+            {
+              "title": "Contracts Matter",
+              "description": "Correct behavior depends on contracts such as equals and hashCode for hash-based collections, compareTo or Comparator for sorted collections, and iterator fail-fast behavior for detecting concurrent structural modification."
+            },
+            {
+              "title": "Utility APIs",
+              "description": "The Collections utility class provides algorithms and wrappers such as sort, binarySearch, unmodifiable views, synchronized wrappers, and checked views. These complement the framework but are not themselves collection implementations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Performance Trade-offs",
+              "description": "Big-O complexity is only a starting point. Real performance also depends on memory locality, resizing behavior, hash quality, comparator cost, GC pressure, and whether the workload is read-heavy, write-heavy, or iteration-heavy."
+            },
+            {
+              "title": "Modern Additions",
+              "description": "Modern Java adds factory methods such as List.of, Set.of, and Map.of, stream integration, sequenced collection APIs, and improved immutable collection support. Interview answers should distinguish immutable snapshots from unmodifiable views over mutable backing collections."
+            },
+            {
+              "title": "API Design Guidance",
+              "description": "Public APIs should usually expose interface types rather than concrete collection classes, document mutability and ordering, avoid returning null collections, and be explicit about whether callers may modify returned collections."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-collection-vs-collections-core-java-c-10",
+        "java-map-interface-core-java-c-9",
+        "java-list-implementation-choice-core-java-c-20"
+      ]
+    },
     {
       "id": "java-arraylist-vs-linkedlist-core-java-c-2",
       "skillLevel": "basic",
@@ -256,74 +320,8 @@
         }
       ],
       "relatedQuestions": [
-        "java-synchronized-collections-core-java-c-6",
-        "java-concurrent-hashmap-performance-core-java-c-16"
-      ]
-    },
-    {
-      "id": "java-synchronized-collections-core-java-c-6",
-      "skillLevel": "intermediate",
-      "shortTitle": "Synchronized Collections",
-      "question": "How do synchronized collections differ from concurrent collections in Java?",
-      "answerInsights": [
-        {
-          "category": "Basic",
-          "points": [
-            {
-              "title": "Implementation Approach",
-              "description": "Synchronized collections (like those returned by `Collections.synchronizedList()`) use a lock on the **entire collection** for every operation. This approach wraps standard collection implementations with synchronized methods that acquire a lock on a common mutex object, ensuring that only one thread can access the collection at any time."
-            },
-            {
-              "title": "Creation Method",
-              "description": "They are created by wrapping standard collections using utility methods in the **Collections** class. These factory methods include synchronizedList(), synchronizedMap(), synchronizedSet(), synchronizedCollection(), and synchronizedSortedMap(), each producing a thread-safe wrapper around a corresponding regular collection instance."
-            },
-            {
-              "title": "Thread Safety Guarantee",
-              "description": "They provide thread safety by ensuring that only one thread can access the collection at a time. This mutual exclusion guarantee prevents data corruption from concurrent modifications but introduces significant contention when multiple threads frequently access the collection, as threads must wait for the lock to be released."
-            }
-          ]
-        },
-        {
-          "category": "Intermediate",
-          "points": [
-            {
-              "title": "Performance Limitations",
-              "description": "The **global lock approach** creates a bottleneck, limiting scalability in high-concurrency environments. As thread count increases, contention for the single lock becomes a significant performance bottleneck, causing threads to block and wait even when they could theoretically access different parts of the collection simultaneously."
-            },
-            {
-              "title": "Iterator Safety",
-              "description": "Unlike concurrent collections, synchronized collections use **fail-fast iterators** that throw **ConcurrentModificationException** if the collection is modified during iteration. To avoid this exception, client code must explicitly synchronize on the collection during iteration, requiring careful lock management and potentially increasing the lock hold time."
-            },
-            {
-              "title": "Explicit Synchronization",
-              "description": "For compound operations (like checking if an element exists before adding it), explicit synchronization is still needed to ensure atomicity. Without additional synchronization, sequences of individual operations aren't atomic, leading to potential race conditions where threads interleave operations and produce inconsistent results."
-            }
-          ]
-        },
-        {
-          "category": "Advanced",
-          "points": [
-            {
-              "title": "Legacy Integration",
-              "description": "Synchronized collections are more suitable for making existing code thread-safe with minimal changes, while concurrent collections are better for new code designed for high concurrency. They require less refactoring when adding thread safety to legacy code that wasn't originally designed for concurrent access, making them valuable in gradual codebase modernization."
-            },
-            {
-              "title": "Deadlock Potential",
-              "description": "Using synchronized collections increases the risk of deadlocks when multiple collections are locked in different orders. If thread A holds a lock on collection X and waits for collection Y, while thread B holds Y and waits for X, a classic deadlock occurs. Concurrent collections reduce this risk by minimizing or eliminating explicit locking requirements."
-            },
-            {
-              "title": "Memory Consistency Effects",
-              "description": "Synchronized collections provide stronger memory consistency guarantees following the Java Memory Model's **happens-before** relationship, which may be important for certain concurrent algorithms. This ensures that all actions in one thread before releasing a lock happen-before all actions in another thread after acquiring the same lock, providing strong visibility guarantees."
-            },
-            {
-              "title": "Recursive Access",
-              "description": "Synchronized collections use reentrant locks, allowing recursive access from the same thread without deadlocks. This property enables nested method calls that operate on the same collection without causing a thread to block itself. Concurrent collections achieve thread safety through different mechanisms and may or may not support similar recursive patterns depending on their implementation."
-            }
-          ]
-        }
-      ],
-      "relatedQuestions": [
-        "java-concurrent-collections-core-java-c-5"
+        "java-concurrent-hashmap-performance-core-java-c-16",
+        "java-synchronized-vs-concurrent-collections-cm-cc-3"
       ]
     },
     {

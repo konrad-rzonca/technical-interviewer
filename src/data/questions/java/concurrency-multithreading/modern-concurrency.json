@@ -1,0 +1,383 @@
+{
+  "category": "Concurrency and Multithreading",
+  "subcategory": "Modern Concurrency",
+  "questions": [
+    {
+      "id": "java-virtual-threads-concurrency-multithreading-mc-1",
+      "skillLevel": "intermediate",
+      "shortTitle": "Virtual Threads",
+      "question": "How do Java virtual threads change the way backend services handle blocking work?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Lightweight Threads",
+              "description": "Virtual threads are JVM-managed threads designed to make blocking-style code scale to many concurrent tasks without dedicating one operating-system thread per task."
+            },
+            {
+              "title": "Best Fit",
+              "description": "They fit I/O-bound workloads such as HTTP calls, database access, queue consumers, and request handling where tasks often wait on external systems."
+            },
+            {
+              "title": "Programming Model",
+              "description": "Virtual threads let teams keep straightforward synchronous code instead of converting every flow to callbacks or reactive chains solely for scalability."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Carrier Threads",
+              "description": "Virtual threads run on carrier platform threads. Blocking operations normally unmount the virtual thread, freeing the carrier for other work."
+            },
+            {
+              "title": "Pinning Risks",
+              "description": "Some synchronized blocks, native calls, or foreign calls can pin a virtual thread to a carrier thread. Pinning can reduce scalability and should be measured with JFR."
+            },
+            {
+              "title": "Pool Strategy",
+              "description": "Do not pool virtual threads like scarce platform threads. Use a per-task virtual-thread executor and control concurrency with semaphores, rate limits, or resource pools."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Resource Bottlenecks",
+              "description": "Virtual threads do not make databases, downstream services, connection pools, or CPU faster. They expose those bottlenecks more clearly by allowing more concurrent work."
+            },
+            {
+              "title": "Operational Migration",
+              "description": "Migration needs load testing, pool sizing review, timeout policies, thread-local review, and observability updates because thread counts and stack traces look different."
+            },
+            {
+              "title": "Architecture Trade-off",
+              "description": "Virtual threads reduce the need for reactive code in many I/O-heavy services, but reactive streams still matter for streaming, backpressure-rich, or event-pipeline workloads."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-creation-c-m-tf-1",
+        "java-modern-migration-core-java-mj-10"
+      ]
+    },
+    {
+      "id": "java-structured-concurrency-concurrency-multithreading-mc-2",
+      "skillLevel": "advanced",
+      "shortTitle": "Structured Concurrency",
+      "question": "What problem does structured concurrency solve, and how would it affect Java service code?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Task Scope",
+              "description": "Structured concurrency groups related concurrent tasks into a lexical scope so they can be started, joined, cancelled, and failed as one unit."
+            },
+            {
+              "title": "Parent-Child Lifetime",
+              "description": "Child tasks should not outlive the operation that created them. This makes cancellation, error handling, and resource cleanup easier to reason about."
+            },
+            {
+              "title": "Service Example",
+              "description": "A request handler that calls profile, orders, and recommendations services can fork those calls and still treat them as one request-level operation."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Failure Handling",
+              "description": "If one child task fails, the scope can cancel the rest and report a clear failure rather than leaving orphaned work running in background executors."
+            },
+            {
+              "title": "Observability",
+              "description": "Structured scopes make it easier to attach request context, deadlines, tracing, and logs to related concurrent work."
+            },
+            {
+              "title": "Preview Awareness",
+              "description": "Structured concurrency is still moving through preview stages in recent JDKs, including JDK 25. Production adoption depends on language-feature policy."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Design Shift",
+              "description": "Structured concurrency changes the default from fire-and-forget executor submission to explicit lifetime ownership. This reduces leaks and hidden partial failures."
+            },
+            {
+              "title": "Timeouts and Cancellation",
+              "description": "Good implementations combine scopes with deadlines, interruption-aware code, idempotent cancellation, and bounded downstream resources."
+            },
+            {
+              "title": "Alternatives",
+              "description": "CompletableFuture and reactive libraries can express similar fan-out/fan-in flows, but structured concurrency emphasizes simple blocking code with clear ownership."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-virtual-threads-concurrency-multithreading-mc-1",
+        "java-completable-future-concurrency-multithreading-e-7"
+      ]
+    },
+    {
+      "id": "java-scoped-values-concurrency-multithreading-mc-3",
+      "skillLevel": "advanced",
+      "shortTitle": "Scoped Values",
+      "question": "How do scoped values compare to ThreadLocal for passing request context in modern Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Purpose",
+              "description": "Scoped values provide a controlled way to share immutable context within a bounded execution scope. They are intended for cases like request IDs, tenant IDs, or security context."
+            },
+            {
+              "title": "ThreadLocal Problem",
+              "description": "ThreadLocal values can leak across reused platform threads if not cleaned up correctly. This is risky in pools and harder to reason about with complex async flows."
+            },
+            {
+              "title": "Immutable Context",
+              "description": "Scoped values encourage immutable, explicit context rather than mutable ambient state. This reduces accidental cross-request contamination."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Virtual Thread Fit",
+              "description": "Scoped values are designed to work well with virtual threads and structured concurrency because context lifetime follows the scope rather than a pooled worker thread."
+            },
+            {
+              "title": "Binding Lifetime",
+              "description": "A scoped value is bound for the dynamic extent of an operation. Once the operation exits, the binding is no longer available."
+            },
+            {
+              "title": "Migration Judgment",
+              "description": "Do not replace every ThreadLocal blindly. Start with request context or tracing values where lifetime and cleanup bugs are common."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Security Benefits",
+              "description": "Explicit scoped lifetime helps prevent stale authentication, tenant, or authorization context from leaking into later work."
+            },
+            {
+              "title": "Library Boundaries",
+              "description": "Framework and library support matters. Context propagation should be consistent across logging, tracing, security, and executor boundaries."
+            },
+            {
+              "title": "JDK 25 Context",
+              "description": "Scoped values are part of the modern Java concurrency direction. Teams should confirm runtime support and framework integration before standardizing on them."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-structured-concurrency-concurrency-multithreading-mc-2"
+      ]
+    },
+    {
+      "id": "java-executor-sizing-virtual-threads-concurrency-multithreading-mc-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "Executor Sizing with Virtual Threads",
+      "question": "How should executor sizing and resource limits change when a Java service adopts virtual threads?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Different Scarcity Model",
+              "description": "Platform-thread pools are sized because OS threads are expensive. Virtual threads are cheap, so the limiting resources usually become database connections, downstream capacity, CPU, memory, and rate limits."
+            },
+            {
+              "title": "Per-Task Executor",
+              "description": "A common pattern is one virtual thread per task. This avoids a small fixed worker pool becoming the artificial bottleneck."
+            },
+            {
+              "title": "Still Need Bounds",
+              "description": "Cheap threads do not mean unlimited work. Services still need backpressure, queue limits, timeouts, and capacity controls."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Connection Pools",
+              "description": "Database and HTTP connection pools should be reviewed carefully. More concurrent blocked callers can exhaust pools or overload dependencies if limits are unchanged."
+            },
+            {
+              "title": "CPU-Bound Work",
+              "description": "CPU-bound work should still be bounded near available CPU parallelism. Virtual threads do not make CPU-heavy computation cheaper."
+            },
+            {
+              "title": "Monitoring Changes",
+              "description": "Thread count becomes a less useful capacity metric by itself. Track active requests, blocked time, downstream latency, pool saturation, and carrier-thread pinning."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Bulkheads",
+              "description": "Use semaphores, rate limiters, bounded queues, and separate executors or concurrency limits to isolate risky dependencies and prevent one slow system from consuming all request capacity."
+            },
+            {
+              "title": "Timeout Discipline",
+              "description": "Timeouts and cancellation become more important because it is easy to create many waiting virtual threads. Every downstream call should have a clear deadline."
+            },
+            {
+              "title": "Migration Test",
+              "description": "Run load tests with realistic dependency latency and failure modes. Happy-path benchmarks often miss pool exhaustion and cascading failure behavior."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-virtual-threads-concurrency-multithreading-mc-1",
+        "java-thread-pool-executor-concurrency-multithreading-e-3"
+      ]
+    },
+    {
+      "id": "java-blocking-vs-async-concurrency-multithreading-mc-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Blocking vs Async",
+      "question": "How would you choose between blocking code with virtual threads, CompletableFuture, and reactive programming in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Blocking with Virtual Threads",
+              "description": "Virtual threads make blocking code scalable for many I/O-heavy workloads while keeping imperative control flow, stack traces, and debugging familiar."
+            },
+            {
+              "title": "CompletableFuture",
+              "description": "CompletableFuture fits explicit asynchronous composition, fan-out/fan-in, callbacks, and integrating APIs that already return futures."
+            },
+            {
+              "title": "Reactive Programming",
+              "description": "Reactive libraries fit streaming data, backpressure, event pipelines, and systems where non-blocking composition is central to the architecture."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Complexity Cost",
+              "description": "Reactive and callback-heavy code can increase cognitive load. Use it when its backpressure and composition model solves a real problem, not only because blocking threads used to be expensive."
+            },
+            {
+              "title": "Resource Model",
+              "description": "Blocking code consumes a virtual thread while waiting, but not usually a carrier thread. Reactive code consumes fewer thread abstractions but requires non-blocking libraries end to end."
+            },
+            {
+              "title": "Team Fit",
+              "description": "The best model depends on team expertise, framework support, observability, debugging needs, and the consistency of the application architecture."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Hybrid Systems",
+              "description": "Many services will mix models. Define clear boundaries so reactive streams, futures, and blocking handlers do not create hidden thread hops or context propagation bugs."
+            },
+            {
+              "title": "Backpressure",
+              "description": "Virtual threads do not provide backpressure automatically. Reactive streams have backpressure semantics, while blocking designs need explicit capacity controls."
+            },
+            {
+              "title": "Decision Rule",
+              "description": "Prefer the simplest model that meets correctness, latency, throughput, and operational requirements. Measure under failure, not just steady-state success."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-completable-future-concurrency-multithreading-e-7",
+        "java-reactive-streams-core-java-r-1"
+      ]
+    },
+    {
+      "id": "java-concurrency-observability-concurrency-multithreading-mc-6",
+      "skillLevel": "advanced",
+      "shortTitle": "Concurrency Observability",
+      "question": "What should you monitor when diagnosing modern Java concurrency problems in production?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Core Signals",
+              "description": "Track request latency, active work, queue depth, thread states, lock contention, CPU usage, blocked time, timeouts, rejected work, and downstream pool saturation."
+            },
+            {
+              "title": "JFR Events",
+              "description": "JFR can show thread parking, monitor contention, virtual-thread pinning, allocation pressure, socket I/O, and execution hotspots."
+            },
+            {
+              "title": "Thread Dumps",
+              "description": "Thread dumps still help, but virtual-thread-heavy applications can produce many stacks. Use filters and focused tooling instead of manually reading every thread."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Context Propagation",
+              "description": "Trace IDs, request context, security context, and logging MDC need explicit propagation across executors, futures, virtual threads, and reactive boundaries."
+            },
+            {
+              "title": "Contention Patterns",
+              "description": "Look for synchronized hot paths, oversized critical sections, unbounded queues, pool starvation, excessive retries, and slow dependencies causing work pileups."
+            },
+            {
+              "title": "Failure Correlation",
+              "description": "Concurrency incidents often appear as latency spikes before errors. Correlate dependency latency, pool usage, timeout rates, and retry volume."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Runbook Design",
+              "description": "Prepare commands and dashboards for dumping JFR, capturing thread samples, inspecting pools, and checking dependency health before incidents happen."
+            },
+            {
+              "title": "Load Test Scenarios",
+              "description": "Include slow downstreams, partial outages, retry storms, and traffic spikes in tests. These reveal concurrency bugs hidden by normal happy-path load."
+            },
+            {
+              "title": "Architecture Feedback",
+              "description": "Observability should feed design decisions such as smaller critical sections, bounded pools, bulkheads, backpressure, and simpler concurrency models."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-jfr-jmc-core-java-jvm-4",
+        "java-thread-states-monitoring-c-m-tf-4"
+      ]
+    }
+  ]
+}

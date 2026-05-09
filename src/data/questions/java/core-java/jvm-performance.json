@@ -1,0 +1,630 @@
+{
+  "category": "Core Java",
+  "subcategory": "JVM & Performance",
+  "questions": [
+    {
+      "id": "java-class-loading-core-java-jvm-1",
+      "skillLevel": "intermediate",
+      "shortTitle": "Class Loading",
+      "question": "How does JVM class loading work, and what problems can it cause in backend applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Loading Phases",
+              "description": "Class loading broadly includes loading bytecode, linking it through verification, preparation, and resolution, and initializing static state when the class is first actively used."
+            },
+            {
+              "title": "ClassLoaders",
+              "description": "ClassLoaders define namespaces for classes. The same class name loaded by different loaders is treated as a different type, which can cause confusing ClassCastException issues."
+            },
+            {
+              "title": "Delegation",
+              "description": "The parent delegation model normally asks parent loaders first before loading classes locally. Application servers, plugin systems, and test frameworks may customize this behavior."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Initialization Timing",
+              "description": "Static initialization can run later than expected and can fail with ExceptionInInitializerError. Heavy static work can hurt startup and make failures hard to diagnose."
+            },
+            {
+              "title": "Dependency Conflicts",
+              "description": "Version conflicts can appear as NoSuchMethodError, NoClassDefFoundError, or linkage errors when compile-time and runtime dependencies differ."
+            },
+            {
+              "title": "Diagnostics",
+              "description": "Useful tools include stack traces, dependency trees, verbose class loading, jcmd, and container image inspection to confirm which classes and jars are actually loaded."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Metaspace Pressure",
+              "description": "Generated classes, hot reloading, proxies, and leaking class loaders can increase metaspace usage. This is common in plugin systems and long-running application containers."
+            },
+            {
+              "title": "Modules and Encapsulation",
+              "description": "JPMS adds stronger boundaries that can make illegal reflective access or split packages fail earlier. This improves clarity but affects older libraries."
+            },
+            {
+              "title": "Architecture Guidance",
+              "description": "Minimize classpath ambiguity, keep dependency versions explicit, avoid duplicate libraries, and use build tooling to detect dependency convergence problems before runtime."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-modules-jpms-core-java-mj-6",
+        "java-maven-dependencies-engineering-build-2"
+      ]
+    },
+    {
+      "id": "java-jit-optimization-core-java-jvm-2",
+      "skillLevel": "advanced",
+      "shortTitle": "JIT Optimization",
+      "question": "How does the JVM JIT compiler optimize Java code, and what should developers know before tuning performance?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Interpreter and JIT",
+              "description": "Java code usually starts in the interpreter. Hot methods are compiled by the JIT into optimized machine code based on runtime profiling information."
+            },
+            {
+              "title": "Hot Code",
+              "description": "The JVM optimizes code that actually runs frequently. This means benchmarks and warmup matter because cold paths and hot paths are treated differently."
+            },
+            {
+              "title": "Common Optimizations",
+              "description": "Optimizations include inlining, escape analysis, lock elimination, dead-code elimination, loop optimizations, and speculative assumptions based on observed types."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Deoptimization",
+              "description": "If a speculative assumption becomes invalid, compiled code can deoptimize back to safer execution. This is normal but can affect latency-sensitive workloads."
+            },
+            {
+              "title": "Benchmarking Discipline",
+              "description": "Use JMH for microbenchmarks because it handles warmup, dead-code elimination traps, forking, and measurement noise better than hand-written timing loops."
+            },
+            {
+              "title": "Code Shape",
+              "description": "Small, monomorphic methods often inline well. Excessive abstraction, megamorphic call sites, reflection, and allocation-heavy code can limit optimization."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Tuning Order",
+              "description": "Measure first, optimize second. Most backend bottlenecks are I/O, database, lock contention, allocation, or algorithmic issues before JVM flags are the answer."
+            },
+            {
+              "title": "Observability Tools",
+              "description": "JFR, async-profiler, JIT logs, and perf maps can reveal hot methods, allocation pressure, lock contention, and compilation behavior."
+            },
+            {
+              "title": "Modern JVM Context",
+              "description": "Recent JDKs continue improving profiling and ahead-of-time ergonomics, but production tuning still requires representative workloads and rollback plans."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-profiling-workflow-core-java-jvm-5"
+      ]
+    },
+    {
+      "id": "java-safepoints-core-java-jvm-3",
+      "skillLevel": "advanced",
+      "shortTitle": "Safepoints",
+      "question": "What are JVM safepoints, and why can they matter for latency-sensitive Java services?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Definition",
+              "description": "A safepoint is a moment when Java threads can be brought to a known safe state so the JVM can perform coordinated operations such as GC, deoptimization, or code cache maintenance."
+            },
+            {
+              "title": "Stop-the-World Work",
+              "description": "Some safepoint operations pause application threads. Even short pauses can matter for services with strict latency targets."
+            },
+            {
+              "title": "Visibility in Tools",
+              "description": "JFR and JVM logs can show safepoint causes, pause durations, and time to reach a safepoint. This helps separate GC pauses from other JVM coordination pauses."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Time to Safepoint",
+              "description": "A pause includes not only the operation itself but also the time needed for all threads to reach a safepoint. Long-running native calls or tight loops can delay coordination."
+            },
+            {
+              "title": "Latency Diagnosis",
+              "description": "If p99 or p999 latency has unexplained spikes, check GC logs, JFR safepoint events, thread states, OS scheduling, and container CPU throttling."
+            },
+            {
+              "title": "Modern Collectors",
+              "description": "Collectors such as G1, ZGC, and Shenandoah reduce many pause costs, but they do not eliminate all sources of JVM or operating-system latency."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Tuning Discipline",
+              "description": "Do not tune safepoints in isolation. Correlate pauses with request latency, allocation rate, thread count, CPU saturation, and deployment environment."
+            },
+            {
+              "title": "Operational Readiness",
+              "description": "Latency-sensitive services should keep JFR templates, GC logging, and dashboards ready before incidents occur so evidence is available when spikes happen."
+            },
+            {
+              "title": "Code-Level Causes",
+              "description": "Allocation bursts, synchronized hot paths, excessive class loading, and native library behavior can all contribute to pause or coordination issues."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-gc-selection-core-java-jvm-6",
+        "java-jfr-jmc-core-java-jvm-4"
+      ]
+    },
+    {
+      "id": "java-jfr-jmc-core-java-jvm-4",
+      "skillLevel": "intermediate",
+      "shortTitle": "JFR and JMC",
+      "question": "How would you use Java Flight Recorder and Java Mission Control to understand a production Java service?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Low-Overhead Recording",
+              "description": "Java Flight Recorder captures JVM and application events with low overhead, making it suitable for production diagnostics when configured carefully."
+            },
+            {
+              "title": "Mission Control",
+              "description": "Java Mission Control analyzes JFR recordings and presents views for CPU, allocation, GC, locks, threads, exceptions, sockets, files, and latency events."
+            },
+            {
+              "title": "Common Use Cases",
+              "description": "JFR helps investigate high CPU, memory pressure, allocation hotspots, lock contention, slow I/O, thread pool behavior, and unusual exception rates."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Recording Strategy",
+              "description": "Use continuous recordings with bounded size for production and dump them on incidents. This preserves recent history without waiting to reproduce the issue."
+            },
+            {
+              "title": "Event Correlation",
+              "description": "Correlate JFR events with logs, metrics, traces, deployment timestamps, and workload changes to distinguish cause from coincidence."
+            },
+            {
+              "title": "Custom Events",
+              "description": "Applications can emit custom JFR events for domain-specific latency or throughput markers, which makes runtime recordings more useful during incidents."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Security and Privacy",
+              "description": "Recordings can include method names, paths, hostnames, and operational details. Treat them as sensitive diagnostic artifacts."
+            },
+            {
+              "title": "JDK 25 Context",
+              "description": "JDK 25 includes additional JFR profiling and tracing work, so current services should revisit what events are available in their selected runtime."
+            },
+            {
+              "title": "Operational Maturity",
+              "description": "Teams should document how to start, dump, store, and analyze recordings before a production outage. Tooling unused in calm periods rarely helps under pressure."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-profiling-workflow-core-java-jvm-5"
+      ]
+    },
+    {
+      "id": "java-profiling-workflow-core-java-jvm-5",
+      "skillLevel": "intermediate",
+      "shortTitle": "Profiling Workflow",
+      "question": "What workflow would you follow to profile and optimize a slow Java backend service?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Define the Symptom",
+              "description": "Start with a measurable symptom such as p95 latency, CPU saturation, memory growth, GC pause time, throughput, or a specific endpoint regression."
+            },
+            {
+              "title": "Reproduce or Observe",
+              "description": "Use production-safe observability or a representative load test. Profiling an unrealistic workload often optimizes the wrong thing."
+            },
+            {
+              "title": "Choose the Tool",
+              "description": "Use metrics and traces for direction, logs for context, JFR or async-profiler for runtime evidence, heap dumps for memory, and database tools for query bottlenecks."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Separate Bottleneck Types",
+              "description": "Differentiate CPU-bound code, allocation pressure, lock contention, database waits, remote I/O, thread pool starvation, and container throttling. Each requires a different fix."
+            },
+            {
+              "title": "Change One Thing",
+              "description": "Make one targeted change, measure against the baseline, and keep rollback simple. Multiple simultaneous optimizations make causality unclear."
+            },
+            {
+              "title": "Avoid Micro-only Thinking",
+              "description": "A faster method does not matter if the endpoint waits on a database or queue. Connect profiling evidence to user-visible behavior."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Production Safety",
+              "description": "Use low-overhead tools first in production and reserve invasive profiling for controlled environments unless the incident justifies the risk."
+            },
+            {
+              "title": "Architecture Outcomes",
+              "description": "The best fix may be caching, batching, algorithm replacement, schema/index changes, backpressure, or workload shaping rather than local code tuning."
+            },
+            {
+              "title": "Regression Prevention",
+              "description": "Add performance tests, dashboards, alerts, and runbooks for the specific failure mode so the same issue is detected earlier next time."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-jit-optimization-core-java-jvm-2",
+        "java-jfr-jmc-core-java-jvm-4"
+      ]
+    },
+    {
+      "id": "java-gc-selection-core-java-jvm-6",
+      "skillLevel": "advanced",
+      "shortTitle": "GC Selection",
+      "question": "How do you choose and tune a garbage collector for a Java backend workload?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Workload Goals",
+              "description": "GC choice depends on latency goals, throughput needs, heap size, allocation rate, object lifetime, CPU budget, and operational simplicity."
+            },
+            {
+              "title": "Common Collectors",
+              "description": "G1 is a common default for balanced server workloads. ZGC and Shenandoah target very low pauses on large heaps. Specialized or legacy collectors have narrower use cases."
+            },
+            {
+              "title": "Measure First",
+              "description": "Collect GC logs, allocation rates, pause distributions, heap occupancy, promotion behavior, and request latency before changing collectors or heap sizing."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Heap Sizing",
+              "description": "Too small a heap increases GC frequency; too large a heap may increase footprint and sometimes recovery time. Size memory with container limits and live-set evidence."
+            },
+            {
+              "title": "Allocation Rate",
+              "description": "High allocation can dominate GC behavior even with a modern collector. Reducing temporary objects, batching, or improving algorithms may outperform flag tuning."
+            },
+            {
+              "title": "Container Awareness",
+              "description": "Modern JVMs understand cgroups, but services still need correct memory requests, limits, headroom for native memory, and observability for container OOM kills."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Latency Trade-offs",
+              "description": "Low-pause collectors can use more CPU or memory. Throughput-oriented workloads may prefer different trade-offs than interactive APIs."
+            },
+            {
+              "title": "Generational Changes",
+              "description": "Collector capabilities evolve across JDK releases, including generational low-pause collectors. Retest assumptions when moving to newer LTS runtimes."
+            },
+            {
+              "title": "Operational Plan",
+              "description": "GC tuning should include dashboards, safe flag rollout, canary comparison, rollback, and documentation explaining why each non-default flag exists."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-modern-migration-core-java-mj-10"
+      ]
+    },
+    {
+      "id": "java-heap-thread-dumps-core-java-jvm-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Heap and Thread Dumps",
+      "question": "How do heap dumps and thread dumps help diagnose production Java issues?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Heap Dump Purpose",
+              "description": "A heap dump captures objects in memory so teams can investigate leaks, retained sizes, duplicate data, large collections, and unexpected object graphs."
+            },
+            {
+              "title": "Thread Dump Purpose",
+              "description": "A thread dump captures thread stack traces and states, helping diagnose deadlocks, blocked threads, busy loops, thread pool starvation, and slow shutdowns."
+            },
+            {
+              "title": "Collection Methods",
+              "description": "Common tools include jcmd, jstack, jmap, JFR, Kubernetes exec commands, and platform-specific diagnostic endpoints or support bundles."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Safety Concerns",
+              "description": "Heap dumps can be large and may contain sensitive data. Capturing one can pause the JVM or stress disk, so production procedures need care."
+            },
+            {
+              "title": "Thread State Interpretation",
+              "description": "Runnable does not always mean using CPU, and waiting does not always mean a bug. Interpret thread states with CPU metrics, locks, and application context."
+            },
+            {
+              "title": "Leak Analysis",
+              "description": "Look for growing retained sets, unexpected roots, caches without bounds, listener leaks, classloader leaks, and queues that never drain."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Incident Workflow",
+              "description": "Take multiple thread dumps a few seconds apart to see movement. For memory issues, compare heap usage over time rather than trusting a single snapshot."
+            },
+            {
+              "title": "Tooling",
+              "description": "Eclipse MAT, JMC, async-profiler, and vendor tools can reveal dominator trees, allocation hotspots, and lock contention more effectively than raw dumps alone."
+            },
+            {
+              "title": "Runbook Quality",
+              "description": "Production teams should document when dumps are allowed, where to store them securely, and how to scrub or delete them after analysis."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-thread-states-monitoring-c-m-tf-4"
+      ]
+    },
+    {
+      "id": "java-native-image-core-java-jvm-8",
+      "skillLevel": "advanced",
+      "shortTitle": "Native Image",
+      "question": "What are the benefits and trade-offs of compiling Java backend applications to native images with GraalVM?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Main Benefits",
+              "description": "Native images can start faster and use less memory than traditional JVM processes, which helps serverless functions, CLIs, short-lived jobs, and dense deployments."
+            },
+            {
+              "title": "Closed-World Assumption",
+              "description": "Native-image compilation analyzes reachable code ahead of time. Dynamic features such as reflection, proxies, resources, and serialization need metadata or framework support."
+            },
+            {
+              "title": "Different Runtime Profile",
+              "description": "Native images do not behave exactly like a warmed-up JVM with JIT optimization. Startup improves, but peak throughput may differ by workload."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Spring Support",
+              "description": "Spring Boot AOT and modern reachability metadata improve native image support, but applications still need tests covering reflection-heavy libraries and runtime behavior."
+            },
+            {
+              "title": "Build Cost",
+              "description": "Native compilation is slower and can require more CI resources. Build pipelines should cache dependencies and separate native tests from fast feedback where appropriate."
+            },
+            {
+              "title": "Operational Differences",
+              "description": "Debugging, profiling, monitoring agents, TLS, resources, time zones, and container images may need different configuration than JVM deployments."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Decision Criteria",
+              "description": "Choose native image when startup time or memory footprint materially matters. For long-running high-throughput services, benchmark against a tuned JVM before switching."
+            },
+            {
+              "title": "Compatibility Risk",
+              "description": "Libraries that generate bytecode, use reflection dynamically, or depend on unsupported native features can break. Keep compatibility tests close to real production paths."
+            },
+            {
+              "title": "JDK and GraalVM Alignment",
+              "description": "Spring Boot 4 and GraalVM 25 alignment improves the story, but teams still need version pinning and rollout discipline."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-reflection-proxies-core-java-mj-7"
+      ]
+    },
+    {
+      "id": "java-startup-memory-core-java-jvm-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Startup and Memory",
+      "question": "How would you reduce startup time and memory footprint for a Java service without damaging maintainability?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Measure Baseline",
+              "description": "Measure cold start, warmup time, RSS, heap, metaspace, thread count, loaded classes, and first-request latency before optimizing."
+            },
+            {
+              "title": "Dependency Weight",
+              "description": "Large frameworks, classpath scanning, reflection, unused starters, logging configuration, and heavy static initialization can all increase startup time and memory."
+            },
+            {
+              "title": "Simple Wins",
+              "description": "Remove unused dependencies, lazy-load noncritical components, right-size thread pools, reduce caches, and avoid loading large data during startup."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Framework Tools",
+              "description": "Use framework startup metrics, Spring Boot condition reports, AOT support, class-data sharing where appropriate, and container image layering to understand startup cost."
+            },
+            {
+              "title": "Memory Categories",
+              "description": "Java memory includes heap, metaspace, thread stacks, direct buffers, code cache, native libraries, and container overhead. Heap alone is not the full footprint."
+            },
+            {
+              "title": "Trade-offs",
+              "description": "Lazy initialization can improve startup but move failures to runtime. Smaller pools reduce memory but may hurt throughput. Native images improve startup but add build and compatibility costs."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Operational Goals",
+              "description": "Optimize for a concrete deployment goal such as autoscaling speed, serverless billing, pod density, or faster local development. Avoid abstract startup tuning."
+            },
+            {
+              "title": "Regression Guardrails",
+              "description": "Track startup and memory metrics in CI or release tests so dependency additions do not silently increase footprint."
+            },
+            {
+              "title": "Architecture Fit",
+              "description": "Sometimes splitting an oversized service, reducing classpath scope, or moving expensive initialization out of the request path is cleaner than JVM flag tuning."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-native-image-core-java-jvm-8"
+      ]
+    },
+    {
+      "id": "java-performance-regression-core-java-jvm-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Performance Regressions",
+      "question": "How would you investigate a Java performance regression introduced by a dependency, JDK, or framework upgrade?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Define Regression",
+              "description": "Compare before and after using the same workload, data, hardware, container limits, JVM flags, and dependency lock state. Without a controlled baseline, the regression may be noise."
+            },
+            {
+              "title": "Narrow the Change",
+              "description": "Use version bisecting, dependency lockfiles, release notes, feature flags, and canary metrics to isolate the smallest change correlated with the regression."
+            },
+            {
+              "title": "Collect Evidence",
+              "description": "Capture metrics, traces, logs, JFR recordings, GC logs, thread dumps, and database metrics from both baseline and regressed versions."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Common Causes",
+              "description": "Regressions often come from changed defaults, serialization behavior, query generation, TLS settings, connection pool behavior, classpath conflicts, or JVM ergonomics."
+            },
+            {
+              "title": "Benchmark Levels",
+              "description": "Use microbenchmarks for isolated code, component benchmarks for libraries, and load tests for end-to-end service behavior. Each answers a different question."
+            },
+            {
+              "title": "Rollback and Mitigation",
+              "description": "Have a rollback plan, temporary config mitigation, or feature toggle while the root cause is being fixed. Production stability comes first."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Upgrade Discipline",
+              "description": "Read release notes for breaking changes, removed defaults, security fixes, and performance changes. Upgrades should include observability review, not just compiler fixes."
+            },
+            {
+              "title": "Root Cause Quality",
+              "description": "A good conclusion explains why the regression happened, how it was detected, why the fix works, and how future upgrades will catch similar issues earlier."
+            },
+            {
+              "title": "Long-Term Health",
+              "description": "Use the incident to improve dependency management, benchmark coverage, runtime dashboards, and upgrade cadence rather than freezing on old versions."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-modern-migration-core-java-mj-10",
+        "java-version-conflicts-engineering-build-6"
+      ]
+    }
+  ]
+}

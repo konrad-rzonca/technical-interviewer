@@ -1,6 +1,22 @@
-﻿// src/data/__tests__/questionValidation.test.js
-import {getAllQuestions, getQuestionById} from '../questionLoader';
+// src/data/__tests__/questionValidation.test.js
+import fs from 'fs';
+import path from 'path';
+import {getAllQuestions} from '../questionLoader';
 import {ANSWER_LEVELS, SKILL_LEVELS} from '../../utils/answerConstants';
+
+const QUESTIONS_DIR = path.join(process.cwd(), 'src', 'data', 'questions');
+
+const getJsonFiles = (dir = QUESTIONS_DIR) => {
+  return fs.readdirSync(dir, {withFileTypes: true}).flatMap(entry => {
+    const entryPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      return getJsonFiles(entryPath);
+    }
+    return entry.name.endsWith('.json') ? [entryPath] : [];
+  });
+};
+
+const normalizeText = value => value.toLowerCase().replace(/\s+/g, ' ').trim();
 
 describe('Question Data Validation', () => {
   let allQuestions;
@@ -19,6 +35,34 @@ describe('Question Data Validation', () => {
     expect(allQuestions).toBeDefined();
     expect(Array.isArray(allQuestions)).toBe(true);
     expect(allQuestions.length).toBeGreaterThan(0);
+  });
+
+  test('raw question JSON files are parseable UTF-8 without BOM', () => {
+    const issues = [];
+
+    getJsonFiles().forEach(file => {
+      const content = fs.readFileSync(file, 'utf8');
+      const relativePath = path.relative(process.cwd(), file);
+
+      if (content.charCodeAt(0) === 0xFEFF) {
+        issues.push({
+          file: relativePath,
+          issue: 'File starts with UTF-8 BOM',
+        });
+      }
+
+      try {
+        JSON.parse(content);
+      } catch (error) {
+        issues.push({
+          file: relativePath,
+          issue: 'File is not valid JSON',
+          details: error.message,
+        });
+      }
+    });
+
+    expect(issues).toHaveLength(0);
   });
 
   test('each question has required structure', () => {
@@ -142,6 +186,15 @@ describe('Question Data Validation', () => {
             issue: 'points is not an array',
           });
           return;
+        }
+
+        if (insight.points.length > 4) {
+          issues.push({
+            questionId: question.id,
+            category: insight.category,
+            issue: 'Too many points in answerInsight',
+            details: `Expected at most 4, got ${insight.points.length}`,
+          });
         }
 
         insight.points.forEach((point, pointIndex) => {
@@ -318,12 +371,15 @@ describe('Question Data Validation', () => {
     // Build a map of short titles to their questions
     const shortTitleMap = {};
     questionsWithShortTitles.forEach(question => {
-      if (!shortTitleMap[question.shortTitle]) {
-        shortTitleMap[question.shortTitle] = [];
+      const normalizedShortTitle = normalizeText(question.shortTitle);
+      if (!shortTitleMap[normalizedShortTitle]) {
+        shortTitleMap[normalizedShortTitle] = [];
       }
-      shortTitleMap[question.shortTitle].push({
+      shortTitleMap[normalizedShortTitle].push({
         id: question.id,
         questionShortTitle: question.shortTitle,
+        questionText: question.question.substring(0, 50) +
+            (question.question.length > 50 ? '...' : ''),
         category: question.categoryId,
         subcategory: question.subcategoryName,
       });
@@ -367,80 +423,35 @@ describe('Question Data Validation', () => {
     }
   });
 
-  test('consistency between questions and their references', () => {
-    // Check that if question A references B, then B should reference A
-    const nonMutualReferences = [];
-
-    allQuestions.forEach(questionA => {
-      if (questionA.relatedQuestions &&
-          Array.isArray(questionA.relatedQuestions)) {
-        questionA.relatedQuestions.forEach(relatedId => {
-          const questionB = getQuestionById(relatedId);
-
-          if (questionB &&
-              (!questionB.relatedQuestions ||
-                  !Array.isArray(questionB.relatedQuestions) ||
-                  !questionB.relatedQuestions.includes(questionA.id))) {
-            nonMutualReferences.push({
-              source: questionA.id,
-              target: relatedId,
-              issue: 'Non-mutual reference',
-            });
-          }
-        });
-      }
-    });
-
-    // This test is informational rather than a hard requirement
-    // We report issues but don't fail the test
-    if (nonMutualReferences.length > 0) {
-      console.warn(
-          'Info: Found non-mutual question references. Consider adding mutual references for better navigation:',
-          JSON.stringify(nonMutualReferences, null, 2),
-      );
-    }
-
-    // Uncomment to enforce mutual references
-    // expect(nonMutualReferences).toHaveLength(0);
-  });
-
-  test('question IDs follow naming convention', () => {
-    // Expected format: technology-short-description-category-subcategory-number
-    // e.g. java-concurrent-hashmap-cm-cc-2
-
-    const idPattern = /^[a-z]+-[a-z0-9-]+-[a-z]+-[a-z]+-\d+$/;
-    const questionIdsWithInvalidFormat = [];
+  test('all question text is unique after whitespace normalization', () => {
+    const questionTextMap = {};
 
     allQuestions.forEach(question => {
-      if (!idPattern.test(question.id)) {
-        questionIdsWithInvalidFormat.push({
-          id: question.id,
-          shortTitle: question.shortTitle || 'N/A',
-          category: question.categoryId,
-          subcategory: question.subcategoryName,
-        });
+      const normalizedQuestion = normalizeText(question.question);
+      if (!questionTextMap[normalizedQuestion]) {
+        questionTextMap[normalizedQuestion] = [];
       }
+      questionTextMap[normalizedQuestion].push({
+        id: question.id,
+        shortTitle: question.shortTitle || 'N/A',
+        category: question.categoryId,
+        subcategory: question.subcategoryName,
+      });
     });
 
-    // Only report this as a warning, not a failure, as there might be exceptions
-    if (questionIdsWithInvalidFormat.length > 0) {
-      console.warn('\nQUESTION IDs NOT FOLLOWING NAMING CONVENTION:');
-      console.warn(
-          'Expected format: technology-short-description-category-subcategory-number');
+    const duplicateQuestionTexts = Object.entries(questionTextMap).
+        filter(([_, instances]) => instances.length > 1).
+        map(([questionText, instances]) => ({
+          questionText,
+          count: instances.length,
+          instances,
+        }));
 
-      questionIdsWithInvalidFormat.forEach((q, idx) => {
-        console.warn(`\n${idx + 1}. ID: ${q.id}`);
-        console.warn(`   Short Title: ${q.shortTitle}`);
-        console.warn(`   Category: ${q.category} / ${q.subcategory}`);
-      });
-
-      console.warn(
-          '\nConsider standardizing ID format for better organization.');
-
-      // This test is informational and doesn't fail the suite
-      // Uncomment the line below to enforce the naming convention
-      // expect(questionIdsWithInvalidFormat).toHaveLength(0);
-    }
+    expect(duplicateQuestionTexts).toHaveLength(
+        0,
+        `Found duplicate normalized question text: ${JSON.stringify(
+            duplicateQuestionTexts, null, 2)}`,
+    );
   });
 
   test('all questions have valid category and subcategory values', () => {

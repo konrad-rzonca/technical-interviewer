@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Data Structures & Algorithms",
   "subcategory": "Data Structures",
   "questions": [
@@ -1189,8 +1189,7 @@
           ]
         }
       ],
-      "relatedQuestions": [
-      ]
+      "relatedQuestions": []
     },
     {
       "id": "spatial-data-structures-dsa-ds-23",
@@ -1319,8 +1318,8 @@
     {
       "id": "balanced-trees-generic-dsa-ds-2",
       "skillLevel": "advanced",
-      "shortTitle": "Balanced Trees",
-      "question": "Which balanced trees do you know?",
+      "shortTitle": "Balanced Tree Trade-offs",
+      "question": "How do balanced tree families such as AVL, Red-Black, and B-Trees preserve logarithmic operations, and when would you choose each?",
       "answerInsights": [
         {
           "category": "Basic",

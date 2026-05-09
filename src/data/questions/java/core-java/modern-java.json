@@ -1,0 +1,631 @@
+{
+  "category": "Core Java",
+  "subcategory": "Modern Java",
+  "questions": [
+    {
+      "id": "java-records-core-java-mj-1",
+      "skillLevel": "basic",
+      "shortTitle": "Records",
+      "question": "How do Java records work, and when are they a better fit than ordinary classes?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Data Carrier Purpose",
+              "description": "Records are concise classes for transparent immutable data carriers. The compiler generates a canonical constructor, accessors, equals, hashCode, and toString based on record components."
+            },
+            {
+              "title": "Basic Syntax",
+              "description": "A record such as record CustomerId(String value) declares the state in the header and exposes accessor methods named after the components. Components are final, and records cannot extend another class."
+            },
+            {
+              "title": "Good Use Cases",
+              "description": "Records fit DTOs, value objects, query results, API payloads, and small immutable aggregates where identity is based on state rather than object instance."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Validation and Invariants",
+              "description": "Records can define compact constructors to validate or normalize components. This keeps the concise syntax while preserving domain invariants such as non-empty IDs or canonicalized strings."
+            },
+            {
+              "title": "Shallow Immutability",
+              "description": "Record fields are final, but referenced objects may still be mutable. A record containing a List should defensively copy it when true immutability is required."
+            },
+            {
+              "title": "Framework Integration",
+              "description": "Modern serializers, persistence tools, and mapping frameworks often support records, but candidates should know constructor binding, reflection, and proxy limitations before using records everywhere."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Design Boundaries",
+              "description": "Records should not replace rich domain objects that own behavior, lifecycle, lazy loading, or complex invariants. They are strongest when state is explicit and stable."
+            },
+            {
+              "title": "Pattern Matching Synergy",
+              "description": "Records work well with pattern matching and deconstruction because their state shape is explicit. This makes them useful in modern command, event, and result modeling."
+            },
+            {
+              "title": "Migration Trade-offs",
+              "description": "Migrating a class to a record can change accessor names, serialization shape, mutability expectations, and binary compatibility. Treat it as an API change for public contracts."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-modern-migration-core-java-mj-10",
+        "java-modern-null-error-core-java-mj-8"
+      ]
+    },
+    {
+      "id": "java-sealed-classes-core-java-mj-2",
+      "skillLevel": "intermediate",
+      "shortTitle": "Sealed Classes",
+      "question": "What are sealed classes and interfaces in Java, and how do they help model constrained type hierarchies?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Closed Hierarchies",
+              "description": "Sealed types restrict which classes or interfaces may extend or implement them. The permits clause makes the allowed subtype set explicit at compile time."
+            },
+            {
+              "title": "Subtype Modifiers",
+              "description": "Permitted subtypes must declare final, sealed, or non-sealed. This forces each subtype to state whether the hierarchy remains closed or intentionally opens again."
+            },
+            {
+              "title": "Modeling Fit",
+              "description": "Sealed types fit domain concepts with known alternatives, such as payment methods, command types, validation results, or expression tree nodes."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Exhaustive Logic",
+              "description": "A sealed hierarchy helps the compiler and reviewers understand whether all cases are handled, especially with pattern matching switch expressions."
+            },
+            {
+              "title": "API Evolution",
+              "description": "Adding or removing permitted subtypes is a contract change. Public sealed APIs should be designed carefully because consumers may rely on exhaustiveness."
+            },
+            {
+              "title": "Modules and Packages",
+              "description": "Sealed hierarchies interact with module and package boundaries. Permitted classes must be visible in ways that preserve compile-time enforcement."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Design Trade-offs",
+              "description": "Sealing improves correctness when alternatives are truly finite, but it can over-constrain extension points. Use ordinary interfaces when third-party implementations are expected."
+            },
+            {
+              "title": "Framework Concerns",
+              "description": "Proxy-based frameworks, serializers, and ORM tools may need additional configuration for sealed types. Interview answers should consider runtime tooling, not just language syntax."
+            },
+            {
+              "title": "Domain Modeling",
+              "description": "Sealed interfaces plus records can express algebraic-style domain models in Java while keeping the code explicit and type-safe."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-pattern-matching-core-java-mj-3"
+      ]
+    },
+    {
+      "id": "java-pattern-matching-core-java-mj-3",
+      "skillLevel": "intermediate",
+      "shortTitle": "Pattern Matching",
+      "question": "How does pattern matching in modern Java simplify instanceof checks and switch-based branching?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Instanceof Patterns",
+              "description": "Pattern matching for instanceof combines type checking and casting into one construct. It reduces boilerplate and avoids unsafe manual casts after a successful type test."
+            },
+            {
+              "title": "Switch Patterns",
+              "description": "Pattern matching in switch lets code branch by type and optionally bind variables. It is especially useful with sealed hierarchies where all alternatives can be considered."
+            },
+            {
+              "title": "Readable Branching",
+              "description": "Patterns make branching logic more declarative by focusing on the shape of the data rather than repeated casts and temporary variables."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Guards and Conditions",
+              "description": "Guarded patterns allow extra conditions after a type match. This keeps related type and value checks close together while avoiding deeply nested if statements."
+            },
+            {
+              "title": "Null Handling",
+              "description": "Modern switch handling can make null behavior explicit. Candidates should know whether null is accepted, rejected, or handled as a dedicated case."
+            },
+            {
+              "title": "Exhaustiveness",
+              "description": "With sealed types, the compiler can help identify missing cases. This reduces default branches that hide future domain changes."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Preview Awareness",
+              "description": "Some pattern matching enhancements have moved through preview stages across Java releases. Production teams should know which features are final in their selected JDK and avoid preview features unless policy allows them."
+            },
+            {
+              "title": "Refactoring Impact",
+              "description": "Pattern matching often replaces visitor-style or instanceof-heavy code, but it should not pull too much domain behavior into a central switch when polymorphism is cleaner."
+            },
+            {
+              "title": "API Design",
+              "description": "Patterns work best when data shapes are explicit and stable. Combining sealed interfaces and records can make command or event processing clearer."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-sealed-classes-core-java-mj-2",
+        "java-modern-null-error-core-java-mj-8"
+      ]
+    },
+    {
+      "id": "java-switch-expressions-core-java-mj-4",
+      "skillLevel": "basic",
+      "shortTitle": "Switch Expressions",
+      "question": "How do switch expressions differ from traditional switch statements in Java?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Expression Result",
+              "description": "A switch expression produces a value, so it can be assigned directly or returned from a method. This encourages complete, value-oriented branching."
+            },
+            {
+              "title": "Arrow Cases",
+              "description": "Arrow labels avoid accidental fall-through and make each branch self-contained. They improve readability compared with many traditional switch statements."
+            },
+            {
+              "title": "Yield Keyword",
+              "description": "When a branch needs a block, yield returns the value for that branch. This separates producing a value from using return to exit the enclosing method."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Exhaustiveness",
+              "description": "Switch expressions must cover all possible inputs or provide a default. This catches missing branches earlier than statement-style switches."
+            },
+            {
+              "title": "Enum and Sealed Types",
+              "description": "Switch expressions work especially well with enums and sealed hierarchies because the possible alternatives are known."
+            },
+            {
+              "title": "Fall-through Control",
+              "description": "Traditional colon-style switch can still be useful, but modern code should avoid accidental fall-through unless it is deliberate and documented."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Maintainability",
+              "description": "Switch expressions reduce mutation by replacing temporary variables assigned in multiple branches. This makes refactoring and testing simpler."
+            },
+            {
+              "title": "Pattern Matching Integration",
+              "description": "Pattern matching switch builds on switch expressions, allowing type-aware branching while keeping exhaustive result production."
+            },
+            {
+              "title": "Migration Guidance",
+              "description": "Convert old switch statements when the code is truly computing a value. Do not force conversion when the branch performs unrelated side effects."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-pattern-matching-core-java-mj-3"
+      ]
+    },
+    {
+      "id": "java-text-blocks-core-java-mj-5",
+      "skillLevel": "basic",
+      "shortTitle": "Text Blocks",
+      "question": "What are Java text blocks, and where do they improve backend code readability?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Multi-line Literals",
+              "description": "Text blocks provide a readable way to write multi-line string literals without excessive concatenation or escaping. They are delimited with triple quotes."
+            },
+            {
+              "title": "Common Uses",
+              "description": "They are useful for SQL, JSON examples, HTML snippets, test fixtures, and documentation-like strings embedded in code."
+            },
+            {
+              "title": "Indentation Handling",
+              "description": "Java normalizes incidental indentation so text blocks can be indented with surrounding code while preserving meaningful content."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Escaping Rules",
+              "description": "Text blocks reduce but do not eliminate escaping. Quotes can often be written naturally, while backslashes and some formatting still need care."
+            },
+            {
+              "title": "Testing Benefits",
+              "description": "Readable fixtures reduce noise in tests and make expected payloads easier to review. This is useful for API, serialization, and database tests."
+            },
+            {
+              "title": "SQL Caveat",
+              "description": "Text blocks make SQL readable but do not make string-concatenated SQL safe. Parameter binding is still required to prevent injection."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Formatting Stability",
+              "description": "Teams should be deliberate about trailing spaces, line endings, and indentation because text blocks preserve content that can affect snapshot tests or generated payloads."
+            },
+            {
+              "title": "Template Boundaries",
+              "description": "Text blocks are not a full templating system. For complex dynamic content, use structured builders, serializers, or templating libraries."
+            },
+            {
+              "title": "Reviewability",
+              "description": "Text blocks improve code review when they replace obscure escaping, but large embedded documents can still be better kept in resource files."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "sql-injection-prevention-databases-sql-16"
+      ]
+    },
+    {
+      "id": "java-modules-jpms-core-java-mj-6",
+      "skillLevel": "advanced",
+      "shortTitle": "JPMS Modules",
+      "question": "How does the Java Platform Module System work, and when is it useful in backend applications?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Module Descriptor",
+              "description": "JPMS modules use module-info.java to declare module names, required dependencies, exported packages, and service usage or providers."
+            },
+            {
+              "title": "Strong Encapsulation",
+              "description": "Only exported packages are accessible to other modules. This improves boundaries compared with relying only on package visibility and conventions."
+            },
+            {
+              "title": "Reliable Configuration",
+              "description": "The module system checks required modules at startup or compile time, making some classpath issues more explicit."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Classpath vs Module Path",
+              "description": "Classpath-based applications remain common, but module-path applications gain stronger dependency metadata and encapsulation. Mixed migration needs careful handling of automatic modules."
+            },
+            {
+              "title": "Services",
+              "description": "JPMS supports service loading with uses and provides declarations. This can replace some reflection-heavy plugin mechanisms with explicit module contracts."
+            },
+            {
+              "title": "Reflection Access",
+              "description": "Deep reflection requires opening packages. Frameworks such as dependency injection, serialization, or ORM tools may need opens declarations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Migration Costs",
+              "description": "Large Spring or enterprise applications may not benefit immediately from full modularization. A practical migration often starts by cleaning package boundaries and dependency cycles."
+            },
+            {
+              "title": "Runtime Images",
+              "description": "JPMS enables custom runtime images with jlink, reducing deployment size for some services and command-line tools."
+            },
+            {
+              "title": "JDK 25 Context",
+              "description": "Modern Java continues to improve modular source ergonomics, but teams should separate language convenience from architectural modularity decisions."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-modern-migration-core-java-mj-10"
+      ]
+    },
+    {
+      "id": "java-reflection-proxies-core-java-mj-7",
+      "skillLevel": "intermediate",
+      "shortTitle": "Reflection and Proxies",
+      "question": "How do reflection, annotations, and dynamic proxies work in Java frameworks, and what trade-offs do they introduce?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Reflection Basics",
+              "description": "Reflection lets code inspect classes, methods, fields, constructors, and annotations at runtime. Frameworks use it to discover handlers, bind configuration, call constructors, and map data."
+            },
+            {
+              "title": "Annotations",
+              "description": "Annotations attach metadata to program elements. Runtime-retained annotations can drive behavior such as dependency injection, validation, transaction handling, or request mapping."
+            },
+            {
+              "title": "Dynamic Proxies",
+              "description": "Dynamic proxies can intercept interface method calls at runtime. Frameworks use proxying for cross-cutting behavior such as transactions, security, metrics, and retries."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Performance and Caching",
+              "description": "Reflection has overhead, so frameworks cache metadata and generated access paths. Method handles, generated bytecode, or build-time processing can reduce runtime cost."
+            },
+            {
+              "title": "Proxy Limitations",
+              "description": "JDK proxies require interfaces, while subclass proxies have issues with final classes, final methods, constructors, and self-invocation. These details matter in Spring AOP and similar frameworks."
+            },
+            {
+              "title": "Encapsulation",
+              "description": "Reflection can bypass normal access checks when permitted. JPMS and native-image environments make reflective access more explicit and sometimes stricter."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Native Image Constraints",
+              "description": "GraalVM native images need reflection, proxy, and resource metadata known ahead of time unless a framework supplies reachability metadata or AOT processing."
+            },
+            {
+              "title": "Security Concerns",
+              "description": "Reflective code can accidentally expose internals or invoke unsafe operations. Libraries should validate inputs and avoid broad reflective access to untrusted classes."
+            },
+            {
+              "title": "Design Judgment",
+              "description": "Reflection is powerful for frameworks, but ordinary application logic is usually clearer with explicit interfaces, constructors, and typed APIs."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-modules-jpms-core-java-mj-6",
+        "spring-aop-frameworks-s-7"
+      ]
+    },
+    {
+      "id": "java-modern-null-error-core-java-mj-8",
+      "skillLevel": "intermediate",
+      "shortTitle": "Modern Null and Errors",
+      "question": "How should modern Java code represent absence, validation failures, and recoverable errors?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Absence Choices",
+              "description": "Use Optional for return values where absence is expected, null only when an API explicitly allows it, empty collections for no results, and exceptions for exceptional failure paths."
+            },
+            {
+              "title": "Validation Results",
+              "description": "Validation often benefits from explicit result objects that can carry multiple errors instead of throwing on the first issue. This is common in API and batch processing code."
+            },
+            {
+              "title": "Clear Contracts",
+              "description": "Method contracts should document whether null is accepted or returned. Modern tooling and annotations help make these rules visible to callers."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Optional Boundaries",
+              "description": "Optional is best for return values, not fields, parameters, or collections of optional values. It should clarify a contract, not add wrapping noise."
+            },
+            {
+              "title": "Domain Result Types",
+              "description": "Domain-specific Result, Either, or Problem types can encode success, validation errors, and business failures without overusing exceptions for normal control flow."
+            },
+            {
+              "title": "Spring Boot 4 Context",
+              "description": "JSpecify null-safety adoption in the Spring portfolio makes null contracts increasingly important for Java backend APIs and tooling."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Exception Strategy",
+              "description": "Use exceptions for unexpected or boundary-crossing failures, preserve causes, and translate low-level exceptions into domain or API-level failures with context."
+            },
+            {
+              "title": "API Consistency",
+              "description": "A codebase should choose consistent conventions for nullability, Optional, exceptions, and result objects. Mixed styles increase bugs and make callers defensive."
+            },
+            {
+              "title": "Observability",
+              "description": "Recoverable errors should preserve enough context for logging, metrics, traces, and user-facing problem details without leaking sensitive data."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-optional-core-java-f-27",
+        "java-exception-hierarchy-core-java-e-1"
+      ]
+    },
+    {
+      "id": "java-sequenced-collections-core-java-mj-9",
+      "skillLevel": "intermediate",
+      "shortTitle": "Sequenced Collections",
+      "question": "What are sequenced collections in Java, and how do they clarify ordering across collection APIs?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Common Order API",
+              "description": "SequencedCollection, SequencedSet, and SequencedMap provide common operations for collections with a defined encounter order, such as first, last, reversed views, and end-based updates."
+            },
+            {
+              "title": "Affected Types",
+              "description": "APIs such as List, LinkedHashSet, SortedSet, Deque, LinkedHashMap, and SortedMap fit into the sequenced model where ordering is meaningful."
+            },
+            {
+              "title": "Problem Solved",
+              "description": "Before sequenced collections, accessing first or last elements required type-specific APIs or awkward workarounds. The new interfaces make ordered behavior explicit."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Reversed Views",
+              "description": "Reversed views let code traverse or operate from the opposite end without copying the collection. Candidates should understand whether a view is backed by the original data."
+            },
+            {
+              "title": "API Clarity",
+              "description": "Using sequenced interfaces communicates that order is part of the contract. This is stronger than accepting a generic Set or Map when order matters."
+            },
+            {
+              "title": "Compatibility",
+              "description": "Existing collection types gained new interface relationships, but old code generally continues to work. Public APIs can adopt sequenced types when they need end-aware operations."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Design Impact",
+              "description": "Sequenced APIs reduce custom helper methods and unsafe casts in libraries that need ordered maps or sets. They also make ordering requirements reviewable."
+            },
+            {
+              "title": "Implementation Awareness",
+              "description": "Order has cost. LinkedHashMap, TreeMap, ArrayList, and ArrayDeque provide different performance and memory trade-offs even when all expose ordered behavior."
+            },
+            {
+              "title": "Migration Guidance",
+              "description": "Migrate signatures to sequenced interfaces when order is essential and callers benefit from first, last, or reversed operations. Avoid changing contracts solely for novelty."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-collections-framework-core-java-c-1",
+        "java-linkedhashmap-features-core-java-c-14"
+      ]
+    },
+    {
+      "id": "java-modern-migration-core-java-mj-10",
+      "skillLevel": "advanced",
+      "shortTitle": "Modern Java Migration",
+      "question": "How would you plan a backend service migration from an older Java version to a modern LTS such as Java 21 or 25?",
+      "answerInsights": [
+        {
+          "category": "Basic",
+          "points": [
+            {
+              "title": "Inventory First",
+              "description": "Start by identifying the current JDK, build tool versions, dependencies, plugins, container base images, runtime flags, and unsupported APIs. A migration is both code and platform work."
+            },
+            {
+              "title": "Compatibility Checks",
+              "description": "Compile and test on the target JDK, inspect warnings, run static analysis, and verify reflective access, annotation processors, and generated code."
+            },
+            {
+              "title": "Deployment Alignment",
+              "description": "Update CI images, local toolchains, production runtimes, monitoring agents, and Dockerfiles together so the same JDK family is used across environments."
+            }
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "Library and Framework Updates",
+              "description": "Modern JDK migration often requires framework updates. For example, Spring Boot 4 aligns with Spring Framework 7, Jakarta EE 11, Jackson 3, and newer null-safety metadata."
+            },
+            {
+              "title": "Runtime Behavior",
+              "description": "Test GC behavior, TLS defaults, removed APIs, illegal reflective access, native libraries, time zone data, and performance-sensitive code with production-like workloads."
+            },
+            {
+              "title": "Feature Adoption",
+              "description": "Separate the runtime upgrade from optional language refactors. First make the service run safely, then adopt records, switch expressions, virtual threads, or other features where they improve code."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Risk Management",
+              "description": "Use canaries, rollback plans, performance baselines, and dependency lockfiles. Migration success is measured by production stability, not just successful compilation."
+            },
+            {
+              "title": "JDK 25 Awareness",
+              "description": "JDK 25 reached general availability in September 2025 and most vendors treat it as an LTS release. Teams should confirm vendor support policy, container availability, and framework compatibility before standardizing on it."
+            },
+            {
+              "title": "Architecture Benefits",
+              "description": "A well-run migration can reduce technical debt by updating build pipelines, removing obsolete flags, modernizing observability, and creating a repeatable JDK upgrade process."
+            }
+          ]
+        }
+      ],
+      "relatedQuestions": [
+        "java-virtual-threads-concurrency-multithreading-mc-1"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Engineering Practices",
   "subcategory": "Cloud",
   "questions": [
@@ -34,7 +34,7 @@
           "points": [
             {
               "title": "Identity and Security",
-              "description": "**Azure Active Directory** for identity management, **Key Vault** for secure key storage, **Security Center** for unified security management, and **Sentinel** for SIEM capabilities."
+              "description": "**Microsoft Entra ID** for identity management, **Key Vault** for secure key storage, **Security Center** for unified security management, and **Sentinel** for SIEM capabilities."
             },
             {
               "title": "AI and Machine Learning",
@@ -394,7 +394,7 @@
             },
             {
               "title": "Zero Trust Network",
-              "description": "Implement **Zero Trust principles** using **Azure Private Link** for PaaS services, **Azure Bastion** for secure VM access, **Just-in-Time VM Access** through Azure Security Center, and **Azure AD Conditional Access** for identity-based network security."
+              "description": "Implement **Zero Trust principles** using **Azure Private Link** for PaaS services, **Azure Bastion** for secure VM access, **Just-in-Time VM Access** through Azure Security Center, and **Microsoft Entra ID Conditional Access** for identity-based network security."
             }
           ]
         }
@@ -407,22 +407,22 @@
       "id": "azure-identity-engineering-cloud-7",
       "skillLevel": "intermediate",
       "shortTitle": "Azure Identity Services",
-      "question": "How do Azure Active Directory and related identity services provide security in the cloud?",
+      "question": "How do Microsoft Entra ID and related identity services provide security in the cloud?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Azure Active Directory",
-              "description": "**Azure Active Directory (Azure AD)** is Microsoft's cloud-based identity and access management service that helps users sign in and access resources. It serves as the central authentication service for Microsoft cloud services including Azure, Microsoft 365, and many third-party applications."
+              "title": "Microsoft Entra ID",
+              "description": "**Microsoft Entra ID** is Microsoft's cloud-based identity and access management service that helps users sign in and access resources. It serves as the central authentication service for Microsoft cloud services including Azure, Microsoft 365, and many third-party applications."
             },
             {
               "title": "Authentication Methods",
-              "description": "Azure AD supports multiple authentication methods including **passwords**, **phone sign-in**, **FIDO2 security keys**, and **Windows Hello for Business**. It also provides **Multi-Factor Authentication (MFA)** to add an additional layer of security beyond just passwords."
+              "description": "Microsoft Entra ID supports multiple authentication methods including **passwords**, **phone sign-in**, **FIDO2 security keys**, and **Windows Hello for Business**. It also provides **Multi-Factor Authentication (MFA)** to add an additional layer of security beyond just passwords."
             },
             {
               "title": "Single Sign-On",
-              "description": "Azure AD enables **Single Sign-On (SSO)** across cloud and on-premises applications, allowing users to authenticate once and access multiple applications without re-entering credentials."
+              "description": "Microsoft Entra ID enables **Single Sign-On (SSO)** across cloud and on-premises applications, allowing users to authenticate once and access multiple applications without re-entering credentials."
             },
             {
               "title": "Role-Based Access Control",
@@ -439,15 +439,15 @@
             },
             {
               "title": "Identity Protection",
-              "description": "**Azure AD Identity Protection** detects risk events and vulnerabilities affecting your organization's identities, configures automated responses, and investigates suspicious incidents."
+              "description": "**Microsoft Entra ID Identity Protection** detects risk events and vulnerabilities affecting your organization's identities, configures automated responses, and investigates suspicious incidents."
             },
             {
               "title": "Privileged Identity Management",
-              "description": "**Azure AD Privileged Identity Management (PIM)** provides just-in-time privileged access with approval workflows, requiring users to request elevation when they need to use their administrative privileges."
+              "description": "**Microsoft Entra ID Privileged Identity Management (PIM)** provides just-in-time privileged access with approval workflows, requiring users to request elevation when they need to use their administrative privileges."
             },
             {
               "title": "Hybrid Identity",
-              "description": "Azure AD supports **hybrid identity** scenarios through **Azure AD Connect** (synchronization), **Password Hash Synchronization**, **Pass-through Authentication**, and **Federation** with ADFS or third-party providers."
+              "description": "Microsoft Entra ID supports **hybrid identity** scenarios through **Microsoft Entra ID Connect** (synchronization), **Password Hash Synchronization**, **Pass-through Authentication**, and **Federation** with ADFS or third-party providers."
             }
           ]
         },
@@ -460,15 +460,15 @@
             },
             {
               "title": "Managed Identities",
-              "description": "**Managed Identities** eliminate the need for developers to manage credentials by providing Azure services with automatically managed identities in Azure AD, enabling secure service-to-service authentication without storing credentials in code."
+              "description": "**Managed Identities** eliminate the need for developers to manage credentials by providing Azure services with automatically managed identities in Microsoft Entra ID, enabling secure service-to-service authentication without storing credentials in code."
             },
             {
               "title": "External Identities",
-              "description": "Azure AD **External Identities** (including **B2B collaboration** and **B2C** for customer-facing apps) allow organizations to securely share applications and services with external users while maintaining control over their own corporate data."
+              "description": "Microsoft Entra ID **External Identities** (including **B2B collaboration** and **B2C** for customer-facing apps) allow organizations to securely share applications and services with external users while maintaining control over their own corporate data."
             },
             {
               "title": "Identity Governance",
-              "description": "**Azure AD Identity Governance** helps organizations balance security and productivity with processes for managing access lifecycles, privileged access, compliance auditing, and conducting access reviews to ensure only the right people have access."
+              "description": "**Microsoft Entra ID Identity Governance** helps organizations balance security and productivity with processes for managing access lifecycles, privileged access, compliance auditing, and conducting access reviews to ensure only the right people have access."
             }
           ]
         }
@@ -628,11 +628,11 @@
           "points": [
             {
               "title": "Defense in Depth",
-              "description": "Implement **defense in depth** with multiple security layers: **physical security** (Azure datacenters), **identity and access** (Azure AD), **perimeter** (DDoS Protection, Firewalls), **network** (NSGs, private endpoints), **compute** (antimalware, patch management), **application** (secure development), and **data** (encryption)."
+              "description": "Implement **defense in depth** with multiple security layers: **physical security** (Azure datacenters), **identity and access** (Microsoft Entra ID), **perimeter** (DDoS Protection, Firewalls), **network** (NSGs, private endpoints), **compute** (antimalware, patch management), **application** (secure development), and **data** (encryption)."
             },
             {
               "title": "Identity Security",
-              "description": "Secure identities with **Azure AD** using **Multi-Factor Authentication (MFA)**, **Conditional Access policies**, **Privileged Identity Management (PIM)** for just-in-time admin access, and regular **access reviews** to enforce least privilege."
+              "description": "Secure identities with **Microsoft Entra ID** using **Multi-Factor Authentication (MFA)**, **Conditional Access policies**, **Privileged Identity Management (PIM)** for just-in-time admin access, and regular **access reviews** to enforce least privilege."
             },
             {
               "title": "Network Security",
@@ -670,7 +670,7 @@
           "points": [
             {
               "title": "Zero Trust Architecture",
-              "description": "Implement **Zero Trust principles** in Azure with **verified identity** (Azure AD with risk-based authentication), **managed devices** (Intune integration), **least privilege access** (PIM), **microsegmentation** (NSGs, Azure Firewall), and **continuous monitoring** (Microsoft Defender for Cloud, Sentinel)."
+              "description": "Implement **Zero Trust principles** in Azure with **verified identity** (Microsoft Entra ID with risk-based authentication), **managed devices** (Intune integration), **least privilege access** (PIM), **microsegmentation** (NSGs, Azure Firewall), and **continuous monitoring** (Microsoft Defender for Cloud, Sentinel)."
             },
             {
               "title": "Cloud Security Posture Management",
@@ -1077,7 +1077,7 @@
             },
             {
               "title": "Stateless Application Tier",
-              "description": "Design **stateless application tiers** to simplify multi-region deployments, storing session state in distributed caches like **Azure Cache for Redis** with geo-replication, or using claim-based authentication with **Azure AD** to eliminate session state dependencies."
+              "description": "Design **stateless application tiers** to simplify multi-region deployments, storing session state in distributed caches like **Azure Cache for Redis** with geo-replication, or using claim-based authentication with **Microsoft Entra ID** to eliminate session state dependencies."
             },
             {
               "title": "Resource Deployment",
@@ -1139,7 +1139,7 @@
           "points": [
             {
               "title": "Security Features",
-              "description": "Secure AKS clusters with **Azure AD integration** for authentication, **Role-Based Access Control (RBAC)** for authorization, **Network Policies** for microsegmentation, **Pod Security Policies** to restrict container privileges, and **Azure Policy** for governance."
+              "description": "Secure AKS clusters with **Microsoft Entra ID integration** for authentication, **Role-Based Access Control (RBAC)** for authorization, **Network Policies** for microsegmentation, **Pod Security Policies** to restrict container privileges, and **Azure Policy** for governance."
             },
             {
               "title": "Availability and Reliability",
@@ -1230,7 +1230,7 @@
           "points": [
             {
               "title": "Enterprise Serverless Architectures",
-              "description": "Build enterprise-grade serverless solutions with **private network integration** (VNET integration, Private Endpoints), **identity security** (managed identities, Azure AD authentication), **secrets management** (Key Vault integration), and **advanced monitoring** (Application Insights)."
+              "description": "Build enterprise-grade serverless solutions with **private network integration** (VNET integration, Private Endpoints), **identity security** (managed identities, Microsoft Entra ID authentication), **secrets management** (Key Vault integration), and **advanced monitoring** (Application Insights)."
             },
             {
               "title": "Performance Optimization",
@@ -1370,7 +1370,7 @@
           "points": [
             {
               "title": "Identity and Access Strategy",
-              "description": "Implement comprehensive identity controls with **Azure AD tenant design** (considering B2B, external identities), **Privileged Identity Management** (for elevated access), **Custom RBAC roles** (for precise permissions), and **managed identities** (for service authentication without credentials)."
+              "description": "Implement comprehensive identity controls with **Microsoft Entra ID tenant design** (considering B2B, external identities), **Privileged Identity Management** (for elevated access), **Custom RBAC roles** (for precise permissions), and **managed identities** (for service authentication without credentials)."
             },
             {
               "title": "Security Operations",

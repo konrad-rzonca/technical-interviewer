@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Concurrency and Multithreading",
   "subcategory": "Executors",
   "questions": [
@@ -383,7 +383,7 @@
     {
       "id": "java-completable-future-concurrency-multithreading-e-7",
       "skillLevel": "advanced",
-      "shortTitle": "CompletableFuture for asynchronous",
+      "shortTitle": "CompletableFuture Asynchrony",
       "question": "How does CompletableFuture improve asynchronous programming in Java compared to traditional Futures?",
       "answerInsights": [
         {

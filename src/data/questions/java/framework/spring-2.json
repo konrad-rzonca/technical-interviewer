@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Frameworks",
   "subcategory": "Spring",
   "questions": [
@@ -357,11 +357,11 @@
           "points": [
             {
               "title": "Loading Mechanism",
-              "description": "Auto-configurations are loaded from **META-INF/spring.factories** files using the **SpringFactoriesLoader** mechanism, with ordering controlled by **@AutoConfigureBefore**, **@AutoConfigureAfter**, and **@AutoConfigureOrder** annotations."
+              "description": "In Spring Boot 3 and 4, auto-configurations are registered in **META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports**. Older Spring Boot versions used **META-INF/spring.factories**. Ordering is still controlled with annotations such as **@AutoConfigureBefore**, **@AutoConfigureAfter**, and **@AutoConfigureOrder**."
             },
             {
               "title": "Custom Auto-configuration",
-              "description": "Create custom auto-configurations by creating a configuration class with appropriate conditional annotations and registering it in **META-INF/spring.factories** under **org.springframework.boot.autoconfigure.EnableAutoConfiguration**."
+              "description": "Create custom auto-configurations by writing a configuration class with appropriate conditional annotations and listing it in **META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports** for Spring Boot 3 and 4. Use **spring.factories** only when maintaining older Boot 2 applications."
             },
             {
               "title": "Replacing Auto-configuration",
@@ -599,7 +599,7 @@
           "points": [
             {
               "title": "Native Images",
-              "description": "Compile Spring Boot applications to native executables using **GraalVM Native Image** (with Spring Native or Spring Boot 3+ with AOT), improving startup time and memory usage at the cost of build complexity."
+              "description": "Compile Spring Boot applications to native executables using **GraalVM Native Image** with Spring Boot AOT support. Spring Boot 4 aligns with GraalVM 25 reachability metadata, improving native-image support while still requiring careful testing of reflection, proxies, resources, and startup behavior."
             },
             {
               "title": "Serverless Platforms",
