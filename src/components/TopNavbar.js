@@ -28,10 +28,12 @@ const ExportDialog = lazy(() => import('./ExportDialog'));
  * Get the active tab index based on the current route path
  */
 const getTabIndexFromPath = (pathname) => {
-  if (pathname.startsWith(NAVIGATION.ROUTES.CODING)) {
+  if (pathname.startsWith(NAVIGATION.ROUTES.PREPARATION)) {
     return 1;
-  } else if (pathname.startsWith(NAVIGATION.ROUTES.BEST_PRACTICES)) {
+  } else if (pathname.startsWith(NAVIGATION.ROUTES.CODING)) {
     return 2;
+  } else if (pathname.startsWith(NAVIGATION.ROUTES.BEST_PRACTICES)) {
+    return 3;
   } else {
     return 0;
   }
@@ -64,6 +66,7 @@ const TopNavbar = ({
 
   // Get active tab based on current route
   const currentTabIndex = getTabIndexFromPath(location.pathname);
+  const isInterviewRoute = currentTabIndex === 0;
 
   // Count active settings to show badge
   const activeSettingsCount =
@@ -99,9 +102,9 @@ const TopNavbar = ({
             display: 'flex',
             alignItems: 'center',
             flexGrow: isSmallScreen ? 0 : 1,
-            maxWidth: isSmallScreen ? 'auto' : '33%',
+            maxWidth: isSmallScreen ? 'auto' : '45%',
           }}>
-            {isMobile && (
+            {isMobile && isInterviewRoute && (
                 <IconButton
                     edge="start"
                     color="inherit"
@@ -141,6 +144,11 @@ const TopNavbar = ({
                   to={NAVIGATION.ROUTES.INTERVIEW}
               />
               <Tab
+                  label={NAVIGATION.TAB_LABELS.PREPARATION}
+                  component={Link}
+                  to={NAVIGATION.ROUTES.PREPARATION}
+              />
+              <Tab
                   label={NAVIGATION.TAB_LABELS.CODING}
                   component={Link}
                   to={NAVIGATION.ROUTES.CODING}
@@ -158,10 +166,10 @@ const TopNavbar = ({
             flexGrow: 1,
             display: 'flex',
             justifyContent: 'center',
-            maxWidth: '45%', // Wider search area
+            maxWidth: isInterviewRoute ? '35%' : '20%',
             my: 1, // Add vertical margin
           }}>
-            {!isSmallScreen && currentTabIndex === 0 && questions &&
+            {!isSmallScreen && isInterviewRoute && questions &&
                 categories && (
                     <GlobalSearch
                         questions={questions}
@@ -180,53 +188,57 @@ const TopNavbar = ({
             alignItems: 'center',
             justifyContent: 'flex-end',
             flexGrow: isSmallScreen ? 0 : 1,
-            maxWidth: isSmallScreen ? 'auto' : '33%',
+            maxWidth: isSmallScreen ? 'auto' : '30%',
           }}>
             {/* Export Notes Button */}
-            <Tooltip title="Export Interview Notes">
-              <IconButton
-                  size="large"
-                  onClick={handleExportClick}
-                  color="primary"
-                  sx={{
-                    p: SPACING.toUnits(SPACING.sm),
-                    '& .MuiSvgIcon-root': {
-                      fontSize: '1.75rem',
-                    },
-                    width: 48,
-                    height: 48,
-                    borderRadius: '8px',
-                    '&:hover': {
-                      bgcolor: `${theme.palette.primary.main}20`,
-                    },
-                  }}
-              >
-                <FileDownloadIcon/>
-              </IconButton>
-            </Tooltip>
+            {isInterviewRoute && (
+                <Tooltip title="Export Interview Notes">
+                  <IconButton
+                      size="large"
+                      onClick={handleExportClick}
+                      color="primary"
+                      sx={{
+                        p: SPACING.toUnits(SPACING.sm),
+                        '& .MuiSvgIcon-root': {
+                          fontSize: '1.75rem',
+                        },
+                        width: 48,
+                        height: 48,
+                        borderRadius: '8px',
+                        '&:hover': {
+                          bgcolor: `${theme.palette.primary.main}20`,
+                        },
+                      }}
+                  >
+                    <FileDownloadIcon/>
+                  </IconButton>
+                </Tooltip>
+            )}
 
             {/* Clear Data Button */}
-            <Tooltip title="Clear All Interview Data">
-              <IconButton
-                  size="large"
-                  onClick={handleClearData}
-                  color="primary"
-                  sx={{
-                    p: SPACING.toUnits(SPACING.sm),
-                    '& .MuiSvgIcon-root': {
-                      fontSize: '1.75rem',
-                    },
-                    width: 48,
-                    height: 48,
-                    borderRadius: '8px',
-                    '&:hover': {
-                      bgcolor: `${theme.palette.error.main}20`,
-                    },
-                  }}
-              >
-                <DeleteIcon/>
-              </IconButton>
-            </Tooltip>
+            {isInterviewRoute && (
+                <Tooltip title="Clear All Interview Data">
+                  <IconButton
+                      size="large"
+                      onClick={handleClearData}
+                      color="primary"
+                      sx={{
+                        p: SPACING.toUnits(SPACING.sm),
+                        '& .MuiSvgIcon-root': {
+                          fontSize: '1.75rem',
+                        },
+                        width: 48,
+                        height: 48,
+                        borderRadius: '8px',
+                        '&:hover': {
+                          bgcolor: `${theme.palette.error.main}20`,
+                        },
+                      }}
+                  >
+                    <DeleteIcon/>
+                  </IconButton>
+                </Tooltip>
+            )}
 
             {/* Settings Button */}
             <Tooltip title="Settings">

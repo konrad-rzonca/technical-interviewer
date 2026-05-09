@@ -1,19 +1,16 @@
 // src/components/InterviewPanel.js
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Paper, useMediaQuery, useTheme} from '@mui/material';
 
 import {
   categories,
   getCategoryForQuestion,
-  getFilteredQuestions,
-  getQuestionsByCategory,
-  getQuestionSets,
   getRelatedQuestions,
   sortQuestionsByOrder,
 } from '../data/questionLoader';
 
 import {scrollbarStyles, usePanelStyles} from '../utils/styles';
-import {filterQuestionsBySelectedSets} from '../utils/questionFilters';
+import useQuestionFilters from '../hooks/useQuestionFilters';
 import {LAYOUT} from '../themes/baseTheme';
 import CategorySidebar from './CategorySidebar';
 import QuestionDetailsPanel from './QuestionDetailsPanel';
@@ -54,17 +51,36 @@ const InterviewPanel = ({
   // Mobile navigation state
   const [mobileView, setMobileView] = useState('question'); // 'category', 'question', 'related'
 
-  // Category state
-  const [activeCategories, setActiveCategories] = useState([]);
-  const [expandedCategory, setExpandedCategory] = useState(null);
-  const [questions, setQuestions] = useState([]);
+  const questionFilters = useQuestionFilters({
+    selectedCategory,
+    onCategorySelect,
+    categoryContextSubcategory: currentQuestion?.categoryId ===
+    selectedCategory
+        ? currentQuestion.subcategoryName
+        : null,
+  });
+  const {
+    activeCategories,
+    availableSets,
+    expandedCategory,
+    questions,
+    selectedSets,
+    selectedSubcategories,
+    subcategoryFilter,
+    handleCategorySelect: selectFilterCategory,
+    handleDeselectAllSets,
+    handleDeselectAllSubcategories,
+    handleSelectAllSets,
+    handleSelectAllSubcategories,
+    handleSetToggle,
+    handleSubcategorySelect,
+    handleSubcategoryToggle,
+    setExpandedCategory,
+    setSubcategoryFilter,
+  } = questionFilters;
+
   const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [relatedQuestionsList, setRelatedQuestionsList] = useState([]);
-  const [availableSets, setAvailableSets] = useState([]);
-  const [selectedSets, setSelectedSets] = useState({});
-  const [selectedSubcategories, setSelectedSubcategories] = useState({});
-  const [subcategoryFilter, setSubcategoryFilter] = useState(null);
-  const previousSelectedCategoryRef = useRef(selectedCategory);
 
   // Navigation state - Added for ordered navigation
   const [navigationState, setNavigationState] = useState({
@@ -77,27 +93,6 @@ const InterviewPanel = ({
       !leftSidebarCollapsed);
   const toggleRightSidebar = () => setRightSidebarCollapsed(
       !rightSidebarCollapsed);
-
-  // Initialize active categories
-  useEffect(() => {
-    setActiveCategories(categories);
-  }, []);
-
-  // Reset local category filters when app-level category changes directly
-  useEffect(() => {
-    if (!selectedCategory ||
-        previousSelectedCategoryRef.current === selectedCategory) {
-      return;
-    }
-
-    setExpandedCategory(selectedCategory);
-
-    if (currentQuestion?.categoryId !== selectedCategory) {
-      setSubcategoryFilter(null);
-    }
-
-    previousSelectedCategoryRef.current = selectedCategory;
-  }, [selectedCategory, currentQuestion]);
 
   // Update selected category and expand it when current question changes
   useEffect(() => {
@@ -119,110 +114,17 @@ const InterviewPanel = ({
     }
   }, [currentQuestion, selectedCategory, onCategorySelect]);
 
-  // Initialize subcategory selection
+  // Keep the selected question inside the active set/subcategory filters.
   useEffect(() => {
-    const initialSelectedSubcategories = {};
+    const hasVisibleCurrentQuestion = currentQuestion &&
+        questions.some(question => question.id === currentQuestion.id);
 
-    categories.forEach(category => {
-      if (category.subcategories?.length > 0) {
-        initialSelectedSubcategories[category.id] = {};
-        category.subcategories.forEach(subcategory => {
-          initialSelectedSubcategories[category.id][subcategory] = true;
-        });
-      }
-    });
-
-    setSelectedSubcategories(initialSelectedSubcategories);
-  }, []);
-
-  // Load available question sets for the selected category
-  useEffect(() => {
-    if (selectedCategory) {
-      const sets = getQuestionSets(selectedCategory);
-      setAvailableSets(sets);
-
-      // Initialize all sets as selected by default
-      const initialSelection = {};
-      sets.forEach(set => {
-        initialSelection[set.id] = true;
-      });
-      setSelectedSets(initialSelection);
+    if (questions.length > 0 && !hasVisibleCurrentQuestion) {
+      updateInterviewState({currentQuestion: questions[0]});
+    } else if (questions.length === 0 && currentQuestion) {
+      updateInterviewState({currentQuestion: null});
     }
-  }, [selectedCategory]);
-
-  // Load questions based on selected category, subcategories, and sets
-  useEffect(() => {
-    if (selectedCategory) {
-      // Filter questions
-      let baseQuestions;
-
-      if (subcategoryFilter) {
-        // Filter by specific subcategory if selected
-        baseQuestions = getFilteredQuestions(
-            selectedCategory,
-            subcategoryFilter,
-        );
-      } else if (selectedSubcategories[selectedCategory]) {
-        // Filter by multiple selected subcategories
-        const activeSubcategories = Object.entries(
-            selectedSubcategories[selectedCategory],
-        ).
-            filter(([_, isSelected]) => isSelected).
-            map(([subcategory, _]) => subcategory);
-
-        if (activeSubcategories.length > 0) {
-          // Get questions from all active subcategories
-          baseQuestions = [];
-          activeSubcategories.forEach(subcategory => {
-            const subcategoryQuestions = getFilteredQuestions(
-                selectedCategory,
-                subcategory,
-            );
-            baseQuestions.push(...subcategoryQuestions);
-          });
-
-          // Sort the combined questions for consistent ordering
-          baseQuestions = sortQuestionsByOrder(baseQuestions);
-        } else {
-          baseQuestions = [];
-        }
-      } else {
-        // Get all questions for the category if no subcategory filtering
-        baseQuestions = getQuestionsByCategory(selectedCategory);
-      }
-
-      const setsForCategory = getQuestionSets(selectedCategory);
-      const questionsForActiveSets = filterQuestionsBySelectedSets(
-          baseQuestions,
-          selectedSets,
-          setsForCategory,
-      );
-
-      // Use a brand new array to ensure React detects state change
-      setQuestions(Array.from(questionsForActiveSets));
-
-      const hasVisibleCurrentQuestion = currentQuestion &&
-          questionsForActiveSets.some(question =>
-              question.id === currentQuestion.id);
-
-      // Keep the selected question inside the active set/subcategory filters
-      if (questionsForActiveSets.length > 0 && !hasVisibleCurrentQuestion) {
-        updateInterviewState({currentQuestion: questionsForActiveSets[0]});
-      } else if (questionsForActiveSets.length === 0 && currentQuestion) {
-        updateInterviewState({currentQuestion: null});
-      }
-    } else {
-      // If no category is selected, clear questions
-      setQuestions([]);
-    }
-  }, [
-    selectedCategory,
-    selectedSets,
-    selectedSubcategories,
-    subcategoryFilter,
-    currentQuestion,
-    updateInterviewState,
-  ]);
+  }, [currentQuestion, questions, updateInterviewState]);
 
   // Apply hide answered questions filter
   useEffect(() => {
@@ -321,58 +223,15 @@ const InterviewPanel = ({
 
   // Handle category selection
   const handleCategorySelect = (categoryId, explicitExpandedState = null) => {
-    if (categoryId === selectedCategory) {
-      // Toggle expansion if the category is already selected
-      setExpandedCategory(
-          explicitExpandedState !== null
-              ? explicitExpandedState
-              : expandedCategory === categoryId
-                  ? null
-                  : categoryId,
-      );
-      return;
-    }
-
-    const category = categories.find(c => c.id === categoryId);
-    onCategorySelect(categoryId);
-
-    // If explicitExpandedState is provided, use it, otherwise use default logic
-    if (explicitExpandedState !== null) {
-      setExpandedCategory(explicitExpandedState);
-    } else {
-      setExpandedCategory(
-          category && category.subcategories.length > 0 ? categoryId : null,
-      );
-    }
-
-    setSubcategoryFilter(null);
+    const categoryChanged = selectFilterCategory(
+        categoryId,
+        explicitExpandedState,
+    );
 
     // In mobile, switch to question view after selecting a category
-    if (isMobile) {
+    if (isMobile && categoryChanged) {
       setMobileView('question');
     }
-  };
-
-  // Toggle a single subcategory selection
-  const handleSubcategorySelect = subcategory => {
-    // If we have an active filter, change to this subcategory
-    if (subcategoryFilter === subcategory) {
-      setSubcategoryFilter(null);
-    } else {
-      setSubcategoryFilter(subcategory);
-    }
-  };
-
-  // Toggle a subcategory's checked state
-  const handleSubcategoryToggle = (categoryId, subcategory) => {
-    setSelectedSubcategories(prev => ({
-      ...prev,
-      [categoryId]: {
-        ...prev[categoryId],
-        [subcategory]: !prev[categoryId][subcategory],
-      },
-    }));
-    setSubcategoryFilter(null); // Clear any active filter
   };
 
   // Handle question selection
@@ -435,68 +294,6 @@ const InterviewPanel = ({
     updateInterviewState({
       gradesMap: newGradesMap,
     });
-  };
-
-  // Handle set selection changes
-  const handleSetToggle = setId => {
-    setSelectedSets(prev => ({
-      ...prev,
-      [setId]: !prev[setId],
-    }));
-  };
-
-  // Handle select all sets
-  const handleSelectAllSets = () => {
-    const newSelection = {};
-    availableSets.forEach(set => {
-      newSelection[set.id] = true;
-    });
-    setSelectedSets(newSelection);
-  };
-
-  // Handle deselect all sets
-  const handleDeselectAllSets = () => {
-    const newSelection = {};
-    availableSets.forEach(set => {
-      newSelection[set.id] = false;
-    });
-    setSelectedSets(newSelection);
-  };
-
-  // Select all subcategories for a category
-  const handleSelectAllSubcategories = categoryId => {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return;
-
-    const newSelection = {};
-    category.subcategories.forEach(subcategory => {
-      newSelection[subcategory] = true;
-    });
-
-    setSelectedSubcategories(prev => ({
-      ...prev,
-      [categoryId]: newSelection,
-    }));
-
-    setSubcategoryFilter(null);
-  };
-
-  // Deselect all subcategories for a category
-  const handleDeselectAllSubcategories = categoryId => {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return;
-
-    const newSelection = {};
-    category.subcategories.forEach(subcategory => {
-      newSelection[subcategory] = false;
-    });
-
-    setSelectedSubcategories(prev => ({
-      ...prev,
-      [categoryId]: newSelection,
-    }));
-
-    setSubcategoryFilter(null);
   };
 
   // Handle settings changes

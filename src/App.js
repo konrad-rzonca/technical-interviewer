@@ -8,6 +8,7 @@ import {
   Routes,
 } from 'react-router-dom';
 import InterviewPanel from './components/InterviewPanel';
+import PreparationPanel from './components/preparation/PreparationPanel';
 import CodingPanel from './components/coding/CodingPanel';
 import BestPracticesPanel from './components/best-practises/BestPracticesPanel';
 import HealthCheck from './components/HealthCheck';
@@ -17,6 +18,7 @@ import {categories, getAllQuestions} from './data/questionLoader';
 import {createAppTheme} from './themes';
 import {NAVIGATION} from './utils/constants';
 import storageService from './services/storageService';
+import {createEmptyPreparationState} from './utils/preparationProgress';
 
 // Create the application theme using the theme system
 const theme = createAppTheme();
@@ -32,6 +34,10 @@ function App() {
   const [allQuestions, setAllQuestions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(
       categories[0]?.id || '');
+  const [preparationSelectedCategory, setPreparationSelectedCategory] =
+      useState(categories[0]?.id || '');
+  const [preparationState, setPreparationState] = useState(() =>
+      createEmptyPreparationState());
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   // App-wide settings
@@ -45,6 +51,19 @@ function App() {
   useEffect(() => {
     const questions = getAllQuestions();
     setAllQuestions(questions);
+  }, []);
+
+  // Load saved preparation state from localStorage on app initialization
+  useEffect(() => {
+    if (storageService.isStorageAvailable()) {
+      const savedState = storageService.loadPreparationState();
+      if (savedState) {
+        setPreparationState({
+          ...createEmptyPreparationState(),
+          progressMap: savedState.progressMap || {},
+        });
+      }
+    }
   }, []);
 
   // Load saved interview state from localStorage on app initialization
@@ -61,6 +80,23 @@ function App() {
         }));
       }
     }
+  }, []);
+
+  const updatePreparationState = useCallback((updates) => {
+    setPreparationState(prevState => {
+      const newState = {
+        ...prevState,
+        ...updates,
+      };
+
+      if (storageService.isStorageAvailable()) {
+        storageService.debouncedSavePreparationState({
+          progressMap: newState.progressMap || {},
+        });
+      }
+
+      return newState;
+    });
   }, []);
 
   const updateInterviewState = useCallback((updates) => {
@@ -89,6 +125,11 @@ function App() {
   const handleQuestionSelect = useCallback((question) => {
     updateInterviewState({currentQuestion: question});
   }, [updateInterviewState]);
+
+  const handlePreparationCategorySelect = useCallback((categoryId) => {
+    if (!categoryId) return;
+    setPreparationSelectedCategory(categoryId);
+  }, []);
 
   // Handle answer point selection - improved with direct state update
   const handleAnswerPointSelect = (questionId, categoryPointKey) => {
@@ -140,6 +181,13 @@ function App() {
     }));
   };
 
+  const handleClearPreparationState = useCallback(() => {
+    setPreparationState(createEmptyPreparationState());
+    if (storageService.isStorageAvailable()) {
+      storageService.clearPreparationState();
+    }
+  }, []);
+
   return (
       <ThemeProvider theme={theme}>
         <CssBaseline/>
@@ -170,6 +218,17 @@ function App() {
                       onCategorySelect={handleCategorySelect}
                       mobileDrawerOpen={mobileDrawerOpen}
                       onMobileDrawerClose={() => setMobileDrawerOpen(false)}
+                  />
+                </ErrorBoundary>
+              }/>
+              <Route path={NAVIGATION.ROUTES.PREPARATION} element={
+                <ErrorBoundary>
+                  <PreparationPanel
+                      preparationState={preparationState}
+                      updatePreparationState={updatePreparationState}
+                      onClearPreparationState={handleClearPreparationState}
+                      selectedCategory={preparationSelectedCategory}
+                      onCategorySelect={handlePreparationCategorySelect}
                   />
                 </ErrorBoundary>
               }/>
