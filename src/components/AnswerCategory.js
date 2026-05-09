@@ -19,6 +19,7 @@ const AnswerCategory = React.memo(({
   learningMode,
   isSmallScreen,
   tooltipProps,
+  readOnly = false,
 }) => {
   // Always call hooks unconditionally at the top level
   const level = INDEX_TO_LEVEL[categoryIndex] || 'basic';
@@ -27,10 +28,14 @@ const AnswerCategory = React.memo(({
   // Check if a point is selected
   const isPointSelected = useCallback(
       (categoryIdx, pointIdx) => {
+        if (readOnly) {
+          return true;
+        }
+
         const key = `${categoryIdx}-${pointIdx}`;
         return !!selectedPoints[key];
       },
-      [selectedPoints],
+      [readOnly, selectedPoints],
   );
 
   // Calculate the layout for points
@@ -143,6 +148,7 @@ const AnswerCategory = React.memo(({
                                   pointIndex={point.originalIndex}
                                   onPointClick={onPointSelect}
                                   tooltipProps={tooltipProps}
+                                  readOnly={readOnly}
                               />
                             </Grid>
                         ))}
@@ -177,6 +183,7 @@ const AnswerCategory = React.memo(({
                           pointIndex={pointIndex}
                           onPointClick={onPointSelect}
                           tooltipProps={tooltipProps}
+                          readOnly={readOnly}
                       />
                     </Grid>
                 ))}
@@ -199,6 +206,7 @@ const AnswerCategory = React.memo(({
       prevProps.categoryIndex === nextProps.categoryIndex &&
       prevProps.learningMode === nextProps.learningMode &&
       prevProps.isSmallScreen === nextProps.isSmallScreen &&
+      prevProps.readOnly === nextProps.readOnly &&
       // Do shallow comparison of points arrays
       (prevProps.category?.points?.length ===
           nextProps.category?.points?.length &&

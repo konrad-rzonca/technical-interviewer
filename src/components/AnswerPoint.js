@@ -18,6 +18,7 @@ const AnswerPoint = React.memo(({
   pointIndex,
   onPointClick,
   tooltipProps,
+  readOnly = false,
 }) => {
   // Use hooks unconditionally at the top level
   const textStyles = useItemTextStyles(isSelected, isSmallScreen);
@@ -46,11 +47,13 @@ const AnswerPoint = React.memo(({
               : ''}
       >
         <Box
-            onClick={() => onPointClick(categoryIndex, pointIndex)}
+            onClick={readOnly
+                ? undefined
+                : () => onPointClick(categoryIndex, pointIndex)}
             sx={{
               p: SPACING.toUnits(SPACING.md),
               borderRadius: SPACING.toUnits(SPACING.borderRadius / 2),
-              cursor: 'pointer',
+              cursor: readOnly ? 'default' : 'pointer',
               backgroundColor: !isSelected
                   ? '#ffffff' + '80'
                   : `${answerStyles.hoverBg}`,
@@ -63,7 +66,7 @@ const AnswerPoint = React.memo(({
               // Chrome acceleration optimizations
               transform: 'translateZ(0)',
               willChange: isSelected ? 'auto' : 'background-color, box-shadow',
-              '&:hover': {
+              '&:hover': readOnly ? {} : {
                 backgroundColor: answerStyles.hoverBg,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               },
@@ -104,7 +107,8 @@ const AnswerPoint = React.memo(({
       prevProps.isSmallScreen === nextProps.isSmallScreen &&
       prevProps.learningMode === nextProps.learningMode &&
       prevProps.categoryIndex === nextProps.categoryIndex &&
-      prevProps.pointIndex === nextProps.pointIndex
+      prevProps.pointIndex === nextProps.pointIndex &&
+      prevProps.readOnly === nextProps.readOnly
   );
 });
 

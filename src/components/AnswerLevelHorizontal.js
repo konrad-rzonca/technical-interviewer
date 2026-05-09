@@ -17,6 +17,7 @@ const AnswerLevelHorizontal = ({
   onPointSelect,
   learningMode = false,
   isSmallScreen = false,
+  readOnly = false,
 }) => {
   // Get standardized tooltip props - always call this hook
   const detailsTooltipProps = useTooltip('question', {
@@ -60,6 +61,10 @@ const AnswerLevelHorizontal = ({
   // Handle bullet point click
   const handlePointClick = useCallback(
       (categoryIndex, pointIndex) => {
+        if (readOnly) {
+          return;
+        }
+
         if (typeof onPointSelect === 'function') {
           onPointSelect(categoryIndex, pointIndex);
         } else {
@@ -67,7 +72,7 @@ const AnswerLevelHorizontal = ({
               'onPointSelect is not a function in AnswerLevelHorizontal');
         }
       },
-      [onPointSelect],
+      [onPointSelect, readOnly],
   );
 
   return (
@@ -91,6 +96,7 @@ const AnswerLevelHorizontal = ({
                   learningMode={learningMode}
                   isSmallScreen={isSmallScreen}
                   tooltipProps={detailsTooltipProps}
+                  readOnly={readOnly}
               />
           ))}
         </Box>

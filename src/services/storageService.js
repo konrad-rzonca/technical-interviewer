@@ -67,6 +67,52 @@ const storageService = {
   },
 
   /**
+   * Save preparation state to localStorage
+   * @param {Object} state - The preparation state to save
+   */
+  savePreparationState: (state) => {
+    try {
+      const storageObject = {
+        version: APP_CONSTANTS.VERSION,
+        timestamp: new Date().toISOString(),
+        data: state,
+      };
+
+      localStorage.setItem(STORAGE.KEYS.PREPARATION_STATE,
+          JSON.stringify(storageObject));
+    } catch (error) {
+      console.error('Error saving preparation state to localStorage:', error);
+    }
+  },
+
+  /**
+   * Load preparation state from localStorage
+   * @returns {Object|null} - The loaded preparation state or null if not found
+   */
+  loadPreparationState: () => {
+    try {
+      const storedData = localStorage.getItem(STORAGE.KEYS.PREPARATION_STATE);
+
+      if (!storedData) {
+        return null;
+      }
+
+      const parsedData = JSON.parse(storedData);
+
+      if (parsedData.version !== APP_CONSTANTS.VERSION) {
+        console.warn(
+            'Stored preparation data version mismatch. Some features may not work as expected.');
+      }
+
+      return parsedData.data;
+    } catch (error) {
+      console.error('Error loading preparation state from localStorage:',
+          error);
+      return null;
+    }
+  },
+
+  /**
    * Clear all saved interview data
    */
   clearInterviewState: () => {
@@ -74,6 +120,18 @@ const storageService = {
       localStorage.removeItem(STORAGE.KEYS.INTERVIEW_STATE);
     } catch (error) {
       console.error('Error clearing interview state from localStorage:', error);
+    }
+  },
+
+  /**
+   * Clear all saved preparation data
+   */
+  clearPreparationState: () => {
+    try {
+      localStorage.removeItem(STORAGE.KEYS.PREPARATION_STATE);
+    } catch (error) {
+      console.error('Error clearing preparation state from localStorage:',
+          error);
     }
   },
 
@@ -96,5 +154,8 @@ const storageService = {
 // Create debounced version of save function to prevent excessive writes
 storageService.debouncedSaveInterviewState = debounce(
     storageService.saveInterviewState, STORAGE.DEBOUNCE_TIME);
+
+storageService.debouncedSavePreparationState = debounce(
+    storageService.savePreparationState, STORAGE.DEBOUNCE_TIME);
 
 export default storageService;
