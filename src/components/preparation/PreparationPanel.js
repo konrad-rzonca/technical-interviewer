@@ -15,6 +15,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CategorySidebar from '../CategorySidebar';
 import AnswerLevelHorizontal from '../AnswerLevelHorizontal';
@@ -27,6 +28,7 @@ import useQuestionFilters from '../../hooks/useQuestionFilters';
 import {
   buildPreparationQueue,
   findNextQueueQuestion,
+  getNextPracticeSequence,
   getPreparationStats,
   getQuestionPreparationStatus,
   PREPARATION_OUTCOMES,
@@ -46,6 +48,7 @@ const STATUS_LABELS = {
   [PREPARATION_STATUS.FAILED]: 'Failed',
   [PREPARATION_STATUS.DUE]: 'Due',
   [PREPARATION_STATUS.IN_PROGRESS]: 'Learning',
+  [PREPARATION_STATUS.SKIPPED]: 'Skipped',
   [PREPARATION_STATUS.UNSEEN]: 'New',
 };
 
@@ -54,6 +57,7 @@ const STATUS_COLORS = {
   [PREPARATION_STATUS.FAILED]: 'error',
   [PREPARATION_STATUS.DUE]: 'warning',
   [PREPARATION_STATUS.IN_PROGRESS]: 'primary',
+  [PREPARATION_STATUS.SKIPPED]: 'secondary',
   [PREPARATION_STATUS.UNSEEN]: 'default',
 };
 
@@ -249,6 +253,7 @@ const PreparationPanel = ({
   onCategorySelect = () => {},
 }) => {
   const progressMap = preparationState?.progressMap || {};
+  const practiceSequence = Number(preparationState?.practiceSequence || 0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const panelStyles = usePanelStyles(false, true);
@@ -284,12 +289,14 @@ const PreparationPanel = ({
   const queueItems = useMemo(() => buildPreparationQueue(
       questions,
       progressMap,
-  ), [progressMap, questions]);
+      {practiceSequence},
+  ), [practiceSequence, progressMap, questions]);
 
   const stats = useMemo(() => getPreparationStats(
       questions,
       progressMap,
-  ), [progressMap, questions]);
+      {practiceSequence},
+  ), [practiceSequence, progressMap, questions]);
 
   const currentQuestion = useMemo(() => {
     if (!currentQuestionId) return null;
@@ -298,7 +305,11 @@ const PreparationPanel = ({
   }, [currentQuestionId, questions]);
 
   const currentStatus = currentQuestion
-      ? getQuestionPreparationStatus(currentQuestion.id, progressMap)
+      ? getQuestionPreparationStatus(
+          currentQuestion.id,
+          progressMap,
+          {practiceSequence},
+      )
       : null;
 
   useEffect(() => {
@@ -325,24 +336,33 @@ const PreparationPanel = ({
   const handleOutcome = useCallback(outcome => {
     if (!currentQuestion) return;
 
-    const now = new Date();
+    const nextPracticeSequence = getNextPracticeSequence(preparationState);
     const nextProgressMap = recordPreparationOutcome(
         progressMap,
         currentQuestion.id,
         outcome,
-        {now},
+        {practiceSequence: nextPracticeSequence},
     );
     const nextQueue = buildPreparationQueue(
         questions,
         nextProgressMap,
-        {now},
+        {practiceSequence: nextPracticeSequence},
     );
     const nextQuestion = findNextQueueQuestion(nextQueue, currentQuestion.id);
 
-    updatePreparationState({progressMap: nextProgressMap});
+    updatePreparationState({
+      progressMap: nextProgressMap,
+      practiceSequence: nextPracticeSequence,
+    });
     setCurrentQuestionId(nextQuestion?.id || null);
     setAnswerRevealed(false);
-  }, [currentQuestion, progressMap, questions, updatePreparationState]);
+  }, [
+    currentQuestion,
+    preparationState,
+    progressMap,
+    questions,
+    updatePreparationState,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = event => {
@@ -354,6 +374,9 @@ const PreparationPanel = ({
       if (event.key.toLowerCase() === 'f') {
         event.preventDefault();
         handleOutcome(PREPARATION_OUTCOMES.FAIL);
+      } else if (event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        handleOutcome(PREPARATION_OUTCOMES.SKIP);
       } else if (event.key.toLowerCase() === 'r') {
         event.preventDefault();
         setAnswerRevealed(true);
@@ -508,6 +531,7 @@ const PreparationPanel = ({
               <StatBlock label="Due" value={stats.due}/>
               <StatBlock label="Failed" value={stats.failed}/>
               <StatBlock label="Learning" value={stats.inProgress}/>
+              <StatBlock label="Skipped" value={stats.skipped}/>
               <StatBlock label="New" value={stats.unseen}/>
               <StatBlock label="Total" value={stats.total}/>
             </Box>
@@ -598,6 +622,15 @@ const PreparationPanel = ({
                               PREPARATION_OUTCOMES.FAIL)}
                       >
                         Fail
+                      </Button>
+                      <Button
+                          variant="outlined"
+                          color="secondary"
+                          startIcon={<SkipNextIcon/>}
+                          onClick={() => handleOutcome(
+                              PREPARATION_OUTCOMES.SKIP)}
+                      >
+                        Skip
                       </Button>
                       <Button
                           variant="contained"

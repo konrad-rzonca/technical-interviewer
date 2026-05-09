@@ -123,4 +123,24 @@ describe('PreparationPanel', () => {
     });
     expect(screen.getByLabelText('Failed 1')).toBeInTheDocument();
   });
+
+  test('skip records progress and moves the question to skipped status', async () => {
+    const [firstQueueItem, secondQueueItem] = buildPreparationQueue(
+        getCoreJavaQuestions(),
+        {},
+    );
+    const firstQuestion = firstQueueItem.question;
+    const secondQuestion = secondQueueItem.question;
+
+    renderPreparationPanel();
+
+    expect(await screen.findByText(firstQuestion.question)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', {name: /skip/i}));
+
+    await waitFor(() => {
+      expect(screen.getByText(secondQuestion.question)).toBeInTheDocument();
+    });
+    expect(screen.getByLabelText('Skipped 1')).toBeInTheDocument();
+  });
 });

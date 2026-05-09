@@ -2,6 +2,7 @@ export const PREPARATION_OUTCOMES = {
   FAIL: 'fail',
   SUCCESS: 'success',
   EASY: 'easy',
+  SKIP: 'skip',
 };
 
 export const PREPARATION_STATUS = {
@@ -9,16 +10,20 @@ export const PREPARATION_STATUS = {
   FAILED: 'failed',
   DUE: 'due',
   IN_PROGRESS: 'in-progress',
+  SKIPPED: 'skipped',
   UNSEEN: 'unseen',
 };
 
-const SUCCESS_REVIEW_DELAYS = {
-  1: 1,
-  2: 3,
+const SUCCESS_REVIEW_GAPS = {
+  1: 12,
+  2: 24,
 };
+
+const FAILED_RETRY_GAP = 8;
 
 export const createEmptyPreparationState = () => ({
   progressMap: {},
+  practiceSequence: 0,
 });
 
 export const createEmptyProgressRecord = () => ({
@@ -27,11 +32,22 @@ export const createEmptyProgressRecord = () => ({
   failCount: 0,
   successCount: 0,
   easyCount: 0,
+  skipCount: 0,
   lastOutcome: null,
-  lastPracticedAt: null,
-  nextReviewAt: null,
-  completedAt: null,
+  lastPracticedSequence: null,
+  nextReviewSequence: null,
+  completedAtSequence: null,
+  skipped: false,
 });
+
+const toNumberOrNull = value => {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : null;
+};
 
 export const normalizeProgressRecord = (record = {}) => ({
   ...createEmptyProgressRecord(),
@@ -41,19 +57,18 @@ export const normalizeProgressRecord = (record = {}) => ({
   failCount: Number(record.failCount || 0),
   successCount: Number(record.successCount || 0),
   easyCount: Number(record.easyCount || 0),
+  skipCount: Number(record.skipCount || 0),
+  lastPracticedSequence: toNumberOrNull(record.lastPracticedSequence),
+  nextReviewSequence: toNumberOrNull(record.nextReviewSequence),
+  completedAtSequence: toNumberOrNull(record.completedAtSequence),
+  skipped: Boolean(record.skipped),
 });
 
-export const addDays = (date, dayCount) => {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + dayCount);
-  return nextDate;
-};
+export const getNextPracticeSequence = (preparationState = {}) =>
+    Number(preparationState.practiceSequence || 0) + 1;
 
-const toDate = value => {
-  if (!value) return null;
-  const date = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-};
+const getPracticeSequence = (options = {}) =>
+    Number(options.practiceSequence || 0);
 
 export const recordPreparationOutcome = (
     progressMap = {},
@@ -65,36 +80,44 @@ export const recordPreparationOutcome = (
     return progressMap;
   }
 
-  const now = toDate(options.now) || new Date();
-  const timestamp = now.toISOString();
+  const practiceSequence = getPracticeSequence(options);
   const previous = normalizeProgressRecord(progressMap[questionId]);
   const nextRecord = {
     ...previous,
     attempts: previous.attempts + 1,
     lastOutcome: outcome,
-    lastPracticedAt: timestamp,
+    lastPracticedSequence: practiceSequence,
+    skipped: false,
   };
 
   if (outcome === PREPARATION_OUTCOMES.EASY) {
     nextRecord.easyCount = previous.easyCount + 1;
     nextRecord.successStreak = Math.max(previous.successStreak, 3);
-    nextRecord.completedAt = timestamp;
-    nextRecord.nextReviewAt = null;
+    nextRecord.completedAtSequence = practiceSequence;
+    nextRecord.nextReviewSequence = null;
   } else if (outcome === PREPARATION_OUTCOMES.SUCCESS) {
     const successStreak = previous.successStreak + 1;
 
     nextRecord.successCount = previous.successCount + 1;
     nextRecord.successStreak = successStreak;
-    nextRecord.completedAt = successStreak >= 3 ? timestamp : null;
-    nextRecord.nextReviewAt = successStreak >= 3
+    nextRecord.completedAtSequence = successStreak >= 3
+        ? practiceSequence
+        : null;
+    nextRecord.nextReviewSequence = successStreak >= 3
         ? null
-        : addDays(now, SUCCESS_REVIEW_DELAYS[successStreak] || 3).
-            toISOString();
+        : practiceSequence + (SUCCESS_REVIEW_GAPS[successStreak] || 24);
   } else if (outcome === PREPARATION_OUTCOMES.FAIL) {
     nextRecord.failCount = previous.failCount + 1;
     nextRecord.successStreak = 0;
-    nextRecord.completedAt = null;
-    nextRecord.nextReviewAt = timestamp;
+    nextRecord.completedAtSequence = null;
+    nextRecord.nextReviewSequence = practiceSequence +
+        (options.failedRetryGap || FAILED_RETRY_GAP);
+  } else if (outcome === PREPARATION_OUTCOMES.SKIP) {
+    nextRecord.skipCount = previous.skipCount + 1;
+    nextRecord.successStreak = 0;
+    nextRecord.completedAtSequence = null;
+    nextRecord.nextReviewSequence = null;
+    nextRecord.skipped = true;
   } else {
     return progressMap;
   }
@@ -110,11 +133,15 @@ export const getQuestionPreparationStatus = (
     progressMap = {},
     options = {},
 ) => {
-  const now = toDate(options.now) || new Date();
+  const practiceSequence = getPracticeSequence(options);
   const record = normalizeProgressRecord(progressMap[questionId]);
 
-  if (record.completedAt) {
+  if (record.completedAtSequence) {
     return PREPARATION_STATUS.COMPLETED;
+  }
+
+  if (record.skipped || record.lastOutcome === PREPARATION_OUTCOMES.SKIP) {
+    return PREPARATION_STATUS.SKIPPED;
   }
 
   if (!record.attempts) {
@@ -125,8 +152,8 @@ export const getQuestionPreparationStatus = (
     return PREPARATION_STATUS.FAILED;
   }
 
-  const nextReviewAt = toDate(record.nextReviewAt);
-  if (nextReviewAt && nextReviewAt <= now) {
+  if (record.nextReviewSequence &&
+      record.nextReviewSequence <= practiceSequence) {
     return PREPARATION_STATUS.DUE;
   }
 
@@ -144,6 +171,7 @@ export const getPreparationStats = (
     failed: 0,
     due: 0,
     inProgress: 0,
+    skipped: 0,
     unseen: 0,
   };
 
@@ -162,6 +190,8 @@ export const getPreparationStats = (
       stats.due += 1;
     } else if (status === PREPARATION_STATUS.IN_PROGRESS) {
       stats.inProgress += 1;
+    } else if (status === PREPARATION_STATUS.SKIPPED) {
+      stats.skipped += 1;
     } else {
       stats.unseen += 1;
     }
@@ -171,11 +201,25 @@ export const getPreparationStats = (
 };
 
 const STATUS_PRIORITY = {
-  [PREPARATION_STATUS.FAILED]: 0,
-  [PREPARATION_STATUS.DUE]: 1,
-  [PREPARATION_STATUS.UNSEEN]: 2,
+  [PREPARATION_STATUS.DUE]: 0,
+  [PREPARATION_STATUS.UNSEEN]: 1,
+  [PREPARATION_STATUS.FAILED]: 2,
   [PREPARATION_STATUS.IN_PROGRESS]: 3,
-  [PREPARATION_STATUS.COMPLETED]: 4,
+  [PREPARATION_STATUS.SKIPPED]: 4,
+  [PREPARATION_STATUS.COMPLETED]: 5,
+};
+
+const isFailedQuestionReady = (item, progressMap, options = {}) => {
+  if (item.status !== PREPARATION_STATUS.FAILED) {
+    return true;
+  }
+
+  const practiceSequence = getPracticeSequence(options);
+  const nextReviewSequence = normalizeProgressRecord(
+      progressMap[item.question.id],
+  ).nextReviewSequence;
+
+  return !nextReviewSequence || nextReviewSequence <= practiceSequence;
 };
 
 export const buildPreparationQueue = (
@@ -186,7 +230,7 @@ export const buildPreparationQueue = (
   const includeScheduled = Boolean(options.includeScheduled);
   const includeCompleted = Boolean(options.includeCompleted);
 
-  return questions.
+  const queueItems = questions.
       map(question => ({
         question,
         status: getQuestionPreparationStatus(
@@ -217,6 +261,32 @@ export const buildPreparationQueue = (
         const titleB = b.question.shortTitle || b.question.question;
         return titleA.localeCompare(titleB);
       });
+
+  const primaryItems = queueItems.filter(item =>
+      item.status !== PREPARATION_STATUS.FAILED &&
+      item.status !== PREPARATION_STATUS.SKIPPED);
+  const failedItems = queueItems.filter(item =>
+      item.status === PREPARATION_STATUS.FAILED);
+  const readyFailedItems = failedItems.filter(item =>
+      isFailedQuestionReady(item, progressMap, options));
+  const skippedItems = queueItems.filter(item =>
+      item.status === PREPARATION_STATUS.SKIPPED);
+
+  if (primaryItems.length > 0 || readyFailedItems.length > 0) {
+    return [
+      ...primaryItems,
+      ...readyFailedItems,
+    ];
+  }
+
+  if (failedItems.length > 0) {
+    return [
+      ...failedItems,
+      ...skippedItems,
+    ];
+  }
+
+  return skippedItems;
 };
 
 export const findNextQueueQuestion = (queueItems = [], currentQuestionId) => {

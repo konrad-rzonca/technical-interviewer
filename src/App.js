@@ -61,6 +61,7 @@ function App() {
         setPreparationState({
           ...createEmptyPreparationState(),
           progressMap: savedState.progressMap || {},
+          practiceSequence: Number(savedState.practiceSequence || 0),
         });
       }
     }
@@ -92,6 +93,7 @@ function App() {
       if (storageService.isStorageAvailable()) {
         storageService.debouncedSavePreparationState({
           progressMap: newState.progressMap || {},
+          practiceSequence: Number(newState.practiceSequence || 0),
         });
       }
 
