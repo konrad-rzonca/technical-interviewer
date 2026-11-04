@@ -1,0 +1,11 @@
+.git
+node_modules
+build
+.idea
+.vscode
+.history
+misc
+AGENTS.md
+CLAUDE.md
+.claude
+Plans

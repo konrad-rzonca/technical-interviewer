@@ -1,43 +1,13 @@
-﻿# Build stage
-FROM node:20-alpine AS build
-
+FROM node:24-alpine AS build
 WORKDIR /app
-
-# Copy package files and install dependencies
 COPY package.json package-lock.json ./
 RUN npm ci
-
-# Copy source code
 COPY . .
-
-# Build the app for production
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
-
-# Copy built files from build stage
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Copy nginx config
+# Runs nginx as a non-root user.
+FROM nginxinc/nginx-unprivileged:stable-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Modify the main nginx.conf to use /tmp for the pid file
-RUN sed -i 's|pid        /var/run/nginx.pid;|pid        /tmp/nginx.pid;|g' /etc/nginx/nginx.conf && \
-    # Create temp directories and fix permissions
-    mkdir -p /tmp/nginx_client_temp \
-    /tmp/nginx_proxy_temp \
-    /tmp/nginx_fastcgi_temp \
-    /tmp/nginx_uwsgi_temp \
-    /tmp/nginx_scgi_temp \
-    && chmod 777 /tmp/nginx_* \
-    && touch /tmp/nginx.pid \
-    && chmod 777 /tmp/nginx.pid \
-    && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
-
-# Expose port
-EXPOSE 80
-
-# Start nginx without duplicate pid directive
-CMD ["nginx", "-g", "daemon off;"]
+# The app's homepage in package.json is /technical-interviewer, so its files live under that path.
+COPY --from=build /app/build /usr/share/nginx/site/technical-interviewer
+EXPOSE 8080
