@@ -1,6 +1,6 @@
-// src/data/__tests__/questionValidation.test.js
 import fs from 'fs';
 import path from 'path';
+import catalog from '../questionCatalog.json';
 import {getAllQuestions} from '../questionLoader';
 import {ANSWER_LEVELS, SKILL_LEVELS} from '../../utils/answerConstants';
 
@@ -16,6 +16,16 @@ const getJsonFiles = (dir = QUESTIONS_DIR) => {
   });
 };
 
+// The path as the catalog writes it. Comparisons with it are case-sensitive,
+// because the bundled app looks files up by exact name on every OS.
+const toCatalogPath = file =>
+    path.relative(QUESTIONS_DIR, file).split(path.sep).join('/');
+
+const findDuplicates = values => [
+  ...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
+
+const isBlank = value => typeof value !== 'string' || value.trim() === '';
+
 const normalizeText = value => value.toLowerCase().replace(/\s+/g, ' ').trim();
 
 describe('Question Data Validation', () => {
@@ -25,15 +35,9 @@ describe('Question Data Validation', () => {
   beforeAll(() => {
     allQuestions = getAllQuestions();
     allQuestionIds = new Set(allQuestions.map(q => q.id));
-
-    // Log summary for context
-    console.log(
-        `Testing ${allQuestions.length} questions across all categories`);
   });
 
-  test('questions are loaded successfully', () => {
-    expect(allQuestions).toBeDefined();
-    expect(Array.isArray(allQuestions)).toBe(true);
+  test('questions are loaded', () => {
     expect(allQuestions.length).toBeGreaterThan(0);
   });
 
@@ -42,504 +46,159 @@ describe('Question Data Validation', () => {
 
     getJsonFiles().forEach(file => {
       const content = fs.readFileSync(file, 'utf8');
-      const relativePath = path.relative(process.cwd(), file);
 
       if (content.charCodeAt(0) === 0xFEFF) {
-        issues.push({
-          file: relativePath,
-          issue: 'File starts with UTF-8 BOM',
-        });
+        issues.push(`${toCatalogPath(file)}: starts with a UTF-8 BOM`);
       }
 
       try {
         JSON.parse(content);
       } catch (error) {
-        issues.push({
-          file: relativePath,
-          issue: 'File is not valid JSON',
-          details: error.message,
-        });
+        issues.push(`${toCatalogPath(file)}: ${error.message}`);
       }
     });
 
-    expect(issues).toHaveLength(0);
+    expect(issues).toEqual([]);
   });
 
-  test('each question has required structure', () => {
-    const requiredFields = [
-      'id',
-      'skillLevel',
-      'question',
-      'answerInsights',
-      'categoryId',
-      'subcategoryName'];
+  test('the catalog lists every question file once, under a named subcategory',
+      () => {
+        const issues = [];
+        const filesOnDisk = getJsonFiles().map(toCatalogPath);
+        const listedFiles = catalog.flatMap(category =>
+            category.sets.flatMap(set =>
+                set.subcategories.flatMap(subcategory => subcategory.files)));
+
+        filesOnDisk.filter(file => !listedFiles.includes(file)).
+            forEach(file => issues.push(`${file}: not in the catalog`));
+        listedFiles.filter(file => !filesOnDisk.includes(file)).
+            forEach(file => issues.push(`${file}: in the catalog, no such file`));
+        findDuplicates(listedFiles).
+            forEach(file => issues.push(`${file}: listed more than once`));
+        findDuplicates(catalog.map(category => category.id)).
+            forEach(id => issues.push(`category id ${id}: used more than once`));
+        findDuplicates(catalog.flatMap(
+            category => category.sets.map(set => set.id))).
+            forEach(id => issues.push(`set id ${id}: used more than once`));
+
+        catalog.forEach(category => {
+          if (isBlank(category.id) || isBlank(category.name)) {
+            issues.push(`category ${category.id}: needs an id and a name`);
+          }
+          category.sets.forEach(set => {
+            const where = `${category.id} / ${set.id}`;
+            if (isBlank(set.id) || isBlank(set.name)) {
+              issues.push(`${where}: the set needs an id and a name`);
+            }
+            findDuplicates(set.subcategories.map(({name}) => name)).
+                forEach(name => issues.push(
+                    `${where}: subcategory ${name} is listed more than once`));
+            set.subcategories.forEach(subcategory => {
+              if (isBlank(subcategory.name)) {
+                issues.push(`${where}: a subcategory has no name`);
+              }
+              if (subcategory.files.length === 0) {
+                issues.push(`${where} / ${subcategory.name}: lists no files`);
+              }
+            });
+          });
+        });
+
+        expect(issues).toEqual([]);
+      });
+
+  // Reads the files rather than getAllQuestions(), so it sees exactly what an
+  // author wrote.
+  test('each question in the files has the required structure', () => {
+    const skillLevels = Object.values(SKILL_LEVELS);
+    const insightLevels = Object.values(ANSWER_LEVELS);
     const issues = [];
 
-    allQuestions.forEach(question => {
-      const missingFields = requiredFields.filter(
-          field => !question.hasOwnProperty(field));
-
-      if (missingFields.length > 0) {
-        issues.push({
-          questionId: question.id || 'UNKNOWN',
-          issue: 'Missing required fields',
-          details: missingFields,
-        });
-        return; // Skip further checks if required fields are missing
+    getJsonFiles().forEach(file => {
+      const {questions} = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (!Array.isArray(questions)) {
+        issues.push(`${toCatalogPath(file)}: questions is not an array`);
+        return;
       }
 
-      // Type validation
-      if (typeof question.id !== 'string') {
-        issues.push({
-          questionId: question.id || 'UNKNOWN',
-          issue: 'ID is not a string',
-        });
-      }
+      questions.forEach((question, index) => {
+        const where = `${toCatalogPath(file)} ${question.id ?? `#${index}`}`;
 
-      if (typeof question.skillLevel !== 'string') {
-        issues.push({
-          questionId: question.id,
-          issue: 'skillLevel is not a string',
-        });
-      }
-
-      if (typeof question.question !== 'string') {
-        issues.push({
-          questionId: question.id,
-          issue: 'question is not a string',
-        });
-      }
-
-      if (!Array.isArray(question.answerInsights)) {
-        issues.push({
-          questionId: question.id,
-          issue: 'answerInsights is not an array',
-        });
-      }
-
-      // Skill level validation
-      const validSkillLevels = Object.values(SKILL_LEVELS);
-      if (!validSkillLevels.includes(question.skillLevel)) {
-        issues.push({
-          questionId: question.id,
-          issue: 'Invalid skillLevel',
-          details: question.skillLevel,
-          validValues: validSkillLevels,
-        });
-      }
-
-      // Answer insights structure
-      const requiredCategories = Object.values(ANSWER_LEVELS);
-      const actualCategories = question.answerInsights.map(
-          insight => insight.category);
-
-      // Check all three categories exist
-      if (question.answerInsights.length !== 3) {
-        issues.push({
-          questionId: question.id,
-          issue: 'Wrong number of answerInsights categories',
-          details: `Expected 3, got ${question.answerInsights.length}`,
-        });
-      }
-
-      // Check for required categories
-      requiredCategories.forEach(requiredCategory => {
-        if (!actualCategories.includes(requiredCategory)) {
-          issues.push({
-            questionId: question.id,
-            issue: `Missing required answer category: ${requiredCategory}`,
-            details: `Found: ${actualCategories.join(', ')}`,
-          });
-        }
-      });
-
-      // Check category order matches ANSWER_LEVELS order
-      const isCorrectOrder = requiredCategories.every((category, index) =>
-          !question.answerInsights[index] ||
-          question.answerInsights[index].category === category,
-      );
-
-      if (!isCorrectOrder) {
-        issues.push({
-          questionId: question.id,
-          issue: 'answerInsights categories in wrong order',
-          details: `Expected: ${requiredCategories.join(
-              ', ')}, Found: ${actualCategories.join(', ')}`,
-        });
-      }
-
-      // Validate points structure
-      question.answerInsights.forEach(insight => {
-        if (!insight.points) {
-          issues.push({
-            questionId: question.id,
-            category: insight.category,
-            issue: 'Missing points array in answerInsight',
-          });
-          return;
-        }
-
-        if (!Array.isArray(insight.points)) {
-          issues.push({
-            questionId: question.id,
-            category: insight.category,
-            issue: 'points is not an array',
-          });
-          return;
-        }
-
-        if (insight.points.length > 4) {
-          issues.push({
-            questionId: question.id,
-            category: insight.category,
-            issue: 'Too many points in answerInsight',
-            details: `Expected at most 4, got ${insight.points.length}`,
-          });
-        }
-
-        insight.points.forEach((point, pointIndex) => {
-          if (!point.title) {
-            issues.push({
-              questionId: question.id,
-              category: insight.category,
-              pointIndex,
-              issue: 'Point missing title',
-            });
-          }
-
-          if (!point.description) {
-            issues.push({
-              questionId: question.id,
-              category: insight.category,
-              pointIndex,
-              issue: 'Point missing description',
-            });
+        ['id', 'question'].forEach(field => {
+          if (isBlank(question[field])) {
+            issues.push(`${where}: ${field} is missing or empty`);
           }
         });
-      });
-    });
 
-    // Detailed error reporting for failed tests
-    if (issues.length > 0) {
-      console.error('Question structure issues:',
-          JSON.stringify(issues, null, 2));
-    }
-
-    expect(issues).toHaveLength(0);
-  });
-
-  test('all relatedQuestions references are valid', () => {
-    const invalidReferences = [];
-
-    allQuestions.forEach(question => {
-      if (question.relatedQuestions &&
-          Array.isArray(question.relatedQuestions)) {
-        // Check for duplicate references
-        const uniqueRelatedIds = new Set(question.relatedQuestions);
-        if (uniqueRelatedIds.size !== question.relatedQuestions.length) {
-          invalidReferences.push({
-            questionId: question.id,
-            issue: 'Duplicate related question IDs',
-            relatedQuestions: question.relatedQuestions,
-            shortTitle: question.shortTitle || 'N/A',
-            category: question.categoryId,
-            subcategory: question.subcategoryName,
-          });
+        if (!skillLevels.includes(question.skillLevel)) {
+          issues.push(`${where}: skillLevel ${question.skillLevel} is not ${
+              skillLevels.join(', ')}`);
         }
 
-        // Check for self-references
-        if (question.relatedQuestions.includes(question.id)) {
-          invalidReferences.push({
-            questionId: question.id,
-            issue: 'Question references itself in relatedQuestions',
-            shortTitle: question.shortTitle || 'N/A',
-            category: question.categoryId,
-            subcategory: question.subcategoryName,
-          });
+        const insights = Array.isArray(question.answerInsights)
+            ? question.answerInsights
+            : [];
+        const levels = insights.map(insight => insight?.category);
+        if (levels.join() !== insightLevels.join()) {
+          issues.push(`${where}: answerInsights levels are [${
+              levels.join(', ')}], expected [${insightLevels.join(', ')}]`);
         }
 
-        // Check each reference is valid
-        question.relatedQuestions.forEach(relatedId => {
-          if (!allQuestionIds.has(relatedId)) {
-            invalidReferences.push({
-              questionId: question.id,
-              issue: 'Invalid related question reference',
-              invalidId: relatedId,
-              shortTitle: question.shortTitle || 'N/A',
-              category: question.categoryId,
-              subcategory: question.subcategoryName,
-            });
+        insights.forEach(insight => {
+          const points = insight?.points;
+          if (!Array.isArray(points) || points.length < 1 ||
+              points.length > 4) {
+            issues.push(`${where} ${insight?.category}: needs 1 to 4 points`);
+            return;
           }
+          points.forEach((point, pointIndex) => {
+            ['title', 'description'].forEach(field => {
+              if (isBlank(point?.[field])) {
+                issues.push(`${where} ${insight.category} point ${
+                    pointIndex}: ${field} is missing or empty`);
+              }
+            });
+          });
         });
-      }
+      });
     });
 
-    // Format error information for assertion message
-    if (invalidReferences.length > 0) {
-      let errorDetails = '\n\nINVALID RELATED QUESTION REFERENCES:\n\n';
-
-      invalidReferences.forEach((ref, idx) => {
-        errorDetails += `${idx + 1}. Question ID: ${ref.questionId}\n`;
-        errorDetails += `   Short Title: ${ref.shortTitle}\n`;
-        errorDetails += `   Category: ${ref.category} / ${ref.subcategory}\n`;
-        errorDetails += `   Issue: ${ref.issue}\n`;
-
-        if (ref.invalidId) {
-          errorDetails += `   Invalid Reference: ${ref.invalidId}\n`;
-        }
-
-        if (ref.relatedQuestions) {
-          errorDetails += `   Related Questions: ${ref.relatedQuestions.join(
-              ', ')}\n`;
-        }
-
-        errorDetails += '\n';
-      });
-
-      // First log to console for complete information
-      console.error(errorDetails);
-
-      // Then fail the test with the same detailed message
-      expect(invalidReferences).toHaveLength(
-          0,
-          `Found ${invalidReferences.length} invalid related question references:${errorDetails}`,
-      );
-    } else {
-      expect(invalidReferences).toHaveLength(0);
-    }
+    expect(issues).toEqual([]);
   });
 
-  test('no duplicate question IDs exist', () => {
-    const questionIdMap = {};
+  test('related questions exist, each once, and not the question itself',
+      () => {
+        const issues = [];
 
-    // Build a map of all IDs to their questions for detailed reporting
-    allQuestions.forEach(question => {
-      if (!questionIdMap[question.id]) {
-        questionIdMap[question.id] = [];
-      }
-      questionIdMap[question.id].push({
-        shortTitle: question.shortTitle || 'N/A',
-        questionText: question.question.substring(0, 50) +
-            (question.question.length > 50 ? '...' : ''),
-        category: question.categoryId,
-        subcategory: question.subcategoryName,
-      });
-    });
-
-    // Find all duplicate IDs
-    const duplicateIds = Object.entries(questionIdMap).
-        filter(([_, instances]) => instances.length > 1).
-        map(([id, instances]) => ({
-          id,
-          count: instances.length,
-          instances: instances,
-        }));
-
-    // Format error information for assertion message
-    if (duplicateIds.length > 0) {
-      let errorDetails = '\n\nDUPLICATE QUESTION IDs FOUND:\n\n';
-
-      duplicateIds.forEach(dup => {
-        errorDetails += `ID "${dup.id}" appears ${dup.count} times:\n`;
-        dup.instances.forEach((instance, idx) => {
-          errorDetails += `  ${idx + 1}. ${instance.shortTitle}\n`;
-          errorDetails += `     Question: ${instance.questionText}\n`;
-          errorDetails += `     Category: ${instance.category} / ${instance.subcategory}\n`;
+        allQuestions.forEach(({id, relatedQuestions = []}) => {
+          if (!Array.isArray(relatedQuestions)) {
+            issues.push(`${id}: relatedQuestions is not a list`);
+            return;
+          }
+          findDuplicates(relatedQuestions).forEach(relatedId =>
+              issues.push(`${id}: lists ${relatedId} more than once`));
+          if (relatedQuestions.includes(id)) {
+            issues.push(`${id}: lists itself`);
+          }
+          relatedQuestions.filter(relatedId => !allQuestionIds.has(relatedId)).
+              forEach(relatedId => issues.push(`${id}: no question ${relatedId}`));
         });
-        errorDetails += '\n';
+
+        expect(issues).toEqual([]);
       });
 
-      errorDetails += 'Fix these duplicates by providing unique IDs for each question.\n';
-
-      // First log to console
-      console.error(errorDetails);
-
-      // Then fail the test with the same detailed message
-      expect(duplicateIds).toHaveLength(
-          0,
-          `Found ${duplicateIds.length} question IDs with duplicates:${errorDetails}`,
-      );
-    } else {
-      expect(duplicateIds).toHaveLength(0);
-    }
+  test('question ids are unique', () => {
+    expect(findDuplicates(allQuestions.map(({id}) => id))).toEqual([]);
   });
 
-  test('all short titles are unique', () => {
-    // Only consider questions that have a shortTitle
-    const questionsWithShortTitles = allQuestions.filter(q => q.shortTitle);
-
-    // Build a map of short titles to their questions
-    const shortTitleMap = {};
-    questionsWithShortTitles.forEach(question => {
-      const normalizedShortTitle = normalizeText(question.shortTitle);
-      if (!shortTitleMap[normalizedShortTitle]) {
-        shortTitleMap[normalizedShortTitle] = [];
-      }
-      shortTitleMap[normalizedShortTitle].push({
-        id: question.id,
-        questionShortTitle: question.shortTitle,
-        questionText: question.question.substring(0, 50) +
-            (question.question.length > 50 ? '...' : ''),
-        category: question.categoryId,
-        subcategory: question.subcategoryName,
-      });
-    });
-
-    // Find all duplicate short titles
-    const duplicateShortTitles = Object.entries(shortTitleMap).
-        filter(([_, instances]) => instances.length > 1).
-        map(([shortTitle, instances]) => ({
-          shortTitle,
-          count: instances.length,
-          instances: instances,
-        }));
-
-    // Format error information for assertion message
-    if (duplicateShortTitles.length > 0) {
-      let errorDetails = '\n\nDUPLICATE SHORT TITLES FOUND:\n\n';
-
-      duplicateShortTitles.forEach(dup => {
-        errorDetails += `Short title "${dup.shortTitle}" appears ${dup.count} times:\n`;
-        dup.instances.forEach((instance, idx) => {
-          errorDetails += `  ${idx + 1}. ID: ${instance.id}\n`;
-          errorDetails += `     Question: ${instance.questionText}\n`;
-          errorDetails += `     Category: ${instance.category} / ${instance.subcategory}\n`;
-        });
-        errorDetails += '\n';
-      });
-
-      errorDetails += 'Make short titles unique to improve navigation and readability.\n';
-
-      // First log to console
-      console.error(errorDetails);
-
-      // Then fail the test with the same detailed message
-      expect(duplicateShortTitles).toHaveLength(
-          0,
-          `Found ${duplicateShortTitles.length} duplicate short titles:${errorDetails}`,
-      );
-    } else {
-      expect(duplicateShortTitles).toHaveLength(0);
-    }
+  test('short titles are unique, ignoring case and spacing', () => {
+    const shortTitles = allQuestions.filter(({shortTitle}) => shortTitle).
+        map(({shortTitle}) => normalizeText(shortTitle));
+    expect(findDuplicates(shortTitles)).toEqual([]);
   });
 
-  test('all question text is unique after whitespace normalization', () => {
-    const questionTextMap = {};
-
-    allQuestions.forEach(question => {
-      const normalizedQuestion = normalizeText(question.question);
-      if (!questionTextMap[normalizedQuestion]) {
-        questionTextMap[normalizedQuestion] = [];
-      }
-      questionTextMap[normalizedQuestion].push({
-        id: question.id,
-        shortTitle: question.shortTitle || 'N/A',
-        category: question.categoryId,
-        subcategory: question.subcategoryName,
-      });
-    });
-
-    const duplicateQuestionTexts = Object.entries(questionTextMap).
-        filter(([_, instances]) => instances.length > 1).
-        map(([questionText, instances]) => ({
-          questionText,
-          count: instances.length,
-          instances,
-        }));
-
-    expect(duplicateQuestionTexts).toHaveLength(
-        0,
-        `Found duplicate normalized question text: ${JSON.stringify(
-            duplicateQuestionTexts, null, 2)}`,
-    );
-  });
-
-  test('all questions have valid category and subcategory values', () => {
-    // Get unique categories and subcategories from questions
-    const categoriesInQuestions = new Set(allQuestions.map(q => q.categoryId));
-    const subcategoriesByCategory = {};
-
-    // Build a map of categories to their subcategories
-    allQuestions.forEach(question => {
-      if (!subcategoriesByCategory[question.categoryId]) {
-        subcategoriesByCategory[question.categoryId] = new Set();
-      }
-      subcategoriesByCategory[question.categoryId].add(
-          question.subcategoryName);
-    });
-
-    const invalidCategoryQuestions = [];
-    const invalidSubcategoryQuestions = [];
-
-    // Check if any questions have missing or undefined categories/subcategories
-    allQuestions.forEach(question => {
-      // Check for missing or invalid category
-      if (!question.categoryId || question.categoryId.trim() === '') {
-        invalidCategoryQuestions.push({
-          id: question.id,
-          shortTitle: question.shortTitle || 'N/A',
-          questionText: question.question.substring(0, 50) + '...',
-          issue: 'Missing or empty categoryId',
-        });
-      }
-
-      // Check for missing or invalid subcategory
-      if (!question.subcategoryName || question.subcategoryName.trim() === '') {
-        invalidSubcategoryQuestions.push({
-          id: question.id,
-          shortTitle: question.shortTitle || 'N/A',
-          categoryId: question.categoryId,
-          questionText: question.question.substring(0, 50) + '...',
-          issue: 'Missing or empty subcategoryName',
-        });
-      }
-    });
-
-    // Format error information for assertion message
-    let errorDetails = '';
-
-    if (invalidCategoryQuestions.length > 0) {
-      errorDetails += '\nQUESTIONS WITH INVALID CATEGORIES:\n\n';
-      invalidCategoryQuestions.forEach((q, idx) => {
-        errorDetails += `${idx + 1}. ID: ${q.id}\n`;
-        errorDetails += `   Short Title: ${q.shortTitle}\n`;
-        errorDetails += `   Question: ${q.questionText}\n`;
-        errorDetails += `   Issue: ${q.issue}\n\n`;
-      });
-    }
-
-    if (invalidSubcategoryQuestions.length > 0) {
-      errorDetails += '\nQUESTIONS WITH INVALID SUBCATEGORIES:\n\n';
-      invalidSubcategoryQuestions.forEach((q, idx) => {
-        errorDetails += `${idx + 1}. ID: ${q.id}\n`;
-        errorDetails += `   Short Title: ${q.shortTitle}\n`;
-        errorDetails += `   Category: ${q.categoryId}\n`;
-        errorDetails += `   Question: ${q.questionText}\n`;
-        errorDetails += `   Issue: ${q.issue}\n\n`;
-      });
-    }
-
-    // Log to console first
-    if (errorDetails) {
-      console.error(errorDetails);
-    }
-
-    // Check for category issues with detailed message
-    expect(invalidCategoryQuestions).toHaveLength(
-        0,
-        invalidCategoryQuestions.length > 0
-            ?
-            `Found ${invalidCategoryQuestions.length} questions with invalid categories:${errorDetails}`
-            : '',
-    );
-
-    // Check for subcategory issues with detailed message
-    expect(invalidSubcategoryQuestions).toHaveLength(
-        0,
-        invalidSubcategoryQuestions.length > 0
-            ?
-            `Found ${invalidSubcategoryQuestions.length} questions with invalid subcategories:${errorDetails}`
-            : '',
-    );
+  test('question texts are unique, ignoring case and spacing', () => {
+    const texts = allQuestions.map(({question}) => normalizeText(question));
+    expect(findDuplicates(texts)).toEqual([]);
   });
 });

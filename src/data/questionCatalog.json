@@ -1,0 +1,242 @@
+[
+  {
+    "id": "core-java",
+    "name": "Core Java",
+    "sets": [
+      {
+        "id": "basic-set-core",
+        "name": "Basic Set",
+        "subcategories": [
+          {
+            "name": "Fundamentals",
+            "files": [
+              "java/core-java/fundamentals-1.json",
+              "java/core-java/fundamentals-2.json"
+            ]
+          },
+          {
+            "name": "Memory Management",
+            "files": ["java/core-java/memory-management.json"]
+          },
+          {
+            "name": "Modern Java",
+            "files": ["java/core-java/modern-java.json"]
+          },
+          {
+            "name": "JVM & Performance",
+            "files": ["java/core-java/jvm-performance.json"]
+          },
+          {
+            "name": "Collections",
+            "files": [
+              "java/core-java/collections-1.json",
+              "java/core-java/collections-2.json"
+            ]
+          },
+          {
+            "name": "Exceptions",
+            "files": ["java/core-java/exceptions.json"]
+          },
+          {
+            "name": "Reactive",
+            "files": [
+              "java/core-java/reactive-1.json",
+              "java/core-java/reactive-2.json"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dsa",
+    "name": "Data Structures & Algorithms",
+    "sets": [
+      {
+        "id": "dsa-basic-set",
+        "name": "Basic Set",
+        "subcategories": [
+          {
+            "name": "Data Structures",
+            "files": [
+              "java/data-structures-and-algorithms/data-structures-1.json",
+              "java/data-structures-and-algorithms/data-structures-2.json"
+            ]
+          },
+          {
+            "name": "Algorithms",
+            "files": [
+              "java/data-structures-and-algorithms/algorithms-1.json",
+              "java/data-structures-and-algorithms/algorithms-2.json",
+              "java/data-structures-and-algorithms/algorithms-3.json"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "frameworks",
+    "name": "Frameworks",
+    "sets": [
+      {
+        "id": "frameworks-basic-set",
+        "name": "Basic Set",
+        "subcategories": [
+          {
+            "name": "Spring",
+            "files": [
+              "java/framework/spring-1.json",
+              "java/framework/spring-2.json"
+            ]
+          },
+          {
+            "name": "Hibernate",
+            "files": ["java/framework/hibernate.json"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "databases",
+    "name": "Databases",
+    "sets": [
+      {
+        "id": "databases-basic-set",
+        "name": "Basic Set",
+        "subcategories": [
+          {
+            "name": "SQL",
+            "files": ["java/databases/SQL.json"]
+          },
+          {
+            "name": "NoSQL",
+            "files": ["java/databases/NoSQL.json"]
+          },
+          {
+            "name": "Transactions",
+            "files": ["java/databases/transactions.json"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "concurrency-multithreading",
+    "name": "Concurrency and Multithreading",
+    "sets": [
+      {
+        "id": "basic-set-concurrency",
+        "name": "Basic Set",
+        "subcategories": [
+          {
+            "name": "Thread Fundamentals",
+            "files": ["java/concurrency-multithreading/thread-fundamentals.json"]
+          },
+          {
+            "name": "Synchronization",
+            "files": ["java/concurrency-multithreading/synchronization.json"]
+          },
+          {
+            "name": "Concurrent Collections",
+            "files": ["java/concurrency-multithreading/concurrent-collections.json"]
+          },
+          {
+            "name": "Executors",
+            "files": ["java/concurrency-multithreading/executors.json"]
+          },
+          {
+            "name": "Modern Concurrency",
+            "files": ["java/concurrency-multithreading/modern-concurrency.json"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "software-design",
+    "name": "Software Design",
+    "sets": [
+      {
+        "id": "design-patterns-basic-set",
+        "name": "Basic Set",
+        "subcategories": [
+          {
+            "name": "Design Patterns",
+            "files": [
+              "java/software-design/design-patterns-1.json",
+              "java/software-design/design-patterns-2.json"
+            ]
+          },
+          {
+            "name": "Microservices",
+            "files": ["java/software-design/microservices.json"]
+          },
+          {
+            "name": "REST API",
+            "files": ["java/software-design/REST.json"]
+          },
+          {
+            "name": "Distributed Systems",
+            "files": [
+              "java/software-design/distributed-systems-1.json",
+              "java/software-design/distributed-systems-2.json"
+            ]
+          },
+          {
+            "name": "Event Driven",
+            "files": [
+              "java/software-design/event-driven-1.json",
+              "java/software-design/event-driven-2.json"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "engineering-practices",
+    "name": "Engineering",
+    "sets": [
+      {
+        "id": "engineering-basic-set",
+        "name": "Basic Set",
+        "subcategories": [
+          {
+            "name": "Git",
+            "files": ["java/engineering/git.json"]
+          },
+          {
+            "name": "CI/CD",
+            "files": ["java/engineering/CICD.json"]
+          },
+          {
+            "name": "Testing",
+            "files": ["java/engineering/testing.json"]
+          },
+          {
+            "name": "Cloud",
+            "files": ["java/engineering/cloud-azure.json"]
+          },
+          {
+            "name": "Security",
+            "files": ["java/engineering/security.json"]
+          },
+          {
+            "name": "AI",
+            "files": ["java/engineering/AI.json"]
+          },
+          {
+            "name": "Build & Dependency Management",
+            "files": ["java/engineering/build-dependency-management.json"]
+          },
+          {
+            "name": "Open Questions",
+            "files": ["java/engineering/open.json"]
+          }
+        ]
+      }
+    ]
+  }
+]

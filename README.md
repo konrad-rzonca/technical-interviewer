@@ -26,17 +26,11 @@ npm start
 
 The app opens at `http://localhost:3000/technical-interviewer`.
 
-`npm run build` writes the production site to `build/`. Serve it under `/technical-interviewer/`.
+`npm run build` runs the question data tests, then writes the production site to `build/`. Serve it under `/technical-interviewer/`.
 
 ## Add Questions
 
-Questions are JSON files under `src/data/questions/java/`, grouped by category. A new file shows up in the app only after you do all of this in `src/data/questionLoader.js`:
-
-1. Import the file.
-2. Add it to the category's question set in `questionSets`, under its subcategory name. If the subcategory already has an entry, add the file's questions to that entry instead, the way `Fundamentals` combines two files. A second entry with the same name replaces the first without an error.
-3. For a new subcategory, add its name to that category's `subcategories` in `categories`. Without it, the questions are missing from the question lists and only search finds them.
-
-The entry in `questionSets` decides where the questions appear. The `category` and `subcategory` fields at the top of the file are labels for the reader.
+Questions are JSON files under `src/data/questions/java/`, grouped by category. A file shows up in the app once `src/data/questionCatalog.json` lists it. Add its path, relative to `src/data/questions/`, to its subcategory's `files`, or add a subcategory with a `name` and `files`. The app shows subcategories in catalog order. The `category` and `subcategory` fields at the top of a question file are labels for the reader and do not decide where it appears.
 
 ### File Format
 
@@ -86,17 +80,16 @@ The entry in `questionSets` decides where the questions appear. The `category` a
 ```
 
 - `skillLevel` is `basic`, `intermediate` or `advanced`.
-- `answerInsights` has exactly three entries, `Basic`, `Intermediate` and `Advanced`, each with at most four points. Every point needs a `title` and a `description`.
-- `id`, `shortTitle` and `question` must be unique across all questions, ignoring case. `shortTitle` is the label in the question list.
+- `answerInsights` has exactly three entries, `Basic`, `Intermediate` and `Advanced`, in that order, each with one to four points. Every point needs a `title` and a `description`.
+- `id`, `shortTitle` and `question` must be unique across all questions. `shortTitle` and `question` are compared ignoring case. `shortTitle` is the label in the question list.
 - `relatedQuestions` lists the ids of other existing questions, each once.
+- The catalog lists every question file exactly once, and each subcategory once per set.
 
 Run the tests to check these rules:
 
 ```bash
 npm test -- --watchAll=false
 ```
-
-The tests do not catch a missing or misspelled level in `answerInsights`. It shows up in the app as a level with no points.
 
 ### Writing Questions
 
