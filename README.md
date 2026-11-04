@@ -1,251 +1,44 @@
 # Technical Interview Platform
 
-A modern React application for conducting technical interviews with a focus on optimal UX for recruiters and
-interviewers.
+A web app for running a technical interview for a Java developer role. You pick questions by category and skill level, see what a good answer covers, rate each answer from 1 to 5, take notes, and export a summary at the end. The Prepare page lets you study the same questions on your own.
 
-## Project Overview
+What you enter stays in your browser's local storage and is never sent anywhere.
 
-This platform is designed to help recruiters conduct technical interviews efficiently by providing a structured database
-of questions organized by category and subcategory. It focuses solely on the interviewer experience and does not handle
-candidate information.
+## Features
 
-### Key Features
+- **Questions by category and level.** Each question is Basic, Intermediate or Advanced. Filter by category, subcategory and question set in the left sidebar, or, on a wide screen, search every question from the top bar.
+- **Answer insights.** Each question lists the points a candidate may raise, at three depths: Basic, Intermediate and Advanced. Hover a point to read its explanation. Click a point to mark that the candidate covered it.
+- **Rating and notes.** Rate each answer from 1 to 5 and write notes on it. The question list and the related questions show which questions you have rated.
+- **Related questions.** The right sidebar suggests follow-up questions.
+- **Export.** Export the interview as an HTML or PDF summary with the candidate's name, your ratings, notes, marked points and your recommendation. Before the next candidate, clear the data with Clear All Interview Data in the top bar.
+- **Settings.** Learning Mode hides each point's title until you click it, so you can test yourself. Other settings hide rated questions from the question list or from the related questions.
+- **Prepare.** Go through the questions one at a time: answer in your head, reveal the concepts, then mark how you did. The page tracks your progress on each question and brings back the ones that are due.
+- **Best Practices.** Guidance on running a technical interview.
 
-- **Category Organization**: Questions are hierarchically organized by category and subcategory for easy navigation
-- **Skill Level Grouping**: Questions are visually grouped by Basic, Intermediate, and Advanced levels
-- **Question Sets**: Multiple sets of questions contributed by different developers
-- **Answer Insights**: Three levels of sophistication for each answer (Basic, Intermediate, Advanced)
-- **Interview Tools**: Note-taking and 1-5 rating system per question
-- **Learning Mode**: Option to hide answer details until hovered or clicked for self-assessment
-- **Related Questions**: Suggested follow-up questions with answered status and category info
-- **Health Monitoring**: `/healtz` endpoint for application health monitoring
-- **Content-Aware Layout**: Responsive design that adjusts based on actual content space
-- **Performance Optimizations**: Component splitting and virtualization for improved performance with large question
-  sets
-- **Centralized Theming**: Comprehensive theming system for consistent UI across components
+## Run It
 
-## UI Organization
+You need Node.js 20 or later.
 
-The application follows a three-panel layout for optimal experience:
-
-- **Left Panel**: Categories and subcategories, with collapsible sections and question set selection
-- **Middle Panel**:
-    - Question details at the top with answer insights
-    - Candidate evaluation section below
-    - Navigation section at the bottom organized by skill level (Basic, Intermediate, Advanced)
-- **Right Panel**: Related questions with answered status and category information
-
-Each section has independent scrolling for better usability with large question sets.
-
-## Responsive Design
-
-The application adapts to different screen sizes with:
-
-- **Wide Screen Optimizations**: Adapts column layouts for optimal readability on screens wider than 1800px
-- **Content-Aware Layout**: Columns in the question navigation adjust based on available width
-- **Consistent Component Sizing**: UI elements maintain proper proportions across different screen sizes
-- **Collapsible Sidebars**: Sidebars can be collapsed to provide more space for the main content
-- **Touch-Friendly Mobile UI**: Larger touch targets and simplified navigation for mobile devices
-- **Screen-Size Aware Typography**: Font sizes adjust intelligently based on screen size
-
-## Performance Optimizations
-
-The application is optimized for smooth performance even with large question sets:
-
-- **Component Splitting**: UI broken down into focused, reusable components to minimize re-renders
-- **Memoization**: React.memo and useMemo used extensively to prevent unnecessary refreshes
-- **Style Hooks**: Custom hooks that memoize styles to avoid recalculations
-- **Error Boundaries**: Graceful error handling that maintains app stability
-- **Virtualization Support**: Groundwork laid for windowing long lists, rendering only visible elements
-
-## Theme and Styling Architecture
-
-The application uses a sophisticated, consolidated styling system:
-
-- **Centralized Design Tokens**: All colors, spacing, typography, and layout dimensions are defined in one location
-- **Component-Specific Style Hooks**: Custom React hooks generate memoized styles for components
-- **Semantic Design Language**: Meaningful names for style variables (e.g., `success.main` instead of "green")
-- **Responsive Design Built-in**: Style variations based on screen size using theme breakpoints
-
-### Key Style Files
-
-- `src/utils/baseTheme.js` - Contains all design tokens:
-    - Color palette with semantic naming
-    - Skill level color variations
-    - Spacing system with consistent units
-    - Typography definitions (sizes, weights, families)
-    - Layout dimensions for responsive design
-    - Component-specific style templates
-
-- `src/utils/styleHooks.js` - Collection of reusable style hooks:
-    - `usePanelStyles()` - For panels and containers
-    - `useQuestionItemStyles()` - For question items with state variations
-    - `useSkillLevelSectionStyles()` - For skill level containers
-    - `useItemTextStyles()` - For typography with responsive sizes
-    - Global style utilities (scrollbars, code blocks, etc.)
-
-### Using the Style System
-
-Components use the style system through hooks:
-
-```javascript
-// Example component using style hooks
-import {useQuestionItemStyles, useItemTextStyles} from '../utils/styleHooks';
-import {COLORS} from '../utils/theme';
-
-const MyComponent = ({isSelected, isAnswered}) => {
-  // Get styles from hooks, passing component state
-  const itemStyles = useQuestionItemStyles(isSelected, isAnswered, 'intermediate');
-  const textStyles = useItemTextStyles(isSelected);
-
-  return (
-
-      Question
-  Title
-
-)
-  ;
-};
+```bash
+npm install
+npm start
 ```
 
-### Responsive Design
+The app opens at `http://localhost:3000/technical-interviewer`.
 
-The styling system includes responsive breakpoints and utilities:
+`npm run build` writes the production site to `build/`. Serve it under `/technical-interviewer/`.
 
-```javascript
-// Responsive design using theme breakpoints
-const responsiveStyles = {
-  padding: theme.spacing(2),
-  [theme.breakpoints.down('md')]: {
-    padding: theme.spacing(1),
-  },
-};
-```
+## Add Questions
 
-### Color System
+Questions are JSON files under `src/data/questions/java/`, grouped by category. A new file shows up in the app only after you do all of this in `src/data/questionLoader.js`:
 
-Colors are organized semantically for consistency:
+1. Import the file.
+2. Add it to the category's question set in `questionSets`, under its subcategory name. If the subcategory already has an entry, add the file's questions to that entry instead, the way `Fundamentals` combines two files. A second entry with the same name replaces the first without an error.
+3. For a new subcategory, add its name to that category's `subcategories` in `categories`. Without it, the questions are missing from the question lists and only search finds them.
 
-- **Primary/Secondary**: App brand colors
-- **Success/Warning/Info**: Skill level indicators (Basic, Intermediate, Advanced)
-- **Semantic Variations**: Each color has main, light, dark, and text variants
+The entry in `questionSets` decides where the questions appear. The `category` and `subcategory` fields at the top of the file are labels for the reader.
 
-### Updating Styles
-
-To modify the appearance throughout the app:
-
-1. Update tokens in `baseTheme.js` (for global changes)
-2. Modify style hooks in `styleHooks.js` (for component patterns)
-3. Apply hooks in components (for specific implementations)
-
-All styling is managed through these files, making theme updates simple and consistent.
-
-## Category Structure
-
-Questions are organized in a hierarchical structure:
-
-```
-├── Core Java
-│   ├── Fundamentals
-│   ├── Memory Management
-│   ├── Collections
-│   └── Exceptions
-├── Concurrency and Multithreading
-├── Software Design
-│   ├── Design Patterns
-│   ├── Microservices
-│   └── REST API
-├── Databases
-│   ├── SQL
-│   ├── NoSQL
-│   └── Transactions
-├── Frameworks
-│   ├── Spring
-│   └── Hibernate
-├── Data Structures & Algorithms
-└── Engineering Practices
-    ├── Git
-    ├── CI/CD
-    └── Testing
-```
-
-## Question Sets
-
-Questions are grouped into sets (e.g., "Konrad Basic Set") that can be enabled or disabled. This allows:
-
-- Multiple contributors to add their own question sets
-- Selective use of questions from different authors
-- Flexible organization of interview sessions
-
-## Answer Insights Structure
-
-Each question includes three levels of answer insights:
-
-1. **Basic**: Fundamental understanding that any candidate should have
-2. **Intermediate**: Deeper knowledge expected from experienced developers
-3. **Advanced**: Sophisticated understanding showing expert-level knowledge
-
-Each insight category contains multiple points with titles and detailed descriptions.
-
-## Learning Mode
-
-The platform includes a Learning Mode that hides answer details until:
-
-- The mouse hovers over a specific answer point
-- A point is clicked (making it persistently visible)
-
-This feature helps interviewers practice or assess their own knowledge of topics before conducting interviews.
-
-## File Structure
-
-```
-interview-platform/
-├── package.json
-├── README.md
-├── public/
-│   └── index.html
-├── src/
-│   ├── App.js
-│   ├── index.js
-│   ├── components/
-│   │   ├── InterviewPanel.js
-│   │   ├── CategorySidebar.js
-│   │   ├── QuestionDetailsPanel.js
-│   │   ├── QuestionNavigation.js
-│   │   ├── RelatedQuestionsSidebar.js
-│   │   ├── AnswerLevelHorizontal.js
-│   │   ├── QuestionItem.js
-│   │   ├── SkillLevelSection.js
-│   │   ├── SidebarPanel.js
-│   │   ├── HealthCheck.js
-│   │   └── [other components]
-│   ├── utils/
-│   │   ├── baseTheme.js
-│   │   ├── useStyles.js 
-│   │   └── constants.js
-│   ├── data/
-│   │   ├── questionLoader.js
-│   │   └── questions/
-│   │       ├── java/
-│   │       │   ├── core-java/
-│   │       │   │   ├── fundamentals.json
-│   │       │   │   └── memory-management.json
-│   │       │   ├── concurrency-multithreading/
-│   │       │   │   └── concurrency-basics.json
-│   │       │   ├── software-design/
-│   │       │   └── [other directories]
-│   │       ├── python/            # Future expansion
-│   │       └── javascript/        # Future expansion
-│   └── styles/
-│       └── main.css
-```
-
-## Question Format
-
-Questions are stored in JSON files organized by category and subcategory. Each file contains questions for a specific
-subcategory.
-
-### JSON File Structure
+### File Format
 
 ```json
 {
@@ -253,134 +46,67 @@ subcategory.
   "subcategory": "Fundamentals",
   "questions": [
     {
-      "id": "java-equals-vs-operator",
-      "skillLevel": "basic",
-      "shortTitle": "== vs .equals()",
-      "question": "What is the difference between '==' and '.equals()' in Java?",
+      "id": "java-integer-caching",
+      "skillLevel": "intermediate",
+      "shortTitle": "Integer Caching",
+      "question": "Why can == return true for two Integer objects holding 100, but false for two holding 1000?",
       "answerInsights": [
         {
           "category": "Basic",
           "points": [
             {
-              "title": "Operator vs Method",
-              "description": "== is an operator, while .equals() is a method that belongs to the Object class."
+              "title": "Reference Comparison",
+              "description": "`==` on two **Integer** objects compares references, not values. Use `equals()` to compare values."
             }
-            // More points...
+          ]
+        },
+        {
+          "category": "Intermediate",
+          "points": [
+            {
+              "title": "The Cache",
+              "description": "Autoboxing calls `Integer.valueOf()`, which returns a cached object for values from -128 to 127. Larger values get a new object each time."
+            }
+          ]
+        },
+        {
+          "category": "Advanced",
+          "points": [
+            {
+              "title": "Tuning the Cache",
+              "description": "The JVM option `-XX:AutoBoxCacheMax` raises the upper bound of the cache."
+            }
           ]
         }
-        // Intermediate and Advanced sections...
       ],
-      "relatedQuestions": [
-        "java-hashcode",
-        "java-object-class"
-      ]
+      "relatedQuestions": ["java-autoboxing-unboxing-core-java-f-17"]
     }
-    // More questions...
   ]
 }
 ```
 
-### Quality Guidelines for Interview Content
+- `skillLevel` is `basic`, `intermediate` or `advanced`.
+- `answerInsights` has exactly three entries, `Basic`, `Intermediate` and `Advanced`, each with at most four points. Every point needs a `title` and a `description`.
+- `id`, `shortTitle` and `question` must be unique across all questions, ignoring case. `shortTitle` is the label in the question list.
+- `relatedQuestions` lists the ids of other existing questions, each once.
 
-To ensure high-quality question/answer data:
-
-- Focus on One Concept per Question:
-    - Ask a single, clear question to spark discussion.
-    - Merge closely related topics into the answer insights.
-    - Determine the category based on how hard/well known/important the concept is (harder is more advanced,
-      while popular/important is more basic).
-- Conversational, Varied Phrasing:
-    - Use diverse, human-friendly starters (e.g., "Can you explain...", "Do you know...", "In your experience...", "
-      Could you
-      describe...") to make the interview engaging.
-    - Ensure that no more than three consecutive questions start the same way.
-- Structured Answer Insights:
-    - Organize insights into clear categories (Basic, Intermediate, Advanced) with up to four points each.
-    - Provide a roadmap for further discussion on each topic. Link related questions if any.
-    - If answer insight is not obvious then it must contain extensive details alongside relevant examples (if any).
-    - Use new lines, and spaces for styling
-    - You can also use code blocks with `Code`, ```\nCode\n```, as well as **bolded text**
-- Consistency and Uniqueness:
-    - Ensure each question has a unique identifier and follows a consistent JSON structure.
-    - Align the content with the interview goals by focusing on key concepts and practical problem-solving.
-- Clarity and Conciseness:
-    - Write questions and insights that are straightforward, clear, and easy to understand.
-    - Remove unnecessary complexity while covering essential details.
-- Continuous Improvement:
-    - Refine and update content based on feedback to maintain relevance and clarity.
-
-## Key UI Features
-
-### Category Panel
-
-- Expandable subcategories
-- Multi-select filtering for subcategories
-- Question set selection via dropdown
-
-### Question Details
-
-- Full question text with navigation controls
-- Color-coded answer insights by level (green for basic, amber for intermediate, orange for advanced)
-- Click to select important points
-- Hover for detailed explanations
-
-### Question Navigation
-
-- Questions organized by skill level (Basic, Intermediate, Advanced)
-- Color-coded category indicators
-- Visual indication of already answered questions
-- Star rating tooltips for answered questions
-
-### Candidate Evaluation
-
-- 1-5 star rating system
-- Notes section for detailed feedback
-- Persistent rating and notes across session
-
-### Related Questions
-
-- One-click navigation to related topics
-- Visual indication of already answered questions
-- Category and subcategory information
-
-## Technical Details
-
-### State Management
-
-- Questions are managed using React's useState and useEffect
-- Category, subcategory, and set selections control question filtering
-- Selections, notes, and ratings persist during the session
-
-### Component Organization
-
-- The UI is divided into reusable components for maintainability
-- Styling follows a reusable hook pattern for consistency and performance
-- Theme configuration centralizes styling constants to ensure visual coherence
-
-### Responsive Layout
-
-- Each section can scroll independently
-- Question navigation organized in skill level columns
-- Tooltips and hover interactions for better UX
-- Content-aware column layout based on actual container width
-
-## Installation and Setup
+Run the tests to check these rules:
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-
-# Build for production
-npm run build
+npm test -- --watchAll=false
 ```
 
-## Browser Compatibility
+The tests do not catch a missing or misspelled level in `answerInsights`. It shows up in the app as a level with no points.
 
-The application is designed to work in modern browsers (Chrome, Firefox, Safari, Edge).
+### Writing Questions
+
+- Ask about one concept per question. Fold closely related topics into its answer insights instead of writing separate questions.
+- Set the skill level by how hard and how widely known the concept is: everyday, essential concepts are basic, harder or more specialized ones are advanced.
+- Phrase questions the way you would ask them aloud, and vary the openings ("Can you explain...", "In your experience...", "How would you..."). No more than three questions in a row should start the same way.
+- Make the insights a guide for the follow-up discussion, and link related questions. When a point is not obvious, explain it in detail, with an example where one helps.
+- Keep questions and insights clear and short, focused on key concepts and practical problem-solving.
+- In descriptions, `\n` starts a new line, single backticks mark inline code, double asterisks mark bold, and triple backticks open a code block. Put the language, such as `java`, right after the opening backticks to highlight the code.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](misc/LICENSE.txt) file for details.
+MIT. See [LICENSE](misc/LICENSE.txt).
