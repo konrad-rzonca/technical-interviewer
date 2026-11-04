@@ -28,6 +28,17 @@ The app opens at `http://localhost:3000/technical-interviewer`.
 
 `npm run build` runs the question data tests, then writes the production site to `build/`. Serve it under `/technical-interviewer/`.
 
+### With Docker
+
+You need only Docker.
+
+```bash
+docker build -t technical-interviewer .
+docker run --rm -p 8080:8080 technical-interviewer
+```
+
+The site is at `http://localhost:8080/technical-interviewer/`. To use another port on your machine, change the first number in `-p`. With `-p 3001:8080`, the site is at `http://localhost:3001/technical-interviewer/`.
+
 ## Add Questions
 
 Questions are JSON files under `src/data/questions/java/`, grouped by category. A file shows up in the app once `src/data/questionCatalog.json` lists it. Add its path, relative to `src/data/questions/`, to its subcategory's `files`, or add a subcategory with a `name` and `files`. The app shows subcategories in catalog order. The `category` and `subcategory` fields at the top of a question file are labels for the reader and do not decide where it appears.
