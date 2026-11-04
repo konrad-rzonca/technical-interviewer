@@ -10,12 +10,8 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Set theme argument (default to corporate)
-ARG THEME=corporate
-ENV REACT_APP_THEME=${THEME}
-
 # Build the app for production
-RUN npm run build:${THEME}
+RUN npm run build
 
 # Production stage
 FROM nginx:alpine

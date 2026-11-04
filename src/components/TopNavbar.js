@@ -116,7 +116,6 @@ const TopNavbar = ({
                 </IconButton>
             )}
 
-            {/* Logo component - will use Corporate logo or app name based on theme */}
             <Box sx={{display: {xs: 'none', md: 'block'}}}>
               <Logo/>
             </Box>

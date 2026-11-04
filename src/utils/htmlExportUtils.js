@@ -1,6 +1,5 @@
 ﻿// src/utils/htmlExportUtils.js
 import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
-import {isCorporateTheme} from '../themes/themeUtils';
 import {getSkillLevelStyles} from './styles';
 import {categories} from '../data/questionLoader';
 
@@ -86,8 +85,6 @@ const createCandidateDetailsHTML = (metadata) => {
   if (!candidateName && !recommendation && !comments) {
     return '';
   }
-
-  const useCorporateTheme = isCorporateTheme();
 
   let recommendationHTML = '';
   if (recommendation === 'recommended') {
@@ -233,31 +230,6 @@ const hasCategorySelectedPoints = (categoryIndex, selectedPoints) => {
     const [catIdx, _] = key.split('-');
     return parseInt(catIdx) === categoryIndex && selectedPoints[key];
   });
-};
-
-/**
- * Attempts to get the Corporate logo as a data URL for embedding in exports
- * @returns {string} - Data URL of the logo or empty string if not found
- */
-const getLogoDataUrl = () => {
-  try {
-    // Find the Corporate logo in the document
-    const logoImg = document.querySelector('img[src*="corporate-logo"]');
-    if (logoImg && logoImg.complete) {
-      // Create a canvas and draw the image onto it
-      const canvas = document.createElement('canvas');
-      canvas.width = logoImg.naturalWidth || 64;
-      canvas.height = logoImg.naturalHeight || 32;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(logoImg, 0, 0);
-      // Convert canvas to data URL
-      return canvas.toDataURL('image/png');
-    }
-  } catch (e) {
-    console.error('Error generating logo data URL:', e);
-  }
-  // Fallback to a base64 encoded Corporate logo or transparent placeholder
-  return ''; // Empty string will make the logo not show
 };
 
 /**
@@ -411,12 +383,9 @@ const createReportHTML = (exportData, options = {}) => {
       hasContent(id, notesMap, gradesMap, selectedAnswerPointsMap),
   );
 
-  // Determine active theme
-  const useCorporateTheme = isCorporateTheme();
-  const primaryColor = useCorporateTheme ? '#EC0016' : COLORS.primary.main;
+  const primaryColor = COLORS.primary.main;
   const reportDate = new Date(timestamp).toLocaleDateString();
   const reportTime = new Date(timestamp).toLocaleTimeString();
-  const logoDataUrl = getLogoDataUrl();
 
   // If no questions have content, display a message
   if (questionIds.length === 0) {
@@ -428,9 +397,7 @@ const createReportHTML = (exportData, options = {}) => {
         <title>Technical Interview Notes</title>
         <style>
           body {
-            font-family: ${useCorporateTheme
-        ? '"Corporate Sans", "Helvetica Neue", Arial, sans-serif'
-        : TYPOGRAPHY.fontFamily};
+            font-family: ${TYPOGRAPHY.fontFamily};
             background-color: ${COLORS.background.light};
             color: ${COLORS.text.primary};
             display: flex;
@@ -497,9 +464,7 @@ const createReportHTML = (exportData, options = {}) => {
       <style>
         /* Global styles */
         body {
-          font-family: ${useCorporateTheme
-      ? '"Corporate Sans", "Helvetica Neue", Arial, sans-serif'
-      : TYPOGRAPHY.fontFamily};
+          font-family: ${TYPOGRAPHY.fontFamily};
           line-height: 1.5;
           color: ${COLORS.text.primary};
           background-color: ${COLORS.background.light};
@@ -513,7 +478,7 @@ const createReportHTML = (exportData, options = {}) => {
           margin: 0 auto;
           background-color: ${COLORS.background.paper};
           box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-          border-radius: ${useCorporateTheme ? '4px' : `${SPACING.borderRadius}px`};
+          border-radius: ${SPACING.borderRadius}px;
           padding: 20px;
         }
         
@@ -526,11 +491,6 @@ const createReportHTML = (exportData, options = {}) => {
           padding-bottom: 8px;
           border-bottom: 1px solid ${COLORS.grey[200]};
           position: relative;
-        }
-        
-        .logo {
-          position: absolute;
-          right: 0;
         }
         
         .header-content {
@@ -599,7 +559,7 @@ const createReportHTML = (exportData, options = {}) => {
         }
         
         .recommendation-icon.negative {
-          background-color: ${useCorporateTheme ? '#EC0016' : COLORS.error.main};
+          background-color: ${COLORS.error.main};
         }
         
         .recommendation-text {
@@ -611,7 +571,7 @@ const createReportHTML = (exportData, options = {}) => {
         }
         
         .recommendation-text.negative {
-          color: ${useCorporateTheme ? '#EC0016' : COLORS.error.main};
+          color: ${COLORS.error.main};
         }
         
         .comments-row {
@@ -913,12 +873,6 @@ const createReportHTML = (exportData, options = {}) => {
             <h1 class="title">Technical Interview Notes</h1>
             <p class="subtitle">Generated on ${reportDate} at ${reportTime}</p>
           </div>
-          ${useCorporateTheme ? `
-  <div class="logo">
-    <img src="${logoDataUrl || window.location.origin +
-  '/assets/images/corporate-logo.png'}" alt="Corporate" style="height: 32px;">
-  </div>
-` : ''}
         </header>
         
         ${metadata ? createCandidateDetailsHTML(metadata) : ''}

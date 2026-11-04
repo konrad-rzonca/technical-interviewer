@@ -58,44 +58,6 @@ The application is optimized for smooth performance even with large question set
 - **Error Boundaries**: Graceful error handling that maintains app stability
 - **Virtualization Support**: Groundwork laid for windowing long lists, rendering only visible elements
 
-## Theming
-
-The application supports multiple themes:
-
-### Available Themes
-
-- **Base Theme**: The default theme with blue primary color
-- **Corporate Theme**: A branded theme with red primary color and professional typography
-
-### How to Use Different Themes
-
-You can select a theme at startup using npm scripts:
-
-```bash
-# Start the app with the Base theme
-npm run start:base
-
-# Start the app with the Corporate theme
-npm run start:corporate
-
-# Build the app with the Base theme
-npm run build:base
-
-# Build the app with the Corporate theme
-npm run build:corporate
-```
-
-### Technical Implementation
-
-Themes are implemented as overlays on top of the base theme, with each theme only specifying the properties it needs to
-override. This ensures:
-
-1. Minimal code duplication
-2. Consistent behavior across themes
-3. Easy maintenance as the application evolves
-
-The theme selection is determined at build/start time via environment variables and remains fixed during runtime.
-
 ## Theme and Styling Architecture
 
 The application uses a sophisticated, consolidated styling system:

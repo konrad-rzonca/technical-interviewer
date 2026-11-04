@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import {COLORS, SPACING, TYPOGRAPHY} from '../themes/baseTheme';
 import {exportInterviewData} from '../utils/exportUtils';
-import {isCorporateTheme} from '../themes/themeUtils';
 import HtmlIcon from '@mui/icons-material/Html';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
@@ -37,10 +36,6 @@ const ExportDialog = ({
   const [format, setFormat] = useState('html');
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState(null);
-
-  // Get theme information
-  const useCorporateTheme = isCorporateTheme();
-  const primaryColor = useCorporateTheme ? '#EC0016' : COLORS.primary.main;
 
   // Handle export button click
   const handleExport = async () => {
@@ -213,23 +208,17 @@ const ExportDialog = ({
                       alignItems: 'center',
                       borderRadius: '8px',
                       border: `1px solid ${recommendation === 'not_recommended'
-                          ? (useCorporateTheme ? '#EC0016' : COLORS.error.main)
+                          ? COLORS.error.main
                           : COLORS.grey[200]}`,
                       backgroundColor: recommendation === 'not_recommended'
-                          ? (useCorporateTheme
-                              ? 'rgba(236, 0, 22, 0.1)'
-                              : `${COLORS.error.light}50`)
+                          ? `${COLORS.error.light}50`
                           : 'transparent',
                       cursor: 'pointer',
                       width: '50%',
                       transition: 'all 0.2s',
                       '&:hover': {
-                        borderColor: useCorporateTheme
-                            ? '#EC0016'
-                            : COLORS.error.main,
-                        backgroundColor: useCorporateTheme
-                            ? 'rgba(236, 0, 22, 0.05)'
-                            : `${COLORS.error.light}30`,
+                        borderColor: COLORS.error.main,
+                        backgroundColor: `${COLORS.error.light}30`,
                       },
                     }}
                 >
@@ -238,7 +227,7 @@ const ExportDialog = ({
                         mr: 1.5,
                         fontSize: '1.25rem',
                         color: recommendation === 'not_recommended'
-                            ? (useCorporateTheme ? '#EC0016' : COLORS.error.main)
+                            ? COLORS.error.main
                             : COLORS.grey[500],
                       }}
                   />
