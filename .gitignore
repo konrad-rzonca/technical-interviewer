@@ -6,3 +6,9 @@ package-lock.json
 .history
 
 build
+
+# Local agent setup, never published
+/AGENTS.md
+/CLAUDE.md
+/.claude/
+/Plans/
